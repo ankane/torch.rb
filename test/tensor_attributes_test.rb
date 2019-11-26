@@ -23,10 +23,19 @@ class TensorAttributesTest < Minitest::Test
     end
   end
 
+  def test_layout_bad
+    error = assert_raises do
+      Torch.tensor([1, 2, 3], layout: "bad")
+    end
+    assert_equal "Unsupported layout: bad", error.message
+  end
+
   def test_device
     x = Torch.tensor([1, 2, 3], device: "cpu")
     assert_equal "cpu", x.device
+  end
 
+  def test_device_bad
     error = assert_raises do
       Torch.tensor([1, 2, 3], device: "bad")
     end

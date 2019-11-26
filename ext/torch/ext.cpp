@@ -515,7 +515,7 @@ void Init_ext()
           l = torch::kSparse;
           throw std::runtime_error("Sparse layout not supported yet");
         } else {
-          throw std::runtime_error("Unsupported layout");
+          throw std::runtime_error("Unsupported layout: " + layout);
         }
         return self.layout(l);
       })
