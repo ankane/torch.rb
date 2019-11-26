@@ -11,7 +11,7 @@ This gem is currently experimental. There may be breaking changes between each r
 First, [install LibTorch](#libtorch-installation). For Homebrew, use:
 
 ```sh
-brew install ankane/brew/libtorch
+brew install libtorch
 ```
 
 Add this line to your application’s Gemfile:
@@ -320,7 +320,7 @@ bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 For Mac, you can use Homebrew.
 
 ```sh
-brew install ankane/brew/libtorch
+brew install libtorch
 ```
 
 Then install the gem (no need for `bundle config`).
