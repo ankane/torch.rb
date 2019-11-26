@@ -441,8 +441,13 @@ void Init_ext()
         auto dtype = self.dtype();
 
         // TODO DRY if someone knows C++
-        // TODO kByte (uint8), kChar (int8), kBool (bool)
-        if (dtype == torch::kShort) {
+        if (dtype == torch::kByte) {
+          // uint8
+          throw std::runtime_error("Type not supported yet");
+        } else if (dtype == torch::kChar) {
+          // int8
+          throw std::runtime_error("Type not supported yet");
+        } else if (dtype == torch::kShort) {
           int16_t* data = self.data_ptr<int16_t>();
           for (int i = 0; i < self.numel(); i++) {
             a.push(data[i]);
@@ -467,6 +472,9 @@ void Init_ext()
           for (int i = 0; i < self.numel(); i++) {
             a.push(data[i]);
           }
+        } else if (dtype == torch::kBool) {
+          // bool
+          throw std::runtime_error("Type not supported yet");
         } else {
           throw std::runtime_error("Unsupported type");
         }
