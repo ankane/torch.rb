@@ -173,7 +173,7 @@ out.backward
 Get gradients
 
 ```ruby
-x.grad
+x.grad # tensor([[4.5, 4.5], [4.5, 4.5]])
 ```
 
 Stop autograd from tracking history
