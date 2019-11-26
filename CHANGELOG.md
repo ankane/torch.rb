@@ -1,5 +1,6 @@
 ## 0.1.1 (unreleased)
 
+- Added support for `uint8` and `int8` types
 - Fixed `undefined symbol` error on Linux
 - Fixed C++ error messages
 

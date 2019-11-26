@@ -442,11 +442,15 @@ void Init_ext()
 
         // TODO DRY if someone knows C++
         if (dtype == torch::kByte) {
-          // uint8
-          throw std::runtime_error("Type not supported yet");
+          uint8_t* data = self.data_ptr<uint8_t>();
+          for (int i = 0; i < self.numel(); i++) {
+            a.push(data[i]);
+          }
         } else if (dtype == torch::kChar) {
-          // int8
-          throw std::runtime_error("Type not supported yet");
+          int8_t* data = self.data_ptr<int8_t>();
+          for (int i = 0; i < self.numel(); i++) {
+            a.push(to_ruby<int>(data[i]));
+          }
         } else if (dtype == torch::kShort) {
           int16_t* data = self.data_ptr<int16_t>();
           for (int i = 0; i < self.numel(); i++) {

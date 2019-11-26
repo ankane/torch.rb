@@ -2,7 +2,7 @@ require_relative "test_helper"
 
 class TensorAttributesTest < Minitest::Test
   def test_dtype
-    %i(int16 int32 int64 float32 float64).each do |dtype|
+    %i(uint8 int8 int16 int32 int64 float32 float64).each do |dtype|
       x = Torch.tensor([1, 2, 3], dtype: dtype)
       assert_equal dtype, x.dtype
       assert_equal [1, 2, 3], x.to_a
