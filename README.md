@@ -244,7 +244,7 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 - `empty` returns a tensor with uninitialized values
 
   ```ruby
-  Torch.empty(3)
+  Torch.empty(3) # tensor([7.0054e-45, 0.0000e+00, 0.0000e+00])
   ```
 
 - `eye` returns an identity matrix
@@ -280,19 +280,19 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 - `rand` returns a tensor filled with values drawn from a uniform distribution on [0, 1)
 
   ```ruby
-  Torch.rand(3)
+  Torch.rand(3) # tensor([0.5444, 0.8799, 0.5571])
   ```
 
 - `randint` returns a tensor with integers randomly drawn from an interval
 
   ```ruby
-  Torch.randint(1, 10, [3])
+  Torch.randint(1, 10, [3]) # tensor([7, 6, 4])
   ```
 
 - `randn` returns a tensor filled with values drawn from a unit normal distribution
 
   ```ruby
-  Torch.randn(3)
+  Torch.randn(3) # tensor([-0.7147,  0.6614,  1.1453])
   ```
 
 - `randperm` returns a tensor filled with a random permutation of integers in some interval
