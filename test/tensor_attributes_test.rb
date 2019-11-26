@@ -42,6 +42,13 @@ class TensorAttributesTest < Minitest::Test
     assert_equal "Unsupported device: bad", error.message
   end
 
+  def test_requires_grad
+    x = Torch.ones(2, 3)
+    assert !x.requires_grad?
+    x.requires_grad!
+    assert x.requires_grad?
+  end
+
   def test_accessor_methods
     x = Torch.ones(2, 3)
     assert_equal [2, 3], x.shape
@@ -60,13 +67,6 @@ class TensorAttributesTest < Minitest::Test
     assert x.signed?
     assert !x.sparse?
     assert !x.quantized?
-  end
-
-  def test_requires_grad
-    x = Torch.ones(2, 3)
-    assert !x.requires_grad?
-    x.requires_grad!
-    assert x.requires_grad?
   end
 
   def test_inspect
