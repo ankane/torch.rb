@@ -310,7 +310,7 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 [Download LibTorch](https://pytorch.org/) and run:
 
 ```sh
-gem install torch-rb -- --with-torch-dir=/path/to/libtorch
+bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
 ### Homebrew
