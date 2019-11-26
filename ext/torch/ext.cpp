@@ -443,17 +443,17 @@ void Init_ext()
         // TODO DRY if someone knows C++
         // TODO kByte (uint8), kChar (int8), kBool (bool)
         if (dtype == torch::kShort) {
-          short* data = self.data_ptr<short>();
+          int16_t* data = self.data_ptr<int16_t>();
           for (int i = 0; i < self.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kInt) {
-          int* data = self.data_ptr<int>();
+          int32_t* data = self.data_ptr<int32_t>();
           for (int i = 0; i < self.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kLong) {
-          long long* data = self.data_ptr<long long>();
+          int64_t* data = self.data_ptr<int64_t>();
           for (int i = 0; i < self.numel(); i++) {
             a.push(data[i]);
           }

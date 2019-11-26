@@ -4,6 +4,8 @@
 
 **Note:** This gem is currently experimental. There may be breaking changes between each release.
 
+[![Build Status](https://travis-ci.org/ankane/torch-rb.svg?branch=master)](https://travis-ci.org/ankane/torch-rb)
+
 ## Installation
 
 First, [install LibTorch](#libtorch-installation). For Homebrew, use:
@@ -307,7 +309,7 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 
 ## LibTorch Installation
 
-[Download LibTorch](https://pytorch.org/) and run:
+[Download LibTorch](https://pytorch.org/). For Linux, use the `cxx11 ABI` version. Then run:
 
 ```sh
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
@@ -321,7 +323,7 @@ For Mac, you can use Homebrew.
 brew install ankane/brew/libtorch
 ```
 
-Then install the gem (no need for `--with-torch-dir`).
+Then install the gem (no need for `bundle config`).
 
 ## rbenv
 
