@@ -468,7 +468,7 @@ void Init_ext()
             a.push(data[i]);
           }
         } else {
-          throw "Unsupported type";
+          throw std::runtime_error("Unsupported type");
         }
         return a;
       })
@@ -499,8 +499,10 @@ void Init_ext()
         torch::Layout l;
         if (layout == "strided") {
           l = torch::kStrided;
+        } else if (layout == "sparse") {
+          l = torch::kSparse;
         } else {
-          throw "Unsupported layout";
+          throw std::runtime_error("Unsupported layout");
         }
         return self.layout(l);
       })
@@ -513,7 +515,7 @@ void Init_ext()
         } else if (device == "cuda") {
           d = torch::kCUDA;
         } else {
-          throw "Unsupported device";
+          throw std::runtime_error("Unsupported device");
         }
         return self.device(d);
       })

@@ -14,6 +14,15 @@ class TensorAttributesTest < Minitest::Test
     assert_equal :float32, Torch.tensor([1.0]).dtype
   end
 
+  def test_layout
+    # TODO support sparse
+    %i(strided).each do |layout|
+      x = Torch.tensor([1, 2, 3], layout: layout)
+      assert_equal layout, x.layout
+      assert_equal [1, 2, 3], x.to_a
+    end
+  end
+
   def test_accessor_methods
     x = Torch.ones(2, 3)
     assert_equal [2, 3], x.shape
