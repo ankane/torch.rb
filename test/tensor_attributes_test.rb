@@ -23,6 +23,16 @@ class TensorAttributesTest < Minitest::Test
     end
   end
 
+  def test_device
+    x = Torch.tensor([1, 2, 3], device: "cpu")
+    assert_equal "cpu", x.device
+
+    error = assert_raises do
+      Torch.tensor([1, 2, 3], device: "bad")
+    end
+    assert_equal "Unsupported device: bad", error.message
+  end
+
   def test_accessor_methods
     x = Torch.ones(2, 3)
     assert_equal [2, 3], x.shape

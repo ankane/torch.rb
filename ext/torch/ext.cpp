@@ -528,7 +528,7 @@ void Init_ext()
         } else if (device == "cuda") {
           d = torch::kCUDA;
         } else {
-          throw std::runtime_error("Unsupported device");
+          throw std::runtime_error("Unsupported device: " + device);
         }
         return self.device(d);
       })
