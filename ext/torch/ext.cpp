@@ -501,6 +501,7 @@ void Init_ext()
           l = torch::kStrided;
         } else if (layout == "sparse") {
           l = torch::kSparse;
+          throw std::runtime_error("Sparse layout not supported yet");
         } else {
           throw std::runtime_error("Unsupported layout");
         }
