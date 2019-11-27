@@ -38,6 +38,8 @@ class OperationsTest < Minitest::Test
   def test_type
     x = Torch.ones([1, 2, 3])
     assert_equal :float64, x.type(:float64).dtype
+    assert_equal :float64, x.double.dtype
+    assert_equal :int32, x.int.dtype
     assert_equal :float32, x.dtype
   end
 

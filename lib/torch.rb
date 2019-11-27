@@ -59,9 +59,13 @@ module Torch
 
   class << self
     # Torch.float, Torch.long, etc
-    DTYPE_TO_ENUM.each_key do |type|
-      define_method(type) do
-        type
+    DTYPE_TO_ENUM.each_key do |dtype|
+      define_method(dtype) do
+        dtype
+      end
+
+      Tensor.define_method(dtype) do
+        type(dtype)
       end
     end
 
