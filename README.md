@@ -351,7 +351,7 @@ To get started with development:
 
 ```sh
 git clone https://github.com/ankane/torch-rb.git
-cd torch
+cd torch-rb
 bundle install
 bundle exec rake compile
 bundle exec rake test
