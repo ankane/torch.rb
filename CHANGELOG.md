@@ -1,8 +1,8 @@
-## 0.1.2 (unreleased)
+## 0.1.2 (2019-11-27)
 
 - Added SGD optimizer
 - Added support for gradient to `backward` method
-- Added `argmax` and `eq`, and `reshape` methods
+- Added `argmax`, `eq`, `leaky_relu`, `prelu`, and `reshape` methods
 - Improved indexing
 - Fixed `zero_grad`
 - Fixed error with infinite values

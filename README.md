@@ -237,8 +237,6 @@ Get trainable parameters
 net.parameters
 ```
 
-**Note: the rest of this section requires master branch.**
-
 Zero the gradient buffers and backprop with random gradients
 
 ```ruby
