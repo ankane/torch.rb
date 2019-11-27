@@ -333,7 +333,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "leaky_relu",
-      *[](torch::Tensor& input, float negative_slope = 0.01) {
+      *[](torch::Tensor& input, Scalar negative_slope = 0.01) {
         return torch::leaky_relu(input, negative_slope);
       })
     .define_singleton_method(
