@@ -3,6 +3,7 @@
 - Added SGD optimizer
 - Added support for gradient to `backward` method
 - Added `argmax` and `eq`, and `reshape` methods
+- Improved indexing
 - Fixed `zero_grad`
 - Fixed error with infinite values
 

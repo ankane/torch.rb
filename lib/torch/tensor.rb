@@ -127,13 +127,22 @@ module Torch
       item <=> other
     end
 
-    # TODO use accessor C++ method
-    def [](index, *args)
-      v = _access(index)
-      args.each do |i|
-        v = v._access(i)
+    def [](*indexes)
+      result = self
+      dim = 0
+      indexes.each_with_index do |index|
+        if index.is_a?(Numeric)
+          result = result._select(dim, index)
+        elsif index.is_a?(Range)
+          finish = index.end
+          finish += 1 unless index.exclude_end?
+          result = result._slice(dim, index.begin, finish, 1)
+          dim += 1
+        else
+          raise Error, "Unsupported index type"
+        end
       end
-      v
+      result
     end
 
     private

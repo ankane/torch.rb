@@ -58,7 +58,6 @@ class OperationsTest < Minitest::Test
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [0, 1, 2], x[0].to_a
     assert_equal 5, x[1, 2].item
-    # TODO support ranges
-    # assert_equal [0, 1], x[0, 0..1].to_a
+    assert_equal [0, 1], x[0, 0..1].to_a
   end
 end

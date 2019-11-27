@@ -386,9 +386,14 @@ void Init_ext()
         return self.detach_();
       })
     .define_method(
-      "_access",
-      *[](torch::Tensor& self, int64_t index) {
-        return self[index];
+      "_select",
+      *[](torch::Tensor& self, int64_t dim, int64_t index) {
+        return self.select(dim, index);
+      })
+    .define_method(
+      "_slice",
+      *[](torch::Tensor& self, int64_t dim, int64_t start, int64_t end, int64_t step) {
+        return self.slice(dim, start, end, step);
       })
     .define_method(
       "_requires_grad!",
