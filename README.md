@@ -145,7 +145,7 @@ Convert a Numo array to a tensor
 
 ```ruby
 b = Numo::NArray.cast([1, 2, 3])
-Torch.from_numpy(b)
+Torch.from_numo(b)
 ```
 
 ### Autograd
