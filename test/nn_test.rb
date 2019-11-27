@@ -31,5 +31,12 @@ class NNTest < Minitest::Test
     net.parameters.each do |f|
       f.data.sub!(f.grad.data * learning_rate)
     end
+
+    optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.01)
+    optimizer.zero_grad
+    output = net.call(input)
+    loss = criterion.call(output, target)
+    loss.backward
+    optimizer.step
   end
 end

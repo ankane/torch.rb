@@ -415,8 +415,13 @@ void Init_ext()
         return self.view(size);
       })
     .define_method(
-      "add!",
+      "_add!",
       *[](torch::Tensor& self, torch::Tensor& other) {
+        self.add_(other);
+      })
+    .define_method(
+      "_add_scalar!",
+      *[](torch::Tensor& self, Scalar other) {
         self.add_(other);
       })
     .define_method(

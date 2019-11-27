@@ -82,6 +82,14 @@ module Torch
       _requires_grad!(requires_grad)
     end
 
+    def add!(other)
+      if other.is_a?(Numeric)
+        _add_scalar!(self, other)
+      else
+        _add!(self, other)
+      end
+    end
+
     # operations
     %w(add sub mul div remainder pow neg sum mean num norm min max dot matmul exp log unsqueeze).each do |op|
       define_method(op) do |*args, **options, &block|
