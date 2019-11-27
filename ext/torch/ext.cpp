@@ -401,6 +401,11 @@ void Init_ext()
         return (int) at::typeMetaToScalarType(self.dtype());
       })
     .define_method(
+      "_type",
+      *[](torch::Tensor& self, int dtype) {
+        return self.toType((torch::ScalarType) dtype);
+      })
+    .define_method(
       "_layout",
       *[](torch::Tensor& self) {
         std::stringstream s;

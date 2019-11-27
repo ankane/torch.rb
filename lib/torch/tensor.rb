@@ -78,6 +78,12 @@ module Torch
       _requires_grad!(requires_grad)
     end
 
+    def type(dtype)
+      enum = DTYPE_TO_ENUM[dtype]
+      raise Error, "Unknown type: #{dtype}" unless enum
+      _type(enum)
+    end
+
     # operations
     %w(add sub mul div remainder pow neg sum mean num norm min max dot matmul exp log unsqueeze reshape).each do |op|
       define_method(op) do |*args, **options, &block|

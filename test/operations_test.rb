@@ -35,6 +35,12 @@ class OperationsTest < Minitest::Test
     assert_equal [2, 3], x.shape
   end
 
+  def test_type
+    x = Torch.ones([1, 2, 3])
+    assert_equal :float64, x.type(:float64).dtype
+    assert_equal :float32, x.dtype
+  end
+
   def test_accessor
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [0, 1, 2], x[0].to_a
