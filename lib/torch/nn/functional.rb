@@ -15,6 +15,11 @@ module Torch
           Torch.max_pool2d(input, kernel_size)
         end
 
+        def avg_pool2d(input, kernel_size)
+          kernel_size = [kernel_size, kernel_size] if kernel_size.is_a?(Integer)
+          Torch.avg_pool2d(input, kernel_size)
+        end
+
         def linear(input, weight, bias)
           Torch.linear(input, weight, bias)
         end

@@ -342,6 +342,11 @@ void Init_ext()
         return torch::max_pool2d(input, kernel_size);
       })
     .define_singleton_method(
+      "avg_pool2d",
+      *[](torch::Tensor& input, IntArrayRef kernel_size) {
+        return torch::avg_pool2d(input, kernel_size);
+      })
+    .define_singleton_method(
       "mse_loss",
       *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
