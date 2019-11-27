@@ -619,4 +619,7 @@ void Init_ext()
       *[](torch::autograd::Variable& self) {
         return self.grad().defined();
       });
+
+  Module rb_mCUDA = define_module_under(rb_mTorch, "CUDA")
+    .define_singleton_method("available?", &torch::cuda::is_available);
 }
