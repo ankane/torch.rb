@@ -7,7 +7,11 @@ module Torch
         end
 
         def [](index)
-          tensors.map { |t| t[index] }
+          @tensors.map { |t| t[index] }
+        end
+
+        def size
+          @tensors[0].size(0)
         end
       end
     end

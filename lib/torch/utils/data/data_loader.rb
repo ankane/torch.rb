@@ -6,6 +6,15 @@ module Torch
           @dataset = dataset
           @batch_size = batch_size
         end
+
+        def each
+          size = @dataset.size
+          start_index = 0
+          while start_index < size
+            yield @dataset[start_index...(start_index + @batch_size)]
+            start_index += @batch_size
+          end
+        end
       end
     end
   end
