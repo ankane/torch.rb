@@ -11,6 +11,14 @@ module Torch
           Torch.conv2d(input, weight, bias, stride, padding)
         end
 
+        def prelu(input, weight)
+          Torch.prelu(input, weight)
+        end
+
+        def leaky_relu(input, negative_slope = 0.01)
+          Torch.leaky_relu(input, negative_slope)
+        end
+
         def max_pool2d(input, kernel_size)
           kernel_size = [kernel_size, kernel_size] if kernel_size.is_a?(Integer)
           Torch.max_pool2d(input, kernel_size)
