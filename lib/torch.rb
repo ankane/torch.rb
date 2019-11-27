@@ -300,6 +300,10 @@ module Torch
       _reshape(input, shape)
     end
 
+    def device(str)
+      Device.new(str)
+    end
+
     private
 
     def execute_op(op, input, other, out: nil)
