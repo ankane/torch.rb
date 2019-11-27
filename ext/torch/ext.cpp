@@ -621,5 +621,6 @@ void Init_ext()
       });
 
   Module rb_mCUDA = define_module_under(rb_mTorch, "CUDA")
-    .define_singleton_method("available?", &torch::cuda::is_available);
+    .define_singleton_method("available?", &torch::cuda::is_available)
+    .define_singleton_method("device_count", &torch::cuda::device_count);
 }
