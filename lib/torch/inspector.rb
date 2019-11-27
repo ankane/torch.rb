@@ -20,7 +20,7 @@ module Torch
           if floating_point?
             sci = max / min.to_f > 1000 || max > 1e8 || min < 1e-4
 
-            all_int = values.all? { |v| v == v.to_i }
+            all_int = values.all? { |v| v.finite? && v == v.to_i }
             decimal = all_int ? 1 : 4
 
             total += sci ? 10 : decimal + 1 + max.to_i.to_s.size
