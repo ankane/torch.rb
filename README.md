@@ -405,7 +405,7 @@ To get started with development:
 git clone https://github.com/ankane/torch-rb.git
 cd torch-rb
 bundle install
-bundle exec rake compile
+bundle exec rake compile -- --with-torch-dir=/path/to/libtorch
 bundle exec rake test
 ```
 
