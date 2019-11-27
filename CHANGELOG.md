@@ -2,7 +2,9 @@
 
 - Added SGD optimizer
 - Added support for gradient to `backward` method
+- Added `argmax` and `eq` methods
 - Fixed `zero_grad`
+- Fixed error with infinite values
 
 ## 0.1.1 (2019-11-26)
 
