@@ -7,11 +7,7 @@ module Torch
       end
 
       def grad
-        if _grad_defined
-          _grad
-        else
-          nil
-        end
+        _grad if _grad_defined
       end
     end
   end
