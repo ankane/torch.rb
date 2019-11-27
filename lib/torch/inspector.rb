@@ -1,5 +1,6 @@
 module Torch
   module Inspector
+    # TODO make more performance, especially when summarizing
     def inspect
       data =
         if numel == 0
@@ -35,7 +36,9 @@ module Torch
             fmt = "%#{total}d"
           end
 
-          inspect_level(to_a, fmt, dim - 1)
+          summarize = numel > 1000
+
+          inspect_level(to_a, fmt, dim - 1, 0, summarize)
         end
 
       attributes = []
@@ -51,11 +54,30 @@ module Torch
 
     private
 
-    def inspect_level(arr, fmt, total, level = 0)
+    # TODO DRY code
+    def inspect_level(arr, fmt, total, level, summarize)
       if level == total
-        "[#{arr.map { |v| fmt % v }.join(", ")}]"
+        cols =
+          if summarize && arr.size > 7
+            arr[0..2].map { |v| fmt % v } +
+            ["..."] +
+            arr[-3..-1].map { |v| fmt % v }
+          else
+            arr.map { |v| fmt % v }
+          end
+
+        "[#{cols.join(", ")}]"
       else
-        "[#{arr.map { |row| inspect_level(row, fmt, total, level + 1) }.join(",#{"\n" * (total - level)}#{" " * (level + 8)}")}]"
+        rows =
+          if summarize && arr.size > 7
+            arr[0..2].map { |row| inspect_level(row, fmt, total, level + 1, summarize) } +
+            ["..."] +
+            arr[-3..-1].map { |row| inspect_level(row, fmt, total, level + 1, summarize) }
+          else
+            arr.map { |row| inspect_level(row, fmt, total, level + 1, summarize) }
+          end
+
+        "[#{rows.join(",#{"\n" * (total - level)}#{" " * (level + 8)}")}]"
       end
     end
   end
