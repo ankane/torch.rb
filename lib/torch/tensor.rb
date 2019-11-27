@@ -28,7 +28,7 @@ module Torch
     end
 
     def to_a
-      reshape(_data, shape)
+      reshape_arr(_data, shape)
     end
 
     def size(dim = nil)
@@ -79,7 +79,7 @@ module Torch
     end
 
     # operations
-    %w(add sub mul div remainder pow neg sum mean num norm min max dot matmul exp log unsqueeze).each do |op|
+    %w(add sub mul div remainder pow neg sum mean num norm min max dot matmul exp log unsqueeze reshape).each do |op|
       define_method(op) do |*args, **options, &block|
         if options.any?
           Torch.send(op, self, *args, **options, &block)
@@ -132,7 +132,7 @@ module Torch
 
     private
 
-    def reshape(arr, dims)
+    def reshape_arr(arr, dims)
       if dims.empty?
         arr
       else

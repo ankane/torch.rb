@@ -30,6 +30,11 @@ class OperationsTest < Minitest::Test
     assert_equal 7, Torch.dot(Torch.tensor([2, 3]), Torch.tensor([2, 1])).item
   end
 
+  def test_reshape
+    x = Torch.ones(6).reshape([2, 3])
+    assert_equal [2, 3], x.shape
+  end
+
   def test_accessor
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [0, 1, 2], x[0].to_a

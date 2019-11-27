@@ -280,6 +280,10 @@ module Torch
       _matmul(input, other)
     end
 
+    def reshape(input, shape)
+      _reshape(input, shape)
+    end
+
     private
 
     def execute_op(op, input, other, out: nil)

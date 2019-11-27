@@ -302,6 +302,11 @@ void Init_ext()
         return torch::neg(input);
       })
     .define_singleton_method(
+      "_reshape",
+      *[](torch::Tensor& input, IntArrayRef shape) {
+        return torch::reshape(input, shape);
+      })
+    .define_singleton_method(
       "relu",
       *[](torch::Tensor& input) {
         return torch::relu(input);
