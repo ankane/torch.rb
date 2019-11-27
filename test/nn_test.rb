@@ -11,5 +11,8 @@ class NNTest < Minitest::Test
     input = Torch.randn(1, 1, 32, 32)
     out = net.call(input)
     assert_equal [1, 10], out.size
+
+    net.zero_grad
+    out.backward(Torch.randn(1, 10))
   end
 end

@@ -559,8 +559,13 @@ void Init_ext()
 
   Class rb_cParameter = define_class_under<torch::autograd::Variable, torch::Tensor>(rb_mNN, "Parameter")
     .define_method(
-      "grad",
+      "_grad",
       *[](torch::autograd::Variable& self) {
         return self.grad();
+      })
+    .define_method(
+      "_grad_defined",
+      *[](torch::autograd::Variable& self) {
+        return self.grad().defined();
       });
 }

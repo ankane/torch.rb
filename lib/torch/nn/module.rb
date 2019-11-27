@@ -26,7 +26,6 @@ module Torch
       def zero_grad
         parameters.each do |param|
           if param.grad
-            raise Error, "Not supported yet"
             param.grad.detach!
             param.grad.zero!
           end
