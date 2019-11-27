@@ -223,12 +223,66 @@ class Net < Torch::NN::Module
 end
 ```
 
-And run
+Create an instance of it
 
 ```ruby
 net = Net.new
 input = Torch.randn(1, 1, 32, 32)
 net.call(input)
+```
+
+Get trainable parameters
+
+```ruby
+net.parameters
+```
+
+**Note: the rest of this section requires master branch.**
+
+Zero the gradient buffers and backprop with random gradients
+
+```ruby
+net.zero_grad
+out.backward(Torch.randn(1, 10))
+```
+
+Define a loss function
+
+```ruby
+output = net.call(input)
+target = Torch.randn(10)
+target = target.view(1, -1)
+criterion = Torch::NN::MSELoss.new
+loss = criterion.call(output, target)
+```
+
+Backprop
+
+```ruby
+net.zero_grad
+p net.conv1.bias.grad
+loss.backward
+p net.conv1.bias.grad
+```
+
+Update the weights
+
+```ruby
+learning_rate = 0.01
+net.parameters.each do |f|
+  f.data.sub!(f.grad.data * learning_rate)
+end
+```
+
+Use an optimizer
+
+```ruby
+optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.01)
+optimizer.zero_grad
+output = net.call(input)
+loss = criterion.call(output, target)
+loss.backward
+optimizer.step
 ```
 
 ### Tensor Creation
