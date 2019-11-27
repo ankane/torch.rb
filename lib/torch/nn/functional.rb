@@ -6,8 +6,9 @@ module Torch
           Torch.relu(input)
         end
 
-        def conv2d(input, weight, bias)
-          Torch.conv2d(input, weight, bias)
+        def conv2d(input, weight, bias, stride: 1, padding: 0)
+          # TODO pair stride and padding when needed
+          Torch.conv2d(input, weight, bias, stride, padding)
         end
 
         def max_pool2d(input, kernel_size)

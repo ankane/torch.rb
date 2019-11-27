@@ -3,13 +3,12 @@ module Torch
     class Conv2d < Module
       attr_reader :bias, :weight
 
-      def initialize(in_channels, out_channels, kernel_size) #, stride: 1, padding: 0, dilation: 1, groups: 1)
+      def initialize(in_channels, out_channels, kernel_size, stride: 1, padding: 0) #, dilation: 1, groups: 1)
         @in_channels = in_channels
         @out_channels = out_channels
         @kernel_size = pair(kernel_size)
-        @stride = pair(1)
-        # @stride = pair(stride)
-        # @padding = pair(padding)
+        @stride = pair(stride)
+        @padding = pair(padding)
         # @dilation = pair(dilation)
 
         # TODO divide by groups
@@ -29,7 +28,7 @@ module Torch
       end
 
       def call(input)
-        F.conv2d(input, @weight, @bias) # @stride, self.padding, self.dilation, self.groups)
+        F.conv2d(input, @weight, @bias, stride: @stride, padding: @padding) #, @dilation, @groups)
       end
 
       def inspect

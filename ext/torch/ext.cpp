@@ -328,8 +328,8 @@ void Init_ext()
       })
     .define_singleton_method(
       "conv2d",
-      *[](torch::Tensor& input, torch::Tensor& weight, torch::Tensor& bias) {
-        return torch::conv2d(input, weight, bias);
+      *[](torch::Tensor& input, torch::Tensor& weight, torch::Tensor& bias, IntArrayRef stride, IntArrayRef padding) {
+        return torch::conv2d(input, weight, bias, stride, padding);
       })
     .define_singleton_method(
       "linear",
