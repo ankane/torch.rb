@@ -445,6 +445,11 @@ void Init_ext()
         return self.log_softmax(dim);
       })
     .define_method(
+      "data",
+      *[](torch::Tensor& self) {
+        return self.data();
+      })
+    .define_method(
       "_data",
       *[](torch::Tensor& self) {
         Array a;

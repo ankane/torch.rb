@@ -54,10 +54,6 @@ module Torch
       _data.first
     end
 
-    def data
-      Torch.tensor(to_a)
-    end
-
     def backward(gradient = nil)
       if gradient
         _backward_gradient(gradient)
