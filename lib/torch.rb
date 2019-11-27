@@ -6,6 +6,10 @@ require "torch/inspector"
 require "torch/tensor"
 require "torch/version"
 
+# optim
+require "torch/optim/optimizer"
+require "torch/optim/sgd"
+
 # nn
 require "torch/nn/module"
 require "torch/nn/init"

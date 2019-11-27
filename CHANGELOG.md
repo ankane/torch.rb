@@ -1,5 +1,6 @@
 ## 0.1.2 (unreleased)
 
+- Added SGD optimizer
 - Added support for gradient to `backward` method
 - Fixed `zero_grad`
 
