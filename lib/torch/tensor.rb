@@ -58,6 +58,14 @@ module Torch
       Torch.tensor(to_a)
     end
 
+    def backward(gradient = nil)
+      if gradient
+        _backward_gradient(gradient)
+      else
+        _backward
+      end
+    end
+
     # TODO read directly from memory
     def numo
       raise Error, "Numo not found" unless defined?(Numo::NArray)

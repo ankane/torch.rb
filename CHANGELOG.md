@@ -1,3 +1,7 @@
+## 0.1.2 (unreleased)
+
+- Added support for gradient to `backward` method
+
 ## 0.1.1 (2019-11-26)
 
 - Added support for `uint8` and `int8` types

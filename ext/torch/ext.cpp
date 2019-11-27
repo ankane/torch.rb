@@ -376,9 +376,14 @@ void Init_ext()
         return self.set_requires_grad(requires_grad);
       })
     .define_method(
-      "backward",
+      "_backward",
       *[](torch::Tensor& self) {
         return self.backward();
+      })
+    .define_method(
+      "_backward_gradient",
+      *[](torch::Tensor& self, const torch::Tensor& gradient) {
+        return self.backward(gradient);
       })
     .define_method(
       "grad",

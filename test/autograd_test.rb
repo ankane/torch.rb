@@ -10,6 +10,20 @@ class AutogradTest < Minitest::Test
     assert_equal [[4.5, 4.5], [4.5, 4.5]], x.grad.to_a
   end
 
+  def test_example_backward
+    x = Torch.randn(3, requires_grad: true)
+
+    y = x * 2
+    while y.data.norm < 1000
+      y = y * 2
+    end
+
+    v = Torch.tensor([0.1, 1.0, 0.0001], dtype: :float)
+    y.backward(v)
+
+    assert_equal [3], x.grad.size
+  end
+
   def test_requires_grad
     a = Torch.randn(2, 2)
     a = ((a * 3) / (a - 1))
