@@ -35,6 +35,17 @@ class OperationsTest < Minitest::Test
     assert_equal [2, 3], x.shape
   end
 
+  def test_argmax
+    x = Torch.tensor([1, 3, 2])
+    assert_equal 1, Torch.argmax(x).item
+  end
+
+  def test_eq
+    x = Torch.tensor([[1, 2], [3, 4]])
+    y = Torch.tensor([[1, 1], [4, 4]])
+    assert_equal [[1, 0], [0, 1]], Torch.eq(x, y).uint8.to_a
+  end
+
   def test_type
     x = Torch.ones([1, 2, 3])
     assert_equal :float64, x.type(:float64).dtype

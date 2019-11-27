@@ -197,6 +197,16 @@ void Init_ext()
         return torch::sum(input, dim, keepdim);
       })
     .define_singleton_method(
+      "_argmax",
+      *[](torch::Tensor& input) {
+        return torch::argmax(input);
+      })
+    .define_singleton_method(
+      "_argmax_dim",
+      *[](torch::Tensor& input, int64_t dim, bool keepdim) {
+        return torch::argmax(input, dim, keepdim);
+      })
+    .define_singleton_method(
       "_norm",
       *[](torch::Tensor& input) {
         return torch::norm(input);
@@ -235,6 +245,11 @@ void Init_ext()
       "_matmul",
       *[](torch::Tensor& input, torch::Tensor& other) {
         return torch::matmul(input, other);
+      })
+    .define_singleton_method(
+      "_eq",
+      *[](torch::Tensor& input, torch::Tensor& other) {
+        return torch::eq(input, other);
       })
     .define_singleton_method(
       "_add",

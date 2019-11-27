@@ -248,6 +248,18 @@ module Torch
       end
     end
 
+    def argmax(input, dim = nil, keepdim: false)
+      if dim
+        _argmax_dim(input, dim, keepdim)
+      else
+        _argmax(input)
+      end
+    end
+
+    def eq(input, other)
+      _eq(input, other)
+    end
+
     def norm(input)
       _norm(input)
     end
