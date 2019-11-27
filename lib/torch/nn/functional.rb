@@ -6,6 +6,14 @@ module Torch
           Torch.relu(input)
         end
 
+        def prelu(input, weight)
+          Torch.prelu(input, weight)
+        end
+
+        def leaky_relu(input, negative_slope = 0.01)
+          Torch.leaky_relu(input, negative_slope)
+        end
+
         def conv2d(input, weight, bias)
           Torch.conv2d(input, weight, bias)
         end
