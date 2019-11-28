@@ -30,6 +30,7 @@ module Torch
         forward(*input)
       end
 
+      # modifies in-place
       def to(device)
         instance_variables.each do |name|
           param = instance_variable_get(name)
@@ -40,6 +41,7 @@ module Torch
         modules.each do |_, mod|
           mod.to(device)
         end
+        self
       end
 
       def parameters
