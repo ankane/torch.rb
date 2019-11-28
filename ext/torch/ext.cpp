@@ -409,8 +409,9 @@ void Init_ext()
       })
     .define_singleton_method(
       "nll_loss",
-      *[](torch::Tensor& input, torch::Tensor& target) {
-        return torch::nll_loss(input, target);
+      *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::nll_loss(input, target, {}, red);
       })
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
@@ -441,6 +442,7 @@ void Init_ext()
     .define_method("dim", &torch::Tensor::dim)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
+    .define_method("view_as", &torch::Tensor::view_as)
     .define_method(
       "zero!",
       *[](torch::Tensor& self) {

@@ -41,9 +41,9 @@ module Torch
           nll_loss(log_softmax(input, 1), target)
         end
 
-        def nll_loss(input, target)
+        def nll_loss(input, target, reduction: "mean")
           # TODO fix for non-1d
-          Torch.nll_loss(input, target)
+          Torch.nll_loss(input, target, reduction)
         end
 
         def log_softmax(input, dim)
