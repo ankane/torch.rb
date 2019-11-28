@@ -3,6 +3,9 @@ module Torch
     module Data
       class TensorDataset
         def initialize(*tensors)
+          unless tensors.all? { |t| t.size(0) == tensors[0].size(0) }
+            raise Error, "Tensors must all have same dim 0 size"
+          end
           @tensors = tensors
         end
 

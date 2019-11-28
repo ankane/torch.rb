@@ -23,4 +23,14 @@ class DataUtilsTest < Minitest::Test
     loader.each_with_index do |(xb, yb), i|
     end
   end
+
+  def test_tensor_dataset_bad
+    x = Torch.tensor([[1, 2], [3, 4]])
+    y = Torch.tensor([5])
+
+    error = assert_raises Torch::Error do
+      Torch::Utils::Data::TensorDataset.new(x, y)
+    end
+    assert_equal "Tensors must all have same dim 0 size", error.message
+  end
 end
