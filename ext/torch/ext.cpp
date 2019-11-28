@@ -445,7 +445,7 @@ void Init_ext()
     .define_method("view_as", &torch::Tensor::view_as)
     .define_method(
       "addcmul!",
-      *[](torch::Tensor& self, const torch::Tensor & tensor1, const torch::Tensor & tensor2, Scalar value) {
+      *[](torch::Tensor& self, Scalar value, const torch::Tensor & tensor1, const torch::Tensor & tensor2) {
         return self.addcmul_(tensor1, tensor2, value);
       })
     .define_method(

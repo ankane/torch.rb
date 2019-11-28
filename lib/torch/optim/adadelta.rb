@@ -36,11 +36,11 @@ module Torch
             grad = grad.add(param.data * @weight_decay)
           end
 
-          square_avg.mul!(rho).addcmul!(grad, grad, 1 - rho)
+          square_avg.mul!(rho).addcmul!(1 - rho, grad, grad)
           std = square_avg.add(eps).sqrt!
           delta = acc_delta.add(eps).sqrt!.div!(std).mul!(grad)
           param.data.sub!(delta * @lr)
-          acc_delta.mul!(rho).addcmul!(delta, delta, 1 - rho)
+          acc_delta.mul!(rho).addcmul!(1 - rho, delta, delta)
         end
       end
     end
