@@ -85,7 +85,15 @@ module Torch
     def from_numo(ndarray)
       dtype = _dtype_to_numo.find { |k, v| ndarray.is_a?(v) }
       raise Error, "Cannot convert #{ndarray.class.name} to tensor" unless dtype
-      tensor(ndarray.to_a, dtype: dtype[0])
+      options = tensor_options(device: "cpu", dtype: dtype[0])
+      # TODO pass pointer to array instead of creating string
+      str = ndarray.to_string
+      tensor = _from_blob(str, ndarray.shape, options)
+      # from_blob does not own the data, so we need to keep
+      # a reference to it for duration of tensor
+      # can remove when passing pointer directly
+      tensor.instance_variable_set("@_numo_str", str)
+      tensor
     end
 
     # private

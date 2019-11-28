@@ -413,6 +413,12 @@ void Init_ext()
         return torch::nll_loss(input, target);
       })
     .define_singleton_method(
+      "_from_blob",
+      *[](String s, IntArrayRef size, const torch::TensorOptions &options) {
+        void *data = const_cast<char *>(s.c_str());
+        return torch::from_blob(data, size, options);
+      })
+    .define_singleton_method(
       "_tensor",
       *[](Object o, IntArrayRef size, const torch::TensorOptions &options) {
         Array a = Array(o);

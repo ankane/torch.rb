@@ -2,6 +2,7 @@
 
 - Added dropout
 - Improved support for `bool` type
+- Improved performance of `from_numo`
 
 ## 0.1.2 (2019-11-27)
 
