@@ -7,15 +7,6 @@ module Torch
         @lr = lr
       end
 
-      def zero_grad
-        @params.each do |param|
-          if param.grad
-            param.grad.detach!
-            param.grad.zero!
-          end
-        end
-      end
-
       def step
         @params.each do |param|
           next unless param.grad
