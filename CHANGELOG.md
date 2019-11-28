@@ -1,5 +1,6 @@
 ## 0.1.3 (unreleased)
 
+- Added dropout
 - Improved support for `bool` type
 
 ## 0.1.2 (2019-11-27)

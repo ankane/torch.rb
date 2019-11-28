@@ -49,6 +49,46 @@ module Torch
         def log_softmax(input, dim)
           input.log_softmax(dim)
         end
+
+        def dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch._dropout!(input, p, training)
+          else
+            Torch._dropout(input, p, training)
+          end
+        end
+
+        def dropout2d(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch._feature_dropout!(input, p, training)
+          else
+            Torch._feature_dropout(input, p, training)
+          end
+        end
+
+        def dropout3d(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch._feature_dropout!(input, p, training)
+          else
+            Torch._feature_dropout(input, p, training)
+          end
+        end
+
+        def alpha_dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch._alpha_dropout!(input, p, training)
+          else
+            Torch._alpha_dropout(input, p, training)
+          end
+        end
+
+        def feature_alpha_dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch._feature_alpha_dropout!(input, p, training)
+          else
+            Torch._feature_alpha_dropout(input, p, training)
+          end
+        end
       end
     end
 

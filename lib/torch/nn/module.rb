@@ -1,6 +1,10 @@
 module Torch
   module NN
     class Module
+      def initialize
+        @training = true
+      end
+
       def inspect
         str = String.new
         str << "#{self.class.name}(\n"
