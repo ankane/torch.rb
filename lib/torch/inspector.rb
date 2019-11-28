@@ -9,6 +9,8 @@ module Torch
         elsif dim == 0
           item
         else
+          summarize = numel > 1000
+
           values = to_a.flatten
           abs = values.select { |v| v != 0 }.map(&:abs)
           max = abs.max || 1
@@ -36,8 +38,6 @@ module Torch
             total += max.to_s.size
             fmt = "%#{total}d"
           end
-
-          summarize = numel > 1000
 
           inspect_level(to_a, fmt, dim - 1, 0, summarize)
         end

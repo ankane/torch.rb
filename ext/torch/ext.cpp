@@ -412,6 +412,7 @@ void Init_ext()
       *[](torch::Tensor& input, torch::Tensor& target) {
         return torch::nll_loss(input, target);
       })
+    .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
       "_from_blob",
       *[](String s, IntArrayRef size, const torch::TensorOptions &options) {
@@ -438,7 +439,6 @@ void Init_ext()
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
     .define_method("dim", &torch::Tensor::dim)
-    .define_method("numel", &torch::Tensor::numel)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
     .define_method(
