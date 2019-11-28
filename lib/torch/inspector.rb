@@ -1,12 +1,13 @@
 module Torch
   module Inspector
     # TODO make more performance, especially when summarizing
+    # how? only read data that will be displayed
     def inspect
       data =
         if numel == 0
           "[]"
         elsif dim == 0
-          to_a.first
+          item
         else
           values = to_a.flatten
           abs = values.select { |v| v != 0 }.map(&:abs)
