@@ -35,7 +35,7 @@ module Torch
         instance_variables.each do |name|
           param = instance_variable_get(name)
           if param.is_a?(Parameter)
-            instance_variable_set(name, param.to(device))
+            instance_variable_set(name, Parameter.new(param.to(device)))
           end
         end
         modules.each do |_, mod|
