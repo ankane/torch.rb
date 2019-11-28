@@ -88,7 +88,24 @@ IntArrayRef from_ruby<IntArrayRef>(Object x)
 }
 
 // for now
-typedef float Scalar;
+class Scalar {
+  float value;
+  public:
+    Scalar(Object o) {
+      // TODO cast based on Ruby type
+      value = from_ruby<float>(o);
+    }
+    operator torch::Scalar() {
+      return torch::Scalar(value);
+    }
+};
+
+template<>
+inline
+Scalar from_ruby<Scalar>(Object x)
+{
+  return Scalar(x);
+}
 
 extern "C"
 void Init_ext()
@@ -338,7 +355,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "leaky_relu",
-      *[](torch::Tensor& input, Scalar negative_slope = 0.01) {
+      *[](torch::Tensor& input, Scalar negative_slope) {
         return torch::leaky_relu(input, negative_slope);
       })
     .define_singleton_method(
