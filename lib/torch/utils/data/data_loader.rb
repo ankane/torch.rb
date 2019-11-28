@@ -2,6 +2,8 @@ module Torch
   module Utils
     module Data
       class DataLoader
+        include Enumerable
+
         def initialize(dataset, batch_size: 1)
           @dataset = dataset
           @batch_size = batch_size
