@@ -8,7 +8,11 @@ require "torch/version"
 
 # optim
 require "torch/optim/optimizer"
+require "torch/optim/adadelta"
 require "torch/optim/sgd"
+
+# optim lr_scheduler
+require "torch/optim/lr_scheduler/step_lr"
 
 # nn
 require "torch/nn/module"

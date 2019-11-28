@@ -3,6 +3,7 @@ module Torch
     class SGD < Optimizer
       # TODO support momentum, dampening, weight_decay, nesterov
       def initialize(params, lr:)
+        super()
         @params = params
         @lr = lr
       end

@@ -444,6 +444,11 @@ void Init_ext()
     .define_method("requires_grad", &torch::Tensor::requires_grad)
     .define_method("view_as", &torch::Tensor::view_as)
     .define_method(
+      "addcmul!",
+      *[](torch::Tensor& self, const torch::Tensor & tensor1, const torch::Tensor & tensor2, Scalar value) {
+        return self.addcmul_(tensor1, tensor2, value);
+      })
+    .define_method(
       "zero!",
       *[](torch::Tensor& self) {
         return self.zero_();
@@ -515,22 +520,32 @@ void Init_ext()
     .define_method(
       "add!",
       *[](torch::Tensor& self, torch::Tensor& other) {
-        self.add_(other);
+        return self.add_(other);
       })
     .define_method(
       "sub!",
       *[](torch::Tensor& self, torch::Tensor& other) {
-        self.sub_(other);
+        return self.sub_(other);
       })
     .define_method(
-      "mul!",
+      "_mul!",
       *[](torch::Tensor& self, torch::Tensor& other) {
-        self.mul_(other);
+        return self.mul_(other);
+      })
+    .define_method(
+      "_mul_scalar!",
+      *[](torch::Tensor& self, Scalar other) {
+        return self.mul_(other);
       })
     .define_method(
       "div!",
       *[](torch::Tensor& self, torch::Tensor& other) {
-        self.div_(other);
+        return self.div_(other);
+      })
+    .define_method(
+      "sqrt!",
+      *[](torch::Tensor& self) {
+        return self.sqrt_();
       })
     .define_method(
       "log_softmax",

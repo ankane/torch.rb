@@ -90,6 +90,14 @@ module Torch
       _type(enum)
     end
 
+    def mul!(other)
+      if other.is_a?(Numeric)
+        _mul_scalar!(other)
+      else
+        _mul!(other)
+      end
+    end
+
     # operations
     %w(add argmax div dot eq exp log matmul max mean min mul neg norm num numel pow remainder reshape sub sum unsqueeze).each do |op|
       define_method(op) do |*args, **options, &block|
