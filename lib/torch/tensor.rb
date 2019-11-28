@@ -90,6 +90,10 @@ module Torch
       _type(enum)
     end
 
+    def add!(value = 1, other)
+      _add!(other * value)
+    end
+
     def mul!(other)
       if other.is_a?(Numeric)
         _mul_scalar!(other)

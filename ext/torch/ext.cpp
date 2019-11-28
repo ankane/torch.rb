@@ -518,7 +518,7 @@ void Init_ext()
         return self.view(size);
       })
     .define_method(
-      "add!",
+      "_add!",
       *[](torch::Tensor& self, torch::Tensor& other) {
         return self.add_(other);
       })

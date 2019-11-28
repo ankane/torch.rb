@@ -11,6 +11,14 @@ class OperationsTest < Minitest::Test
     assert_equal [2, 2], x.to_a
   end
 
+  def test_add_alpha
+    # TODO remove dtype
+    x = Torch.tensor([1, 2, 3], dtype: :float)
+    y = Torch.tensor([10, 20, 30])
+    x.add!(2, y)
+    assert_equal [21, 42, 63], x.to_a
+  end
+
   def test_scalar
     x = Torch.tensor([10, 20, 30])
     assert_equal [15, 25, 35], (x + 5).to_a
