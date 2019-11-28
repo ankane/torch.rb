@@ -30,6 +30,18 @@ module Torch
         forward(*input)
       end
 
+      def to(device)
+        instance_variables.each do |name|
+          param = instance_variable_get(name)
+          if param.is_a?(Parameter)
+            instance_variable_set(name, param.to(device))
+          end
+        end
+        modules.each do |_, mod|
+          mod.to(device)
+        end
+      end
+
       def parameters
         params = []
         instance_variables.each do |name|

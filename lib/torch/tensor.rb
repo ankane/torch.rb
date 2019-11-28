@@ -31,6 +31,12 @@ module Torch
       reshape_arr(_data, shape)
     end
 
+    # TODO support dtype
+    def to(device, non_blocking: false, copy: false)
+      device = Device.new(device) if device.is_a?(String)
+      _to(device, _dtype, non_blocking, copy)
+    end
+
     def size(dim = nil)
       if dim
         _size(dim)

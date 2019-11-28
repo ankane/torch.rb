@@ -597,6 +597,11 @@ void Init_ext()
       *[](torch::Tensor& self, int i) {
         return self.size(i);
       })
+    .define_method(
+      "_to",
+      *[](torch::Tensor& self, torch::Device device, int dtype, bool non_blocking, bool copy) {
+        return self.to(device, (torch::ScalarType) dtype, non_blocking, copy);
+      })
     .define_singleton_method(
       "_make_subclass",
       *[](torch::Tensor& rd, bool requires_grad) {
