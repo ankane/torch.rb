@@ -89,14 +89,14 @@ IntArrayRef from_ruby<IntArrayRef>(Object x)
 
 // for now
 class Scalar {
-  float value;
+  torch::Scalar value;
   public:
     Scalar(Object o) {
       // TODO cast based on Ruby type
-      value = from_ruby<float>(o);
+      value = torch::Scalar(from_ruby<float>(o));
     }
     operator torch::Scalar() {
-      return torch::Scalar(value);
+      return value;
     }
 };
 
