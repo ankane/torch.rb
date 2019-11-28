@@ -1,3 +1,7 @@
+## 0.1.3 (unreleased)
+
+- Improved support for `bool` type
+
 ## 0.1.2 (2019-11-27)
 
 - Added SGD optimizer

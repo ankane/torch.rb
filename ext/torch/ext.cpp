@@ -532,8 +532,10 @@ void Init_ext()
             a.push(data[i]);
           }
         } else if (dtype == torch::kBool) {
-          // bool
-          throw std::runtime_error("Type not supported yet");
+          bool* data = self.data_ptr<bool>();
+          for (int i = 0; i < self.numel(); i++) {
+            a.push(data[i] ? True : False);
+          }
         } else {
           throw std::runtime_error("Unsupported type");
         }

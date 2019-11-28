@@ -43,6 +43,7 @@ class OperationsTest < Minitest::Test
   def test_eq
     x = Torch.tensor([[1, 2], [3, 4]])
     y = Torch.tensor([[1, 1], [4, 4]])
+    assert_equal [[true, false], [false, true]], Torch.eq(x, y).to_a
     assert_equal [[1, 0], [0, 1]], Torch.eq(x, y).uint8.to_a
   end
 
