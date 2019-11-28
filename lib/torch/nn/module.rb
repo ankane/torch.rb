@@ -14,6 +14,18 @@ module Torch
         str << ")"
       end
 
+      def train(mode = true)
+        @training = mode
+
+        modules.each do |_, mod|
+          mod.train(mode)
+        end
+      end
+
+      def eval
+        train(false)
+      end
+
       def call(*input)
         forward(*input)
       end

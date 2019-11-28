@@ -322,6 +322,11 @@ void Init_ext()
         return torch::reshape(input, shape);
       })
     .define_singleton_method(
+      "_flatten",
+      *[](torch::Tensor& input, int64_t start_dim, int64_t end_dim) {
+        return torch::flatten(input, start_dim, end_dim);
+      })
+    .define_singleton_method(
       "relu",
       *[](torch::Tensor& input) {
         return torch::relu(input);

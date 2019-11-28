@@ -12,12 +12,14 @@ module Torch
         end
 
         def each
-          size = @dataset.size
-          start_index = 0
-          while start_index < size
+          size.times do |i|
+            start_index = i * @batch_size
             yield @dataset[start_index...(start_index + @batch_size)]
-            start_index += @batch_size
           end
+        end
+
+        def size
+          (@dataset.size / @batch_size.to_f).ceil
         end
       end
     end

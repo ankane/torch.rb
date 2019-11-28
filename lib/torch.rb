@@ -306,6 +306,10 @@ module Torch
       _reshape(input, shape)
     end
 
+    def flatten(input, start_dim: 0, end_dim: -1)
+      _flatten(input, start_dim, end_dim)
+    end
+
     def device(str)
       Device.new(str)
     end
