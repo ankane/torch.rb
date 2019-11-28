@@ -17,6 +17,8 @@ class DataUtilsTest < Minitest::Test
     assert_equal [[[1, 2], [3, 4]], [[5, 6]]], x_out
     assert_equal [[5, 10], [15]], y_out
 
+    assert loader.dataset
+
     # make sure other enum functions work
     loader.each_with_index do |(xb, yb), i|
     end

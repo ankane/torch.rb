@@ -4,6 +4,8 @@ module Torch
       class DataLoader
         include Enumerable
 
+        attr_reader :dataset
+
         def initialize(dataset, batch_size: 1)
           @dataset = dataset
           @batch_size = batch_size
