@@ -93,7 +93,11 @@ class Scalar {
   public:
     Scalar(Object o) {
       // TODO cast based on Ruby type
-      value = torch::Scalar(from_ruby<float>(o));
+      if (o.rb_type() == T_FIXNUM) {
+        value = torch::Scalar(from_ruby<long long>(o));
+      } else {
+        value = torch::Scalar(from_ruby<float>(o));
+      }
     }
     operator torch::Scalar() {
       return value;
@@ -275,7 +279,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_add_scalar",
-      *[](torch::Tensor& input, float other) {
+      *[](torch::Tensor& input, Scalar other) {
         return torch::add(input, other);
       })
     .define_singleton_method(
@@ -290,7 +294,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_sub_scalar",
-      *[](torch::Tensor& input, float other) {
+      *[](torch::Tensor& input, Scalar other) {
         return torch::sub(input, other);
       })
     .define_singleton_method(
@@ -300,7 +304,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_mul_scalar",
-      *[](torch::Tensor& input, float other) {
+      *[](torch::Tensor& input, Scalar other) {
         return torch::mul(input, other);
       })
     .define_singleton_method(
@@ -310,7 +314,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_div_scalar",
-      *[](torch::Tensor& input, float other) {
+      *[](torch::Tensor& input, Scalar other) {
         return torch::div(input, other);
       })
     .define_singleton_method(
@@ -320,7 +324,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_remainder_scalar",
-      *[](torch::Tensor& input, float other) {
+      *[](torch::Tensor& input, Scalar other) {
         return torch::remainder(input, other);
       })
     .define_singleton_method(

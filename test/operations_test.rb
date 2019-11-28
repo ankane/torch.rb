@@ -19,10 +19,7 @@ class OperationsTest < Minitest::Test
     assert_equal [21, 42, 63], x.to_a
   end
 
-  # TODO better scalar type in C++
   def test_mul_type
-    skip
-
     x = Torch.tensor([1, 2, 3])
     assert_equal :int64, (x * 2).dtype
   end
