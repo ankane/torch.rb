@@ -12,8 +12,7 @@ module Torch
         @params.each do |param|
           next unless param.grad
           d_p = param.grad.data
-          # same as param.data.add!(-@lr, d_p)
-          param.data.sub!(d_p * @lr)
+          param.data.add!(-@lr, d_p)
         end
       end
     end

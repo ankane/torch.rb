@@ -39,7 +39,7 @@ module Torch
           square_avg.mul!(rho).addcmul!(1 - rho, grad, grad)
           std = square_avg.add(eps).sqrt!
           delta = acc_delta.add(eps).sqrt!.div!(std).mul!(grad)
-          param.data.sub!(delta * @lr)
+          param.data.add!(-@lr, delta)
           acc_delta.mul!(rho).addcmul!(1 - rho, delta, delta)
         end
       end
