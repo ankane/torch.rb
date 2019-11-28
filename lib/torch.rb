@@ -81,7 +81,6 @@ module Torch
       obj.is_a?(Tensor)
     end
 
-    # TODO don't copy
     def from_numo(ndarray)
       dtype = _dtype_to_numo.find { |k, v| ndarray.is_a?(v) }
       raise Error, "Cannot convert #{ndarray.class.name} to tensor" unless dtype
