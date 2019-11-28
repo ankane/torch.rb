@@ -85,7 +85,7 @@ module Torch
     end
 
     # operations
-    %w(add sub mul div remainder pow neg sum mean num norm numel min max dot matmul exp log unsqueeze reshape argmax eq).each do |op|
+    %w(add argmax div dot eq exp log matmul max mean min mul neg norm num numel pow remainder reshape sub sum unsqueeze).each do |op|
       define_method(op) do |*args, **options, &block|
         if options.any?
           Torch.send(op, self, *args, **options, &block)
