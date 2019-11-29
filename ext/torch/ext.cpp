@@ -111,6 +111,27 @@ Scalar from_ruby<Scalar>(Object x)
   return Scalar(x);
 }
 
+class TensorList {
+  std::vector<torch::Tensor> vec;
+  public:
+    TensorList(Object o) {
+      Array a = Array(o);
+      for (size_t i = 0; i < a.size(); i++) {
+        vec.push_back(from_ruby<torch::Tensor>(a[i]));
+      }
+    }
+    operator torch::TensorList() {
+      return torch::TensorList(vec);
+    }
+};
+
+template<>
+inline
+TensorList from_ruby<TensorList>(Object x)
+{
+  return TensorList(x);
+}
+
 extern "C"
 void Init_ext()
 {
@@ -226,6 +247,11 @@ void Init_ext()
       "_argmax_dim",
       *[](torch::Tensor& input, int64_t dim, bool keepdim) {
         return torch::argmax(input, dim, keepdim);
+      })
+    .define_singleton_method(
+      "_cat",
+      *[](TensorList tensors, int64_t dim) {
+        return torch::cat(tensors, dim);
       })
     .define_singleton_method(
       "_norm",

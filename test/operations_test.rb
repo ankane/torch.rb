@@ -32,6 +32,11 @@ class OperationsTest < Minitest::Test
     assert_equal [1, 2, 3], y.to_a
   end
 
+  def test_cat
+    x = Torch.tensor([1, 2, 3])
+    assert_equal [1, 2, 3, 1, 2, 3], Torch.cat([x, x]).to_a
+  end
+
   def test_scalar
     x = Torch.tensor([10, 20, 30])
     assert_equal [15, 25, 35], (x + 5).to_a

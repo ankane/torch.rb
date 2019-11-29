@@ -321,6 +321,10 @@ module Torch
       _dot(input, tensor)
     end
 
+    def cat(tensors, dim = 0)
+      _cat(tensors, dim)
+    end
+
     def matmul(input, other)
       _matmul(input, other)
     end
