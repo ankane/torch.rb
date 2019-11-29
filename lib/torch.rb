@@ -19,6 +19,7 @@ require "torch/optim/rprop"
 require "torch/optim/sgd"
 
 # optim lr_scheduler
+require "torch/optim/lr_scheduler/lr_scheduler"
 require "torch/optim/lr_scheduler/step_lr"
 
 # nn
