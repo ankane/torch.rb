@@ -180,10 +180,10 @@ Stop autograd from tracking history
 
 ```ruby
 x.requires_grad # true
-(x ** 2).requires_grad # true
+(x**2).requires_grad # true
 
 Torch.no_grad do
-  (x ** 2).requires_grad # false
+  (x**2).requires_grad # false
 end
 ```
 
