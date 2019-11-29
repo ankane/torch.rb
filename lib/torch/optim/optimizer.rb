@@ -2,6 +2,8 @@
 module Torch
   module Optim
     class Optimizer
+      attr_reader :param_groups
+
       def initialize(params, defaults)
         @defaults = defaults
         @state = Hash.new { |hash, key| hash[key] = {} }
