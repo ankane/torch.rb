@@ -94,7 +94,7 @@ class Scalar {
     Scalar(Object o) {
       // TODO cast based on Ruby type
       if (o.rb_type() == T_FIXNUM) {
-        value = torch::Scalar(from_ruby<long long>(o));
+        value = torch::Scalar(from_ruby<int64_t>(o));
       } else {
         value = torch::Scalar(from_ruby<float>(o));
       }
