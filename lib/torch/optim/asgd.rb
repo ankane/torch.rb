@@ -11,9 +11,6 @@ module Torch
       end
 
       def step(closure = nil)
-        # TODO implement Torch.cat
-        # raise NotImplementedYet
-
         loss = nil
         if closure
           loss = closure.call
