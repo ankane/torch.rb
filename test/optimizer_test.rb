@@ -14,7 +14,7 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_adamax
-    skip "Need to implement Torch.cat"
+    skip "Need to implement tensor.new"
     assert_works Torch::Optim::Adamax
   end
 
