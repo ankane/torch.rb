@@ -9,6 +9,13 @@ require "torch/version"
 # optim
 require "torch/optim/optimizer"
 require "torch/optim/adadelta"
+require "torch/optim/adagrad"
+require "torch/optim/adam"
+require "torch/optim/adamax"
+require "torch/optim/adamw"
+require "torch/optim/asgd"
+require "torch/optim/rmsprop"
+require "torch/optim/rprop"
 require "torch/optim/sgd"
 
 # optim lr_scheduler
@@ -37,6 +44,11 @@ require "torch/utils/data/tensor_dataset"
 
 module Torch
   class Error < StandardError; end
+  class NotImplementedYet < StandardError
+    def message
+      "This feature has not been implemented yet. Consider submitting a PR."
+    end
+  end
 
   # keys: https://pytorch.org/docs/stable/tensor_attributes.html#torch.torch.dtype
   # values: https://github.com/pytorch/pytorch/blob/master/c10/core/ScalarType.h
@@ -319,6 +331,14 @@ module Torch
 
     def flatten(input, start_dim: 0, end_dim: -1)
       _flatten(input, start_dim, end_dim)
+    end
+
+    def sqrt(input)
+      _sqrt(input)
+    end
+
+    def abs(input)
+      _abs(input)
     end
 
     def device(str)

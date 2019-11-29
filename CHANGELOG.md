@@ -1,7 +1,8 @@
 ## 0.1.3 (unreleased)
 
+- Added many optimizers
 - Added dropout
-- Improved support for `bool` type
+- Added support for `bool` type
 - Improved performance of `from_numo`
 
 ## 0.1.2 (2019-11-27)

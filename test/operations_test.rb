@@ -12,8 +12,7 @@ class OperationsTest < Minitest::Test
   end
 
   def test_add_alpha
-    # TODO remove dtype
-    x = Torch.tensor([1, 2, 3], dtype: :float)
+    x = Torch.tensor([1, 2, 3])
     y = Torch.tensor([10, 20, 30])
     x.add!(2, y)
     assert_equal [21, 42, 63], x.to_a
@@ -22,6 +21,15 @@ class OperationsTest < Minitest::Test
   def test_mul_type
     x = Torch.tensor([1, 2, 3])
     assert_equal :int64, (x * 2).dtype
+  end
+
+  # this makes sure we override Ruby clone
+  def test_clone
+    x = Torch.tensor([1, 2, 3])
+    y = x.clone
+    x.add!(1)
+    assert_equal [2, 3, 4], x.to_a
+    assert_equal [1, 2, 3], y.to_a
   end
 
   def test_scalar

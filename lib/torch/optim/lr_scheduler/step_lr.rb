@@ -7,6 +7,10 @@ module Torch
           @step_size = step_size
           @gamma = gamma
         end
+
+        def step
+          raise NotImplementedYet
+        end
       end
     end
   end

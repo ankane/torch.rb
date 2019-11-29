@@ -243,6 +243,11 @@ void Init_ext()
         return torch::max(input);
       })
     .define_singleton_method(
+      "_sqrt",
+      *[](torch::Tensor& input) {
+        return torch::sqrt(input);
+      })
+    .define_singleton_method(
       "_exp",
       *[](torch::Tensor& input) {
         return torch::exp(input);
@@ -331,6 +336,11 @@ void Init_ext()
       "_pow",
       *[](torch::Tensor& input, Scalar exponent) {
         return torch::pow(input, exponent);
+      })
+    .define_singleton_method(
+      "_abs",
+      *[](torch::Tensor& input) {
+        return torch::abs(input);
       })
     .define_singleton_method(
       "_neg",
@@ -470,6 +480,11 @@ void Init_ext()
         return self.addcmul_(tensor1, tensor2, value);
       })
     .define_method(
+      "addcdiv!",
+      *[](torch::Tensor& self, Scalar value, const torch::Tensor & tensor1, const torch::Tensor & tensor2) {
+        return self.addcdiv_(tensor1, tensor2, value);
+      })
+    .define_method(
       "zero!",
       *[](torch::Tensor& self) {
         return self.zero_();
@@ -544,6 +559,11 @@ void Init_ext()
         return self.add_(other);
       })
     .define_method(
+      "_add_scalar!",
+      *[](torch::Tensor& self, Scalar other) {
+        return self.add_(other);
+      })
+    .define_method(
       "sub!",
       *[](torch::Tensor& self, torch::Tensor& other) {
         return self.sub_(other);
@@ -567,6 +587,21 @@ void Init_ext()
       "sqrt!",
       *[](torch::Tensor& self) {
         return self.sqrt_();
+      })
+    .define_method(
+      "unsqueeze!",
+      *[](torch::Tensor& self, int64_t dim) {
+        return self.unsqueeze_(dim);
+      })
+    .define_method(
+      "copy!",
+      *[](torch::Tensor& self, torch::Tensor& src) {
+        return self.copy_(src);
+      })
+    .define_method(
+      "clone",
+      *[](torch::Tensor& self) {
+        return self.clone();
       })
     .define_method(
       "log_softmax",

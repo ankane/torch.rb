@@ -91,7 +91,11 @@ module Torch
     end
 
     def add!(value = 1, other)
-      _add!(other * value)
+      if other.is_a?(Numeric)
+        _add_scalar!(other * value)
+      else
+        _add!(other * value)
+      end
     end
 
     def mul!(other)
@@ -103,7 +107,7 @@ module Torch
     end
 
     # operations
-    %w(add argmax div dot eq exp log matmul max mean min mul neg norm num numel pow remainder reshape sub sum unsqueeze).each do |op|
+    %w(abs add argmax div dot eq exp log matmul max mean min mul neg norm num numel pow remainder reshape sqrt sub sum unsqueeze).each do |op|
       define_method(op) do |*args, **options, &block|
         if options.any?
           Torch.send(op, self, *args, **options, &block)
