@@ -1,6 +1,7 @@
 ## 0.1.3 (unreleased)
 
 - Added many optimizers
+- Added `StepLR` learning rate scheduler
 - Added dropout
 - Added support for `bool` type
 - Improved performance of `from_numo`

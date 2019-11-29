@@ -8,8 +8,8 @@ module Torch
           super(optimizer, last_epoch)
         end
 
-        def step
-          raise NotImplementedYet
+        def get_lr
+          @base_lrs.map { |base_lr| base_lr * @gamma ** (@last_epoch / @step_size).floor }
         end
       end
     end
