@@ -11,7 +11,7 @@ module Torch
       end
 
       def extra_inspect
-        format("dim: %s", [@dim])
+        format("dim: %s", @dim)
       end
     end
   end

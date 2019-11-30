@@ -166,7 +166,7 @@ module Torch
         nil
       end
 
-      def format(str, vars)
+      def format(str, *vars)
         str % vars.map(&:inspect)
       end
     end

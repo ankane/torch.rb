@@ -20,7 +20,7 @@ module Torch
 
       # TODO add more parameters
       def extra_inspect
-        format("%s, %s, kernel_size: %s, stride: %s", [@in_channels, @out_channels, @kernel_size, @stride])
+        format("%s, %s, kernel_size: %s, stride: %s", @in_channels, @out_channels, @kernel_size, @stride)
       end
 
       private

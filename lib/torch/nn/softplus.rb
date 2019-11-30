@@ -12,7 +12,7 @@ module Torch
       end
 
       def extra_inspect
-        format("beta: %s, threshold: %s", [@beta, @threshold])
+        format("beta: %s, threshold: %s", @beta, @threshold)
       end
     end
   end

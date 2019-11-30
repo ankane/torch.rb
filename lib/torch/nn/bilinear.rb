@@ -31,7 +31,7 @@ module Torch
       end
 
       def extra_inspect
-        format("in1_features: %s, in2_features: %s, out_features: %s, bias: %s", [@in1_features, @in2_features, @out_features, !@bias.nil?])
+        format("in1_features: %s, in2_features: %s, out_features: %s, bias: %s", @in1_features, @in2_features, @out_features, !@bias.nil?)
       end
     end
   end

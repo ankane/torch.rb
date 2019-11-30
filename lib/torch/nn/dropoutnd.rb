@@ -8,7 +8,7 @@ module Torch
       end
 
       def extra_inspect
-        format("p: %s, inplace: %s", [@p, @inplace])
+        format("p: %s, inplace: %s", @p, @inplace)
       end
     end
   end

@@ -12,7 +12,7 @@ module Torch
       end
 
       def extra_inspect
-        format("num_parameters: %s", [@num_parameters])
+        format("num_parameters: %s", @num_parameters)
       end
     end
   end
