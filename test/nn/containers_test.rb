@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class ModuleTest < Minitest::Test
+class ContainersTest < Minitest::Test
   # https://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
   def test_tutorial
     net = Net.new
