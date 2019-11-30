@@ -32,6 +32,14 @@ class OperationsTest < Minitest::Test
     assert_equal [1, 2, 3], y.to_a
   end
 
+  def test_assignment
+    skip "Not implemented yet"
+
+    x = Torch.tensor([1, 2, 3])
+    x[1] = 0
+    assert_equal [1, 0, 3], x.to_a
+  end
+
   def test_cat
     x = Torch.tensor([1, 2, 3])
     assert_equal [1, 2, 3, 1, 2, 3], Torch.cat([x, x]).to_a

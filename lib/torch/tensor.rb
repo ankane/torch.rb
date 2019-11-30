@@ -155,6 +155,7 @@ module Torch
       item <=> other
     end
 
+    # based on python_variable_indexing.cpp
     def [](*indexes)
       result = self
       dim = 0
@@ -172,6 +173,11 @@ module Torch
       end
       result
     end
+
+    # TODO
+    # based on python_variable_indexing.cpp
+    # def []=(index, value)
+    # end
 
     private
 
