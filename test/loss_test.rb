@@ -1,6 +1,10 @@
 require_relative "test_helper"
 
 class LossTest < Minitest::Test
+  def test_cross_entropy_loss
+    assert_works Torch::NN::CrossEntropyLoss, :long
+  end
+
   def test_l1_loss
     assert_works Torch::NN::L1Loss, :float
   end

@@ -29,8 +29,8 @@ module Torch
           Torch.mse_loss(input, target, reduction)
         end
 
-        def cross_entropy(input, target)
-          nll_loss(log_softmax(input, 1), target)
+        def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
+          nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
         end
 
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")

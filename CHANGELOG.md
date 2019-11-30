@@ -1,6 +1,6 @@
 ## 0.1.4 (unreleased)
 
-- Added more loss functions
+- Added many loss functions
 
 ## 0.1.3 (2019-11-30)
 
