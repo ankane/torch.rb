@@ -21,6 +21,12 @@ module Torch
           Torch.avg_pool2d(input, kernel_size)
         end
 
+        # linear layers
+
+        def bilinear(input1, input2, weight, bias)
+          Torch.bilinear(input1, input2, weight, bias)
+        end
+
         def linear(input, weight, bias)
           Torch.linear(input, weight, bias)
         end

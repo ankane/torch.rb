@@ -1,22 +1,19 @@
 module Torch
   module NN
     class Linear < Module
-      attr_reader :bias, :weight
-
       def initialize(in_features, out_features, bias: true)
+        super()
         @in_features = in_features
         @out_features = out_features
 
         @weight = Parameter.new(Tensor.new(out_features, in_features))
         if bias
           @bias = Parameter.new(Tensor.new(out_features))
+        else
+          raise NotImplementedYet
         end
 
         reset_parameters
-      end
-
-      def call(input)
-        F.linear(input, @weight, @bias)
       end
 
       def reset_parameters
@@ -26,6 +23,10 @@ module Torch
           bound = 1 / Math.sqrt(fan_in)
           Init.uniform!(@bias, -bound, bound)
         end
+      end
+
+      def forward(input)
+        F.linear(input, @weight, @bias)
       end
 
       def inspect

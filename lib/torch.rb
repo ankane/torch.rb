@@ -34,6 +34,8 @@ require "torch/nn/convnd"
 require "torch/nn/conv2d"
 
 # nn linear layers
+require "torch/nn/bilinear"
+require "torch/nn/identity"
 require "torch/nn/linear"
 
 # nn dropout layers

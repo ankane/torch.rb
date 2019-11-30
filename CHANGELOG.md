@@ -1,7 +1,8 @@
 ## 0.1.4 (unreleased)
 
-- Added many loss functions
 - Added distance functions
+- Added more linear layers
+- Added more loss functions
 
 ## 0.1.3 (2019-11-30)
 

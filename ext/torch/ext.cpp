@@ -423,11 +423,18 @@ void Init_ext()
       *[](Tensor& input, Tensor& weight, Tensor& bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, int64_t groups) {
         return torch::conv2d(input, weight, bias, stride, padding, dilation, groups);
       })
+    // linear layers
+    .define_singleton_method(
+      "bilinear",
+      *[](const Tensor &input1, const Tensor &input2, const Tensor &weight, const Tensor &bias) {
+        return torch::bilinear(input1, input2, weight, bias);
+      })
     .define_singleton_method(
       "linear",
       *[](Tensor& input, Tensor& weight, Tensor& bias) {
         return torch::linear(input, weight, bias);
       })
+    // pooling layers
     .define_singleton_method(
       "max_pool2d",
       *[](Tensor& input, IntArrayRef kernel_size) {
