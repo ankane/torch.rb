@@ -60,6 +60,11 @@ module Torch
       _data.first
     end
 
+    # unsure if this is correct
+    def new
+      Torch.empty(0, dtype: dtype)
+    end
+
     def backward(gradient = nil)
       if gradient
         _backward_gradient(gradient)
@@ -108,7 +113,7 @@ module Torch
     end
 
     # operations
-    %w(abs add argmax div dot eq exp log matmul max mean min mul neg norm num numel pow remainder reshape sqrt sub sum unsqueeze).each do |op|
+    %w(abs add argmax div dot eq exp gt log lt matmul max mean min mul neg norm num numel pow remainder reshape sign sqrt sub sum unsqueeze).each do |op|
       define_method(op) do |*args, **options, &block|
         if options.any?
           Torch.send(op, self, *args, **options, &block)

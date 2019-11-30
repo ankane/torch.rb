@@ -318,6 +318,18 @@ module Torch
       _log(input)
     end
 
+    def sign(input)
+      _sign(input)
+    end
+
+    def gt(input, other)
+      _gt(input, other)
+    end
+
+    def lt(input, other)
+      _lt(input, other)
+    end
+
     def unsqueeze(input, dim)
       _unsqueeze(input, dim)
     end

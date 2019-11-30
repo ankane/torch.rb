@@ -284,6 +284,11 @@ void Init_ext()
         return torch::log(input);
       })
     .define_singleton_method(
+      "_sign",
+      *[](torch::Tensor& input) {
+        return torch::sign(input);
+      })
+    .define_singleton_method(
       "_unsqueeze",
       *[](torch::Tensor& input, int64_t dim) {
         return torch::unsqueeze(input, dim);
@@ -302,6 +307,18 @@ void Init_ext()
       "_eq",
       *[](torch::Tensor& input, torch::Tensor& other) {
         return torch::eq(input, other);
+      })
+    .define_singleton_method(
+      "_gt",
+      // TODO support tensors
+      *[](torch::Tensor& input, Scalar other) {
+        return torch::gt(input, other);
+      })
+    .define_singleton_method(
+      "_lt",
+      // TODO support tensors
+      *[](torch::Tensor& input, Scalar other) {
+        return torch::lt(input, other);
       })
     .define_singleton_method(
       "_add",
@@ -584,6 +601,16 @@ void Init_ext()
       "_view",
       *[](torch::Tensor& self, IntArrayRef size) {
         return self.view(size);
+      })
+    .define_method(
+      "resize_as!",
+      *[](torch::Tensor& self, torch::Tensor& other) {
+        return self.resize_as_(other);
+      })
+    .define_method(
+      "fill!",
+      *[](torch::Tensor& self, Scalar value) {
+        return self.fill_(value);
       })
     .define_method(
       "_add!",
