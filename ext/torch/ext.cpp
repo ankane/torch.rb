@@ -485,6 +485,12 @@ void Init_ext()
       *[](const Tensor &indices, const Tensor &weight, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
         return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
       })
+    .define_singleton_method(
+      "_embedding_bag",
+      // weight and indices are swapped from Python interface
+      *[](const Tensor &weight, const Tensor &indices, const Tensor &offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor &per_sample_weights) {
+        return torch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+      })
     // distance functions
     .define_singleton_method(
       "_cosine_similarity",

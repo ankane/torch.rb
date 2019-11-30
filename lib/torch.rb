@@ -50,6 +50,7 @@ require "torch/nn/sigmoid"
 
 # nn sparse layers
 require "torch/nn/embedding"
+require "torch/nn/embedding_bag"
 
 # nn distance functions
 require "torch/nn/cosine_similarity"

@@ -25,6 +25,26 @@ module Torch
           Torch.linear(input, weight, bias)
         end
 
+        # sparse layers
+
+        def embedding(input, weight, padding_idx: nil, max_norm: nil, norm_type: 2.0, scale_grad_by_freq: false, sparse: false)
+          # TODO handle max_norm and norm_type
+          raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
+
+          padding_idx ||= -1
+          Torch._embedding(input, weight, padding_idx, scale_grad_by_freq, sparse)
+        end
+
+        def embedding_bag(input, weight, offsets: nil, max_norm: nil, norm_type: 2, scale_grad_by_freq: false, mode: "mean", sparse: false, per_sample_weights: nil)
+          # need to handle nils
+          raise NotImplementedYet
+
+          # TODO handle max_norm and norm_type
+          raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
+
+          Torch._embedding_bag(input, weight, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights)
+        end
+
         # distance functions
 
         def cosine_similarity(x1, x2, dim: 1, eps: 1e-8)
@@ -118,14 +138,6 @@ module Torch
           else
             Torch._feature_alpha_dropout(input, p, training)
           end
-        end
-
-        def embedding(input, weight, padding_idx: nil, max_norm: nil, norm_type: 2.0, scale_grad_by_freq: false, sparse: false)
-          # TODO handle max_norm and norm_type
-          raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
-
-          padding_idx ||= -1
-          Torch._embedding(input, weight, padding_idx, scale_grad_by_freq, sparse)
         end
       end
     end
