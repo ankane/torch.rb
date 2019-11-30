@@ -67,10 +67,10 @@ module Torch
 
       def train(mode = true)
         @training = mode
-
-        modules.each do |_, mod|
+        children.each do |mod|
           mod.train(mode)
         end
+        self
       end
 
       def eval
