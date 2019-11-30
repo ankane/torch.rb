@@ -176,8 +176,9 @@ module Torch
 
     # TODO
     # based on python_variable_indexing.cpp
-    # def []=(index, value)
-    # end
+    def []=(index, value)
+      raise NotImplementedYet
+    end
 
     private
 
