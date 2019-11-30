@@ -1,3 +1,6 @@
+# ported from PyTorch Examples
+# https://github.com/pytorch/examples/blob/master/mnist/main.py
+
 require "torch"
 require "npy"
 

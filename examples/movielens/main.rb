@@ -1,3 +1,6 @@
+# based on Spotlight
+# https://github.com/maciejkula/spotlight
+
 require "torch"
 require "csv"
 
