@@ -389,6 +389,11 @@ void Init_ext()
         return torch::pow(input, exponent);
       })
     .define_singleton_method(
+      "_sigmoid",
+      *[](Tensor& input) {
+        return torch::sigmoid(input);
+      })
+    .define_singleton_method(
       "_abs",
       *[](Tensor& input) {
         return torch::abs(input);
@@ -480,6 +485,12 @@ void Init_ext()
         return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
       })
     // loss functions
+    .define_singleton_method(
+      "binary_cross_entropy",
+      *[](Tensor& input, Tensor& target, std::string reduction) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::binary_cross_entropy(input, target, {}, red);
+      })
     .define_singleton_method(
       "ctc_loss",
       *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, std::string reduction, bool zero_infinity) {
@@ -659,6 +670,11 @@ void Init_ext()
       "normal!",
       *[](Tensor& self, double mean, double std) {
         return self.normal_(mean, std);
+      })
+    .define_method(
+      "random!",
+      *[](Tensor& self, int64_t to) {
+        return self.random_(to);
       })
     .define_method(
       "sub!",

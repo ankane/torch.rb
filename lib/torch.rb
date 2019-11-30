@@ -44,8 +44,11 @@ require "torch/nn/parameter"
 require "torch/nn/relu"
 require "torch/nn/sequential"
 
+# nn activiation
+require "torch/nn/sigmoid"
+
 # nn loss
-# require "torch/nn/bce_loss"
+require "torch/nn/bce_loss"
 # require "torch/nn/bce_with_logits_loss"
 # require "torch/nn/cosine_embedding_loss"
 require "torch/nn/cross_entropy_loss"
@@ -346,6 +349,10 @@ module Torch
 
     def sign(input)
       _sign(input)
+    end
+
+    def sigmoid(input)
+      _sigmoid(input)
     end
 
     def gt(input, other)

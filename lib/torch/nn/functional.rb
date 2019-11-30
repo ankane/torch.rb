@@ -27,6 +27,11 @@ module Torch
 
         # start loss
 
+        def binary_cross_entropy(input, target, weight: nil, reduction: "mean")
+          raise NotImplementedYet if weight
+          Torch.binary_cross_entropy(input, target, reduction)
+        end
+
         def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
         end

@@ -2,8 +2,12 @@ require_relative "test_helper"
 
 class LossTest < Minitest::Test
   def test_bce_loss
-    skip
-    assert_works Torch::NN::BCELoss, :float
+    m = Torch::NN::Sigmoid.new
+    loss = Torch::NN::BCELoss.new
+    input = Torch.randn(3, requires_grad: true)
+    target = Torch.empty(3).random!(2)
+    output = loss.call(m.call(input), target)
+    output.backward
   end
 
   def test_bce_with_logits_loss
