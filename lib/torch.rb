@@ -50,6 +50,7 @@ require "torch/nn/ctc_loss"
 require "torch/nn/l1_loss"
 require "torch/nn/mse_loss"
 require "torch/nn/nll_loss"
+require "torch/nn/poisson_nll_loss"
 
 # utils
 require "torch/utils/data/data_loader"

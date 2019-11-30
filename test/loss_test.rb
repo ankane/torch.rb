@@ -22,6 +22,10 @@ class LossTest < Minitest::Test
     loss.backward
   end
 
+  def test_poisson_nll_loss
+    assert_works Torch::NN::PoissonNLLLoss, :float
+  end
+
   def test_l1_loss
     assert_works Torch::NN::L1Loss, :float
   end

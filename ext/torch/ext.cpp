@@ -504,6 +504,12 @@ void Init_ext()
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
         return torch::nll_loss(input, target, {}, red, ignore_index);
       })
+    .define_singleton_method(
+      "poisson_nll_loss",
+      *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, std::string reduction) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::poisson_nll_loss(input, target, log_input, full, eps, red);
+      })
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
       "_from_blob",

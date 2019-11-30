@@ -47,6 +47,10 @@ module Torch
           Torch.l1_loss(input, target, reduction)
         end
 
+        def poisson_nll_loss(input, target, log_input: true, full: false, eps: 1e-8, reduction: "mean")
+          Torch.poisson_nll_loss(input, target, log_input, full, eps, reduction)
+        end
+
         def log_softmax(input, dim)
           input.log_softmax(dim)
         end
