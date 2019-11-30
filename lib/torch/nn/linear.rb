@@ -29,8 +29,8 @@ module Torch
         F.linear(input, @weight, @bias)
       end
 
-      def inspect
-        "Linear(in_features: #{@in_features.inspect}, out_features: #{@out_features.inspect}, bias: #{(!@bias.nil?).inspect})"
+      def extra_inspect
+        format("in_features: %s, out_features: %s, bias: %s", [@in_features, @out_features, !@bias.nil?])
       end
     end
   end

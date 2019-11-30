@@ -8,7 +8,7 @@ module Torch
       def inspect
         name = self.class.name.split("::").last
         if modules.empty?
-          "#{name}()"
+          "#{name}(#{extra_inspect})"
         else
           str = String.new
           str << "#{name}(\n"
@@ -84,6 +84,14 @@ module Torch
           modules[name[1..-1]] = mod if mod.is_a?(Module)
         end
         modules
+      end
+
+      def extra_inspect
+        nil
+      end
+
+      def format(str, vars)
+        str % vars.map(&:inspect)
       end
     end
   end
