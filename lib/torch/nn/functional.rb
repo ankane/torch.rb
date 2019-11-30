@@ -25,7 +25,17 @@ module Torch
           Torch.linear(input, weight, bias)
         end
 
-        # start loss
+        # distance functions
+
+        def cosine_similarity(x1, x2, dim: 1, eps: 1e-8)
+          Torch._cosine_similarity(x1, x2, dim, eps)
+        end
+
+        def pairwise_distance(x1, x2, p: 2.0, eps: 1e-6, keepdim: false)
+          Torch._pairwise_distance(x1, x2, p, eps, keepdim)
+        end
+
+        # loss functions
 
         def binary_cross_entropy(input, target, weight: nil, reduction: "mean")
           raise NotImplementedYet if weight

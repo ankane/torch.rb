@@ -51,7 +51,11 @@ require "torch/nn/sigmoid"
 # nn sparse layers
 require "torch/nn/embedding"
 
-# nn loss
+# nn distance functions
+require "torch/nn/cosine_similarity"
+require "torch/nn/pairwise_distance"
+
+# nn loss functions
 require "torch/nn/loss"
 require "torch/nn/weighted_loss"
 require "torch/nn/bce_loss"

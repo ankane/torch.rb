@@ -478,11 +478,23 @@ void Init_ext()
       *[](Tensor& input, float p, bool train) {
         return torch::feature_alpha_dropout_(input, p, train);
       })
+    // sparse layers
     .define_singleton_method(
       "_embedding",
       // weight and indices are swapped from Python interface
       *[](const Tensor &indices, const Tensor &weight, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
         return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
+      })
+    // distance functions
+    .define_singleton_method(
+      "_cosine_similarity",
+      *[](const Tensor &x1, const Tensor &x2, int64_t dim, double eps) {
+        return torch::cosine_similarity(x1, x2, dim, eps);
+      })
+    .define_singleton_method(
+      "_pairwise_distance",
+      *[](const Tensor &x1, const Tensor &x2, double p, double eps, bool keepdim) {
+        return torch::pairwise_distance(x1, x2, p, eps, keepdim);
       })
     // loss functions
     .define_singleton_method(
