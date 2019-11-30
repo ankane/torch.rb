@@ -601,6 +601,11 @@ void Init_ext()
         return self.add_(other);
       })
     .define_method(
+      "normal!",
+      *[](torch::Tensor& self, double mean, double std) {
+        return self.normal_(mean, std);
+      })
+    .define_method(
       "sub!",
       *[](torch::Tensor& self, torch::Tensor& other) {
         return self.sub_(other);
