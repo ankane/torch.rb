@@ -64,7 +64,7 @@ loss_func = Torch::NN::MSELoss.new
 
   epoch_loss /= batches.size
 
-  puts "Epoch #{epoch}: loss #{epoch_loss}"
+  puts "Epoch %d: loss %.3f" % [epoch, epoch_loss]
 end
 
 def rmse(model, dataset)
