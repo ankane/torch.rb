@@ -1,6 +1,6 @@
-require_relative "test_helper"
+require_relative "../test_helper"
 
-class NNTest < Minitest::Test
+class ModuleTest < Minitest::Test
   # https://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
   def test_tutorial
     net = Net.new
@@ -46,30 +46,5 @@ class NNTest < Minitest::Test
     device = Torch::CUDA.available? ? "cuda" : "cpu"
     net.to(device)
     net.cpu
-  end
-
-  def test_dropout2d
-    skip "Rand consistent with Python, dropout2d not"
-
-    Torch.manual_seed(1)
-    x = Torch.rand(2, 2)
-    y = Torch::NN::Functional.dropout2d(x)
-    assert_elements_in_delta [1.5153, 0.0000, 0.0000, 0.0000], y.to_a.flatten
-  end
-
-  def test_mse_loss
-    x = Torch.tensor([1, 2, 3]).float
-    y = Torch.tensor([1, 1, 1]).float
-    assert_in_delta 5 / 3.0, Torch::NN::Functional.mse_loss(x, y).item
-  end
-
-  # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
-  def test_embedding
-    Torch.manual_seed(1)
-    word_to_ix = {"hello" => 0, "world" => 1}
-    embeds = Torch::NN::Embedding.new(2, 5)
-    lookup_tensor = Torch.tensor([word_to_ix["hello"]], dtype: :long)
-    hello_embed = embeds.call(lookup_tensor)
-    assert_elements_in_delta [0.6614, 0.2669, 0.0617, 0.6213, -0.4519], hello_embed[0].to_a
   end
 end
