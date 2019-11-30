@@ -26,6 +26,7 @@ require "torch/optim/lr_scheduler/step_lr"
 require "torch/nn/module"
 require "torch/nn/convnd"
 require "torch/nn/dropoutnd"
+require "torch/nn/loss"
 
 # nn
 require "torch/nn/alpha_dropout"
@@ -38,11 +39,14 @@ require "torch/nn/feature_alpha_dropout"
 require "torch/nn/functional"
 require "torch/nn/init"
 require "torch/nn/linear"
-require "torch/nn/nll_loss"
-require "torch/nn/mse_loss"
 require "torch/nn/parameter"
 require "torch/nn/relu"
 require "torch/nn/sequential"
+
+# nn loss
+require "torch/nn/l1_loss"
+require "torch/nn/mse_loss"
+require "torch/nn/nll_loss"
 
 # utils
 require "torch/utils/data/data_loader"

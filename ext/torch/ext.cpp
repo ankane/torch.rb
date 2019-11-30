@@ -477,6 +477,13 @@ void Init_ext()
       *[](const torch::Tensor &indices, const torch::Tensor &weight, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
         return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
       })
+    // loss functions
+    .define_singleton_method(
+      "l1_loss",
+      *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::l1_loss(input, target, red);
+      })
     .define_singleton_method(
       "mse_loss",
       *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {

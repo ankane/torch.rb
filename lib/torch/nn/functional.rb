@@ -38,6 +38,10 @@ module Torch
           Torch.nll_loss(input, target, reduction)
         end
 
+        def l1_loss(input, target, reduction: "mean")
+          Torch.l1_loss(input, target, reduction)
+        end
+
         def log_softmax(input, dim)
           input.log_softmax(dim)
         end

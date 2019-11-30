@@ -1,6 +1,6 @@
 ## 0.1.4 (unreleased)
 
-- Added `NLLLoss`
+- Added more loss functions
 
 ## 0.1.3 (2019-11-30)
 
