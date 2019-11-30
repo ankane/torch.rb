@@ -7,8 +7,8 @@ module Torch
         @inplace = inplace
       end
 
-      def inspect
-        "#{self.class.name.split("::").last}(p: #{@p.inspect}, inplace: #{@inplace.inspect})"
+      def extra_inspect
+        format("p: %s, inplace: %s", [@p, @inplace])
       end
     end
   end
