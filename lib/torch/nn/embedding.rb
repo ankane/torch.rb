@@ -43,6 +43,10 @@ module Torch
       def forward(input)
         F.embedding(input, @weight, padding_idx: @padding_idx, max_norm: @max_norm, norm_type: @norm_type, scale_grad_by_freq: @scale_grad_by_freq, sparse: @sparse)
       end
+
+      def inspect
+        "Embedding(#{@num_embeddings}, #{@embedding_dim})"
+      end
     end
   end
 end
