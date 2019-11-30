@@ -2,6 +2,7 @@ module Torch
   module NN
     class ReLU < Module
       def initialize #(inplace: false)
+        super()
         # @inplace = inplace
       end
 
