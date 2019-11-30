@@ -33,6 +33,11 @@ module Torch
           nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
         end
 
+        def ctc_loss(log_probs, targets, input_lengths, target_lengths, blank: 0, reduction: "mean", zero_infinity: false)
+          # call to_a on input_lengths and target_lengths for C++
+          Torch.ctc_loss(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
+        end
+
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           raise NotImplementedYet if weight
           Torch.nll_loss(input, target, reduction, ignore_index)

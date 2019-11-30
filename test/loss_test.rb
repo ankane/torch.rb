@@ -5,6 +5,23 @@ class LossTest < Minitest::Test
     assert_works Torch::NN::CrossEntropyLoss, :long
   end
 
+  def test_ctc_loss
+    t = 50
+    c = 20
+    n = 16
+    s = 30
+    s_min = 10
+
+    input = Torch.randn(t, n, c).log_softmax(2).detach.requires_grad!
+    target = Torch.randint(1, c, [n, s], dtype: :long)
+
+    input_lengths = Torch.full([n], t, dtype: :long)
+    target_lengths = Torch.randint(s_min, s, [n], dtype: :long)
+    ctc_loss = Torch::NN::CTCLoss.new
+    loss = ctc_loss.call(input, target, input_lengths, target_lengths)
+    loss.backward
+  end
+
   def test_l1_loss
     assert_works Torch::NN::L1Loss, :float
   end

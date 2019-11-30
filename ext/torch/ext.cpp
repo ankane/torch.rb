@@ -132,6 +132,8 @@ TensorList from_ruby<TensorList>(Object x)
   return TensorList(x);
 }
 
+typedef torch::Tensor Tensor;
+
 extern "C"
 void Init_ext()
 {
@@ -479,6 +481,12 @@ void Init_ext()
       })
     // loss functions
     .define_singleton_method(
+      "ctc_loss",
+      *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, std::string reduction, bool zero_infinity) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, red, zero_infinity);
+      })
+    .define_singleton_method(
       "l1_loss",
       *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
@@ -540,6 +548,11 @@ void Init_ext()
       "zero!",
       *[](torch::Tensor& self) {
         return self.zero_();
+      })
+    .define_method(
+      "detach",
+      *[](torch::Tensor& self) {
+        return self.detach();
       })
     .define_method(
       "detach!",

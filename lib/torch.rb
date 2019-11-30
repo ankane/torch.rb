@@ -46,6 +46,7 @@ require "torch/nn/sequential"
 
 # nn loss
 require "torch/nn/cross_entropy_loss"
+require "torch/nn/ctc_loss"
 require "torch/nn/l1_loss"
 require "torch/nn/mse_loss"
 require "torch/nn/nll_loss"
