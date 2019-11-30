@@ -22,7 +22,7 @@ module Torch
         @norm_type = norm_type
         @scale_grad_by_freq = scale_grad_by_freq
         if _weight.nil?
-          @weight = Parameter.new(Torch::Tensor.new(num_embeddings, embedding_dim))
+          @weight = Parameter.new(Tensor.new(num_embeddings, embedding_dim))
           reset_parameters
         else
           raise ArgumentError, "Shape of weight does not match num_embeddings and embedding_dim" unless _weight.shape == [num_embeddings, embedding_dim]
