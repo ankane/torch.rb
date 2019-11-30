@@ -29,6 +29,10 @@ module Torch
       def forward(input1, input2)
         F.bilinear(input1, input2, @weight, @bias)
       end
+
+      def extra_inspect
+        format("in1_features: %s, in2_features: %s, out_features: %s, bias: %s", [@in1_features, @in2_features, @out_features, !@bias.nil?])
+      end
     end
   end
 end
