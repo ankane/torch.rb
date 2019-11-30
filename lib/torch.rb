@@ -33,6 +33,10 @@ require "torch/nn/sequential"
 require "torch/nn/convnd"
 require "torch/nn/conv2d"
 
+# nn pooling layers
+require "torch/nn/max_poolnd"
+require "torch/nn/max_pool2d"
+
 # nn linear layers
 require "torch/nn/bilinear"
 require "torch/nn/identity"
