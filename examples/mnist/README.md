@@ -1,7 +1,5 @@
 # MNIST Example
 
-Ported from [PyTorch Examples](https://github.com/pytorch/examples/blob/master/mnist/main.py)
-
 Download the [MNIST dataset](https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz)
 
 ```sh
@@ -14,8 +12,10 @@ Install [npy](https://github.com/ankane/npy) to read the file
 gem install npy
 ```
 
-And run
+And run [the code](main.rb)
 
 ```sh
 ruby main.rb
 ```
+
+Ported from [PyTorch Examples](https://github.com/pytorch/examples/blob/master/mnist/main.py)
