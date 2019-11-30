@@ -50,7 +50,7 @@ require "torch/nn/dropout2d"
 require "torch/nn/dropout3d"
 require "torch/nn/feature_alpha_dropout"
 
-# nn activiations
+# nn activations
 require "torch/nn/leaky_relu"
 require "torch/nn/prelu"
 require "torch/nn/relu"
