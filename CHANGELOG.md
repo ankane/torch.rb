@@ -3,6 +3,7 @@
 - Added many optimizers
 - Added `StepLR` learning rate scheduler
 - Added dropout
+- Added embedding
 - Added support for `bool` type
 - Improved performance of `from_numo`
 

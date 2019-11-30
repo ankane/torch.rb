@@ -91,6 +91,14 @@ module Torch
             Torch._feature_alpha_dropout(input, p, training)
           end
         end
+
+        def embedding(input, weight, padding_idx: nil, max_norm: nil, norm_type: 2.0, scale_grad_by_freq: false, sparse: false)
+          # TODO handle max_norm and norm_type
+          raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
+
+          padding_idx ||= -1
+          Torch._embedding(input, weight, padding_idx, scale_grad_by_freq, sparse)
+        end
       end
     end
 

@@ -459,6 +459,12 @@ void Init_ext()
         return torch::feature_alpha_dropout_(input, p, train);
       })
     .define_singleton_method(
+      "_embedding",
+      // weight and indices are swapped from Python interface
+      *[](const torch::Tensor &indices, const torch::Tensor &weight, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
+        return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
+      })
+    .define_singleton_method(
       "mse_loss",
       *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
@@ -754,12 +760,17 @@ void Init_ext()
 
   Module rb_mInit = define_module_under(rb_mNN, "Init")
     .define_singleton_method(
-      "kaiming_uniform_",
+      "kaiming_uniform!",
       *[](torch::Tensor& input, double a) {
         return torch::nn::init::kaiming_uniform_(input, a);
       })
     .define_singleton_method(
-      "uniform_",
+      "normal!",
+      *[](torch::Tensor& input) {
+        return torch::nn::init::normal_(input);
+      })
+    .define_singleton_method(
+      "uniform!",
       *[](torch::Tensor& input, double to, double from) {
         return torch::nn::init::uniform_(input, to, from);
       });
