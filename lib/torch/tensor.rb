@@ -9,7 +9,7 @@ module Torch
       if size.first.is_a?(Tensor)
         size.first
       else
-        Torch.rand(*size)
+        Torch.empty(*size)
       end
     end
 
