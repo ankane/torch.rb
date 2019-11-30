@@ -65,16 +65,11 @@ module Torch
 
       # modifies in-place
       def to(device)
-        instance_variables.each do |name|
-          param = instance_variable_get(name)
-          if param.is_a?(Parameter)
-            instance_variable_set(name, Parameter.new(param.to(device)))
-          end
+        convert = lambda do |t|
+          t.to(device)
         end
-        modules.each do |_, mod|
-          mod.to(device)
-        end
-        self
+
+        _apply(convert)
       end
 
       def call(*input)
