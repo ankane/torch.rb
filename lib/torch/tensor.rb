@@ -6,7 +6,7 @@ module Torch
     alias_method :requires_grad?, :requires_grad
 
     def self.new(*size)
-      if size.first.is_a?(Tensor)
+      if size.length == 1 && size.first.is_a?(Tensor)
         size.first
       else
         Torch.empty(*size)
