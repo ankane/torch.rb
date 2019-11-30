@@ -22,6 +22,9 @@ require "torch/optim/sgd"
 require "torch/optim/lr_scheduler/lr_scheduler"
 require "torch/optim/lr_scheduler/step_lr"
 
+# nn parameters
+require "torch/nn/parameter"
+
 # nn containers
 require "torch/nn/module"
 require "torch/nn/sequential"
@@ -44,6 +47,9 @@ require "torch/nn/feature_alpha_dropout"
 # nn activiation
 require "torch/nn/relu"
 require "torch/nn/sigmoid"
+
+# nn sparse layers
+require "torch/nn/embedding"
 
 # nn loss
 require "torch/nn/loss"
@@ -68,10 +74,8 @@ require "torch/nn/poisson_nll_loss"
 # require "torch/nn/triplet_margin_loss"
 
 # nn other
-require "torch/nn/embedding"
 require "torch/nn/functional"
 require "torch/nn/init"
-require "torch/nn/parameter"
 
 # utils
 require "torch/utils/data/data_loader"
