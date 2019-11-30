@@ -3,6 +3,24 @@ module Torch
     class Module
       def initialize
         @training = true
+        @parameters = {}
+        @buffers = {}
+        @modules = {}
+      end
+
+      def register_buffer(name, tensor)
+        # TODO add checks
+        @buffers[name] = tensor
+      end
+
+      def register_parameter(name, param)
+        # TODO add checks
+        @parameters[name] = param
+      end
+
+      def add_module(name, mod)
+        # TODO add checks
+        @modules[name] = mod
       end
 
       def inspect
@@ -83,7 +101,7 @@ module Torch
           mod = instance_variable_get(name)
           modules[name[1..-1]] = mod if mod.is_a?(Module)
         end
-        modules
+        @modules.merge(modules)
       end
 
       def extra_inspect
