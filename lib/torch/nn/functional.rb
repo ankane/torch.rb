@@ -59,6 +59,8 @@ module Torch
         end
 
         def dropout2d(input, p: 0.5, training: true, inplace: false)
+          raise ArgumentError, "dropout probability has to be between 0 and 1, but got #{p}" if p < 0 || p > 1
+
           if inplace
             Torch._feature_dropout!(input, p, training)
           else
