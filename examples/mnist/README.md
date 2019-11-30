@@ -1,4 +1,4 @@
-# Basic MNIST Example
+# MNIST Example
 
 Ported from [PyTorch Examples](https://github.com/pytorch/examples/blob/master/mnist/main.py)
 

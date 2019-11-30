@@ -33,6 +33,7 @@ Many methods and options are missing at the moment. PRs welcome!
 ## Examples [master]
 
 - [Image classification with MNIST](examples/mnist)
+- [Collaborative filtering with MovieLens](examples/movielens)
 
 ## Tutorial
 
