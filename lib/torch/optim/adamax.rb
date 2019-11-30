@@ -14,9 +14,6 @@ module Torch
       end
 
       def step(closure = nil)
-        # TODO implement tensor.new
-        raise NotImplementedYet
-
         loss = nil
         if closure
           loss = closure.call

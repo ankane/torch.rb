@@ -269,6 +269,12 @@ void Init_ext()
         return torch::max(input);
       })
     .define_singleton_method(
+      "_max_out",
+      *[](torch::Tensor &max, torch::Tensor &max_indices, const torch::Tensor &input, int64_t dim, bool keepdim) {
+        // TODO add return value
+        torch::_max_out(max, max_indices, input, dim, keepdim);
+      })
+    .define_singleton_method(
       "_sqrt",
       *[](torch::Tensor& input) {
         return torch::sqrt(input);

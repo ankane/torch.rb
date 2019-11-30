@@ -306,8 +306,13 @@ module Torch
       _min(input)
     end
 
-    def max(input)
-      _max(input)
+    def max(input, dim = nil, keepdim: false, out: nil)
+      if dim
+        raise NotImplementedYet unless out
+        _max_out(out[0], out[1], input, dim, keepdim)
+      else
+        _max(input)
+      end
     end
 
     def exp(input)
