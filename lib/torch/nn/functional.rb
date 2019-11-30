@@ -109,12 +109,12 @@ module Torch
         # end loss
 
         def softmax(input, dim: nil)
-          dim ||= _get_softmax_dim(input.dim)
+          dim ||= softmax_dim(input.dim)
           input.softmax(dim: dim)
         end
 
         def softmin(input, dim: nil)
-          dim ||= _get_softmax_dim(input.dim)
+          dim ||= softmax_dim(input.dim)
           (-input).softmax(dim: dim)
         end
 
@@ -124,7 +124,7 @@ module Torch
 
         # TODO make dim keyword argument and update examples
         def log_softmax(input, dim = nil)
-          dim ||= _get_softmax_dim(input.dim)
+          dim ||= softmax_dim(input.dim)
           input.log_softmax(dim)
         end
 
@@ -172,7 +172,7 @@ module Torch
 
         private
 
-        def _get_softmax_dim(ndim)
+        def softmax_dim(ndim)
           ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
         end
       end
