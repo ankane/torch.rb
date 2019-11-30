@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class PoolingTest < Minitest::Test
+class PoolingLayersTest < Minitest::Test
   def test_max_pool2d
     m = Torch::NN::MaxPool2d.new(3) #, stride: 2)
     m = Torch::NN::MaxPool2d.new([3, 2]) #, stride: [2, 1])

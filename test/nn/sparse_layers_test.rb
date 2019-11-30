@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class SparseTest < Minitest::Test
+class SparseLayersTest < Minitest::Test
   # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
   def test_embedding
     Torch.manual_seed(1)

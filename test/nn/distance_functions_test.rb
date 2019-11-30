@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class DistanceTest < Minitest::Test
+class DistanceFunctionsTest < Minitest::Test
   def test_cosine_similarity
     input1 = Torch.randn(100, 128)
     input2 = Torch.randn(100, 128)

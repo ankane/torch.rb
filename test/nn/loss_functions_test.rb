@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class LossTest < Minitest::Test
+class LossFunctionsTest < Minitest::Test
   def test_bce_loss
     m = Torch::NN::Sigmoid.new
     loss = Torch::NN::BCELoss.new

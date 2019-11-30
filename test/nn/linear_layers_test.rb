@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class LinearTest < Minitest::Test
+class LinearLayersTest < Minitest::Test
   def test_bilinear
     m = Torch::NN::Bilinear.new(20, 30, 40)
     input1 = Torch.randn(128, 20)
