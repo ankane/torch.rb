@@ -6,12 +6,17 @@ module Torch
       end
 
       def inspect
-        str = String.new
-        str << "#{self.class.name}(\n"
-        modules.each do |name, mod|
-          str << "  (#{name}): #{mod.inspect}\n"
+        name = self.class.name.split("::").last
+        if modules.empty?
+          "#{name}()"
+        else
+          str = String.new
+          str << "#{name}(\n"
+          modules.each do |name, mod|
+            str << "  (#{name}): #{mod.inspect}\n"
+          end
+          str << ")"
         end
-        str << ")"
       end
 
       def train(mode = true)
