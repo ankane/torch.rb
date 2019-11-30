@@ -394,6 +394,11 @@ void Init_ext()
         return torch::sigmoid(input);
       })
     .define_singleton_method(
+      "_softplus",
+      *[](const Tensor &input, Scalar beta, Scalar threshold) {
+        return torch::softplus(input, beta, threshold);
+      })
+    .define_singleton_method(
       "_abs",
       *[](Tensor& input) {
         return torch::abs(input);

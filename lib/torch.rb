@@ -49,6 +49,7 @@ require "torch/nn/feature_alpha_dropout"
 # nn activiation
 require "torch/nn/relu"
 require "torch/nn/sigmoid"
+require "torch/nn/softplus"
 
 # nn sparse layers
 require "torch/nn/embedding"

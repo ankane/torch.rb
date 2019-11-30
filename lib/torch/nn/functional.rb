@@ -100,6 +100,10 @@ module Torch
 
         # end loss
 
+        def softplus(input, beta: 1, threshold: 20)
+          Torch._softplus(input, beta, threshold)
+        end
+
         def log_softmax(input, dim)
           input.log_softmax(dim)
         end

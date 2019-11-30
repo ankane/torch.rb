@@ -12,4 +12,10 @@ class ActivationsTest < Minitest::Test
     input = Torch.randn(2)
     output = m.call(input)
   end
+
+  def test_softplus
+    m = Torch::NN::Softplus.new
+    input = Torch.randn(2)
+    output = m.call(input)
+  end
 end
