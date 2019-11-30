@@ -434,6 +434,16 @@ void Init_ext()
         return torch::relu(input);
       })
     .define_singleton_method(
+      "prelu",
+      *[](torch::Tensor& input, torch::Tensor& weight) {
+        return torch::prelu(input, weight);
+      })
+    .define_singleton_method(
+      "leaky_relu",
+      *[](torch::Tensor& input, Scalar negative_slope) {
+        return torch::leaky_relu(input, negative_slope);
+      })
+    .define_singleton_method(
       "conv2d",
       *[](Tensor& input, Tensor& weight, Tensor& bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, int64_t groups) {
         return torch::conv2d(input, weight, bias, stride, padding, dilation, groups);
