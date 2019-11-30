@@ -399,6 +399,16 @@ void Init_ext()
         return torch::softplus(input, beta, threshold);
       })
     .define_singleton_method(
+      "_softmax",
+      *[](const Tensor &input, int64_t dim) {
+        return torch::softmax(input, dim);
+      })
+    .define_singleton_method(
+      "_log_softmax",
+      *[](Tensor& input, int64_t dim) {
+        return torch::log_softmax(input, dim);
+      })
+    .define_singleton_method(
       "_abs",
       *[](Tensor& input) {
         return torch::abs(input);
@@ -745,11 +755,6 @@ void Init_ext()
       "clone",
       *[](Tensor& self) {
         return self.clone();
-      })
-    .define_method(
-      "log_softmax",
-      *[](Tensor& self, int64_t dim) {
-        return self.log_softmax(dim);
       })
     .define_method(
       "data",

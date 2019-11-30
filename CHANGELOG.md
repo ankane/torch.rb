@@ -1,6 +1,7 @@
 ## 0.1.4 (unreleased)
 
 - Added distance functions
+- Added more activations
 - Added more linear layers
 - Added more loss functions
 

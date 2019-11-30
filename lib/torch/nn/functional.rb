@@ -100,11 +100,23 @@ module Torch
 
         # end loss
 
+        def softmax(input, dim: nil)
+          dim ||= _get_softmax_dim(input.dim)
+          input.softmax(dim: dim)
+        end
+
+        def softmin(input, dim: nil)
+          dim ||= _get_softmax_dim(input.dim)
+          (-input).softmax(dim: dim)
+        end
+
         def softplus(input, beta: 1, threshold: 20)
           Torch._softplus(input, beta, threshold)
         end
 
-        def log_softmax(input, dim)
+        # TODO make dim keyword argument and update examples
+        def log_softmax(input, dim = nil)
+          dim ||= _get_softmax_dim(input.dim)
           input.log_softmax(dim)
         end
 
@@ -148,6 +160,12 @@ module Torch
           else
             Torch._feature_alpha_dropout(input, p, training)
           end
+        end
+
+        private
+
+        def _get_softmax_dim(ndim)
+          ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
         end
       end
     end

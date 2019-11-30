@@ -51,6 +51,12 @@ require "torch/nn/relu"
 require "torch/nn/sigmoid"
 require "torch/nn/softplus"
 
+# nn activation other
+require "torch/nn/log_softmax"
+require "torch/nn/softmax"
+require "torch/nn/softmax2d"
+require "torch/nn/softmin"
+
 # nn sparse layers
 require "torch/nn/embedding"
 require "torch/nn/embedding_bag"
@@ -407,6 +413,15 @@ module Torch
 
     def sqrt(input)
       _sqrt(input)
+    end
+
+    # TODO make dim keyword argument
+    def log_softmax(input, dim)
+      _log_softmax(input, dim)
+    end
+
+    def softmax(input, dim: nil)
+      _softmax(input, dim)
     end
 
     def abs(input)
