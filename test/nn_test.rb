@@ -4,6 +4,7 @@ class NNTest < Minitest::Test
   # https://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
   def test_tutorial
     net = Net.new
+    assert net.inspect
 
     params = net.parameters
     assert_equal 10, params.size

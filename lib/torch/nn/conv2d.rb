@@ -19,8 +19,8 @@ module Torch
       end
 
       # TODO add more parameters
-      def inspect
-        "Conv2d(#{@in_channels}, #{@out_channels}, kernel_size: #{@kernel_size.inspect}, stride: #{@stride.inspect})"
+      def extra_inspect
+        format("%s, %s, kernel_size: %s, stride: %s", [@in_channels, @out_channels, @kernel_size, @stride])
       end
 
       private
