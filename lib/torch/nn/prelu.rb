@@ -4,7 +4,7 @@ module Torch
       def initialize(num_parameters: 1, init: 0.25)
         @num_parameters = num_parameters
         super()
-        @weight = Parameter.new(Torch::Tensor.new(num_parameters).fill!(init))
+        @weight = Parameter.new(Tensor.new(num_parameters).fill!(init))
       end
 
       def forward(input)
