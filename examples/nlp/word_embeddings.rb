@@ -82,7 +82,7 @@ optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.001)
     loss.backward
     optimizer.step
 
-    # Get the Python number from a 1-element Tensor by calling tensor.item()
+    # Get the Ruby number from a 1-element Tensor by calling tensor.item
     total_loss += loss.item
   end
 
