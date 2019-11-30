@@ -1,4 +1,4 @@
-require_relative "test_helper"
+require_relative "../test_helper"
 
 class PoolingTest < Minitest::Test
   def test_max_pool2d

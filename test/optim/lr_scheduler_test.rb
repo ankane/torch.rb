@@ -1,4 +1,4 @@
-require_relative "test_helper"
+require_relative "../test_helper"
 
 class LRSchedulerTest < Minitest::Test
   def test_step_lr

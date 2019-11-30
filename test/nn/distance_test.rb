@@ -1,4 +1,4 @@
-require_relative "test_helper"
+require_relative "../test_helper"
 
 class DistanceTest < Minitest::Test
   def test_cosine_similarity

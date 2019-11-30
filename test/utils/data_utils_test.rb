@@ -1,4 +1,4 @@
-require_relative "test_helper"
+require_relative "../test_helper"
 
 class DataUtilsTest < Minitest::Test
   def test_works
