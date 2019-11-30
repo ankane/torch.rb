@@ -7,6 +7,7 @@ class LinearTest < Minitest::Test
     input2 = Torch.randn(128, 30)
     output = m.call(input1, input2)
     assert_equal [128, 40], output.size
+    assert m.inspect
   end
 
   def test_identity
@@ -14,6 +15,7 @@ class LinearTest < Minitest::Test
     input = Torch.randn(128, 20)
     output = m.call(input)
     assert_equal [128, 20], output.size
+    assert m.inspect
   end
 
   def test_linear
@@ -21,5 +23,6 @@ class LinearTest < Minitest::Test
     input = Torch.randn(128, 20)
     output = m.call(input)
     assert_equal [128, 30], output.size
+    assert m.inspect
   end
 end
