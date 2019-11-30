@@ -30,14 +30,9 @@ This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.htm
 
 Many methods and options are missing at the moment. PRs welcome!
 
-## Examples [master]
-
-- [Image classification with MNIST](examples/mnist)
-- [Collaborative filtering with MovieLens](examples/movielens)
-
 ## Tutorial
 
-Some examples below are from [Deep Learning with PyTorch: A 60 Minutes Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html).
+Some examples below are from [Deep Learning with PyTorch: A 60 Minutes Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
 
 ### Tensors
 
@@ -365,6 +360,11 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   ```ruby
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
+
+## Examples [master]
+
+- [Image classification with MNIST](examples/mnist)
+- [Collaborative filtering with MovieLens](examples/movielens)
 
 ## LibTorch Installation
 
