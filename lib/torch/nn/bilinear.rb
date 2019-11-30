@@ -7,10 +7,10 @@ module Torch
         @in1_features = in1_features
         @in2_features = in2_features
         @out_features = out_features
-        @weight = Parameter.new(Torch::Tensor.new(out_features, in1_features, in2_features))
+        @weight = Parameter.new(Tensor.new(out_features, in1_features, in2_features))
 
         if bias
-          @bias = Parameter.new(Torch::Tensor.new(out_features))
+          @bias = Parameter.new(Tensor.new(out_features))
         else
           raise NotImplementedYet
         end
