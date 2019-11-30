@@ -25,9 +25,7 @@ module Torch
           Torch.linear(input, weight, bias)
         end
 
-        def mse_loss(input, target, reduction: "mean")
-          Torch.mse_loss(input, target, reduction)
-        end
+        # start loss
 
         def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
@@ -38,18 +36,28 @@ module Torch
           Torch.ctc_loss(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
         end
 
-        def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
-          raise NotImplementedYet if weight
-          Torch.nll_loss(input, target, reduction, ignore_index)
+        def kl_div(input, target, reduction: "mean")
+          Torch.kl_div(input, target, reduction)
         end
 
         def l1_loss(input, target, reduction: "mean")
           Torch.l1_loss(input, target, reduction)
         end
 
+        def mse_loss(input, target, reduction: "mean")
+          Torch.mse_loss(input, target, reduction)
+        end
+
+        def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
+          raise NotImplementedYet if weight
+          Torch.nll_loss(input, target, reduction, ignore_index)
+        end
+
         def poisson_nll_loss(input, target, log_input: true, full: false, eps: 1e-8, reduction: "mean")
           Torch.poisson_nll_loss(input, target, log_input, full, eps, reduction)
         end
+
+        # end loss
 
         def log_softmax(input, dim)
           input.log_softmax(dim)

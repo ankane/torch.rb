@@ -43,7 +43,6 @@ class LossTest < Minitest::Test
   end
 
   def test_kl_div_loss
-    skip
     assert_works Torch::NN::KLDivLoss, :float
   end
 

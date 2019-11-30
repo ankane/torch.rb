@@ -487,6 +487,12 @@ void Init_ext()
         return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, red, zero_infinity);
       })
     .define_singleton_method(
+      "kl_div",
+      *[](Tensor& input, Tensor& target, std::string reduction) {
+        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
+        return torch::kl_div(input, target, red);
+      })
+    .define_singleton_method(
       "l1_loss",
       *[](Tensor& input, Tensor& target, std::string reduction) {
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
