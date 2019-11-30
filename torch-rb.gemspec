@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.version       = Torch::VERSION
   spec.summary       = "Deep learning for Ruby, powered by LibTorch"
   spec.homepage      = "https://github.com/ankane/torch-rb"
-  spec.license       = "MIT"
+  spec.license       = "BSD-3-Clause"
 
   spec.author        = "Andrew Kane"
   spec.email         = "andrew@chartkick.com"

@@ -1,5 +1,6 @@
 ## 0.1.3 (unreleased)
 
+- Changed to BSD 3-Clause license to match PyTorch
 - Added many optimizers
 - Added `StepLR` learning rate scheduler
 - Added dropout
