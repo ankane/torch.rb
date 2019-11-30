@@ -8,6 +8,10 @@ module Torch
         @modules = {}
       end
 
+      def forward
+        raise NotImplementedError
+      end
+
       def register_buffer(name, tensor)
         # TODO add checks
         @buffers[name] = tensor
@@ -47,8 +51,92 @@ module Torch
         _apply ->(t) { t.cpu }
       end
 
+      # def type
+      # end
+
+      # def float
+      # end
+
+      # def double
+      # end
+
+      # def half
+      # end
+
+      # modifies in-place
+      def to(device)
+        instance_variables.each do |name|
+          param = instance_variable_get(name)
+          if param.is_a?(Parameter)
+            instance_variable_set(name, Parameter.new(param.to(device)))
+          end
+        end
+        modules.each do |_, mod|
+          mod.to(device)
+        end
+        self
+      end
+
+      def call(*input)
+        forward(*input)
+      end
+
+      def state_dict
+        raise NotImplementedYet
+      end
+
+      def parameters
+        params = []
+        instance_variables.each do |name|
+          param = instance_variable_get(name)
+          params << param if param.is_a?(Parameter)
+        end
+        params + modules.flat_map { |_, mod| mod.parameters }
+      end
+
       def children
         @modules.values
+      end
+
+      def modules
+        modules = {}
+        instance_variables.each do |name|
+          mod = instance_variable_get(name)
+          modules[name[1..-1]] = mod if mod.is_a?(Module)
+        end
+        @modules.merge(modules)
+      end
+
+      def train(mode = true)
+        @training = mode
+        children.each do |mod|
+          mod.train(mode)
+        end
+        self
+      end
+
+      def eval
+        train(false)
+      end
+
+      def requires_grad!(requires_grad: true)
+        parameters.each do |p|
+          p.requires_grad!(requires_grad)
+        end
+        self
+      end
+
+      def zero_grad
+        parameters.each do |param|
+          if param.grad
+            param.grad.detach!
+            param.grad.zero!
+          end
+        end
+      end
+
+      def share_memory
+        _apply ->(t) { t.share_memory! }
       end
 
       def inspect
@@ -65,54 +153,6 @@ module Torch
         end
       end
 
-      def train(mode = true)
-        @training = mode
-        children.each do |mod|
-          mod.train(mode)
-        end
-        self
-      end
-
-      def eval
-        train(false)
-      end
-
-      def call(*input)
-        forward(*input)
-      end
-
-      # modifies in-place
-      def to(device)
-        instance_variables.each do |name|
-          param = instance_variable_get(name)
-          if param.is_a?(Parameter)
-            instance_variable_set(name, Parameter.new(param.to(device)))
-          end
-        end
-        modules.each do |_, mod|
-          mod.to(device)
-        end
-        self
-      end
-
-      def parameters
-        params = []
-        instance_variables.each do |name|
-          param = instance_variable_get(name)
-          params << param if param.is_a?(Parameter)
-        end
-        params + modules.flat_map { |_, mod| mod.parameters }
-      end
-
-      def zero_grad
-        parameters.each do |param|
-          if param.grad
-            param.grad.detach!
-            param.grad.zero!
-          end
-        end
-      end
-
       def method_missing(method, *args, &block)
         modules[method.to_s] || super
       end
@@ -122,15 +162,6 @@ module Torch
       end
 
       private
-
-      def modules
-        modules = {}
-        instance_variables.each do |name|
-          mod = instance_variable_get(name)
-          modules[name[1..-1]] = mod if mod.is_a?(Module)
-        end
-        @modules.merge(modules)
-      end
 
       def extra_inspect
         nil
