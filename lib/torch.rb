@@ -22,32 +22,32 @@ require "torch/optim/sgd"
 require "torch/optim/lr_scheduler/lr_scheduler"
 require "torch/optim/lr_scheduler/step_lr"
 
-# nn base classes
+# nn containers
 require "torch/nn/module"
-require "torch/nn/convnd"
-require "torch/nn/dropoutnd"
-require "torch/nn/loss"
-require "torch/nn/weighted_loss"
+require "torch/nn/sequential"
 
-# nn
-require "torch/nn/alpha_dropout"
+# nn convolution layers
+require "torch/nn/convnd"
 require "torch/nn/conv2d"
+
+# nn linear layers
+require "torch/nn/linear"
+
+# nn dropout layers
+require "torch/nn/dropoutnd"
+require "torch/nn/alpha_dropout"
 require "torch/nn/dropout"
 require "torch/nn/dropout2d"
 require "torch/nn/dropout3d"
-require "torch/nn/embedding"
 require "torch/nn/feature_alpha_dropout"
-require "torch/nn/functional"
-require "torch/nn/init"
-require "torch/nn/linear"
-require "torch/nn/parameter"
-require "torch/nn/relu"
-require "torch/nn/sequential"
 
 # nn activiation
+require "torch/nn/relu"
 require "torch/nn/sigmoid"
 
 # nn loss
+require "torch/nn/loss"
+require "torch/nn/weighted_loss"
 require "torch/nn/bce_loss"
 # require "torch/nn/bce_with_logits_loss"
 # require "torch/nn/cosine_embedding_loss"
@@ -66,6 +66,12 @@ require "torch/nn/poisson_nll_loss"
 # require "torch/nn/smooth_l1_loss"
 # require "torch/nn/soft_margin_loss"
 # require "torch/nn/triplet_margin_loss"
+
+# nn other
+require "torch/nn/embedding"
+require "torch/nn/functional"
+require "torch/nn/init"
+require "torch/nn/parameter"
 
 # utils
 require "torch/utils/data/data_loader"
