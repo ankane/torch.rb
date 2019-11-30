@@ -23,6 +23,34 @@ module Torch
         @modules[name] = mod
       end
 
+      def _apply(fn)
+        children.each do |mod|
+          mod._apply(fn)
+        end
+        # TODO apply to more objects
+        self
+      end
+
+      def apply(fn)
+        children.each do |mod|
+          mod.apply(fn)
+        end
+        fn.call(self)
+        self
+      end
+
+      def cuda(device: nil)
+        _apply ->(t) { t.cuda(device) }
+      end
+
+      def cpu
+        _apply ->(t) { t.cpu }
+      end
+
+      def children
+        @modules.values
+      end
+
       def inspect
         name = self.class.name.split("::").last
         if modules.empty?

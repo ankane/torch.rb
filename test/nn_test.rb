@@ -44,6 +44,7 @@ class NNTest < Minitest::Test
     net = Net.new
     device = Torch::CUDA.available? ? "cuda" : "cpu"
     net.to(device)
+    net.cpu
   end
 
   def test_dropout2d
