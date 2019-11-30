@@ -51,17 +51,21 @@ module Torch
         _apply ->(t) { t.cpu }
       end
 
-      # def type
-      # end
+      def type(dst_type)
+        _apply ->(t) { t.type(dst_type) }
+      end
 
-      # def float
-      # end
+      def float
+        _apply ->(t) { t.floating_point? ? t.float : t }
+      end
 
-      # def double
-      # end
+      def double
+        _apply ->(t) { t.floating_point? ? t.double : t }
+      end
 
-      # def half
-      # end
+      def half
+        _apply ->(t) { t.floating_point? ? t.half : t }
+      end
 
       # modifies in-place
       def to(device)
