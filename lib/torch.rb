@@ -46,12 +46,14 @@ require "torch/nn/dropout2d"
 require "torch/nn/dropout3d"
 require "torch/nn/feature_alpha_dropout"
 
-# nn activiation
+# nn activiations
+require "torch/nn/leaky_relu"
+require "torch/nn/prelu"
 require "torch/nn/relu"
 require "torch/nn/sigmoid"
 require "torch/nn/softplus"
 
-# nn activation other
+# nn activations other
 require "torch/nn/log_softmax"
 require "torch/nn/softmax"
 require "torch/nn/softmax2d"
