@@ -45,4 +45,13 @@ class NNTest < Minitest::Test
     device = Torch::CUDA.available? ? "cuda" : "cpu"
     net.to(device)
   end
+
+  def test_dropout2d
+    skip "Rand consistent with Python, dropout2d not"
+
+    Torch.manual_seed(1)
+    x = Torch.rand(2, 2)
+    y = Torch::NN::Functional.dropout2d(x)
+    assert_elements_in_delta [1.5153, 0.0000, 0.0000, 0.0000], y.to_a.flatten
+  end
 end
