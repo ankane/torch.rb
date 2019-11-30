@@ -1,3 +1,7 @@
+## 0.1.4 (unreleased)
+
+- Added `NLLLoss`
+
 ## 0.1.3 (2019-11-30)
 
 - Changed to BSD 3-Clause license to match PyTorch
