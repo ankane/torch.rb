@@ -9,3 +9,4 @@
 /vendor
 *.lock
 *.bundle
+*.npz
