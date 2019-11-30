@@ -1,8 +1,8 @@
 module Torch
   module NN
-    class MSELoss < Module
+    class MSELoss < Loss
       def initialize(reduction: "mean")
-        @reduction = reduction
+        super(reduction)
       end
 
       def forward(input, target)

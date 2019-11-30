@@ -27,6 +27,7 @@ require "torch/nn/module"
 require "torch/nn/convnd"
 require "torch/nn/dropoutnd"
 require "torch/nn/loss"
+require "torch/nn/weighted_loss"
 
 # nn
 require "torch/nn/alpha_dropout"

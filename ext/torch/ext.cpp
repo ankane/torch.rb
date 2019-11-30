@@ -492,9 +492,9 @@ void Init_ext()
       })
     .define_singleton_method(
       "nll_loss",
-      *[](torch::Tensor& input, torch::Tensor& target, std::string reduction) {
+      *[](torch::Tensor& input, torch::Tensor& target, std::string reduction, int64_t ignore_index) {
         auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::nll_loss(input, target, {}, red);
+        return torch::nll_loss(input, target, {}, red, ignore_index);
       })
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(

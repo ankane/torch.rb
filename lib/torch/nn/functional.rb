@@ -33,9 +33,9 @@ module Torch
           nll_loss(log_softmax(input, 1), target)
         end
 
-        def nll_loss(input, target, reduction: "mean")
-          # TODO fix for non-1d
-          Torch.nll_loss(input, target, reduction)
+        def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
+          raise NotImplementedYet if weight
+          Torch.nll_loss(input, target, reduction, ignore_index)
         end
 
         def l1_loss(input, target, reduction: "mean")
