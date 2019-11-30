@@ -1,5 +1,7 @@
 # based on Spotlight
 # https://github.com/maciejkula/spotlight
+# Copyright (c) 2017 Maciej Kula, 2019 Andrew Kane
+# MIT License
 
 require "torch"
 require "csv"
