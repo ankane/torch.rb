@@ -30,6 +30,12 @@ This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.htm
 
 Many methods and options are missing at the moment. PRs welcome!
 
+## Examples [master]
+
+- [Image classification with MNIST](examples/mnist)
+
+## Tutorial
+
 Some examples below are from [Deep Learning with PyTorch: A 60 Minutes Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html).
 
 ### Tensors
