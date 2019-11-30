@@ -31,7 +31,7 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_rprop
-    skip "Need to implement tensor.new"
+    skip "Need to implement []="
     assert_works Torch::Optim::Rprop
   end
 

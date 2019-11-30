@@ -11,7 +11,7 @@ module Torch
       end
 
       def step(closure = nil)
-        # TODO implement tensor.new
+        # TODO implement []=
         raise NotImplementedYet
 
         loss = nil
