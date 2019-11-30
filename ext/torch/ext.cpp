@@ -591,6 +591,11 @@ void Init_ext()
         return self.add_(other);
       })
     .define_method(
+      "_add_alpha!",
+      *[](torch::Tensor& self, torch::Tensor& other, Scalar alpha) {
+        return self.add_(other, alpha);
+      })
+    .define_method(
       "_add_scalar!",
       *[](torch::Tensor& self, Scalar other) {
         return self.add_(other);

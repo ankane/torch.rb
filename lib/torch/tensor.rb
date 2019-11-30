@@ -94,7 +94,8 @@ module Torch
       if other.is_a?(Numeric)
         _add_scalar!(other * value)
       else
-        _add!(other * value)
+        # need to use alpha for sparse tensors instead of multiplying
+        _add_alpha!(other, value)
       end
     end
 
