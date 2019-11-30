@@ -361,7 +361,9 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
 
-## Examples [master]
+## Examples
+
+Here are a few full examples:
 
 - [Image classification with MNIST](examples/mnist)
 - [Collaborative filtering with MovieLens](examples/movielens)

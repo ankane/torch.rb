@@ -1,4 +1,4 @@
-## 0.1.3 (unreleased)
+## 0.1.3 (2019-11-30)
 
 - Changed to BSD 3-Clause license to match PyTorch
 - Added many optimizers
