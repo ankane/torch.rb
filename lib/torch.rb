@@ -230,7 +230,7 @@ module Torch
         high = low
         low = 0
       end
-      rand(input.size, like_options(input, options))
+      randint(low, high, input.size, like_options(input, options))
     end
 
     def randn_like(input, **options)

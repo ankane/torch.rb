@@ -80,7 +80,7 @@ use_cuda = Torch::CUDA.available?
 device = Torch.device(use_cuda ? "cuda" : "cpu")
 
 def normalize(tensor, mean, std)
- tensor.sub(mean).div(std)
+  tensor.sub(mean).div(std)
 end
 
 data = Npy.load_npz("mnist.npz")

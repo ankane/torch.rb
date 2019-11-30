@@ -6,7 +6,7 @@ class LRSchedulerTest < Minitest::Test
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     scheduler = Torch::Optim::LRScheduler::StepLR.new(optimizer, step_size: 1, gamma: 0.1)
     lrs = []
-    3.times do |epoch|
+    3.times do
       lrs << optimizer.param_groups[0][:lr]
       scheduler.step
     end

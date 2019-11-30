@@ -152,7 +152,7 @@ module Torch
     def [](*indexes)
       result = self
       dim = 0
-      indexes.each_with_index do |index|
+      indexes.each do |index|
         if index.is_a?(Numeric)
           result = result._select(dim, index)
         elsif index.is_a?(Range)
