@@ -55,6 +55,12 @@ class NNTest < Minitest::Test
     assert_elements_in_delta [1.5153, 0.0000, 0.0000, 0.0000], y.to_a.flatten
   end
 
+  def test_mse_loss
+    x = Torch.tensor([1, 2, 3]).float
+    y = Torch.tensor([1, 1, 1]).float
+    assert_in_delta 5 / 3.0, Torch::NN::Functional.mse_loss(x, y).item
+  end
+
   # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
   def test_embedding
     Torch.manual_seed(1)
