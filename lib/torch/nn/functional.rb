@@ -2,8 +2,12 @@ module Torch
   module NN
     class Functional
       class << self
-        def relu(input)
-          Torch.relu(input)
+        def relu(input, inplace: false)
+          if inplace
+            input.relu!
+          else
+            input.relu
+          end
         end
 
         def conv2d(input, weight, bias, stride: 1, padding: 0, dilation: 1, groups: 1)

@@ -702,6 +702,11 @@ void Init_ext()
         return self.fill_(value);
       })
     .define_method(
+      "relu!",
+      *[](Tensor& self) {
+        return self.relu_();
+      })
+    .define_method(
       "_add!",
       *[](Tensor& self, Tensor& other) {
         return self.add_(other);
