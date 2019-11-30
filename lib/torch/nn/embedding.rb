@@ -1,3 +1,4 @@
+# ported from https://github.com/pytorch/pytorch/blob/master/torch/nn/modules/sparse.py
 module Torch
   module NN
     class Embedding < Module
