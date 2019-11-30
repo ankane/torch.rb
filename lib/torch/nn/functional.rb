@@ -6,9 +6,9 @@ module Torch
           Torch.relu(input)
         end
 
-        def conv2d(input, weight, bias, stride: 1, padding: 0)
+        def conv2d(input, weight, bias, stride: 1, padding: 0, dilation: 1, groups: 1)
           # TODO pair stride and padding when needed
-          Torch.conv2d(input, weight, bias, stride, padding)
+          Torch.conv2d(input, weight, bias, stride, padding, dilation, groups)
         end
 
         def prelu(input, weight)

@@ -22,9 +22,12 @@ require "torch/optim/sgd"
 require "torch/optim/lr_scheduler/lr_scheduler"
 require "torch/optim/lr_scheduler/step_lr"
 
-# nn
+# nn base classes
 require "torch/nn/module"
+require "torch/nn/convnd"
 require "torch/nn/dropoutnd"
+
+# nn
 require "torch/nn/alpha_dropout"
 require "torch/nn/conv2d"
 require "torch/nn/dropout"
