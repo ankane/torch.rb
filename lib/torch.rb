@@ -178,6 +178,8 @@ module Torch
     # use method for cases when Numo not available
     # or available after Torch loaded
     def _dtype_to_numo
+      raise Error, "Numo not found" unless defined?(Numo::NArray)
+
       {
         uint8: Numo::UInt8,
         int8: Numo::Int8,

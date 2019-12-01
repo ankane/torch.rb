@@ -75,7 +75,6 @@ module Torch
 
     # TODO read directly from memory
     def numo
-      raise Error, "Numo not found" unless defined?(Numo::NArray)
       cls = Torch._dtype_to_numo[dtype]
       raise Error, "Cannot convert #{dtype} to Numo" unless cls
       cls.cast(_data).reshape(*shape)
