@@ -10,7 +10,7 @@ module Torch
         if bias
           @bias = Parameter.new(Tensor.new(out_features))
         else
-          raise NotImplementedYet
+          register_parameter("bias", nil)
         end
 
         reset_parameters
