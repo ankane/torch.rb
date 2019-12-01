@@ -280,8 +280,7 @@ void Init_ext()
     .define_singleton_method(
       "_max_out",
       *[](Tensor &max, Tensor &max_indices, const Tensor &input, int64_t dim, bool keepdim) {
-        // TODO add return value
-        torch::_max_out(max, max_indices, input, dim, keepdim);
+        return tensor_array(torch::_max_out(max, max_indices, input, dim, keepdim));
       })
     .define_singleton_method(
       "_sqrt",
