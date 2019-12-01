@@ -23,12 +23,15 @@ end
 Rake::Task["release:guard_clean"].enhance [:remove_ext]
 
 namespace :benchmark do
+  desc "Benchmark Numo"
   task :numo do
     require "benchmark"
     require "numo/narray"
     require "torch-rb"
 
     x = Numo::SFloat.new(60000, 28, 28).seq
-    p Benchmark.realtime { Torch.from_numo(x) }
+    t = nil
+    p Benchmark.realtime { t = Torch.from_numo(x) }
+    p Benchmark.realtime { t.numo }
   end
 end
