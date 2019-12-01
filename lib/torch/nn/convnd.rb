@@ -31,7 +31,7 @@ module Torch
       def reset_parameters
         Init.kaiming_uniform!(@weight, a: Math.sqrt(5))
         if @bias
-          fan_in, _ = Init.calculate_fan_in_and_fan_out(@weight)
+          fan_in, _ = Init._calculate_fan_in_and_fan_out(@weight)
           bound = 1 / Math.sqrt(fan_in)
           Init.uniform!(@bias, a: -bound, b: bound)
         end

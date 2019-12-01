@@ -58,7 +58,8 @@ module Torch
           _sparse!(tensor, sparsity, std)
         end
 
-        def calculate_fan_in_and_fan_out(tensor)
+        # TODO move to C++ when released
+        def _calculate_fan_in_and_fan_out(tensor)
           dimensions = tensor.dim
           if dimensions < 2
             raise Error, "Fan in and fan out can not be computed for tensor with fewer than 2 dimensions"
