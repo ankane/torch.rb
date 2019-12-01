@@ -1,4 +1,4 @@
-## 0.1.4 (unreleased)
+## 0.1.4 (2019-12-01)
 
 - Added distance functions
 - Added more activations
