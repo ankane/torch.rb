@@ -927,14 +927,10 @@ void Init_ext()
   Class rb_cParameter = define_class_under<torch::autograd::Variable, torch::Tensor>(rb_mNN, "Parameter")
     // TODO return grad or nil to remove need for 2nd function
     .define_method(
-      "_grad",
+      "grad",
       *[](torch::autograd::Variable& self) {
-        return self.grad();
-      })
-    .define_method(
-      "_grad_defined",
-      *[](torch::autograd::Variable& self) {
-        return self.grad().defined();
+        auto grad = self.grad();
+        return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
       });
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
