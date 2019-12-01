@@ -168,7 +168,7 @@ module Torch
           result = result._slice(dim, index.begin, finish, 1)
           dim += 1
         else
-          raise Error, "Unsupported index type"
+          raise Error, "Unsupported index type: #{index.class.name}"
         end
       end
       result
@@ -188,7 +188,7 @@ module Torch
         finish += 1 unless index.exclude_end?
         copy_to(_slice(0, index.begin, finish, 1), value)
       else
-        raise Error, "Unsupported index type"
+        raise Error, "Unsupported index type: #{index.class.name}"
       end
     end
 
