@@ -4,6 +4,7 @@
 - Added more activations
 - Added more linear layers
 - Added more loss functions
+- Added support for tensor assignment
 
 ## 0.1.3 (2019-11-30)
 

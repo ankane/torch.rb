@@ -177,10 +177,26 @@ module Torch
     # TODO
     # based on python_variable_indexing.cpp
     def []=(index, value)
-      raise NotImplementedYet
+      raise ArgumentError, "Tensor does not support deleting items" if value.nil?
+
+      value = Torch.tensor(value) unless value.is_a?(Tensor)
+
+      if index.is_a?(Numeric)
+        copy_to(_select(0, index), value)
+      elsif index.is_a?(Range)
+        finish = index.end
+        finish += 1 unless index.exclude_end?
+        copy_to(_slice(0, index.begin, finish, 1), value)
+      else
+        raise Error, "Unsupported index type"
+      end
     end
 
     private
+
+    def copy_to(dst, src)
+      dst.copy!(src)
+    end
 
     def reshape_arr(arr, dims)
       if dims.empty?

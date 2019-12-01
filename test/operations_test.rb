@@ -33,8 +33,6 @@ class OperationsTest < Minitest::Test
   end
 
   def test_assignment
-    skip "Not implemented yet"
-
     x = Torch.tensor([1, 2, 3])
     x[1] = 0
     assert_equal [1, 0, 3], x.to_a
