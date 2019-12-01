@@ -207,7 +207,7 @@ class MyReduction {
       value = o;
     }
     operator int64_t() {
-      if (value == Nil) {
+      if (value.is_nil()) {
         return Reduction::None;
       }
 
@@ -758,7 +758,7 @@ void Init_ext()
     .define_method(
       "_backward",
       *[](Tensor& self, Object gradient) {
-        return gradient.rb_type() == T_NIL ? self.backward() : self.backward(from_ruby<torch::Tensor>(gradient));
+        return gradient.is_nil() ? self.backward() : self.backward(from_ruby<torch::Tensor>(gradient));
       })
     .define_method(
       "grad",
