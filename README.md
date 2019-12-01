@@ -367,7 +367,7 @@ Here are a few full examples:
 
 - [Image classification with MNIST](examples/mnist)
 - [Collaborative filtering with MovieLens](examples/movielens)
-- [Word embeddings](examples/nlp) [master]
+- [Word embeddings](examples/nlp)
 
 ## LibTorch Installation
 
