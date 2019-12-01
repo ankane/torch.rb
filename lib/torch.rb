@@ -254,8 +254,12 @@ module Torch
         data = [data].compact
       end
 
-      if options[:dtype].nil? && data.all? { |v| v.is_a?(Integer) }
-        options[:dtype] = :int64
+      if options[:dtype].nil?
+        if data.all? { |v| v.is_a?(Integer) }
+          options[:dtype] = :int64
+        elsif data.all? { |v| v == true || v == false }
+          options[:dtype] = :bool
+        end
       end
 
       _tensor(data, size, tensor_options(**options))

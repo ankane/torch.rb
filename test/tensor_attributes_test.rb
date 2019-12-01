@@ -9,6 +9,14 @@ class TensorAttributesTest < Minitest::Test
     end
   end
 
+  def test_dtype_bool
+    skip "Not implemented yet"
+
+    x = Torch.tensor([false, true, false])
+    assert_equal :bool, x.dtype
+    assert_equal [false, true, false], x.to_a
+  end
+
   def test_dtype_default
     assert_equal :int64, Torch.tensor([1]).dtype
     assert_equal :float32, Torch.tensor([1.0]).dtype

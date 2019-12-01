@@ -599,11 +599,18 @@ void Init_ext()
       "_tensor",
       *[](Object o, IntArrayRef size, const torch::TensorOptions &options) {
         Array a = Array(o);
-        std::vector<float> vec;
-        for (size_t i = 0; i < a.size(); i++) {
-          vec.push_back(from_ruby<float>(a[i]));
+        auto dtype = options.dtype();
+        torch::Tensor t;
+        if (dtype == torch::kBool) {
+          throw std::runtime_error("Cannot create bool from tensor method yet");
+        } else {
+          std::vector<float> vec;
+          for (size_t i = 0; i < a.size(); i++) {
+            vec.push_back(from_ruby<float>(a[i]));
+          }
+          t = torch::tensor(vec, options);
         }
-        return torch::tensor(vec, options).reshape(size);
+        return t.reshape(size);
       });
 
   Class rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor")
