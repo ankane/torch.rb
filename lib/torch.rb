@@ -116,7 +116,6 @@ module Torch
 
   # keys: https://pytorch.org/docs/stable/tensor_attributes.html#torch.torch.dtype
   # values: https://github.com/pytorch/pytorch/blob/master/c10/core/ScalarType.h
-  # complex and quantized types not supported by PyTorch yet
   DTYPE_TO_ENUM = {
     uint8: 0,
     int8: 1,
@@ -132,14 +131,14 @@ module Torch
     float32: 6,
     double: 7,
     float64: 7,
-    # complex_half: 8,
-    # complex_float: 9,
-    # complex_double: 10,
+    complex_half: 8,
+    complex_float: 9,
+    complex_double: 10,
     bool: 11,
-    # qint8: 12,
-    # quint8: 13,
-    # qint32: 14,
-    # bfloat16: 15
+    qint8: 12,
+    quint8: 13,
+    qint32: 14,
+    bfloat16: 15
   }
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
