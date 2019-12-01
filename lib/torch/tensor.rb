@@ -167,6 +167,12 @@ module Torch
           finish += 1 unless index.exclude_end?
           result = result._slice(dim, index.begin, finish, 1)
           dim += 1
+        elsif index.nil?
+          result = result.unsqueeze(dim)
+          dim += 1
+        elsif index == true
+          result = result.unsqueeze(dim)
+          # TODO handle false
         else
           raise Error, "Unsupported index type: #{index.class.name}"
         end

@@ -119,5 +119,8 @@ class OperationsTest < Minitest::Test
     assert_equal [0, 1, 2], x[0].to_a
     assert_equal 5, x[1, 2].item
     assert_equal [0, 1], x[0, 0..1].to_a
+    assert_equal [[[0, 1, 2], [3, 4, 5]]], x[true].to_a
+    assert_equal [[[0, 1, 2], [3, 4, 5]]], x[nil].to_a
+    # assert_equal [], x[false].to_a
   end
 end
