@@ -20,9 +20,9 @@ module Torch
 
       def reset_parameters
         bound = 1 / Math.sqrt(@weight.size(1))
-        Init.uniform!(@weight, -bound, bound)
+        Init.uniform!(@weight, a: -bound, b: bound)
         if @bias
-          Init.uniform!(@bias, -bound, bound)
+          Init.uniform!(@bias, a: -bound, b: bound)
         end
       end
 

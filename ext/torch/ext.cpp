@@ -132,6 +132,58 @@ TensorList from_ruby<TensorList>(Object x)
   return TensorList(x);
 }
 
+class FanModeType {
+  std::string s;
+  public:
+    FanModeType(Object o) {
+      s = String(o).str();
+    }
+    // TODO switch NonlinearityType after LibTorch 1.4 release
+    operator torch::nn::init::FanMode() {
+      if (s == "fan_in") {
+        return torch::nn::init::FanMode::FanIn;
+      } else if (s == "fan_out") {
+        return torch::nn::init::FanMode::FanOut;
+      } else {
+        throw std::runtime_error("Unsupported nonlinearity type: " + s);
+      }
+    }
+};
+
+template<>
+inline
+FanModeType from_ruby<FanModeType>(Object x)
+{
+  return FanModeType(x);
+}
+
+class NonlinearityType {
+  std::string s;
+  public:
+    NonlinearityType(Object o) {
+      s = String(o).str();
+    }
+    // TODO switch NonlinearityType after LibTorch 1.4 release
+    operator torch::nn::init::Nonlinearity() {
+      if (s == "linear") {
+        return torch::nn::init::Nonlinearity::Linear;
+      } else if (s == "relu") {
+        return torch::nn::init::Nonlinearity::ReLU;
+      } else if (s == "leaky_relu") {
+        return torch::nn::init::Nonlinearity::LeakyReLU;
+      } else {
+        throw std::runtime_error("Unsupported nonlinearity type: " + s);
+      }
+    }
+};
+
+template<>
+inline
+NonlinearityType from_ruby<NonlinearityType>(Object x)
+{
+  return NonlinearityType(x);
+}
+
 typedef torch::Tensor Tensor;
 
 Object tensor_array(std::tuple<torch::Tensor, torch::Tensor> x) {
@@ -909,19 +961,74 @@ void Init_ext()
 
   Module rb_mInit = define_module_under(rb_mNN, "Init")
     .define_singleton_method(
-      "kaiming_uniform!",
-      *[](Tensor& input, double a) {
-        return torch::nn::init::kaiming_uniform_(input, a);
+      "_calculate_gain",
+      *[](NonlinearityType nonlinearity, double param) {
+        return torch::nn::init::calculate_gain(nonlinearity, param);
       })
     .define_singleton_method(
-      "normal!",
-      *[](Tensor& input) {
-        return torch::nn::init::normal_(input);
+      "_uniform!",
+      *[](Tensor tensor, double low, double high) {
+        return torch::nn::init::uniform_(tensor, low, high);
       })
     .define_singleton_method(
-      "uniform!",
-      *[](Tensor& input, double to, double from) {
-        return torch::nn::init::uniform_(input, to, from);
+      "_normal!",
+      *[](Tensor tensor, double mean, double std) {
+        return torch::nn::init::normal_(tensor, mean, std);
+      })
+    .define_singleton_method(
+      "_constant!",
+      *[](Tensor tensor, Scalar value) {
+        return torch::nn::init::constant_(tensor, value);
+      })
+    .define_singleton_method(
+      "_ones!",
+      *[](Tensor tensor) {
+        return torch::nn::init::ones_(tensor);
+      })
+    .define_singleton_method(
+      "_zeros!",
+      *[](Tensor tensor) {
+        return torch::nn::init::zeros_(tensor);
+      })
+    .define_singleton_method(
+      "_eye!",
+      *[](Tensor tensor) {
+        return torch::nn::init::eye_(tensor);
+      })
+    .define_singleton_method(
+      "_dirac!",
+      *[](Tensor tensor) {
+        return torch::nn::init::dirac_(tensor);
+      })
+    .define_singleton_method(
+      "_xavier_uniform!",
+      *[](Tensor tensor, double gain) {
+        return torch::nn::init::xavier_uniform_(tensor, gain);
+      })
+    .define_singleton_method(
+      "_xavier_normal!",
+      *[](Tensor tensor, double gain) {
+        return torch::nn::init::xavier_normal_(tensor, gain);
+      })
+    .define_singleton_method(
+      "_kaiming_uniform!",
+      *[](Tensor tensor, double a, FanModeType mode, NonlinearityType nonlinearity) {
+        return torch::nn::init::kaiming_uniform_(tensor, a, mode, nonlinearity);
+      })
+    .define_singleton_method(
+      "_kaiming_normal!",
+      *[](Tensor tensor, double a, FanModeType mode, NonlinearityType nonlinearity) {
+        return torch::nn::init::kaiming_normal_(tensor, a, mode, nonlinearity);
+      })
+    .define_singleton_method(
+      "_orthogonal!",
+      *[](Tensor tensor, double gain) {
+        return torch::nn::init::orthogonal_(tensor, gain);
+      })
+    .define_singleton_method(
+      "_sparse!",
+      *[](Tensor tensor, double sparsity, double std) {
+        return torch::nn::init::sparse_(tensor, sparsity, std);
       });
 
   Class rb_cParameter = define_class_under<torch::autograd::Variable, torch::Tensor>(rb_mNN, "Parameter")

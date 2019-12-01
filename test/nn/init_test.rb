@@ -1,8 +1,9 @@
 require_relative "../test_helper"
 
 class InitTest < Minitest::Test
-  def setup
-    skip
+  def test_calculate_gain
+    gain = Torch::NN::Init.calculate_gain("leaky_relu", param: 0.2)
+    assert_in_delta 1.3867504905630728, gain
   end
 
   def test_uniform
@@ -16,7 +17,7 @@ class InitTest < Minitest::Test
   end
 
   def test_constant
-    w = torch.empty(3, 5)
+    w = Torch.empty(3, 5)
     Torch::NN::Init.constant!(w, 0.3)
   end
 
@@ -67,6 +68,6 @@ class InitTest < Minitest::Test
 
   def test_sparse
     w = Torch.empty(3, 5)
-    Torch::NN::Init.sparse!(w, sparsity: 0.1)
+    Torch::NN::Init.sparse!(w, 0.1)
   end
 end
