@@ -11,32 +11,36 @@ module Torch
         else
           summarize = numel > 1000
 
-          values = to_a.flatten
-          abs = values.select { |v| v != 0 }.map(&:abs)
-          max = abs.max || 1
-          min = abs.min || 1
-
-          total = 0
-          if values.any? { |v| v < 0 }
-            total += 1
-          end
-
-          if floating_point?
-            sci = max / min.to_f > 1000 || max > 1e8 || min < 1e-4
-
-            all_int = values.all? { |v| v.finite? && v == v.to_i }
-            decimal = all_int ? 1 : 4
-
-            total += sci ? 10 : decimal + 1 + max.to_i.to_s.size
-
-            if sci
-              fmt = "%#{total}.4e"
-            else
-              fmt = "%#{total}.#{decimal}f"
-            end
+          if dtype == :bool
+            fmt = "%s"
           else
-            total += max.to_s.size
-            fmt = "%#{total}d"
+            values = to_a.flatten
+            abs = values.select { |v| v != 0 }.map(&:abs)
+            max = abs.max || 1
+            min = abs.min || 1
+
+            total = 0
+            if values.any? { |v| v < 0 }
+              total += 1
+            end
+
+            if floating_point?
+              sci = max / min.to_f > 1000 || max > 1e8 || min < 1e-4
+
+              all_int = values.all? { |v| v.finite? && v == v.to_i }
+              decimal = all_int ? 1 : 4
+
+              total += sci ? 10 : decimal + 1 + max.to_i.to_s.size
+
+              if sci
+                fmt = "%#{total}.4e"
+              else
+                fmt = "%#{total}.#{decimal}f"
+              end
+            else
+              total += max.to_s.size
+              fmt = "%#{total}d"
+            end
           end
 
           inspect_level(to_a, fmt, dim - 1, 0, summarize)
