@@ -356,6 +356,10 @@ module Torch
       _pow(input, exponent)
     end
 
+    def topk(input, k)
+      _topk(input, k)
+    end
+
     def min(input)
       _min(input)
     end

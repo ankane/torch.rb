@@ -32,6 +32,13 @@ class OperationsTest < Minitest::Test
     assert_equal [1, 2, 3], y.to_a
   end
 
+  def test_topk
+    x = Torch.arange(1.0, 6.0)
+    values, indices = Torch.topk(x, 3)
+    assert_equal [5, 4, 3], values.to_a
+    assert_equal [4, 3, 2], indices.to_a
+  end
+
   def test_assignment
     x = Torch.tensor([1, 2, 3])
     x[1] = 0

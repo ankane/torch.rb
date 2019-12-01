@@ -134,6 +134,13 @@ TensorList from_ruby<TensorList>(Object x)
 
 typedef torch::Tensor Tensor;
 
+Object tensor_array(std::tuple<torch::Tensor, torch::Tensor> x) {
+  Array a;
+  a.push(to_ruby<torch::Tensor>(std::get<0>(x)));
+  a.push(to_ruby<torch::Tensor>(std::get<1>(x)));
+  return Object(a);
+}
+
 extern "C"
 void Init_ext()
 {
@@ -387,6 +394,11 @@ void Init_ext()
       "_pow",
       *[](Tensor& input, Scalar exponent) {
         return torch::pow(input, exponent);
+      })
+    .define_singleton_method(
+      "_topk",
+      *[](Tensor& input, int64_t k) {
+        return tensor_array(torch::topk(input, k));
       })
     .define_singleton_method(
       "_sigmoid",
