@@ -36,6 +36,8 @@ require "torch/nn/conv2d"
 # nn pooling layers
 require "torch/nn/max_poolnd"
 require "torch/nn/max_pool2d"
+require "torch/nn/avg_poolnd"
+require "torch/nn/avg_pool2d"
 
 # nn linear layers
 require "torch/nn/bilinear"
