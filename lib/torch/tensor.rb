@@ -66,11 +66,7 @@ module Torch
     end
 
     def backward(gradient = nil)
-      if gradient
-        _backward_gradient(gradient)
-      else
-        _backward
-      end
+      _backward(gradient)
     end
 
     # TODO read directly from memory

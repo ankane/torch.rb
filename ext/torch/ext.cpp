@@ -757,13 +757,8 @@ void Init_ext()
       })
     .define_method(
       "_backward",
-      *[](Tensor& self) {
-        return self.backward();
-      })
-    .define_method(
-      "_backward_gradient",
-      *[](Tensor& self, const Tensor& gradient) {
-        return self.backward(gradient);
+      *[](Tensor& self, Object gradient) {
+        return gradient.rb_type() == T_NIL ? self.backward() : self.backward(from_ruby<torch::Tensor>(gradient));
       })
     .define_method(
       "grad",
