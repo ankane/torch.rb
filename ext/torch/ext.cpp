@@ -184,6 +184,30 @@ NonlinearityType from_ruby<NonlinearityType>(Object x)
   return NonlinearityType(x);
 }
 
+class MyReduction {
+  std::string s;
+  public:
+    MyReduction(Object o) {
+      s = String(o).str();
+    }
+    operator int64_t() {
+      if (s == "mean") {
+        return Reduction::Mean;
+      } else if (s == "sum") {
+        return Reduction::Sum;
+      } else {
+        throw std::runtime_error("Unsupported reduction: " + s);
+      }
+    }
+};
+
+template<>
+inline
+MyReduction from_ruby<MyReduction>(Object x)
+{
+  return MyReduction(x);
+}
+
 typedef torch::Tensor Tensor;
 
 Object tensor_array(std::tuple<torch::Tensor, torch::Tensor> x) {
@@ -600,45 +624,38 @@ void Init_ext()
     // loss functions
     .define_singleton_method(
       "binary_cross_entropy",
-      *[](Tensor& input, Tensor& target, std::string reduction) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::binary_cross_entropy(input, target, {}, red);
+      *[](Tensor& input, Tensor& target, MyReduction reduction) {
+        return torch::binary_cross_entropy(input, target, {}, reduction);
       })
     .define_singleton_method(
       "ctc_loss",
-      *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, std::string reduction, bool zero_infinity) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, red, zero_infinity);
+      *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, MyReduction reduction, bool zero_infinity) {
+        return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
       })
     .define_singleton_method(
       "kl_div",
-      *[](Tensor& input, Tensor& target, std::string reduction) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::kl_div(input, target, red);
+      *[](Tensor& input, Tensor& target, MyReduction reduction) {
+        return torch::kl_div(input, target, reduction);
       })
     .define_singleton_method(
       "l1_loss",
-      *[](Tensor& input, Tensor& target, std::string reduction) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::l1_loss(input, target, red);
+      *[](Tensor& input, Tensor& target, MyReduction reduction) {
+        return torch::l1_loss(input, target, reduction);
       })
     .define_singleton_method(
       "mse_loss",
-      *[](Tensor& input, Tensor& target, std::string reduction) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::mse_loss(input, target, red);
+      *[](Tensor& input, Tensor& target, MyReduction reduction) {
+        return torch::mse_loss(input, target, reduction);
       })
     .define_singleton_method(
       "nll_loss",
-      *[](Tensor& input, Tensor& target, std::string reduction, int64_t ignore_index) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::nll_loss(input, target, {}, red, ignore_index);
+      *[](Tensor& input, Tensor& target, MyReduction reduction, int64_t ignore_index) {
+        return torch::nll_loss(input, target, {}, reduction, ignore_index);
       })
     .define_singleton_method(
       "poisson_nll_loss",
-      *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, std::string reduction) {
-        auto red = reduction == "mean" ? Reduction::Mean : Reduction::Sum;
-        return torch::poisson_nll_loss(input, target, log_input, full, eps, red);
+      *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, MyReduction reduction) {
+        return torch::poisson_nll_loss(input, target, log_input, full, eps, reduction);
       })
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
