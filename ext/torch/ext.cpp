@@ -167,6 +167,22 @@ class NonlinearityType {
     operator torch::nn::init::Nonlinearity() {
       if (s == "linear") {
         return torch::nn::init::Nonlinearity::Linear;
+      } else if (s == "conv1d") {
+        return torch::nn::init::Nonlinearity::Conv1D;
+      } else if (s == "conv2d") {
+        return torch::nn::init::Nonlinearity::Conv2D;
+      } else if (s == "conv3d") {
+        return torch::nn::init::Nonlinearity::Conv3D;
+      } else if (s == "conv_transpose1d") {
+        return torch::nn::init::Nonlinearity::ConvTranspose1D;
+      } else if (s == "conv_transpose2d") {
+        return torch::nn::init::Nonlinearity::ConvTranspose2D;
+      } else if (s == "conv_transpose3d") {
+        return torch::nn::init::Nonlinearity::ConvTranspose3D;
+      } else if (s == "sigmoid") {
+        return torch::nn::init::Nonlinearity::Sigmoid;
+      } else if (s == "tanh") {
+        return torch::nn::init::Nonlinearity::Tanh;
       } else if (s == "relu") {
         return torch::nn::init::Nonlinearity::ReLU;
       } else if (s == "leaky_relu") {
@@ -185,12 +201,17 @@ NonlinearityType from_ruby<NonlinearityType>(Object x)
 }
 
 class MyReduction {
-  std::string s;
+  Object value;
   public:
     MyReduction(Object o) {
-      s = String(o).str();
+      value = o;
     }
     operator int64_t() {
+      if (value == Nil) {
+        return Reduction::None;
+      }
+
+      std::string s = String(value).str();
       if (s == "mean") {
         return Reduction::Mean;
       } else if (s == "sum") {
