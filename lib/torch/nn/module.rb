@@ -171,12 +171,12 @@ module Torch
 
       def inspect
         name = self.class.name.split("::").last
-        if modules.empty?
+        if children.empty?
           "#{name}(#{extra_inspect})"
         else
           str = String.new
           str << "#{name}(\n"
-          modules.each do |name, mod|
+          children.each do |name, mod|
             str << "  (#{name}): #{mod.inspect}\n"
           end
           str << ")"
@@ -207,8 +207,14 @@ module Torch
         nil
       end
 
-      def format(str, *vars)
-        str % vars.map(&:inspect)
+      def format(str, *vars, **options)
+        vars =
+          if vars.any?
+            vars.map(&:inspect)
+          else
+            options.map { |k, v| [k, v.inspect] }.to_h
+          end
+        str % vars
       end
     end
   end

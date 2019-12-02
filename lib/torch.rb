@@ -39,6 +39,10 @@ require "torch/nn/max_pool2d"
 require "torch/nn/avg_poolnd"
 require "torch/nn/avg_pool2d"
 
+# nn recurrent layers
+require "torch/nn/rnn_base"
+require "torch/nn/rnn"
+
 # nn linear layers
 require "torch/nn/bilinear"
 require "torch/nn/identity"
