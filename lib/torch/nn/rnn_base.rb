@@ -76,6 +76,12 @@ module Torch
         # no-op unless module is on the GPU and cuDNN is enabled
       end
 
+      def _apply(fn)
+        ret = super
+        flatten_parameters
+        ret
+      end
+
       def reset_parameters
         stdv = 1.0 / Math.sqrt(@hidden_size)
         parameters.each do |weight|
