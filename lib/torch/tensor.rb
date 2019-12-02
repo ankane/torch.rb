@@ -5,11 +5,13 @@ module Torch
 
     alias_method :requires_grad?, :requires_grad
 
-    def self.new(*size)
-      if size.length == 1 && size.first.is_a?(Tensor)
-        size.first
+    def self.new(*args)
+      if args.length == 1 && args.first.is_a?(Tensor)
+        args.first
+      elsif args.length == 1 && args.first.is_a?(Array)
+        Torch.tensor(args.first)
       else
-        Torch.empty(*size)
+        Torch.empty(*args)
       end
     end
 

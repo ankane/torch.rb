@@ -20,6 +20,15 @@ class SparseLayersTest < Minitest::Test
     embedding_sum.call(input, offsets: offsets)
   end
 
+  def test_embedding_bag_from_pretrained
+    skip "Not implemented yet"
+
+    weight = Torch::FloatTensor.new([[1, 2.3, 3], [4, 5.1, 6.3]])
+    embeddingbag = Torch::NN::EmbeddingBag.from_pretrained(weight)
+    input = Torch::LongTensor.new([[1, 0]])
+    embeddingbag.call(input)
+  end
+
   # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
   def test_embedding_tutorial
     Torch.manual_seed(1)

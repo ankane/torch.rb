@@ -153,6 +153,8 @@ module Torch
     end
   end
 
+  FloatTensor = Tensor
+
   class << self
     # Torch.float, Torch.long, etc
     DTYPE_TO_ENUM.each_key do |dtype|
