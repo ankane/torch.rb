@@ -84,6 +84,10 @@ module Torch
           raise NotImplementedYet
         end
 
+        def cosine_embedding_loss(input1, input2, target, margin: 0, reduction: "mean")
+          raise NotImplementedYet
+        end
+
         def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
         end
@@ -105,8 +109,20 @@ module Torch
           Torch.l1_loss(input, target, reduction)
         end
 
+        def margin_ranking_loss(input1, input2, target, margin: 0, reduction: "mean")
+          raise NotImplementedYet
+        end
+
         def mse_loss(input, target, reduction: "mean")
           Torch.mse_loss(input, target, reduction)
+        end
+
+        def multilabel_margin_loss(input, target, reduction: "mean")
+          Torch.multilabel_margin_loss(input, target, reduction)
+        end
+
+        def multilabel_soft_margin_loss(input, target, weight: nil)
+          raise NotImplementedYet
         end
 
         def multi_margin_loss(input, target, p: 1, margin: 1.0, weight: nil, reduction: "mean")

@@ -674,6 +674,11 @@ void Init_ext()
         return torch::mse_loss(input, target, reduction);
       })
     .define_singleton_method(
+      "multilabel_margin_loss",
+      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
+        return torch::multilabel_margin_loss(input, target, reduction);
+      })
+    .define_singleton_method(
       "nll_loss",
       *[](Tensor& input, Tensor& target, MyReduction reduction, int64_t ignore_index) {
         return torch::nll_loss(input, target, {}, reduction, ignore_index);
