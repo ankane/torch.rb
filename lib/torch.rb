@@ -142,9 +142,14 @@ module Torch
   }
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
+  # TODO DRY with Torch::Tensor
   class LongTensor
-    def self.new(data)
-      Torch.tensor(data, dtype: :long)
+    def self.new(*args)
+      if args.size == 1 && args.is_a?(Array)
+        Torch.tensor(args.first, dtype: :long)
+      else
+        Torch.empty(*args, dtype: :long)
+      end
     end
   end
 
