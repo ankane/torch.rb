@@ -665,72 +665,72 @@ void Init_ext()
       })
     // loss functions
     .define_singleton_method(
-      "binary_cross_entropy",
+      "_binary_cross_entropy",
       *[](const Tensor& input, const Tensor& target, OptionalTensor weight, MyReduction reduction) {
         return torch::binary_cross_entropy(input, target, weight, reduction);
       })
     .define_singleton_method(
-      "binary_cross_entropy_with_logits",
+      "_binary_cross_entropy_with_logits",
       *[](const Tensor &input, const Tensor &target, OptionalTensor weight, OptionalTensor pos_weight, MyReduction reduction) {
         return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
       })
     .define_singleton_method(
-      "ctc_loss",
+      "_ctc_loss",
       *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, MyReduction reduction, bool zero_infinity) {
         return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
       })
     .define_singleton_method(
-      "hinge_embedding_loss",
+      "_hinge_embedding_loss",
       *[](const Tensor &input, const Tensor &target, double margin, MyReduction reduction) {
         return torch::hinge_embedding_loss(input, target, margin, reduction);
       })
     .define_singleton_method(
-      "kl_div",
+      "_kl_div",
       *[](Tensor& input, Tensor& target, MyReduction reduction) {
         return torch::kl_div(input, target, reduction);
       })
     .define_singleton_method(
-      "l1_loss",
+      "_l1_loss",
       *[](Tensor& input, Tensor& target, MyReduction reduction) {
         return torch::l1_loss(input, target, reduction);
       })
     .define_singleton_method(
-      "mse_loss",
+      "_mse_loss",
       *[](Tensor& input, Tensor& target, MyReduction reduction) {
         return torch::mse_loss(input, target, reduction);
       })
     .define_singleton_method(
-      "multilabel_margin_loss",
+      "_multilabel_margin_loss",
       *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
         return torch::multilabel_margin_loss(input, target, reduction);
       })
     .define_singleton_method(
-      "multi_margin_loss",
+      "_multi_margin_loss",
       *[](const Tensor &input, const Tensor &target, Scalar p, Scalar margin, OptionalTensor weight, MyReduction reduction) {
         return torch::multi_margin_loss(input, target, p, margin, weight, reduction);
       })
     .define_singleton_method(
-      "nll_loss",
+      "_nll_loss",
       *[](Tensor& input, Tensor& target, MyReduction reduction, int64_t ignore_index) {
         return torch::nll_loss(input, target, {}, reduction, ignore_index);
       })
     .define_singleton_method(
-      "poisson_nll_loss",
+      "_poisson_nll_loss",
       *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, MyReduction reduction) {
         return torch::poisson_nll_loss(input, target, log_input, full, eps, reduction);
       })
     .define_singleton_method(
-      "soft_margin_loss",
+      "_soft_margin_loss",
       *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
         return torch::soft_margin_loss(input, target, reduction);
       })
     .define_singleton_method(
-      "smooth_l1_loss",
+      "_smooth_l1_loss",
       *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
         return torch::smooth_l1_loss(input, target, reduction);
       })
     .define_singleton_method(
-      "triplet_margin_loss",
+      "_triplet_margin_loss",
       *[](const Tensor &anchor, const Tensor &positive, const Tensor &negative, double margin, double p, double eps, bool swap, MyReduction reduction) {
         return torch::triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction);
       })
