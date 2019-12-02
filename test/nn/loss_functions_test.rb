@@ -42,7 +42,6 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_hinge_embedding_loss
-    skip
     assert_works Torch::NN::HingeEmbeddingLoss, :float
   end
 
@@ -87,12 +86,10 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_smooth_l1_loss
-    skip
     assert_works Torch::NN::SmoothL1Loss, :float
   end
 
   def test_soft_margin_loss
-    skip
     assert_works Torch::NN::SoftMarginLoss, :float
   end
 

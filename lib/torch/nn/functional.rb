@@ -80,6 +80,10 @@ module Torch
           Torch.binary_cross_entropy(input, target, reduction)
         end
 
+        def binary_cross_entropy_with_logits(input, target, weight: nil, reduction: "mean", pos_weight: nil)
+          raise NotImplementedYet
+        end
+
         def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           nll_loss(log_softmax(input, 1), target, weight: weight, ignore_index: ignore_index, reduction: reduction)
         end
@@ -87,6 +91,10 @@ module Torch
         def ctc_loss(log_probs, targets, input_lengths, target_lengths, blank: 0, reduction: "mean", zero_infinity: false)
           # call to_a on input_lengths and target_lengths for C++
           Torch.ctc_loss(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
+        end
+
+        def hinge_embedding_loss(input, target, margin: 1.0, reduction: "mean")
+          Torch.hinge_embedding_loss(input, target, margin, reduction)
         end
 
         def kl_div(input, target, reduction: "mean")
@@ -101,6 +109,10 @@ module Torch
           Torch.mse_loss(input, target, reduction)
         end
 
+        def multi_margin_loss(input, target, p: 1, margin: 1.0, weight: nil, reduction: "mean")
+          raise NotImplementedYet
+        end
+
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
           raise NotImplementedYet if weight
           Torch.nll_loss(input, target, reduction, ignore_index)
@@ -108,6 +120,18 @@ module Torch
 
         def poisson_nll_loss(input, target, log_input: true, full: false, eps: 1e-8, reduction: "mean")
           Torch.poisson_nll_loss(input, target, log_input, full, eps, reduction)
+        end
+
+        def soft_margin_loss(input, target, reduction: "mean")
+          Torch.soft_margin_loss(input, target, reduction)
+        end
+
+        def smooth_l1_loss(input, target, reduction: "mean")
+          Torch.smooth_l1_loss(input, target, reduction)
+        end
+
+        def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
+          raise NotImplementedYet
         end
 
         # end loss

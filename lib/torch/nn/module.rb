@@ -185,11 +185,11 @@ module Torch
 
       def method_missing(method, *args, &block)
         name = method.to_s
-        if named_parameters[name]
+        if named_parameters.key?(name)
           named_parameters[name]
-        elsif named_buffers[name]
+        elsif named_buffers.key?(name)
           named_buffers[name]
-        elsif named_modules[name]
+        elsif named_modules.key?(name)
           named_modules[name]
         else
           super

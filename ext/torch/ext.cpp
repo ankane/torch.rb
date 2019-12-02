@@ -654,6 +654,11 @@ void Init_ext()
         return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
       })
     .define_singleton_method(
+      "hinge_embedding_loss",
+      *[](const Tensor &input, const Tensor &target, double margin, MyReduction reduction) {
+        return torch::hinge_embedding_loss(input, target, margin, reduction);
+      })
+    .define_singleton_method(
       "kl_div",
       *[](Tensor& input, Tensor& target, MyReduction reduction) {
         return torch::kl_div(input, target, reduction);
@@ -678,6 +683,17 @@ void Init_ext()
       *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, MyReduction reduction) {
         return torch::poisson_nll_loss(input, target, log_input, full, eps, reduction);
       })
+    .define_singleton_method(
+      "soft_margin_loss",
+      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
+        return torch::soft_margin_loss(input, target, reduction);
+      })
+    .define_singleton_method(
+      "smooth_l1_loss",
+      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
+        return torch::smooth_l1_loss(input, target, reduction);
+      })
+    // end loss
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
       "_from_blob",
