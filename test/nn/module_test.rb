@@ -4,7 +4,7 @@ class ModuleTest < Minitest::Test
   def test_modules
     assert_equal 6, net.modules.size
     assert_equal 6, net.named_modules.size
-    assert_equal ["", "conv1", "conv2", "fc1", "fc2", "fc3"], net.named_modules.keys
+    assert_equal [""] + %w(conv1 conv2 fc1 fc2 fc3), net.named_modules.keys
   end
 
   def test_parameters
