@@ -126,7 +126,7 @@ module Torch
         end
 
         def multi_margin_loss(input, target, p: 1, margin: 1.0, weight: nil, reduction: "mean")
-          raise NotImplementedYet
+          Torch.multi_margin_loss(input, target, p, margin, weight, reduction)
         end
 
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")

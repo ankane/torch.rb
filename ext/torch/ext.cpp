@@ -238,6 +238,27 @@ Object tensor_array(std::tuple<torch::Tensor, torch::Tensor> x) {
   return Object(a);
 }
 
+class OptionalTensor {
+  Object value;
+  public:
+    OptionalTensor(Object o) {
+      value = o;
+    }
+    operator torch::Tensor() {
+      if (value.is_nil()) {
+        return {};
+      }
+      return from_ruby<torch::Tensor>(value);
+    }
+};
+
+template<>
+inline
+OptionalTensor from_ruby<OptionalTensor>(Object x)
+{
+  return OptionalTensor(x);
+}
+
 extern "C"
 void Init_ext()
 {
@@ -677,6 +698,11 @@ void Init_ext()
       "multilabel_margin_loss",
       *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
         return torch::multilabel_margin_loss(input, target, reduction);
+      })
+    .define_singleton_method(
+      "multi_margin_loss",
+      *[](const Tensor &input, const Tensor &target, Scalar p, Scalar margin, OptionalTensor weight, MyReduction reduction) {
+        return torch::multi_margin_loss(input, target, p, margin, weight, reduction);
       })
     .define_singleton_method(
       "nll_loss",

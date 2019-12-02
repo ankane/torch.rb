@@ -73,8 +73,7 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_multi_margin_loss
-    skip
-    assert_works Torch::NN::MultiMarginLoss, :float
+    assert_works Torch::NN::MultiMarginLoss, :long
   end
 
   def test_nll_loss
