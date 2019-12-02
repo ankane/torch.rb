@@ -94,8 +94,12 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_triplet_margin_loss
-    skip
-    assert_works Torch::NN::TripletMarginLoss, :float
+    triplet_loss = Torch::NN::TripletMarginLoss.new(margin: 1.0, p: 2)
+    anchor = Torch.randn(100, 128, requires_grad: true)
+    positive = Torch.randn(100, 128, requires_grad: true)
+    negative = Torch.randn(100, 128, requires_grad: true)
+    output = triplet_loss.call(anchor, positive, negative)
+    output.backward
   end
 
   private

@@ -698,6 +698,11 @@ void Init_ext()
       *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
         return torch::smooth_l1_loss(input, target, reduction);
       })
+    .define_singleton_method(
+      "triplet_margin_loss",
+      *[](const Tensor &anchor, const Tensor &positive, const Tensor &negative, double margin, double p, double eps, bool swap, MyReduction reduction) {
+        return torch::triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction);
+      })
     // end loss
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(

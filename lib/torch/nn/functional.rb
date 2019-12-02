@@ -147,7 +147,7 @@ module Torch
         end
 
         def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
-          raise NotImplementedYet
+          Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction)
         end
 
         # end loss
