@@ -11,8 +11,8 @@ class ModuleTest < Minitest::Test
     assert_equal 10, net.parameters.size
     assert_equal 10, net.named_parameters.size
     expected = %w(
-      conv1.weight conv1.bias conv2.weight conv2.bias fc1.weight fc1.bias
-      fc2.weight fc2.bias fc3.weight fc3.bias
+      conv1.weight conv1.bias conv2.weight conv2.bias fc1.weight
+      fc1.bias fc2.weight fc2.bias fc3.weight fc3.bias
     )
     assert_equal expected, net.named_parameters.keys
     assert_includes net.parameters[0].inspect, "Parameter containing"
