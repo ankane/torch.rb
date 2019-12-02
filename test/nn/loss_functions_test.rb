@@ -11,8 +11,11 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_bce_with_logits_loss
-    skip
-    assert_works Torch::NN::BCEWithLogitsLoss, :float
+    target = Torch.ones([10, 64], dtype: :float32)
+    output = Torch.full([10, 64], 0.999)
+    pos_weight = Torch.ones([64])
+    criterion = Torch::NN::BCEWithLogitsLoss.new(pos_weight: pos_weight)
+    criterion.call(output, target)
   end
 
   def test_cosine_embedding_loss

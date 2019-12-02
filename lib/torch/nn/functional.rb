@@ -76,12 +76,11 @@ module Torch
         # loss functions
 
         def binary_cross_entropy(input, target, weight: nil, reduction: "mean")
-          raise NotImplementedYet if weight
-          Torch.binary_cross_entropy(input, target, reduction)
+          Torch.binary_cross_entropy(input, target, weight, reduction)
         end
 
         def binary_cross_entropy_with_logits(input, target, weight: nil, reduction: "mean", pos_weight: nil)
-          raise NotImplementedYet
+          Torch.binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction)
         end
 
         def cosine_embedding_loss(input1, input2, target, margin: 0, reduction: "mean")
