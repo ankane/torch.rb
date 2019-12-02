@@ -40,11 +40,4 @@ class ContainersTest < Minitest::Test
     loss.backward
     optimizer.step
   end
-
-  def test_to
-    net = Net.new
-    device = Torch::CUDA.available? ? "cuda" : "cpu"
-    net.to(device)
-    net.cpu
-  end
 end

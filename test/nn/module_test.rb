@@ -36,6 +36,13 @@ class ModuleTest < Minitest::Test
     assert net.fc1.bias
   end
 
+  def test_to
+    net = Net.new
+    device = Torch::CUDA.available? ? "cuda" : "cpu"
+    net.to(device)
+    net.cpu
+  end
+
   private
 
   def net
