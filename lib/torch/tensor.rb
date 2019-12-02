@@ -6,13 +6,7 @@ module Torch
     alias_method :requires_grad?, :requires_grad
 
     def self.new(*args)
-      if args.length == 1 && args.first.is_a?(Tensor)
-        args.first
-      elsif args.length == 1 && args.first.is_a?(Array)
-        Torch.tensor(args.first)
-      else
-        Torch.empty(*args)
-      end
+      FloatTensor.new(*args)
     end
 
     def dtype
