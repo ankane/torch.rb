@@ -88,6 +88,8 @@ module Torch
       end
 
       def forward(input, hx: nil)
+        raise NotImplementedYet
+
         is_packed = false # TODO isinstance(input, PackedSequence)
         if is_packed
           input, batch_sizes, sorted_indices, unsorted_indices = input
