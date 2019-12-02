@@ -5,6 +5,10 @@ module Torch
         data = Tensor.new unless data
         Tensor._make_subclass(data, requires_grad)
       end
+
+      def inspect
+        "Parameter containing:\n#{super}"
+      end
     end
   end
 end
