@@ -3,12 +3,21 @@ require_relative "../test_helper"
 class SparseLayersTest < Minitest::Test
   def test_embedding
     embedding = Torch::NN::Embedding.new(10, 3)
-    input = Torch::LongTensor.new([[1,2,4,5],[4,3,2,9]])
+    input = Torch::LongTensor.new([[1, 2, 4, 5],[4, 3, 2, 9]])
     embedding.call(input)
 
     embedding = Torch::NN::Embedding.new(10, 3, padding_idx: 0)
-    input = Torch::LongTensor.new([[0,2,0,5]])
+    input = Torch::LongTensor.new([[0, 2, 0, 5]])
     embedding.call(input)
+  end
+
+  def test_embedding_bag
+    skip "Not implemented yet"
+
+    embedding_sum = Torch::NN::EmbeddingBag.new(10, 3, mode: "sum")
+    input = Torch::LongTensor.new([1, 2, 4, 5, 4, 3, 2, 9])
+    offsets = Torch::LongTensor.new([0, 4])
+    embedding_sum.call(input, offsets: offsets)
   end
 
   # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
