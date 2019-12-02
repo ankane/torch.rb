@@ -143,17 +143,30 @@ module Torch
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
   # TODO DRY with Torch::Tensor
-  class LongTensor
-    def self.new(*args)
-      if args.size == 1 && args.is_a?(Array)
-        Torch.tensor(args.first, dtype: :long)
+  def self._make_tensor_class(dtype)
+    cls = Class.new
+    cls.define_singleton_method("new") do |*args|
+      if args.size == 1 && args.first.is_a?(Tensor)
+        args.first.send(dtype)
+      elsif args.size == 1 && args.first.is_a?(Array)
+        Torch.tensor(args.first, dtype: dtype)
       else
-        Torch.empty(*args, dtype: :long)
+        Torch.empty(*args, dtype: dtype)
       end
     end
+    cls
   end
 
-  FloatTensor = Tensor
+  # TODO add CUDA versions
+  FloatTensor = _make_tensor_class(:float32)
+  DoubleTensor = _make_tensor_class(:float32)
+  HalfTensor = _make_tensor_class(:float16)
+  ByteTensor = _make_tensor_class(:uint8)
+  CharTensor = _make_tensor_class(:int8)
+  ShortTensor = _make_tensor_class(:int16)
+  IntTensor = _make_tensor_class(:int32)
+  LongTensor = _make_tensor_class(:int64)
+  BoolTensor = _make_tensor_class(:bool)
 
   class << self
     # Torch.float, Torch.long, etc
