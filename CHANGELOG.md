@@ -1,3 +1,7 @@
+## 0.1.5 (unreleased)
+
+- Improved modules
+
 ## 0.1.4 (2019-12-01)
 
 - Added distance functions

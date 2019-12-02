@@ -85,25 +85,50 @@ module Torch
       end
 
       def parameters
-        params = []
+        named_parameters.values
+      end
+
+      def named_parameters(prefix: "", recurse: true)
+        params = {}
+        if recurse
+          named_children.each do |name, mod|
+            params.merge!(mod.named_parameters(prefix: "#{name}.", recurse: recurse))
+          end
+        end
         instance_variables.each do |name|
           param = instance_variable_get(name)
-          params << param if param.is_a?(Parameter)
+          params[[prefix, name[1..-1]].join] = param if param.is_a?(Parameter)
         end
-        params + modules.flat_map { |_, mod| mod.parameters }
+        params
+      end
+
+      def buffers
+        named_buffers.values
+      end
+
+      def named_buffers
+        @buffers || {}
       end
 
       def children
-        @modules.values
+        named_children.values
       end
 
-      def modules
+      def named_children
         modules = {}
         instance_variables.each do |name|
           mod = instance_variable_get(name)
           modules[name[1..-1]] = mod if mod.is_a?(Module)
         end
-        @modules.merge(modules)
+        modules
+      end
+
+      def modules
+        named_modules.values
+      end
+
+      def named_modules
+        {"" => self}.merge(named_children)
       end
 
       def train(mode = true)
@@ -153,11 +178,21 @@ module Torch
       end
 
       def method_missing(method, *args, &block)
-        modules[method.to_s] || super
+        name = method.to_s
+        if named_parameters[name]
+          named_parameters[name]
+        elsif named_buffers[name]
+          named_buffers[name]
+        elsif named_modules[name]
+          named_modules[name]
+        else
+          super
+        end
       end
 
       def respond_to?(method, include_private = false)
-        modules.key?(method.to_s) || super
+        name = method.to_s
+        named_parameters.key?(name) || named_buffers.key?(name) || named_modules.key?(name) || super
       end
 
       private
