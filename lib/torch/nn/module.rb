@@ -99,6 +99,9 @@ module Torch
           param = instance_variable_get(name)
           params[[prefix, name[1..-1]].join] = param if param.is_a?(Parameter)
         end
+        @parameters.each do |name, param|
+          params[[prefix, name].join] = param
+        end
         params
       end
 
@@ -119,6 +122,9 @@ module Torch
         instance_variables.each do |name|
           mod = instance_variable_get(name)
           modules[name[1..-1]] = mod if mod.is_a?(Module)
+        end
+        @modules.each do |name, mod|
+          modules[name] = mod
         end
         modules
       end
