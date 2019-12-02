@@ -1,8 +1,18 @@
 require_relative "../test_helper"
 
 class SparseLayersTest < Minitest::Test
-  # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
   def test_embedding
+    embedding = Torch::NN::Embedding.new(10, 3)
+    input = Torch::LongTensor.new([[1,2,4,5],[4,3,2,9]])
+    embedding.call(input)
+
+    embedding = Torch::NN::Embedding.new(10, 3, padding_idx: 0)
+    input = Torch::LongTensor.new([[0,2,0,5]])
+    embedding.call(input)
+  end
+
+  # https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
+  def test_embedding_tutorial
     Torch.manual_seed(1)
     word_to_ix = {"hello" => 0, "world" => 1}
     embeds = Torch::NN::Embedding.new(2, 5)

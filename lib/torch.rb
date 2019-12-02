@@ -142,6 +142,12 @@ module Torch
   }
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
+  class LongTensor
+    def self.new(data)
+      Torch.tensor(data, dtype: :long)
+    end
+  end
+
   class << self
     # Torch.float, Torch.long, etc
     DTYPE_TO_ENUM.each_key do |dtype|
