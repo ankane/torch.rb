@@ -113,7 +113,11 @@ module Torch
         end
 
         check_forward_args(input, hx, batch_sizes)
-        # _impl = _rnn_impls[@mode]
+        _rnn_impls = {
+          "RNN_TANH" => Torch.method(:_rnn_tanh),
+          "RNN_RELU" => Torch.method(:_rnn_relu)
+        }
+        _impl = _rnn_impls[@mode]
         if batch_sizes.nil?
           result = _impl.call(input, hx, _get_flat_weights, @bias, @num_layers,
                            @dropout, @training, @bidirectional, @batch_first)
