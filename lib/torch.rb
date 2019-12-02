@@ -143,23 +143,23 @@ module Torch
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
   # TODO DRY with Torch::Tensor
-  def self._make_tensor_class(dtype)
+  def self._make_tensor_class(dtype, cuda = false)
     cls = Class.new
+    device = cuda ? "cuda" : "cpu"
     cls.define_singleton_method("new") do |*args|
       if args.size == 1 && args.first.is_a?(Tensor)
-        args.first.send(dtype)
+        args.first.send(dtype).to(device)
       elsif args.size == 1 && args.first.is_a?(Array)
-        Torch.tensor(args.first, dtype: dtype)
+        Torch.tensor(args.first, dtype: dtype, device: device)
       else
-        Torch.empty(*args, dtype: dtype)
+        Torch.empty(*args, dtype: dtype, device: device)
       end
     end
     cls
   end
 
-  # TODO add CUDA versions
   FloatTensor = _make_tensor_class(:float32)
-  DoubleTensor = _make_tensor_class(:float32)
+  DoubleTensor = _make_tensor_class(:float64)
   HalfTensor = _make_tensor_class(:float16)
   ByteTensor = _make_tensor_class(:uint8)
   CharTensor = _make_tensor_class(:int8)
@@ -167,6 +167,16 @@ module Torch
   IntTensor = _make_tensor_class(:int32)
   LongTensor = _make_tensor_class(:int64)
   BoolTensor = _make_tensor_class(:bool)
+
+  CUDA::FloatTensor = _make_tensor_class(:float32, true)
+  CUDA::DoubleTensor = _make_tensor_class(:float64, true)
+  CUDA::HalfTensor = _make_tensor_class(:float16, true)
+  CUDA::ByteTensor = _make_tensor_class(:uint8, true)
+  CUDA::CharTensor = _make_tensor_class(:int8, true)
+  CUDA::ShortTensor = _make_tensor_class(:int16, true)
+  CUDA::IntTensor = _make_tensor_class(:int32, true)
+  CUDA::LongTensor = _make_tensor_class(:int64, true)
+  CUDA::BoolTensor = _make_tensor_class(:bool, true)
 
   class << self
     # Torch.float, Torch.long, etc
