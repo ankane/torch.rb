@@ -1,12 +1,6 @@
 require_relative "../test_helper"
 
 class ModuleTest < Minitest::Test
-  def test_modules
-    assert_equal 6, net.modules.size
-    assert_equal 6, net.named_modules.size
-    assert_equal [""] + %w(conv1 conv2 fc1 fc2 fc3), net.named_modules.keys
-  end
-
   def test_parameters
     assert_equal 10, net.parameters.size
     assert_equal 10, net.named_parameters.size
@@ -16,6 +10,23 @@ class ModuleTest < Minitest::Test
     )
     assert_equal expected, net.named_parameters.keys
     assert_includes net.parameters[0].inspect, "Parameter containing"
+  end
+
+  def test_buffers
+    assert_equal 0, net.buffers.size
+    assert_equal 0, net.named_buffers.size
+  end
+
+  def test_children
+    assert_equal 5, net.children.size
+    assert_equal 5, net.named_children.size
+    assert_equal %w(conv1 conv2 fc1 fc2 fc3), net.named_children.keys
+  end
+
+  def test_modules
+    assert_equal 6, net.modules.size
+    assert_equal 6, net.named_modules.size
+    assert_equal [""] + %w(conv1 conv2 fc1 fc2 fc3), net.named_modules.keys
   end
 
   def test_accessors
