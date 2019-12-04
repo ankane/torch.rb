@@ -146,11 +146,6 @@ void Init_ext()
         return torch::argmax(input, dim, keepdim);
       })
     .define_singleton_method(
-      "_cat",
-      *[](TensorList tensors, int64_t dim) {
-        return torch::cat(tensors, dim);
-      })
-    .define_singleton_method(
       "_norm",
       *[](Tensor& input) {
         return torch::norm(input);
@@ -246,11 +241,6 @@ void Init_ext()
         return torch::log_softmax(input, dim);
       })
     .define_singleton_method(
-      "_reshape",
-      *[](Tensor& input, IntArrayRef shape) {
-        return torch::reshape(input, shape);
-      })
-    .define_singleton_method(
       "relu",
       *[](Tensor& input) {
         return torch::relu(input);
@@ -292,40 +282,11 @@ void Init_ext()
       *[](Tensor& input, IntArrayRef kernel_size) {
         return torch::avg_pool2d(input, kernel_size);
       })
-    // sparse layers
-    .define_singleton_method(
-      "_embedding_bag",
-      // weight and indices are swapped from Python interface
-      *[](const Tensor &weight, const Tensor &indices, const Tensor &offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor &per_sample_weights) {
-        return torch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
-      })
-    // loss functions
-    .define_singleton_method(
-      "_binary_cross_entropy",
-      *[](const Tensor& input, const Tensor& target, OptionalTensor weight, MyReduction reduction) {
-        return torch::binary_cross_entropy(input, target, weight, reduction);
-      })
     .define_singleton_method(
       "_binary_cross_entropy_with_logits",
       *[](const Tensor &input, const Tensor &target, OptionalTensor weight, OptionalTensor pos_weight, MyReduction reduction) {
         return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
       })
-    .define_singleton_method(
-      "_ctc_loss",
-      *[](const Tensor &log_probs, const Tensor &targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank, MyReduction reduction, bool zero_infinity) {
-        return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
-      })
-    .define_singleton_method(
-      "_multi_margin_loss",
-      *[](const Tensor &input, const Tensor &target, Scalar p, Scalar margin, OptionalTensor weight, MyReduction reduction) {
-        return torch::multi_margin_loss(input, target, p, margin, weight, reduction);
-      })
-    .define_singleton_method(
-      "_nll_loss",
-      *[](Tensor& input, Tensor& target, MyReduction reduction, int64_t ignore_index) {
-        return torch::nll_loss(input, target, {}, reduction, ignore_index);
-      })
-    // end loss
     .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
       "_from_blob",
@@ -426,11 +387,6 @@ void Init_ext()
         std::stringstream s;
         s << self.device();
         return s.str();
-      })
-    .define_method(
-      "_view",
-      *[](Tensor& self, IntArrayRef size) {
-        return self.view(size);
       })
     .define_method(
       "resize_as!",

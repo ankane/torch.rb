@@ -77,6 +77,9 @@ void add_%{type}_functions(Module m) {
                 case a[:type]
                 when "Tensor"
                   "const Tensor &"
+                when "Tensor?"
+                  # TODO better signature
+                  "OptionalTensor"
                 when "Tensor[]"
                   "TensorList"
                 when "int"
@@ -128,8 +131,9 @@ void add_%{type}_functions(Module m) {
 
           # remove functions
           skip_binding = ["unique_dim_consecutive", "einsum"]
-          skip_args = ["?", "bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
+          skip_args = ["bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
           functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
+          functions.reject! { |f| f.parsed_args.any? { |a| a[:type].include?("?") && a[:type] != "Tensor?" } }
           todo_functions, functions =
             functions.partition do |f|
               skip_args.any? { |v| f.args_str.include?(v) }

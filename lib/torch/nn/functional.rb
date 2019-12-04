@@ -77,7 +77,7 @@ module Torch
         # loss functions
 
         def binary_cross_entropy(input, target, weight: nil, reduction: "mean")
-          Torch._binary_cross_entropy(input, target, weight, reduction)
+          NN._binary_cross_entropy(input, target, weight, reduction)
         end
 
         def binary_cross_entropy_with_logits(input, target, weight: nil, reduction: "mean", pos_weight: nil)
@@ -94,7 +94,7 @@ module Torch
 
         def ctc_loss(log_probs, targets, input_lengths, target_lengths, blank: 0, reduction: "mean", zero_infinity: false)
           # call to_a on input_lengths and target_lengths for C++
-          Torch._ctc_loss(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
+          Torch._ctc_loss_intlist(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
         end
 
         def hinge_embedding_loss(input, target, margin: 1.0, reduction: "mean")
@@ -118,7 +118,7 @@ module Torch
         end
 
         def multilabel_margin_loss(input, target, reduction: "mean")
-          Torch._multilabel_margin_loss(input, target, reduction)
+          NN._multilabel_margin_loss(input, target, reduction)
         end
 
         def multilabel_soft_margin_loss(input, target, weight: nil)
@@ -126,12 +126,11 @@ module Torch
         end
 
         def multi_margin_loss(input, target, p: 1, margin: 1.0, weight: nil, reduction: "mean")
-          Torch._multi_margin_loss(input, target, p, margin, weight, reduction)
+          NN._multi_margin_loss(input, target, p, margin, weight, reduction)
         end
 
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
-          raise NotImplementedYet if weight
-          Torch._nll_loss(input, target, reduction, ignore_index)
+          NN._nll_loss(input, target, weight, reduction, ignore_index)
         end
 
         def poisson_nll_loss(input, target, log_input: true, full: false, eps: 1e-8, reduction: "mean")
