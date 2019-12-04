@@ -171,58 +171,6 @@ void Init_ext()
         return tensor_array(torch::_max_out(max, max_indices, input, dim, keepdim));
       })
     .define_singleton_method(
-      "_sqrt",
-      *[](Tensor& input) {
-        return torch::sqrt(input);
-      })
-    .define_singleton_method(
-      "_exp",
-      *[](Tensor& input) {
-        return torch::exp(input);
-      })
-    .define_singleton_method(
-      "_log",
-      *[](Tensor& input) {
-        return torch::log(input);
-      })
-    .define_singleton_method(
-      "_sign",
-      *[](Tensor& input) {
-        return torch::sign(input);
-      })
-    .define_singleton_method(
-      "_unsqueeze",
-      *[](Tensor& input, int64_t dim) {
-        return torch::unsqueeze(input, dim);
-      })
-    .define_singleton_method(
-      "_dot",
-      *[](Tensor& input, Tensor& tensor) {
-        return torch::dot(input, tensor);
-      })
-    .define_singleton_method(
-      "_matmul",
-      *[](Tensor& input, Tensor& other) {
-        return torch::matmul(input, other);
-      })
-    .define_singleton_method(
-      "_eq",
-      *[](Tensor& input, Tensor& other) {
-        return torch::eq(input, other);
-      })
-    .define_singleton_method(
-      "_gt",
-      // TODO support tensors
-      *[](Tensor& input, Scalar other) {
-        return torch::gt(input, other);
-      })
-    .define_singleton_method(
-      "_lt",
-      // TODO support tensors
-      *[](Tensor& input, Scalar other) {
-        return torch::lt(input, other);
-      })
-    .define_singleton_method(
       "_add",
       *[](Tensor& input, Tensor& other) {
         return torch::add(input, other);
@@ -288,11 +236,6 @@ void Init_ext()
         return tensor_array(torch::topk(input, k));
       })
     .define_singleton_method(
-      "_sigmoid",
-      *[](Tensor& input) {
-        return torch::sigmoid(input);
-      })
-    .define_singleton_method(
       "_softplus",
       *[](const Tensor &input, Scalar beta, Scalar threshold) {
         return torch::softplus(input, beta, threshold);
@@ -308,24 +251,9 @@ void Init_ext()
         return torch::log_softmax(input, dim);
       })
     .define_singleton_method(
-      "_abs",
-      *[](Tensor& input) {
-        return torch::abs(input);
-      })
-    .define_singleton_method(
-      "_neg",
-      *[](Tensor& input) {
-        return torch::neg(input);
-      })
-    .define_singleton_method(
       "_reshape",
       *[](Tensor& input, IntArrayRef shape) {
         return torch::reshape(input, shape);
-      })
-    .define_singleton_method(
-      "_flatten",
-      *[](Tensor& input, int64_t start_dim, int64_t end_dim) {
-        return torch::flatten(input, start_dim, end_dim);
       })
     .define_singleton_method(
       "relu",

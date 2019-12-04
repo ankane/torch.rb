@@ -397,7 +397,7 @@ module Torch
     end
 
     def eq(input, other)
-      _eq(input, other)
+      _eq_tensor(input, other)
     end
 
     def norm(input)
@@ -442,11 +442,11 @@ module Torch
     end
 
     def gt(input, other)
-      _gt(input, other)
+      _gt_scalar(input, other)
     end
 
     def lt(input, other)
-      _lt(input, other)
+      _lt_scalar(input, other)
     end
 
     def unsqueeze(input, dim)
@@ -470,7 +470,7 @@ module Torch
     end
 
     def flatten(input, start_dim: 0, end_dim: -1)
-      _flatten(input, start_dim, end_dim)
+      _flatten_using_ints(input, start_dim, end_dim)
     end
 
     def sqrt(input)
