@@ -38,7 +38,7 @@ module Torch
               elsif matches.size == 0
                 raise ArgumentError, "#{name} received an invalid combination of arguments"
               else
-                raise Error, "This should never happen. Please report a bug."
+                raise Error, "This should never happen. Please report a bug with #{name}"
               end
             end
           end
