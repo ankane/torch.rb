@@ -133,10 +133,10 @@ void add_%{type}_functions(Module m) {
           skip_binding = ["unique_dim_consecutive", "einsum"]
           skip_args = ["bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
           functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
-          functions.reject! { |f| f.parsed_args.any? { |a| a[:type].include?("?") && a[:type] != "Tensor?" } }
           todo_functions, functions =
             functions.partition do |f|
-              skip_args.any? { |v| f.args_str.include?(v) }
+              skip_args.any? { |v| f.args_str.include?(v) } ||
+              f.parsed_args.any? { |a| a[:type].include?("?") && a[:type] != "Tensor?" }
             end
 
           # todo_functions.each do |f|
