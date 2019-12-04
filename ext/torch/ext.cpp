@@ -321,31 +321,6 @@ void Init_ext()
         return torch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
       })
     .define_singleton_method(
-      "_hinge_embedding_loss",
-      *[](const Tensor &input, const Tensor &target, double margin, MyReduction reduction) {
-        return torch::hinge_embedding_loss(input, target, margin, reduction);
-      })
-    .define_singleton_method(
-      "_kl_div",
-      *[](Tensor& input, Tensor& target, MyReduction reduction) {
-        return torch::kl_div(input, target, reduction);
-      })
-    .define_singleton_method(
-      "_l1_loss",
-      *[](Tensor& input, Tensor& target, MyReduction reduction) {
-        return torch::l1_loss(input, target, reduction);
-      })
-    .define_singleton_method(
-      "_mse_loss",
-      *[](Tensor& input, Tensor& target, MyReduction reduction) {
-        return torch::mse_loss(input, target, reduction);
-      })
-    .define_singleton_method(
-      "_multilabel_margin_loss",
-      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
-        return torch::multilabel_margin_loss(input, target, reduction);
-      })
-    .define_singleton_method(
       "_multi_margin_loss",
       *[](const Tensor &input, const Tensor &target, Scalar p, Scalar margin, OptionalTensor weight, MyReduction reduction) {
         return torch::multi_margin_loss(input, target, p, margin, weight, reduction);
@@ -354,26 +329,6 @@ void Init_ext()
       "_nll_loss",
       *[](Tensor& input, Tensor& target, MyReduction reduction, int64_t ignore_index) {
         return torch::nll_loss(input, target, {}, reduction, ignore_index);
-      })
-    .define_singleton_method(
-      "_poisson_nll_loss",
-      *[](const Tensor &input, const Tensor &target, bool log_input, bool full, double eps, MyReduction reduction) {
-        return torch::poisson_nll_loss(input, target, log_input, full, eps, reduction);
-      })
-    .define_singleton_method(
-      "_soft_margin_loss",
-      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
-        return torch::soft_margin_loss(input, target, reduction);
-      })
-    .define_singleton_method(
-      "_smooth_l1_loss",
-      *[](const Tensor &input, const Tensor &target, MyReduction reduction) {
-        return torch::smooth_l1_loss(input, target, reduction);
-      })
-    .define_singleton_method(
-      "_triplet_margin_loss",
-      *[](const Tensor &anchor, const Tensor &positive, const Tensor &negative, double margin, double p, double eps, bool swap, MyReduction reduction) {
-        return torch::triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction);
       })
     // end loss
     .define_singleton_method("numel", &torch::numel)

@@ -106,7 +106,7 @@ module Torch
         end
 
         def l1_loss(input, target, reduction: "mean")
-          Torch._l1_loss(input, target, reduction)
+          NN._l1_loss(input, target, reduction)
         end
 
         def margin_ranking_loss(input1, input2, target, margin: 0, reduction: "mean")
@@ -139,11 +139,11 @@ module Torch
         end
 
         def soft_margin_loss(input, target, reduction: "mean")
-          Torch._soft_margin_loss(input, target, reduction)
+          NN._soft_margin_loss(input, target, reduction)
         end
 
         def smooth_l1_loss(input, target, reduction: "mean")
-          Torch._smooth_l1_loss(input, target, reduction)
+          NN._smooth_l1_loss(input, target, reduction)
         end
 
         def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
