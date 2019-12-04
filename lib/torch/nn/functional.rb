@@ -173,7 +173,7 @@ module Torch
 
         def dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._dropout!(input, p, training)
+            Torch._dropout_(input, p, training)
           else
             Torch._dropout(input, p, training)
           end
@@ -183,7 +183,7 @@ module Torch
           raise ArgumentError, "dropout probability has to be between 0 and 1, but got #{p}" if p < 0 || p > 1
 
           if inplace
-            Torch._feature_dropout!(input, p, training)
+            Torch._feature_dropout_(input, p, training)
           else
             Torch._feature_dropout(input, p, training)
           end
@@ -191,7 +191,7 @@ module Torch
 
         def dropout3d(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._feature_dropout!(input, p, training)
+            Torch._feature_dropout_(input, p, training)
           else
             Torch._feature_dropout(input, p, training)
           end
@@ -199,7 +199,7 @@ module Torch
 
         def alpha_dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._alpha_dropout!(input, p, training)
+            Torch._alpha_dropout_(input, p, training)
           else
             Torch._alpha_dropout(input, p, training)
           end
@@ -207,7 +207,7 @@ module Torch
 
         def feature_alpha_dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._feature_alpha_dropout!(input, p, training)
+            Torch._feature_alpha_dropout_(input, p, training)
           else
             Torch._feature_alpha_dropout(input, p, training)
           end

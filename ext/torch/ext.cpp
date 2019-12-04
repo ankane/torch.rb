@@ -297,46 +297,6 @@ void Init_ext()
       *[](Tensor& input, IntArrayRef kernel_size) {
         return torch::avg_pool2d(input, kernel_size);
       })
-    .define_singleton_method(
-      "_dropout",
-      *[](Tensor& input, float p, bool train) {
-        return torch::dropout(input, p, train);
-      })
-    .define_singleton_method(
-      "_dropout!",
-      *[](Tensor& input, float p, bool train) {
-        return torch::dropout_(input, p, train);
-      })
-    .define_singleton_method(
-      "_feature_dropout",
-      *[](Tensor& input, float p, bool train) {
-        return torch::feature_dropout(input, p, train);
-      })
-    .define_singleton_method(
-      "_feature_dropout!",
-      *[](Tensor& input, float p, bool train) {
-        return torch::feature_dropout_(input, p, train);
-      })
-    .define_singleton_method(
-      "_alpha_dropout",
-      *[](Tensor& input, float p, bool train) {
-        return torch::alpha_dropout(input, p, train);
-      })
-    .define_singleton_method(
-      "_alpha_dropout!",
-      *[](Tensor& input, float p, bool train) {
-        return torch::alpha_dropout_(input, p, train);
-      })
-    .define_singleton_method(
-      "_feature_alpha_dropout",
-      *[](Tensor& input, float p, bool train) {
-        return torch::feature_alpha_dropout(input, p, train);
-      })
-    .define_singleton_method(
-      "_feature_alpha_dropout!",
-      *[](Tensor& input, float p, bool train) {
-        return torch::feature_alpha_dropout_(input, p, train);
-      })
     // sparse layers
     .define_singleton_method(
       "_embedding",
