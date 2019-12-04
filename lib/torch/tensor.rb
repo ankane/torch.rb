@@ -24,7 +24,7 @@ module Torch
     end
 
     def to_a
-      reshape_arr(_data, shape)
+      reshape_arr(_flat_data, shape)
     end
 
     # TODO support dtype
@@ -35,7 +35,7 @@ module Torch
 
     def size(dim = nil)
       if dim
-        _size(dim)
+        _size_int(dim)
       else
         shape
       end
@@ -53,7 +53,7 @@ module Torch
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
       end
-      _data.first
+      _flat_data.first
     end
 
     # unsure if this is correct
@@ -69,7 +69,7 @@ module Torch
     def numo
       cls = Torch._dtype_to_numo[dtype]
       raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.cast(_data).reshape(*shape)
+      cls.cast(_flat_data).reshape(*shape)
     end
 
     def new_ones(*size, **options)
@@ -88,10 +88,10 @@ module Torch
 
     def add!(value = 1, other)
       if other.is_a?(Numeric)
-        _add_scalar!(other * value)
+        _add__scalar(other, value)
       else
         # need to use alpha for sparse tensors instead of multiplying
-        _add_alpha!(other, value)
+        _add__tensor(other, value)
       end
     end
 

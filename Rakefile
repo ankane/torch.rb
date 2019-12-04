@@ -22,6 +22,14 @@ end
 
 Rake::Task["release:guard_clean"].enhance [:remove_ext]
 
+namespace :generate do
+  desc "Generate C++ functions"
+  task :functions do
+    require "torch"
+    Torch::Native::Dispatcher.generate_cpp_functions
+  end
+end
+
 namespace :benchmark do
   desc "Benchmark Numo"
   task :numo do

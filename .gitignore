@@ -11,3 +11,4 @@
 *.bundle
 *.npz
 ml-100k*
+/ext/torch/*_functions.cpp

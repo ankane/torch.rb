@@ -1,6 +1,9 @@
 # ext
 require "torch/ext"
 
+# native functions
+require "torch/native/dispatcher"
+
 # modules
 require "torch/inspector"
 require "torch/tensor"
@@ -485,6 +488,10 @@ module Torch
 
     def abs(input)
       _abs(input)
+    end
+
+    def transpose(input, dim0, dim1)
+      _transpose_int(input, dim0, dim1)
     end
 
     def device(str)

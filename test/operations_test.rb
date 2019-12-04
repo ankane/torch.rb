@@ -39,6 +39,12 @@ class OperationsTest < Minitest::Test
     assert_equal [4, 3, 2], indices.to_a
   end
 
+  def test_add_bad
+    skip
+    x = Torch.tensor([1, 2])
+    Torch.add(x, 1, 1, 1)
+  end
+
   def test_assignment
     x = Torch.tensor([1, 2, 3])
     x[1] = 0
@@ -133,5 +139,10 @@ class OperationsTest < Minitest::Test
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
     assert_equal [2], x[index].to_a
+  end
+
+  def test_transpose
+    x = Torch.randn(2, 3)
+    Torch.transpose(x, 0, 1)
   end
 end
