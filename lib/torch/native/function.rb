@@ -34,6 +34,23 @@ module Torch
         end
       end
 
+      def parsed_args
+        @parsed_args ||= begin
+          args = []
+          pos = true
+          args_str.split(", ").each do |a|
+            if a == "*"
+              pos = false
+              next
+            end
+            t, _, k = a.rpartition(" ")
+            k, d = k.split("=")
+            args << {name: k, type: t, default: d, pos: pos}
+          end
+          args
+        end
+      end
+
       def out_size
         @out_size ||= func.split("->").last.count("!")
       end

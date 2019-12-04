@@ -71,17 +71,29 @@ void add_%{type}_functions(Module m) {
 
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
+            cpp_args = []
+            func.parsed_args.each do |a|
+              t =
+                case a[:type]
+                when "Tensor"
+                  "const Tensor &"
+                when "Tensor[]"
+                  "TensorList"
+                when "int"
+                  "int64_t"
+                when "float"
+                  "double"
+                when /\Aint\[/
+                  "IntArrayRef"
+                when /Tensor\(\S!?\)/
+                  "Tensor &"
+                else
+                  a[:type]
+                end
 
-            # TODO improve
-            cpp_args_str = func.args_str.dup
-            cpp_args_str.gsub!("Tensor ", "const Tensor &")
-            cpp_args_str.gsub!(/Tensor\(\S!?\) /, "Tensor &")
-            cpp_args_str.gsub!("int ", "int64_t ")
-            cpp_args_str.gsub!("float ", "double ")
-            cpp_args_str.sub!(" *,", "")
-            cpp_args_str.gsub!("int[]", "IntArrayRef")
-            cpp_args_str.gsub!(/=[^),]+/, "")
-            cpp_args_str.gsub!("int64_t reduction", "MyReduction reduction")
+              t = "MyReduction" if a[:name] == "reduction" && t == "int64_t"
+              cpp_args << [t, a[:name]].join(" ").sub("& ", "&")
+            end
 
             dispatch = func.out? ? "#{func.base_name}_out" : func.base_name
             args = func.args
@@ -92,7 +104,7 @@ void add_%{type}_functions(Module m) {
 
             cpp_defs << ".#{def_method}(
     \"#{func.cpp_name}\",
-    *[](#{cpp_args_str}) {
+    *[](#{cpp_args.join(", ")}) {
       return #{prefix}#{dispatch}(#{args.join(", ")});
     })"
           end
@@ -115,12 +127,15 @@ void add_%{type}_functions(Module m) {
           functions = functions()
 
           # remove functions
-          skip_binding = ["unique_dim_consecutive"]
-          skip_args = ["?", "[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
-          functions.reject! { |f| f.ruby_name.start_with?("_") }
-          functions.reject! { |f| f.ruby_name.end_with?("_backward") }
-          functions.reject! { |f| skip_binding.include?(f.ruby_name) }
-          functions.reject! { |f| skip_args.any? { |v| f.args_str.include?(v) } }
+          skip_binding = ["unique_dim_consecutive", "einsum"]
+          skip_args = ["?", "bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
+          todo_functions, functions =
+            functions.partition do |f|
+              f.ruby_name.start_with?("_") ||
+              f.ruby_name.end_with?("_backward") ||
+              skip_binding.include?(f.ruby_name) ||
+              skip_args.any? { |v| f.args_str.include?(v) }
+            end
 
           nn_functions, other_functions = functions.partition { |f| f.python_module == "nn" }
           torch_functions = other_functions.select { |f| f.variants.include?("function") }
