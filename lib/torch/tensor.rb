@@ -97,9 +97,9 @@ module Torch
 
     def mul!(other)
       if other.is_a?(Numeric)
-        _mul_scalar!(other)
+        _mul__scalar(other)
       else
-        _mul!(other)
+        _mul__tensor(other)
       end
     end
 
@@ -152,11 +152,11 @@ module Torch
       dim = 0
       indexes.each do |index|
         if index.is_a?(Numeric)
-          result = result._select(dim, index)
+          result = result._select_int(dim, index)
         elsif index.is_a?(Range)
           finish = index.end
           finish += 1 unless index.exclude_end?
-          result = result._slice(dim, index.begin, finish, 1)
+          result = result._slice_tensor(dim, index.begin, finish, 1)
           dim += 1
         elsif index.nil?
           result = result.unsqueeze(dim)
@@ -179,11 +179,11 @@ module Torch
       value = Torch.tensor(value) unless value.is_a?(Tensor)
 
       if index.is_a?(Numeric)
-        copy_to(_select(0, index), value)
+        copy_to(_select_int(0, index), value)
       elsif index.is_a?(Range)
         finish = index.end
         finish += 1 unless index.exclude_end?
-        copy_to(_slice(0, index.begin, finish, 1), value)
+        copy_to(_slice_tensor(0, index.begin, finish, 1), value)
       else
         raise Error, "Unsupported index type: #{index.class.name}"
       end

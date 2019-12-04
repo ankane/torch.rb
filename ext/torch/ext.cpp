@@ -568,16 +568,6 @@ void Init_ext()
         return self.detach_();
       })
     .define_method(
-      "_select",
-      *[](Tensor& self, int64_t dim, int64_t index) {
-        return self.select(dim, index);
-      })
-    .define_method(
-      "_slice",
-      *[](Tensor& self, int64_t dim, int64_t start, int64_t end, int64_t step) {
-        return self.slice(dim, start, end, step);
-      })
-    .define_method(
       "_requires_grad!",
       *[](Tensor& self, bool requires_grad) {
         return self.set_requires_grad(requires_grad);
@@ -637,21 +627,6 @@ void Init_ext()
         return self.relu_();
       })
     .define_method(
-      "_add!",
-      *[](Tensor& self, Tensor& other) {
-        return self.add_(other);
-      })
-    .define_method(
-      "_add_alpha!",
-      *[](Tensor& self, Tensor& other, Scalar alpha) {
-        return self.add_(other, alpha);
-      })
-    .define_method(
-      "_add_scalar!",
-      *[](Tensor& self, Scalar other) {
-        return self.add_(other);
-      })
-    .define_method(
       "normal!",
       *[](Tensor& self, double mean, double std) {
         return self.normal_(mean, std);
@@ -665,16 +640,6 @@ void Init_ext()
       "sub!",
       *[](Tensor& self, Tensor& other) {
         return self.sub_(other);
-      })
-    .define_method(
-      "_mul!",
-      *[](Tensor& self, Tensor& other) {
-        return self.mul_(other);
-      })
-    .define_method(
-      "_mul_scalar!",
-      *[](Tensor& self, Scalar other) {
-        return self.mul_(other);
       })
     .define_method(
       "div!",
@@ -757,11 +722,6 @@ void Init_ext()
           throw std::runtime_error("Unsupported type");
         }
         return a;
-      })
-    .define_method(
-      "_size",
-      *[](Tensor& self, int i) {
-        return self.size(i);
       })
     .define_method(
       "_to",
