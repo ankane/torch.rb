@@ -23,8 +23,9 @@ $LDFLAGS << " -L#{lib}"
 $LDFLAGS << " -ltorch -lc10"
 
 # generate C++ functions
-require_relative "../../lib/torch/native/dispatcher"
-Torch::Native::Dispatcher.generate_cpp_functions
+puts "Generating C++ functions..."
+require_relative "../../lib/torch/native/generator"
+Torch::Native::Generator.generate_cpp_functions
 
 # create makefile
 create_makefile("torch/ext")

@@ -2,6 +2,7 @@
 require "torch/ext"
 
 # native functions
+require "torch/native/generator"
 require "torch/native/dispatcher"
 
 # modules
@@ -233,6 +234,20 @@ module Torch
       }
     end
 
+    def no_grad
+      previous_value = grad_enabled?
+      begin
+        _set_grad_enabled(false)
+        yield
+      ensure
+        _set_grad_enabled(previous_value)
+      end
+    end
+
+    def device(str)
+      Device.new(str)
+    end
+
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
 
     def arange(start, finish = nil, step = 1, **options)
@@ -360,16 +375,6 @@ module Torch
       _neg(input)
     end
 
-    def no_grad
-      previous_value = grad_enabled?
-      begin
-        _set_grad_enabled(false)
-        yield
-      ensure
-        _set_grad_enabled(previous_value)
-      end
-    end
-
     # TODO support out
     def mean(input, dim = nil, keepdim: false)
       if dim
@@ -492,10 +497,6 @@ module Torch
 
     def transpose(input, dim0, dim1)
       _transpose_int(input, dim0, dim1)
-    end
-
-    def device(str)
-      Device.new(str)
     end
 
     private

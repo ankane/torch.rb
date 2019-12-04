@@ -86,6 +86,8 @@ module Torch
       _type(enum)
     end
 
+    # start temp operations
+
     def add!(value = 1, other)
       if other.is_a?(Numeric)
         _add__scalar(other, value)
@@ -113,6 +115,8 @@ module Torch
         end
       end
     end
+
+    # end temp operations
 
     def +(other)
       add(other)
