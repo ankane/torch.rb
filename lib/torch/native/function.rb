@@ -21,23 +21,11 @@ module Torch
         @variants ||= (@function["variants"] || "function").split(", ")
       end
 
-      def args_str
-        @args_str ||= func.split("(", 2).last.split(") ->").first
-      end
-
-      # TODO clean up
       def args
-        @args ||= begin
-          args = args_str.split(", ").map { |a| a.split(" ").last }.map { |a| a.split("=").first }
-          args.delete("*")
-          args
-        end
-      end
-
-      def parsed_args
         @parsed_args ||= begin
           args = []
           pos = true
+          args_str = func.split("(", 2).last.split(") ->").first
           args_str.split(", ").each do |a|
             if a == "*"
               pos = false

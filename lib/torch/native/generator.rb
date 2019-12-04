@@ -17,12 +17,14 @@ module Torch
 
           # remove functions
           skip_binding = ["unique_dim_consecutive", "einsum", "normal"]
-          skip_args = ["bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
+          skip_args = ["bool[3]", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
           functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
           todo_functions, functions =
             functions.partition do |f|
-              skip_args.any? { |v| f.args_str.include?(v) } ||
-              f.parsed_args.any? { |a| a[:type].include?("?") && !["Tensor?", "Generator?"].include?(a[:type]) }
+              f.args.any? do |a|
+                a[:type].include?("?") && !["Tensor?", "Generator?"].include?(a[:type]) ||
+                skip_args.any? { |sa| a[:type].include?(sa) }
+              end
             end
 
           # todo_functions.each do |f|
@@ -56,7 +58,7 @@ void add_%{type}_functions(Module m) {
 
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
-            fargs = func.parsed_args.select { |a| a[:type] != "Generator?" }
+            fargs = func.args.select { |a| a[:type] != "Generator?" }
 
             cpp_args = []
             fargs.each do |a|
