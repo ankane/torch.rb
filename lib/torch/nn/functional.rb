@@ -163,7 +163,7 @@ module Torch
         end
 
         def softplus(input, beta: 1, threshold: 20)
-          Torch._softplus(input, beta, threshold)
+          NN._softplus(input, beta, threshold)
         end
 
         # TODO make dim keyword argument and update examples

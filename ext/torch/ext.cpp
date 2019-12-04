@@ -236,11 +236,6 @@ void Init_ext()
         return tensor_array(torch::topk(input, k));
       })
     .define_singleton_method(
-      "_softplus",
-      *[](const Tensor &input, Scalar beta, Scalar threshold) {
-        return torch::softplus(input, beta, threshold);
-      })
-    .define_singleton_method(
       "_softmax",
       *[](const Tensor &input, int64_t dim) {
         return torch::softmax(input, dim);
