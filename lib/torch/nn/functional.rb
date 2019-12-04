@@ -50,7 +50,8 @@ module Torch
           raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
 
           padding_idx ||= -1
-          Torch._embedding(input, weight, padding_idx, scale_grad_by_freq, sparse)
+          # weight and indices are swapped from Python interface
+          Torch._embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)
         end
 
         def embedding_bag(input, weight, offsets: nil, max_norm: nil, norm_type: 2, scale_grad_by_freq: false, mode: "mean", sparse: false, per_sample_weights: nil)
@@ -113,7 +114,7 @@ module Torch
         end
 
         def mse_loss(input, target, reduction: "mean")
-          Torch._mse_loss(input, target, reduction)
+          NN._mse_loss(input, target, reduction)
         end
 
         def multilabel_margin_loss(input, target, reduction: "mean")

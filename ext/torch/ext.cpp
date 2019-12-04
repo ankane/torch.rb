@@ -299,27 +299,10 @@ void Init_ext()
       })
     // sparse layers
     .define_singleton_method(
-      "_embedding",
-      // weight and indices are swapped from Python interface
-      *[](const Tensor &indices, const Tensor &weight, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
-        return torch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
-      })
-    .define_singleton_method(
       "_embedding_bag",
       // weight and indices are swapped from Python interface
       *[](const Tensor &weight, const Tensor &indices, const Tensor &offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor &per_sample_weights) {
         return torch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
-      })
-    // distance functions
-    .define_singleton_method(
-      "_cosine_similarity",
-      *[](const Tensor &x1, const Tensor &x2, int64_t dim, double eps) {
-        return torch::cosine_similarity(x1, x2, dim, eps);
-      })
-    .define_singleton_method(
-      "_pairwise_distance",
-      *[](const Tensor &x1, const Tensor &x2, double p, double eps, bool keepdim) {
-        return torch::pairwise_distance(x1, x2, p, eps, keepdim);
       })
     // loss functions
     .define_singleton_method(

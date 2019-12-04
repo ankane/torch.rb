@@ -81,6 +81,7 @@ void add_%{type}_functions(Module m) {
             cpp_args_str.sub!(" *,", "")
             cpp_args_str.gsub!("int[]", "IntArrayRef")
             cpp_args_str.gsub!(/=[^),]+/, "")
+            cpp_args_str.gsub!("int64_t reduction", "MyReduction reduction")
 
             dispatch = func.out? ? "#{func.base_name}_out" : func.base_name
             args = func.args
