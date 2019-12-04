@@ -71,8 +71,10 @@ void add_%{type}_functions(Module m) {
 
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
+            fargs = func.parsed_args.select { |a| a[:type] != "Generator?" }
+
             cpp_args = []
-            func.parsed_args.each do |a|
+            fargs.each do |a|
               t =
                 case a[:type]
                 when "Tensor"
@@ -99,7 +101,7 @@ void add_%{type}_functions(Module m) {
             end
 
             dispatch = func.out? ? "#{func.base_name}_out" : func.base_name
-            args = func.args
+            args = fargs.map { |a| a[:name] }
             args.unshift(*args.pop(func.out_size)) if func.out?
             args.delete("self") if def_method == :define_method
 
@@ -130,13 +132,13 @@ void add_%{type}_functions(Module m) {
           functions = functions()
 
           # remove functions
-          skip_binding = ["unique_dim_consecutive", "einsum"]
+          skip_binding = ["unique_dim_consecutive", "einsum", "normal"]
           skip_args = ["bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
           functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
           todo_functions, functions =
             functions.partition do |f|
               skip_args.any? { |v| f.args_str.include?(v) } ||
-              f.parsed_args.any? { |a| a[:type].include?("?") && a[:type] != "Tensor?" }
+              f.parsed_args.any? { |a| a[:type].include?("?") && !["Tensor?", "Generator?"].include?(a[:type]) }
             end
 
           # todo_functions.each do |f|
