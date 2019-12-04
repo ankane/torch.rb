@@ -129,13 +129,16 @@ void add_%{type}_functions(Module m) {
           # remove functions
           skip_binding = ["unique_dim_consecutive", "einsum"]
           skip_args = ["?", "bool[", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
+          functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
           todo_functions, functions =
             functions.partition do |f|
-              f.ruby_name.start_with?("_") ||
-              f.ruby_name.end_with?("_backward") ||
-              skip_binding.include?(f.ruby_name) ||
               skip_args.any? { |v| f.args_str.include?(v) }
             end
+
+          # todo_functions.each do |f|
+          #   puts f.func
+          #   puts
+          # end
 
           nn_functions, other_functions = functions.partition { |f| f.python_module == "nn" }
           torch_functions = other_functions.select { |f| f.variants.include?("function") }
