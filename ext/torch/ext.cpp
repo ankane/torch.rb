@@ -8,6 +8,8 @@
 
 #include "templates.hpp"
 
+// generated with:
+// rake generate:functions
 #include "torch_functions.hpp"
 #include "tensor_functions.hpp"
 #include "nn_functions.hpp"

@@ -16,7 +16,7 @@ end
 
 # include ext in local installs but not releases
 task :remove_ext do
-  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.cpp"].each do |path|
+  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
     File.unlink(path) if File.exist?(path)
   end
 end
