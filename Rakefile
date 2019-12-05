@@ -16,8 +16,9 @@ end
 
 # include ext in local installs but not releases
 task :remove_ext do
-  path = "lib/torch/ext.bundle"
-  File.unlink(path) if File.exist?(path)
+  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.cpp"].each do |path|
+    File.unlink(path) if File.exist?(path)
+  end
 end
 
 Rake::Task["release:guard_clean"].enhance [:remove_ext]
