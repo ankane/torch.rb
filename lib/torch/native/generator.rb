@@ -1,5 +1,7 @@
 require "yaml"
-require "torch/native/function"
+# use require_relative for
+# rake generate:function (without bundle)
+require_relative "function"
 
 module Torch
   module Native
