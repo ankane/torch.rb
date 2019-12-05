@@ -12,3 +12,4 @@
 *.npz
 ml-100k*
 /ext/torch/*_functions.cpp
+/ext/torch/*_functions.hpp
