@@ -365,7 +365,7 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 
 Here are a few full examples:
 
-- [Image classification with MNIST](examples/mnist)
+- [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Word embeddings](examples/nlp)
 
