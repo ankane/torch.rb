@@ -1,6 +1,8 @@
 module Torch
   module Native
     class Function
+      attr_reader :function
+
       def initialize(function)
         @function = function
       end
@@ -22,7 +24,7 @@ module Torch
       end
 
       def args
-        @parsed_args ||= begin
+        @args ||= begin
           args = []
           pos = true
           args_str = func.split("(", 2).last.split(") ->").first
@@ -33,6 +35,10 @@ module Torch
             end
             t, _, k = a.rpartition(" ")
             k, d = k.split("=")
+            d = d.to_i if d.to_i.to_s == d
+            d = true if d == "True"
+            d = false if d == "False"
+            d = nil if d == "None"
             args << {name: k, type: t, default: d, pos: pos}
           end
           args
@@ -66,52 +72,6 @@ module Torch
 
       def base_name
         @base_name ||= name.split(".").first
-      end
-
-      def match(args, options)
-        fargs = args().dup
-
-        # check options first
-        values = {}
-        unknown_options = []
-        options.each do |k, v|
-          if fargs.include?(k)
-            fargs.delete(k)
-            values[k.to_s] = v
-          else
-            unknown_options << k
-          end
-        end
-
-        if unknown_options.any?
-          return nil # unknown arguments
-        end
-
-        # TODO separate out positional arguments
-        if args.size > fargs.size
-          return nil # too many arguments
-        end
-
-        args.each_with_index do |a, i|
-          values[fargs[i]] = a
-        end
-        fargs = fargs[args.size..-1]
-
-        # TODO check if any required fargs remains
-        required_args = []
-        missing_args = fargs.select { |a| required_args.include?(a) }
-        if missing_args.any?
-          return nil # missing args
-        end
-
-        # TODO set default values
-        default_values = {}
-        default_values.each do |k, v|
-          values[k] ||= v
-        end
-
-        # we have a match
-        [cpp_name] + self.args.map { |a| values[a] }
       end
     end
   end

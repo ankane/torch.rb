@@ -3,6 +3,7 @@ require "torch/ext"
 
 # native functions
 require "torch/native/generator"
+require "torch/native/parser"
 require "torch/native/dispatcher"
 
 # modules
@@ -365,16 +366,6 @@ module Torch
 
     # --- begin operations ---
 
-    %w(add sub mul div remainder).each do |op|
-      define_method(op) do |input, other, **options|
-        execute_op(op, input, other, **options)
-      end
-    end
-
-    def neg(input)
-      _neg(input)
-    end
-
     # TODO support out
     def mean(input, dim = nil, keepdim: false)
       if dim
@@ -393,32 +384,8 @@ module Torch
       end
     end
 
-    def argmax(input, dim = nil, keepdim: false)
-      if dim
-        _argmax_dim(input, dim, keepdim)
-      else
-        _argmax(input)
-      end
-    end
-
-    def eq(input, other)
-      _eq_tensor(input, other)
-    end
-
-    def norm(input)
-      _norm(input)
-    end
-
-    def pow(input, exponent)
-      _pow(input, exponent)
-    end
-
     def topk(input, k)
       _topk(input, k)
-    end
-
-    def min(input)
-      _min(input)
     end
 
     def max(input, dim = nil, keepdim: false, out: nil)
@@ -430,58 +397,6 @@ module Torch
       end
     end
 
-    def exp(input)
-      _exp(input)
-    end
-
-    def log(input)
-      _log(input)
-    end
-
-    def sign(input)
-      _sign(input)
-    end
-
-    def sigmoid(input)
-      _sigmoid(input)
-    end
-
-    def gt(input, other)
-      _gt_scalar(input, other)
-    end
-
-    def lt(input, other)
-      _lt_scalar(input, other)
-    end
-
-    def unsqueeze(input, dim)
-      _unsqueeze(input, dim)
-    end
-
-    def dot(input, tensor)
-      _dot(input, tensor)
-    end
-
-    def cat(tensors, dim = 0)
-      _cat(tensors, dim)
-    end
-
-    def matmul(input, other)
-      _matmul(input, other)
-    end
-
-    def reshape(input, shape)
-      _reshape(input, shape)
-    end
-
-    def flatten(input, start_dim: 0, end_dim: -1)
-      _flatten_using_ints(input, start_dim, end_dim)
-    end
-
-    def sqrt(input)
-      _sqrt(input)
-    end
-
     # TODO make dim keyword argument
     def log_softmax(input, dim)
       _log_softmax(input, dim)
@@ -491,30 +406,7 @@ module Torch
       _softmax(input, dim)
     end
 
-    def abs(input)
-      _abs(input)
-    end
-
-    def transpose(input, dim0, dim1)
-      _transpose_int(input, dim0, dim1)
-    end
-
     private
-
-    def execute_op(op, input, other, out: nil)
-      scalar = other.is_a?(Numeric)
-      if out
-        # TODO make work with scalars
-        raise Error, "out not supported with scalar yet" if scalar
-        send("_#{op}_out", out, input, other)
-      else
-        if scalar
-          send("_#{op}_scalar", input, other)
-        else
-          send("_#{op}", input, other)
-        end
-      end
-    end
 
     def tensor_size(size)
       size.flatten

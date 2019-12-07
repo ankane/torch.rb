@@ -18,28 +18,25 @@ module Torch
           functions = Generator.grouped_functions
           bind_functions(::Torch, :define_singleton_method, functions[:torch])
           bind_functions(::Torch::Tensor, :define_method, functions[:tensor])
-          bind_functions(::Torch::NN, :define_singleton_method, functions[:nn])
+          # NN functions are internal, so no need to bind
         end
 
         def bind_functions(context, def_method, functions)
           functions.group_by(&:ruby_name).sort_by { |g, _| g }.each do |name, funcs|
             if def_method == :define_method
-              funcs.map! { |f| f.dup }
-              funcs.each { |f| f.args.delete("self") }
+              funcs.map! { |f| Function.new(f.function) }
+              funcs.each { |f| f.args.reject! { |a| a[:name] == "self" } }
             end
 
             defined = def_method == :define_method ? context.method_defined?(name) : context.respond_to?(name)
             next if defined && name != "clone"
 
+            parser = Parser.new(funcs)
+
             context.send(def_method, name) do |*args, **options|
-              matches = funcs.map { |f| f.match(args, options) }.compact
-              if matches.size == 1
-                send(*matches.first)
-              elsif matches.size == 0
-                raise ArgumentError, "#{name} received an invalid combination of arguments"
-              else
-                raise Error, "This should never happen. Please report a bug with #{name}"
-              end
+              result = parser.parse(args, options)
+              raise ArgumentError, result[:error] if result[:error]
+              send(result[:name], *result[:args])
             end
           end
         end
@@ -48,4 +45,4 @@ module Torch
   end
 end
 
-# Torch::Native::Dispatcher.bind
+Torch::Native::Dispatcher.bind

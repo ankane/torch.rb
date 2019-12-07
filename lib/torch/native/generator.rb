@@ -24,10 +24,26 @@ module Torch
           todo_functions, functions =
             functions.partition do |f|
               f.args.any? do |a|
-                a[:type].include?("?") && !["Tensor?", "Generator?"].include?(a[:type]) ||
+                a[:type].include?("?") && !["Tensor?", "Generator?", "int?"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) }
               end
             end
+
+          # generate additional functions for optional arguments
+          # there may be a better way to do this
+          optional_functions, functions = functions.partition { |f| f.args.any? { |a| a[:type] == "int?" } }
+          optional_functions.each do |f|
+            next if f.ruby_name.start_with?("avg_pool") || f.ruby_name == "cross"
+            opt_args = f.args.select { |a| a[:type] == "int?" }
+            if opt_args.size == 1
+              sep = f.name.include?(".") ? "_" : "."
+              f1 = Function.new(f.function.merge("func" => f.func.sub("(", "#{sep}#{opt_args.first[:name]}(").gsub("int?", "int")))
+              # TODO only remove some arguments
+              f2 = Function.new(f.function.merge("func" => f.func.sub(/, int\?.+\) ->/, ") ->")))
+              functions << f1
+              functions << f2
+            end
+          end
 
           # todo_functions.each do |f|
           #   puts f.func

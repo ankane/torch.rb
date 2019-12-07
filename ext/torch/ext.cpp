@@ -46,11 +46,6 @@ void Init_ext()
         torch::GradMode::set_enabled(enabled);
       })
     .define_singleton_method(
-      "floating_point?",
-      *[](Tensor& input) {
-        return torch::is_floating_point(input);
-      })
-    .define_singleton_method(
       "manual_seed",
       *[](uint64_t seed) {
         return torch::manual_seed(seed);
@@ -138,94 +133,9 @@ void Init_ext()
         return torch::sum(input, dim, keepdim);
       })
     .define_singleton_method(
-      "_argmax",
-      *[](Tensor& input) {
-        return torch::argmax(input);
-      })
-    .define_singleton_method(
-      "_argmax_dim",
-      *[](Tensor& input, int64_t dim, bool keepdim) {
-        return torch::argmax(input, dim, keepdim);
-      })
-    .define_singleton_method(
-      "_norm",
-      *[](Tensor& input) {
-        return torch::norm(input);
-      })
-    .define_singleton_method(
-      "_min",
-      *[](Tensor& input) {
-        return torch::min(input);
-      })
-    .define_singleton_method(
-      "_max",
-      *[](Tensor& input) {
-        return torch::max(input);
-      })
-    .define_singleton_method(
       "_max_out",
       *[](Tensor &max, Tensor &max_indices, const Tensor &input, int64_t dim, bool keepdim) {
         return tensor_array(torch::_max_out(max, max_indices, input, dim, keepdim));
-      })
-    .define_singleton_method(
-      "_add",
-      *[](Tensor& input, Tensor& other) {
-        return torch::add(input, other);
-      })
-    .define_singleton_method(
-      "_add_scalar",
-      *[](Tensor& input, Scalar other) {
-        return torch::add(input, other);
-      })
-    .define_singleton_method(
-      "_add_out",
-      *[](Tensor& out, Tensor& input, Tensor& other) {
-        return torch::add_out(out, input, other);
-      })
-    .define_singleton_method(
-      "_sub",
-      *[](Tensor& input, Tensor& other) {
-        return torch::sub(input, other);
-      })
-    .define_singleton_method(
-      "_sub_scalar",
-      *[](Tensor& input, Scalar other) {
-        return torch::sub(input, other);
-      })
-    .define_singleton_method(
-      "_mul",
-      *[](Tensor& input, Tensor& other) {
-        return torch::mul(input, other);
-      })
-    .define_singleton_method(
-      "_mul_scalar",
-      *[](Tensor& input, Scalar other) {
-        return torch::mul(input, other);
-      })
-    .define_singleton_method(
-      "_div",
-      *[](Tensor& input, Tensor& other) {
-        return torch::div(input, other);
-      })
-    .define_singleton_method(
-      "_div_scalar",
-      *[](Tensor& input, Scalar other) {
-        return torch::div(input, other);
-      })
-    .define_singleton_method(
-      "_remainder",
-      *[](Tensor& input, Tensor& other) {
-        return torch::remainder(input, other);
-      })
-    .define_singleton_method(
-      "_remainder_scalar",
-      *[](Tensor& input, Scalar other) {
-        return torch::remainder(input, other);
-      })
-    .define_singleton_method(
-      "_pow",
-      *[](Tensor& input, Scalar exponent) {
-        return torch::pow(input, exponent);
       })
     .define_singleton_method(
       "_topk",

@@ -4,34 +4,42 @@ class OperationsTest < Minitest::Test
   # TODO decide whether to use PyTorch error messages
   # or make them more Ruby-like
   def test_abs
-    skip
+    x = Torch.tensor([-1.0])
+    assert_equal [1], Torch.abs(x).to_a
+
+    out = Torch.empty(1, dtype: :float32)
+    Torch.abs(x, out: out)
+    assert_equal [1], out.to_a
 
     error = assert_raises(ArgumentError) do
       Torch.abs
     end
-    assert_equal "abs() missing 1 required positional arguments: \"input\"", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(1)
-    end
-    assert_equal "abs(): argument 'input' (position 1) must be Tensor, not int", error.message
+    assert_equal "wrong number of arguments (given 0, expected 1)", error.message
+    # assert_equal "abs() missing 1 required positional arguments: \"input\"", error.message
 
     error = assert_raises(ArgumentError) do
       Torch.abs(1, 2)
     end
-    assert_equal "abs() takes 1 positional argument but 2 were given", error.message
+    assert_equal "wrong number of arguments (given 2, expected 1)", error.message
+    # assert_equal "abs() takes 1 positional argument but 2 were given", error.message
 
     error = assert_raises(ArgumentError) do
       x = Torch.tensor([1])
       Torch.abs(x, bad: 2)
     end
-    assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
+    # assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
+    assert_equal "unknown keyword: bad", error.message
+
+    error = assert_raises(ArgumentError) do
+      Torch.abs(1)
+    end
+    assert_equal "abs(): argument 'input' must be Tensor", error.message
 
     error = assert_raises(ArgumentError) do
       x = Torch.tensor([1])
       Torch.abs(x, out: 2)
     end
-    assert_equal "abs(): argument 'out' must be Tensor, not int", error.message
+    assert_equal "abs(): argument 'out' must be Tensor", error.message
   end
 
   def test_add
