@@ -1,7 +1,7 @@
-## 0.1.5 (unreleased)
+## 0.1.5 (2019-12-06)
 
+- Added many more functions
 - Added tensor classes - `FloatTensor`, `LongTensor`, etc
-- Added more loss functions
 - Improved modules
 
 ## 0.1.4 (2019-12-01)

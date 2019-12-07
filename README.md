@@ -20,6 +20,8 @@ Add this line to your application’s Gemfile:
 gem 'torch-rb'
 ```
 
+It can take a few minutes to compile the extension.
+
 ## Getting Started
 
 This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.html). There are a few changes to make it more Ruby-like:
@@ -28,7 +30,7 @@ This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.htm
 - Methods that return booleans use `?` instead of `is_`  (`tensor?` instead of `is_tensor`)
 - Numo is used instead of NumPy (`x.numo` instead of `x.numpy()`)
 
-Many methods and options are missing at the moment. PRs welcome!
+Some methods and options are missing at the moment. PRs welcome!
 
 ## Tutorial
 
