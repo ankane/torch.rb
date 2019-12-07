@@ -1,8 +1,6 @@
 require_relative "test_helper"
 
 class OperationsTest < Minitest::Test
-  # TODO decide whether to use PyTorch error messages
-  # or make them more Ruby-like
   def test_abs
     x = Torch.tensor([-1.0])
     assert_equal [1], Torch.abs(x).to_a
