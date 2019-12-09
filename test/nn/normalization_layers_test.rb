@@ -7,4 +7,18 @@ class NormalizationLayersTest < Minitest::Test
     input = Torch.randn(20, 100)
     output = m.call(input)
   end
+
+  def test_batch_norm2d
+    m = Torch::NN::BatchNorm2d.new(100)
+    m = Torch::NN::BatchNorm2d.new(100, affine: false)
+    input = Torch.randn(20, 100, 35, 45)
+    output = m.call(input)
+  end
+
+  def test_batch_norm3d
+    m = Torch::NN::BatchNorm3d.new(100)
+    m = Torch::NN::BatchNorm3d.new(100, affine: false)
+    input = Torch.randn(20, 100, 35, 45, 10)
+    output = m.call(input)
+  end
 end

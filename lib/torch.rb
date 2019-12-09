@@ -77,6 +77,8 @@ require "torch/nn/zero_pad2d"
 # nn normalization layers
 require "torch/nn/batch_norm"
 require "torch/nn/batch_norm1d"
+require "torch/nn/batch_norm2d"
+require "torch/nn/batch_norm3d"
 
 # nn recurrent layers
 require "torch/nn/rnn_base"
