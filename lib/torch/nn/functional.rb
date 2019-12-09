@@ -100,12 +100,12 @@ module Torch
 
         # linear layers
 
-        def bilinear(input1, input2, weight, bias)
-          Torch.bilinear(input1, input2, weight, bias)
-        end
-
         def linear(input, weight, bias)
           NN.linear(input, weight, bias)
+        end
+
+        def bilinear(input1, input2, weight, bias)
+          Torch.bilinear(input1, input2, weight, bias)
         end
 
         # dropout layers
