@@ -226,6 +226,10 @@ module Torch
           )
         end
 
+        def group_norm(input, num_groups, weight: nil, bias: nil, eps: 1e-5)
+          Torch.group_norm(input, num_groups, weight, bias, eps, false)
+        end
+
         def instance_norm(input, running_mean: nil, running_var: nil, weight: nil,
           bias: nil, use_input_stats: true, momentum: 0.1, eps: 1e-5)
 
