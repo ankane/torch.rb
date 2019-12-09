@@ -97,14 +97,6 @@ module Torch
       end
     end
 
-    def mul!(other)
-      if other.is_a?(Numeric)
-        _mul__scalar(other)
-      else
-        _mul__tensor(other)
-      end
-    end
-
     # operations
     %w(log_softmax mean softmax sum topk).each do |op|
       define_method(op) do |*args, **options, &block|
