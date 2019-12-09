@@ -87,6 +87,8 @@ module Torch
     end
 
     def reshape(*size)
+      # Python doesn't check if size == 1, just ignores later arguments
+      size = size.first if size.size == 1 && size.first.is_a?(Array)
       _reshape(size)
     end
 
