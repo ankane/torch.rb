@@ -1,6 +1,27 @@
 require_relative "../test_helper"
 
 class PaddingLayersTest < Minitest::Test
+  def test_replication_pad1d
+    m = Torch::NN::ReplicationPad1d.new(2)
+    input = Torch.arange(8, dtype: :float).reshape(1, 2, 4)
+    m.call(input)
+  end
+
+  def test_replication_pad2d
+    m = Torch::NN::ReplicationPad2d.new(2)
+    input = Torch.arange(9, dtype: :float).reshape(1, 1, 3, 3)
+    m.call(input)
+  end
+
+  def test_replication_pad3d
+    m = Torch::NN::ReplicationPad3d.new(3)
+    input = Torch.randn(16, 3, 8, 320, 480)
+    output = m.call(input)
+
+    m = Torch::NN::ReplicationPad3d.new([3, 3, 6, 6, 1, 1])
+    output = m.call(input)
+  end
+
   def test_constant_pad1d
     m = Torch::NN::ConstantPad1d.new(2, 3.5)
     input = Torch.randn(1, 2, 4)

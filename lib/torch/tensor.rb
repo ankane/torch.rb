@@ -86,6 +86,10 @@ module Torch
       _type(enum)
     end
 
+    def reshape(*size)
+      _reshape(size)
+    end
+
     # value and other are swapped for some methods
     def add!(value = 1, other)
       if other.is_a?(Numeric)

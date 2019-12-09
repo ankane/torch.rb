@@ -61,6 +61,10 @@ require "torch/nn/lp_pool1d"
 require "torch/nn/lp_pool2d"
 
 # nn padding layers
+require "torch/nn/replication_padnd"
+require "torch/nn/replication_pad1d"
+require "torch/nn/replication_pad2d"
+require "torch/nn/replication_pad3d"
 require "torch/nn/constant_padnd"
 require "torch/nn/constant_pad1d"
 require "torch/nn/constant_pad2d"

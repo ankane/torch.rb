@@ -107,8 +107,37 @@ module Torch
 
           if mode == "constant"
             return Torch.constant_pad_nd(input, pad, value)
+          else
+            raise ArgumentError, "Padding mode doesn't take in value argument" unless value == 0
+
+            if input.dim == 3
+              raise ArgumentError, "3D tensors expect 2 values for padding" unless pad.size == 2
+              case mode
+              when "replicate"
+                NN.replication_pad1d(input, pad)
+              else
+                raise NotImplementedYet
+              end
+            elsif input.dim == 4
+              raise ArgumentError, "4D tensors expect 4 values for padding" unless pad.size == 4
+              case mode
+              when "replicate"
+                NN.replication_pad2d(input, pad)
+              else
+                raise NotImplementedYet
+              end
+            elsif input.dim == 5
+              raise ArgumentError, "5D tensors expect 6 values for padding" unless pad.size == 6
+              case mode
+              when "replicate"
+                NN.replication_pad3d(input, pad)
+              else
+                raise NotImplementedYet
+              end
+            else
+              raise ArgumentError, "Only 3D, 4D, 5D padding with non-constant padding are supported for now"
+            end
           end
-          raise NotImplementedYet
         end
 
         # activation layers
