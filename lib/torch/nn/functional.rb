@@ -99,6 +99,10 @@ module Torch
 
         # activation layers
 
+        def hardshrink(input, lambd = 0.5)
+          Torch.hardshrink(input, lambd)
+        end
+
         def leaky_relu(input, negative_slope = 0.01)
           NN.leaky_relu(input, negative_slope)
         end

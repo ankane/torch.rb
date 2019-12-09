@@ -79,6 +79,7 @@ require "torch/nn/dropout3d"
 require "torch/nn/feature_alpha_dropout"
 
 # nn activations
+require "torch/nn/hardshrink"
 require "torch/nn/leaky_relu"
 require "torch/nn/log_sigmoid"
 require "torch/nn/prelu"
