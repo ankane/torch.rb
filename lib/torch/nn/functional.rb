@@ -2,14 +2,6 @@ module Torch
   module NN
     class Functional
       class << self
-        def relu(input, inplace: false)
-          if inplace
-            input.relu!
-          else
-            input.relu
-          end
-        end
-
         # convolution layers
 
         def conv1d(*args, **options)
@@ -66,14 +58,44 @@ module Torch
           NN.avg_pool3d(*args, **options)
         end
 
-        # other layers
+        # activation layers
+
+        def leaky_relu(input, negative_slope = 0.01)
+          NN.leaky_relu(input, negative_slope)
+        end
 
         def prelu(input, weight)
           Torch.prelu(input, weight)
         end
 
-        def leaky_relu(input, negative_slope = 0.01)
-          NN.leaky_relu(input, negative_slope)
+        def relu(input, inplace: false)
+          if inplace
+            input.relu!
+          else
+            input.relu
+          end
+        end
+
+        def softplus(input, beta: 1, threshold: 20)
+          NN.softplus(input, beta, threshold)
+        end
+
+        # other activation layers
+
+        def softmin(input, dim: nil)
+          dim ||= softmax_dim(input.dim)
+          (-input).softmax(dim)
+        end
+
+        def softmax(input, dim: nil)
+          dim ||= softmax_dim(input.dim)
+          input.softmax(dim)
+        end
+
+        # TODO make dim keyword argument and update examples
+        def log_softmax(input, dim = nil)
+          dim ||= softmax_dim(input.dim)
+          input.log_softmax(dim)
         end
 
         # linear layers
@@ -84,6 +106,50 @@ module Torch
 
         def linear(input, weight, bias)
           NN.linear(input, weight, bias)
+        end
+
+        # dropout layers
+
+        def dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch.dropout!(input, p, training)
+          else
+            Torch.dropout(input, p, training)
+          end
+        end
+
+        def dropout2d(input, p: 0.5, training: true, inplace: false)
+          raise ArgumentError, "dropout probability has to be between 0 and 1, but got #{p}" if p < 0 || p > 1
+
+          if inplace
+            Torch.feature_dropout!(input, p, training)
+          else
+            Torch.feature_dropout(input, p, training)
+          end
+        end
+
+        def dropout3d(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch.feature_dropout!(input, p, training)
+          else
+            Torch.feature_dropout(input, p, training)
+          end
+        end
+
+        def alpha_dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch.alpha_dropout!(input, p, training)
+          else
+            Torch.alpha_dropout(input, p, training)
+          end
+        end
+
+        def feature_alpha_dropout(input, p: 0.5, training: true, inplace: false)
+          if inplace
+            Torch.feature_alpha_dropout!(input, p, training)
+          else
+            Torch.feature_alpha_dropout(input, p, training)
+          end
         end
 
         # sparse layers
@@ -190,70 +256,6 @@ module Torch
 
         def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
           Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction)
-        end
-
-        # end loss
-
-        def softmax(input, dim: nil)
-          dim ||= softmax_dim(input.dim)
-          input.softmax(dim)
-        end
-
-        def softmin(input, dim: nil)
-          dim ||= softmax_dim(input.dim)
-          (-input).softmax(dim)
-        end
-
-        def softplus(input, beta: 1, threshold: 20)
-          NN.softplus(input, beta, threshold)
-        end
-
-        # TODO make dim keyword argument and update examples
-        def log_softmax(input, dim = nil)
-          dim ||= softmax_dim(input.dim)
-          input.log_softmax(dim)
-        end
-
-        def dropout(input, p: 0.5, training: true, inplace: false)
-          if inplace
-            Torch.dropout!(input, p, training)
-          else
-            Torch.dropout(input, p, training)
-          end
-        end
-
-        def dropout2d(input, p: 0.5, training: true, inplace: false)
-          raise ArgumentError, "dropout probability has to be between 0 and 1, but got #{p}" if p < 0 || p > 1
-
-          if inplace
-            Torch.feature_dropout!(input, p, training)
-          else
-            Torch.feature_dropout(input, p, training)
-          end
-        end
-
-        def dropout3d(input, p: 0.5, training: true, inplace: false)
-          if inplace
-            Torch.feature_dropout!(input, p, training)
-          else
-            Torch.feature_dropout(input, p, training)
-          end
-        end
-
-        def alpha_dropout(input, p: 0.5, training: true, inplace: false)
-          if inplace
-            Torch.alpha_dropout!(input, p, training)
-          else
-            Torch.alpha_dropout(input, p, training)
-          end
-        end
-
-        def feature_alpha_dropout(input, p: 0.5, training: true, inplace: false)
-          if inplace
-            Torch.feature_alpha_dropout!(input, p, training)
-          else
-            Torch.feature_alpha_dropout(input, p, training)
-          end
         end
 
         private
