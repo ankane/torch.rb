@@ -11,6 +11,7 @@ class RecurrentLayersTest < Minitest::Test
 
     assert_equal [5, 3, 20], output.size
     assert_equal [2, 3, 20], hn.size
+
     expected = [0.7178, 0.1506, 0.4693, 0.0831, 0.7573, 0.2792, -0.1586, 0.2291]
     assert_elements_in_delta expected, hn[0][0][0...8].to_a
   end
@@ -28,5 +29,8 @@ class RecurrentLayersTest < Minitest::Test
     assert_equal [5, 3, 20], output.size
     assert_equal [2, 3, 20], hn.size
     assert_equal [2, 3, 20], cn.size
+
+    expected = [-1.6727e-01, -3.2626e-02, 2.3335e-01, 9.9146e-02, 1.7294e-01, -1.0035e-01, 2.3411e-04, 3.5714e-01]
+    assert_elements_in_delta expected, output[0][0][0...8].to_a
   end
 end
