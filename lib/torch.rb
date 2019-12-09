@@ -86,6 +86,7 @@ require "torch/nn/relu"
 require "torch/nn/sigmoid"
 require "torch/nn/softplus"
 require "torch/nn/softshrink"
+require "torch/nn/softsign"
 require "torch/nn/tanh"
 require "torch/nn/tanhshrink"
 

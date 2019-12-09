@@ -127,6 +127,10 @@ module Torch
           NN.softshrink(*args, **options)
         end
 
+        def softsign(input)
+          input / (input.abs + 1)
+        end
+
         def tanhshrink(input)
           input - input.tanh
         end
