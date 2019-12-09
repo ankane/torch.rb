@@ -204,6 +204,28 @@ module Torch
           input.log_softmax(dim)
         end
 
+        # normalization layers
+
+        def batch_norm(input, running_mean, running_var, weight: nil, bias: nil,
+          training: false, momentum: 0.1, eps: 1e-5)
+
+          if training
+            size = input.size
+            size_prods = size[0]
+            (size.length - 2).times do |i|
+              size_prods *= size[i + 2]
+            end
+            if size_prods == 1
+              raise ArgumentError, "Expected more than 1 value per channel when training, got input size #{size.inspect}"
+            end
+          end
+
+          Torch.batch_norm(
+            input, weight, bias, running_mean, running_var,
+            training, momentum, eps, false
+          )
+        end
+
         # linear layers
 
         def linear(input, weight, bias)

@@ -17,6 +17,7 @@ module Torch
       def register_buffer(name, tensor)
         # TODO add checks
         @buffers[name] = tensor
+        instance_variable_set("@#{name}", tensor)
       end
 
       def register_parameter(name, param)
