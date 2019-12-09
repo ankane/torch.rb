@@ -56,8 +56,6 @@ class NormalizationLayersTest < Minitest::Test
   end
 
   def test_layer_norm
-    skip "Not implemented yet"
-
     input = Torch.randn(20, 5, 10, 10)
     m = Torch::NN::LayerNorm.new(input.size[1..-1])
     m = Torch::NN::LayerNorm.new(input.size[1..-1], elementwise_affine: false)

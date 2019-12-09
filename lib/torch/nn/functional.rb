@@ -239,6 +239,10 @@ module Torch
           )
         end
 
+        def layer_norm(input, normalized_shape, weight: nil, bias: nil, eps: 1e-5)
+          Torch.layer_norm(input, normalized_shape, weight, bias, eps, false)
+        end
+
         def local_response_norm(input, size, alpha: 1e-4, beta: 0.75, k: 1.0)
           dim = input.dim
           if dim < 3
