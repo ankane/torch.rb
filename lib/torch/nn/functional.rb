@@ -113,6 +113,8 @@ module Torch
             if input.dim == 3
               raise ArgumentError, "3D tensors expect 2 values for padding" unless pad.size == 2
               case mode
+              when "reflect"
+                NN.reflection_pad1d(input, pad)
               when "replicate"
                 NN.replication_pad1d(input, pad)
               else
@@ -121,6 +123,8 @@ module Torch
             elsif input.dim == 4
               raise ArgumentError, "4D tensors expect 4 values for padding" unless pad.size == 4
               case mode
+              when "reflect"
+                NN.reflection_pad2d(input, pad)
               when "replicate"
                 NN.replication_pad2d(input, pad)
               else
