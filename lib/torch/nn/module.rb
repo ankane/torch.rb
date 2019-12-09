@@ -218,15 +218,23 @@ module Torch
       end
 
       def _single(value)
-        value.is_a?(Array) ? value : [value]
+        _ntuple(1, value)
       end
 
       def _pair(value)
-        value.is_a?(Array) ? value : [value] * 2
+        _ntuple(2, value)
       end
 
       def _triple(value)
-        value.is_a?(Array) ? value : [value] * 3
+        _ntuple(3, value)
+      end
+
+      def _quadrupal(value)
+        _ntuple(4, value)
+      end
+
+      def _ntuple(n, value)
+        value.is_a?(Array) ? value : [value] * n
       end
     end
   end

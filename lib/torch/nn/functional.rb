@@ -97,6 +97,18 @@ module Torch
           NN.avg_pool3d(*args, **options)
         end
 
+        # padding layers
+
+        def pad(input, pad, mode: "constant", value: 0)
+          raise ArgumentError, "Padding length must be divisible by 2" unless pad.size % 2 == 0
+          raise ArgumentError, "Padding length too large" unless pad.size / 2 <= input.dim
+
+          if mode == "constant"
+            return Torch.constant_pad_nd(input, pad, value)
+          end
+          raise NotImplementedYet
+        end
+
         # activation layers
 
         def hardshrink(input, lambd = 0.5)

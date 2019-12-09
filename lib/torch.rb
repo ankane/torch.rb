@@ -59,6 +59,12 @@ require "torch/nn/lp_poolnd"
 require "torch/nn/lp_pool1d"
 require "torch/nn/lp_pool2d"
 
+# nn padding layers
+require "torch/nn/constant_padnd"
+require "torch/nn/constant_pad1d"
+require "torch/nn/constant_pad2d"
+require "torch/nn/constant_pad3d"
+
 # nn recurrent layers
 require "torch/nn/rnn_base"
 require "torch/nn/rnn"
