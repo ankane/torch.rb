@@ -226,6 +226,15 @@ module Torch
           )
         end
 
+        def instance_norm(input, running_mean: nil, running_var: nil, weight: nil,
+          bias: nil, use_input_stats: true, momentum: 0.1, eps: 1e-5)
+
+          Torch.instance_norm(
+              input, weight, bias, running_mean, running_var,
+              use_input_stats, momentum, eps, false
+          )
+        end
+
         # linear layers
 
         def linear(input, weight, bias)

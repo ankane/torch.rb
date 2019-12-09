@@ -79,6 +79,10 @@ require "torch/nn/batch_norm"
 require "torch/nn/batch_norm1d"
 require "torch/nn/batch_norm2d"
 require "torch/nn/batch_norm3d"
+require "torch/nn/instance_norm"
+require "torch/nn/instance_norm1d"
+require "torch/nn/instance_norm2d"
+require "torch/nn/instance_norm3d"
 
 # nn recurrent layers
 require "torch/nn/rnn_base"
