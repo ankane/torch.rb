@@ -55,6 +55,7 @@ require "torch/nn/avg_pool3d"
 # nn recurrent layers
 require "torch/nn/rnn_base"
 require "torch/nn/rnn"
+require "torch/nn/lstm"
 
 # nn linear layers
 require "torch/nn/bilinear"
