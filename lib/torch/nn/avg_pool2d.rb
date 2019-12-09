@@ -12,8 +12,7 @@ module Torch
       end
 
       def forward(input)
-        raise NotImplementedYet if @divisor_override
-        F.avg_pool2d(input, @kernel_size, @stride, @padding, @ceil_mode, @count_include_pad) #, @divisor_override)
+        F.avg_pool2d(input, @kernel_size, @stride, @padding, @ceil_mode, @count_include_pad, @divisor_override)
       end
     end
   end

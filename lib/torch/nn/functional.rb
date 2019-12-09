@@ -47,7 +47,7 @@ module Torch
         end
 
         def avg_pool1d(*args, **options)
-          NN.avg_pool1d(*args, **options)
+          Torch.avg_pool1d(*args, **options)
         end
 
         def avg_pool2d(*args, **options)
