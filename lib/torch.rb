@@ -56,6 +56,7 @@ require "torch/nn/avg_pool3d"
 require "torch/nn/rnn_base"
 require "torch/nn/rnn"
 require "torch/nn/lstm"
+require "torch/nn/gru"
 
 # nn linear layers
 require "torch/nn/bilinear"

@@ -26,7 +26,6 @@ class RecurrentLayersTest < Minitest::Test
     input = Torch.randn(5, 3, 10)
     h0 = Torch.randn(2, 3, 20)
     c0 = Torch.randn(2, 3, 20)
-
     output, (hn, cn) = rnn.call(input, hx: [h0, c0])
 
     assert_equal [5, 3, 20], output.size
@@ -41,5 +40,23 @@ class RecurrentLayersTest < Minitest::Test
 
     expected = [0.0565, 0.0103, -0.1633, -0.0869, -0.0622, 0.0728, -0.2707, -0.5737]
     assert_elements_in_delta expected, cn[0][0][0...8].to_a
+  end
+
+  def test_gru
+    Torch.manual_seed(1)
+
+    rnn = Torch::NN::GRU.new(10, 20, num_layers: 2)
+    input = Torch.randn(5, 3, 10)
+    h0 = Torch.randn(2, 3, 20)
+    output, hn = rnn.call(input, hx: h0)
+
+    assert_equal [5, 3, 20], output.size
+    assert_equal [2, 3, 20], hn.size
+
+    expected = [-0.7978, 0.1540, 0.2773, -0.5235, 1.2780, 0.4310, 0.1842, -0.4014]
+    assert_elements_in_delta expected, output[0][0][0...8].to_a
+
+    expected = [-0.1374, 0.0138, -0.1264, 0.1412, 0.0037, -0.5102, -0.6012, -0.4661]
+    assert_elements_in_delta expected, hn[0][0][0...8].to_a
   end
 end
