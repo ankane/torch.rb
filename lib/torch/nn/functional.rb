@@ -123,6 +123,10 @@ module Torch
           NN.softplus(input, beta, threshold)
         end
 
+        def softshrink(*args, **options)
+          NN.softshrink(*args, **options)
+        end
+
         def tanhshrink(input)
           input - input.tanh
         end
