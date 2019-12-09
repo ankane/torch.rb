@@ -164,13 +164,23 @@ module Torch
         end
 
         def embedding_bag(input, weight, offsets: nil, max_norm: nil, norm_type: 2, scale_grad_by_freq: false, mode: "mean", sparse: false, per_sample_weights: nil)
-          # need to handle nils
-          raise NotImplementedYet
-
           # TODO handle max_norm and norm_type
           raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
 
-          Torch.embedding_bag(input, weight, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights)
+          mode_enum =
+            case mode
+            when "sum"
+              0
+            when "mean"
+              1
+            when "max"
+              2
+            else
+              raise ArgumentError, "Unknown mode: #{mode}"
+            end
+
+          # weight and input swapped
+          Torch.embedding_bag(weight, input, offsets, scale_grad_by_freq, mode_enum, sparse, per_sample_weights)
         end
 
         # distance functions
