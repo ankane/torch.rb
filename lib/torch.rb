@@ -85,6 +85,7 @@ require "torch/nn/prelu"
 require "torch/nn/relu"
 require "torch/nn/sigmoid"
 require "torch/nn/softplus"
+require "torch/nn/tanh"
 
 # nn activations other
 require "torch/nn/log_softmax"
