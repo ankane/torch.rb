@@ -103,6 +103,10 @@ module Torch
           NN.leaky_relu(input, negative_slope)
         end
 
+        def log_sigmoid(input)
+          NN.log_sigmoid(input)
+        end
+
         def prelu(input, weight)
           Torch.prelu(input, weight)
         end

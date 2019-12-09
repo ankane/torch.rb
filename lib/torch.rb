@@ -80,6 +80,7 @@ require "torch/nn/feature_alpha_dropout"
 
 # nn activations
 require "torch/nn/leaky_relu"
+require "torch/nn/log_sigmoid"
 require "torch/nn/prelu"
 require "torch/nn/relu"
 require "torch/nn/sigmoid"

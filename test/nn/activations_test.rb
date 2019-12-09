@@ -7,6 +7,12 @@ class ActivationsTest < Minitest::Test
     output = m.call(input)
   end
 
+  def test_log_sigmoid
+    m = Torch::NN::LogSigmoid.new
+    input = Torch.randn(2)
+    output = m.call(input)
+  end
+
   def test_prelu
     m = Torch::NN::PReLU.new
     input = Torch.randn(2)
