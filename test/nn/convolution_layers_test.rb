@@ -2,8 +2,6 @@ require_relative "../test_helper"
 
 class ConvolutionLayersTest < Minitest::Test
   def test_conv1d
-    skip "Not implemented yet"
-
     m = Torch::NN::Conv1d.new(16, 33, 3, stride: 2)
     input = Torch.randn(20, 16, 50)
     output = m.call(input)
@@ -18,8 +16,6 @@ class ConvolutionLayersTest < Minitest::Test
   end
 
   def test_conv3d
-    skip "Not implemented yet"
-
     m = Torch::NN::Conv3d.new(16, 33, 3, stride: 2)
     m = Torch::NN::Conv3d.new(16, 33, [3, 5, 2], stride: [2, 1, 1], padding: [4, 2, 0])
     input = Torch.randn(20, 16, 10, 50, 100)

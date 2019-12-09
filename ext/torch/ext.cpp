@@ -106,12 +106,6 @@ void Init_ext()
       })
     // begin operations
     .define_singleton_method(
-      "conv2d",
-      *[](Tensor& input, Tensor& weight, Tensor& bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, int64_t groups) {
-        return torch::conv2d(input, weight, bias, stride, padding, dilation, groups);
-      })
-    // pooling layers
-    .define_singleton_method(
       "max_pool2d",
       *[](Tensor& input, IntArrayRef kernel_size) {
         return torch::max_pool2d(input, kernel_size);

@@ -36,7 +36,9 @@ require "torch/nn/sequential"
 
 # nn convolution layers
 require "torch/nn/convnd"
+require "torch/nn/conv1d"
 require "torch/nn/conv2d"
+require "torch/nn/conv3d"
 
 # nn pooling layers
 require "torch/nn/max_poolnd"

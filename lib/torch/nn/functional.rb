@@ -10,9 +10,16 @@ module Torch
           end
         end
 
-        def conv2d(input, weight, bias, stride: 1, padding: 0, dilation: 1, groups: 1)
-          # TODO pair stride and padding when needed
-          Torch.conv2d(input, weight, bias, stride, padding, dilation, groups)
+        def conv1d(*args, **options)
+          Torch.conv1d(*args, **options)
+        end
+
+        def conv2d(*args, **options)
+          Torch.conv2d(*args, **options)
+        end
+
+        def conv3d(*args, **options)
+          Torch.conv3d(*args, **options)
         end
 
         def prelu(input, weight)
