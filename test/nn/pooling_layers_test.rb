@@ -73,4 +73,21 @@ class PoolingLayersTest < Minitest::Test
     input = Torch.randn(20, 16, 50,44, 31)
     output = m.call(input)
   end
+
+  def test_lp_pool1d
+    skip "Not implemented yet"
+
+    m = Torch::NN::LPPool1d.new(2, 3, stride: 2)
+    input = Torch.randn(20, 16, 50)
+    output = m.call(input)
+  end
+
+  def test_lp_pool2d
+    skip "Not implemented yet"
+
+    m = Torch::NN::LPPool2d.new(2, 3, stride: 2)
+    m = Torch::NN::LPPool2d.new(1.2, [3, 2], stride: [2, 1])
+    input = Torch.randn(20, 16, 50, 32)
+    output = m.call(input)
+  end
 end
