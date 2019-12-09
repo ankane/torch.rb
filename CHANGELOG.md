@@ -2,6 +2,7 @@
 
 - Added recurrent layers
 - Added more pooling layers
+- Added normalization layers
 
 ## 0.1.5 (2019-12-06)
 
