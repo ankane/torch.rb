@@ -36,10 +36,34 @@ module Torch
             t, _, k = a.rpartition(" ")
             k, d = k.split("=")
             has_default = !d.nil?
-            d = d.to_i if d.to_i.to_s == d
-            d = true if d == "True"
-            d = false if d == "False"
-            d = nil if d == "None"
+
+            if d
+              d =
+                case d
+                when "True"
+                  true
+                when "False"
+                  false
+                when "None"
+                  nil
+                when /\A\-?\d+\z/
+                  d.to_i
+                when "[]"
+                  []
+                when "[0,1]"
+                  [0, 1]
+                when /\A\de\-\d+\z/, /\A\d+\.\d+\z/
+                  d.to_f
+                when "Mean"
+                  "mean"
+                when "contiguous_format"
+                  d
+                when "long"
+                  :long
+                else
+                  raise "Unknown default: #{d}"
+                end
+            end
 
             next if t == "Generator?"
             args << {name: k, type: t, default: d, pos: pos, has_default: has_default}

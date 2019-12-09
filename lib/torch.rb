@@ -44,9 +44,13 @@ require "torch/nn/fold"
 
 # nn pooling layers
 require "torch/nn/max_poolnd"
+require "torch/nn/max_pool1d"
 require "torch/nn/max_pool2d"
+require "torch/nn/max_pool3d"
 require "torch/nn/avg_poolnd"
+require "torch/nn/avg_pool1d"
 require "torch/nn/avg_pool2d"
+require "torch/nn/avg_pool3d"
 
 # nn recurrent layers
 require "torch/nn/rnn_base"

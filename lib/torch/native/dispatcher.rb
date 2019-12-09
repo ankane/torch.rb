@@ -18,7 +18,7 @@ module Torch
           functions = Generator.grouped_functions
           bind_functions(::Torch, :define_singleton_method, functions[:torch])
           bind_functions(::Torch::Tensor, :define_method, functions[:tensor])
-          # NN functions are internal, so no need to bind
+          bind_functions(::Torch::NN, :define_singleton_method, functions[:nn])
         end
 
         def bind_functions(context, def_method, functions)

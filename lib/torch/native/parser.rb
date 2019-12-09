@@ -11,6 +11,11 @@ module Torch
       def parse(args, options)
         candidates = @functions.dup
 
+        # remove nil
+        while args.any? && args.last.nil?
+          args.pop
+        end
+
         # TODO account for args passed as options here
         if args.size < @min_args || args.size > @max_args
           expected = String.new(@min_args.to_s)
@@ -60,8 +65,10 @@ module Torch
 
           arg_types = func.args.map { |a| [a[:name], a[:type]] }.to_h
 
-          values.each do |k, v|
+          values.each_key do |k|
+            v = values[k]
             t = arg_types[k].split("(").first
+
             good =
               case t
               when "Tensor"
@@ -73,6 +80,12 @@ module Torch
               when "int"
                 v.is_a?(Integer)
               when /int\[.*\]/
+                if v.is_a?(Integer)
+                  size = t[4..-2]
+                  raise Error, "Unknown size: #{size}. Please report a bug with #{@name}." unless size =~ /\A\d+\z/
+                  v = [v] * size.to_i
+                  values[k] = v
+                end
                 v.is_a?(Array) && v.all? { |v2| v2.is_a?(Integer) }
               when "Scalar"
                 v.is_a?(Numeric)

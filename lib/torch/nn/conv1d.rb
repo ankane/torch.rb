@@ -21,11 +21,7 @@ module Torch
       private
 
       def _single(value)
-        if value.is_a?(Array)
-          value
-        else
-          [value]
-        end
+        value.is_a?(Array) ? value : [value]
       end
     end
   end

@@ -21,11 +21,7 @@ module Torch
       private
 
       def _triple(value)
-        if value.is_a?(Array)
-          value
-        else
-          [value] * 3
-        end
+        value.is_a?(Array) ? value : [value] * 3
       end
     end
   end

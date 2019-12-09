@@ -10,6 +10,8 @@ module Torch
           end
         end
 
+        # convolution layers
+
         def conv1d(*args, **options)
           Torch.conv1d(*args, **options)
         end
@@ -38,22 +40,40 @@ module Torch
           end
         end
 
+        # pooling layers
+
+        def max_pool1d(*args, **options)
+          Torch.max_pool1d(*args, **options)
+        end
+
+        def max_pool2d(*args, **options)
+          Torch.max_pool2d(*args, **options)
+        end
+
+        def max_pool3d(*args, **options)
+          Torch.max_pool3d(*args, **options)
+        end
+
+        def avg_pool1d(*args, **options)
+          NN.avg_pool1d(*args, **options)
+        end
+
+        def avg_pool2d(*args, **options)
+          NN.avg_pool2d(*args, **options)
+        end
+
+        def avg_pool3d(*args, **options)
+          NN.avg_pool3d(*args, **options)
+        end
+
+        # other layers
+
         def prelu(input, weight)
           Torch.prelu(input, weight)
         end
 
         def leaky_relu(input, negative_slope = 0.01)
           NN._leaky_relu(input, negative_slope)
-        end
-
-        def max_pool2d(input, kernel_size)
-          kernel_size = [kernel_size, kernel_size] if kernel_size.is_a?(Integer)
-          Torch.max_pool2d(input, kernel_size)
-        end
-
-        def avg_pool2d(input, kernel_size)
-          kernel_size = [kernel_size, kernel_size] if kernel_size.is_a?(Integer)
-          Torch.avg_pool2d(input, kernel_size)
         end
 
         # linear layers
@@ -243,11 +263,7 @@ module Torch
         end
 
         def _pair(value)
-          if value.is_a?(Array)
-            value
-          else
-            [value] * 2
-          end
+          value.is_a?(Array) ? value : [value] * 2
         end
       end
     end

@@ -106,21 +106,10 @@ void Init_ext()
       })
     // begin operations
     .define_singleton_method(
-      "max_pool2d",
-      *[](Tensor& input, IntArrayRef kernel_size) {
-        return torch::max_pool2d(input, kernel_size);
-      })
-    .define_singleton_method(
-      "avg_pool2d",
-      *[](Tensor& input, IntArrayRef kernel_size) {
-        return torch::avg_pool2d(input, kernel_size);
-      })
-    .define_singleton_method(
       "_binary_cross_entropy_with_logits",
       *[](const Tensor &input, const Tensor &target, OptionalTensor weight, OptionalTensor pos_weight, MyReduction reduction) {
         return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
       })
-    .define_singleton_method("numel", &torch::numel)
     .define_singleton_method(
       "_from_blob",
       *[](String s, IntArrayRef size, const torch::TensorOptions &options) {

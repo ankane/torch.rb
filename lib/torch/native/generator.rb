@@ -42,7 +42,9 @@ module Torch
           # there may be a better way to do this
           optional_functions, functions = functions.partition { |f| f.args.any? { |a| a[:type] == "int?" } }
           optional_functions.each do |f|
-            next if f.ruby_name.start_with?("avg_pool") || f.ruby_name == "cross"
+            next if f.ruby_name == "cross"
+            next if f.ruby_name.start_with?("avg_pool") && f.out?
+
             opt_args = f.args.select { |a| a[:type] == "int?" }
             if opt_args.size == 1
               sep = f.name.include?(".") ? "_" : "."

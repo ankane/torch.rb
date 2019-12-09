@@ -26,11 +26,7 @@ module Torch
       private
 
       def _pair(value)
-        if value.is_a?(Array)
-          value
-        else
-          [value] * 2
-        end
+        value.is_a?(Array) ? value : [value] * 2
       end
     end
   end
