@@ -12,8 +12,6 @@ class SparseLayersTest < Minitest::Test
   end
 
   def test_embedding_bag
-    skip "Not implemented yet"
-
     embedding_sum = Torch::NN::EmbeddingBag.new(10, 3, mode: "sum")
     input = Torch::LongTensor.new([1, 2, 4, 5, 4, 3, 2, 9])
     offsets = Torch::LongTensor.new([0, 4])

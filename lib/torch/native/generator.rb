@@ -136,8 +136,8 @@ void add_%{type}_functions(Module m) {
 
             body = "#{prefix}#{dispatch}(#{args.join(", ")})"
             # TODO check type as well
-            if func.ret_size == 2
-              body = "tensor_tuple(#{body})"
+            if func.ret_size > 1
+              body = "wrap(#{body})"
             end
 
             cpp_defs << ".#{def_method}(

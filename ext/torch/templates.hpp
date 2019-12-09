@@ -290,4 +290,9 @@ OptionalScalarType from_ruby<OptionalScalarType>(Object x)
 
 typedef torch::Device Device;
 
-Object tensor_tuple(std::tuple<torch::Tensor, torch::Tensor> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_t> x);
+Object wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x);
