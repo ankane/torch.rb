@@ -106,11 +106,6 @@ void Init_ext()
       })
     // begin operations
     .define_singleton_method(
-      "max_pool2d",
-      *[](Tensor& input, IntArrayRef kernel_size) {
-        return torch::max_pool2d(input, kernel_size);
-      })
-    .define_singleton_method(
       "avg_pool2d",
       *[](Tensor& input, IntArrayRef kernel_size) {
         return torch::avg_pool2d(input, kernel_size);
