@@ -248,3 +248,46 @@ OptionalTensor from_ruby<OptionalTensor>(Object x)
 {
   return OptionalTensor(x);
 }
+
+class ScalarType {
+  Object value;
+  public:
+    ScalarType(Object o) {
+      value = o;
+    }
+    operator at::ScalarType() {
+      throw std::runtime_error("ScalarType arguments not implemented yet");
+    }
+};
+
+template<>
+inline
+ScalarType from_ruby<ScalarType>(Object x)
+{
+  return ScalarType(x);
+}
+
+class OptionalScalarType {
+  Object value;
+  public:
+    OptionalScalarType(Object o) {
+      value = o;
+    }
+    operator c10::optional<at::ScalarType>() {
+      if (value.is_nil()) {
+        return c10::nullopt;
+      }
+      return ScalarType(value);
+    }
+};
+
+template<>
+inline
+OptionalScalarType from_ruby<OptionalScalarType>(Object x)
+{
+  return OptionalScalarType(x);
+}
+
+typedef torch::Device Device;
+
+Object tensor_tuple(std::tuple<torch::Tensor, torch::Tensor> x);

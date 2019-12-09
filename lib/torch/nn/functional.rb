@@ -153,12 +153,12 @@ module Torch
 
         def softmax(input, dim: nil)
           dim ||= softmax_dim(input.dim)
-          input.softmax(dim: dim)
+          input.softmax(dim)
         end
 
         def softmin(input, dim: nil)
           dim ||= softmax_dim(input.dim)
-          (-input).softmax(dim: dim)
+          (-input).softmax(dim)
         end
 
         def softplus(input, beta: 1, threshold: 20)

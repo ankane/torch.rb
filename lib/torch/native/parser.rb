@@ -4,17 +4,35 @@ module Torch
       def initialize(functions)
         @functions = functions
         @name = @functions.first.ruby_name
-        @min_args = @functions.map { |f| f.args.count { |a| a[:pos] && a[:default].nil? } }.min
+        @min_args = @functions.map { |f| f.args.count { |a| a[:pos] && !a[:has_default] } }.min
         @max_args = @functions.map { |f| f.args.count { |a| a[:pos] } }.max
       end
 
       def parse(args, options)
         candidates = @functions.dup
 
+        # TODO account for args passed as options here
         if args.size < @min_args || args.size > @max_args
           expected = String.new(@min_args.to_s)
           expected += "..#{@max_args}" if @max_args != @min_args
           return {error: "wrong number of arguments (given #{args.size}, expected #{expected})"}
+        end
+
+        # exclude functions missing required options
+        candidates.reject! do |func|
+          # TODO make more generic
+          func.out? && !options[:out]
+        end
+
+        # handle out with multiple
+        # there should only be one match, so safe to modify all
+        out_func = candidates.find { |f| f.out? }
+        if out_func && out_func.out_size > 1 && options[:out]
+          out_args = out_func.args.last(2).map { |a| a[:name] }
+          out_args.zip(options.delete(:out)).each do |k, v|
+            options[k.to_sym] = v
+          end
+          candidates = [out_func]
         end
 
         # exclude functions where options don't match
@@ -24,12 +42,6 @@ module Torch
           end
           # TODO show all bad keywords at once like Ruby?
           return {error: "unknown keyword: #{k}"} if candidates.empty?
-        end
-
-        # exclude functions missing required options
-        candidates.reject! do |func|
-          # TODO make more generic
-          func.out? && !options[:out]
         end
 
         final_values = {}
@@ -53,17 +65,19 @@ module Torch
               when "Tensor"
                 v.is_a?(Tensor)
               when "Tensor[]"
-                v.all? { |v2| v2.is_a?(Tensor) }
+                v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) }
               when "int"
                 v.is_a?(Integer)
-              when "int[]"
-                v.all? { |v2| v2.is_a?(Integer) }
+              when /int\[.*\]/
+                v.is_a?(Array) && v.all? { |v2| v2.is_a?(Integer) }
               when "Scalar"
                 v.is_a?(Numeric)
+              when "ScalarType?"
+                v.nil?
               when "bool"
                 v == true || v == false
               else
-                raise Error, "Unknown argument type: #{arg_types[k]}. Please report a bug with #{@name}"
+                raise Error, "Unknown argument type: #{arg_types[k]}. Please report a bug with #{@name}."
               end
 
             if !good

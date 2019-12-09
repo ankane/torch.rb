@@ -35,11 +35,12 @@ module Torch
             end
             t, _, k = a.rpartition(" ")
             k, d = k.split("=")
+            has_default = !d.nil?
             d = d.to_i if d.to_i.to_s == d
             d = true if d == "True"
             d = false if d == "False"
             d = nil if d == "None"
-            args << {name: k, type: t, default: d, pos: pos}
+            args << {name: k, type: t, default: d, pos: pos, has_default: has_default}
           end
           args
         end
@@ -47,6 +48,10 @@ module Torch
 
       def out_size
         @out_size ||= func.split("->").last.count("!")
+      end
+
+      def ret_size
+        @ret_size ||= func.split("->").last.split(", ").size
       end
 
       def out?

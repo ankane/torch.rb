@@ -97,17 +97,6 @@ module Torch
       end
     end
 
-    # operations
-    %w(log_softmax mean softmax sum topk).each do |op|
-      define_method(op) do |*args, **options, &block|
-        if options.any?
-          Torch.send(op, self, *args, **options, &block)
-        else
-          Torch.send(op, self, *args, &block)
-        end
-      end
-    end
-
     # end temp operations
 
     def +(other)

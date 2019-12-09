@@ -364,48 +364,6 @@ module Torch
       zeros(input.size, like_options(input, options))
     end
 
-    # --- begin operations ---
-
-    # TODO support out
-    def mean(input, dim = nil, keepdim: false)
-      if dim
-        _mean_dim(input, dim, keepdim)
-      else
-        _mean(input)
-      end
-    end
-
-    # TODO support dtype
-    def sum(input, dim = nil, keepdim: false)
-      if dim
-        _sum_dim(input, dim, keepdim)
-      else
-        _sum(input)
-      end
-    end
-
-    def topk(input, k)
-      _topk(input, k)
-    end
-
-    def max(input, dim = nil, keepdim: false, out: nil)
-      if dim
-        raise NotImplementedYet unless out
-        _max_out(out[0], out[1], input, dim, keepdim)
-      else
-        _max(input)
-      end
-    end
-
-    # TODO make dim keyword argument
-    def log_softmax(input, dim)
-      _log_softmax(input, dim)
-    end
-
-    def softmax(input, dim: nil)
-      _softmax(input, dim)
-    end
-
     private
 
     def tensor_size(size)

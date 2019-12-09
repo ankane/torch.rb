@@ -16,13 +16,6 @@
 
 using namespace Rice;
 
-Object tensor_array(std::tuple<torch::Tensor, torch::Tensor> x) {
-  Array a;
-  a.push(to_ruby<torch::Tensor>(std::get<0>(x)));
-  a.push(to_ruby<torch::Tensor>(std::get<1>(x)));
-  return Object(a);
-}
-
 extern "C"
 void Init_ext()
 {
@@ -112,46 +105,6 @@ void Init_ext()
         return torch::zeros(size, options);
       })
     // begin operations
-    .define_singleton_method(
-      "_mean",
-      *[](Tensor& input) {
-        return torch::mean(input);
-      })
-    .define_singleton_method(
-      "_mean_dim",
-      *[](Tensor& input, int64_t dim, bool keepdim) {
-        return torch::mean(input, dim, keepdim);
-      })
-    .define_singleton_method(
-      "_sum",
-      *[](Tensor& input) {
-        return torch::sum(input);
-      })
-    .define_singleton_method(
-      "_sum_dim",
-      *[](Tensor& input, int64_t dim, bool keepdim) {
-        return torch::sum(input, dim, keepdim);
-      })
-    .define_singleton_method(
-      "_max_out",
-      *[](Tensor &max, Tensor &max_indices, const Tensor &input, int64_t dim, bool keepdim) {
-        return tensor_array(torch::_max_out(max, max_indices, input, dim, keepdim));
-      })
-    .define_singleton_method(
-      "_topk",
-      *[](Tensor& input, int64_t k) {
-        return tensor_array(torch::topk(input, k));
-      })
-    .define_singleton_method(
-      "_softmax",
-      *[](const Tensor &input, int64_t dim) {
-        return torch::softmax(input, dim);
-      })
-    .define_singleton_method(
-      "_log_softmax",
-      *[](Tensor& input, int64_t dim) {
-        return torch::log_softmax(input, dim);
-      })
     .define_singleton_method(
       "relu",
       *[](Tensor& input) {

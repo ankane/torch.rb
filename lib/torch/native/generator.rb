@@ -17,14 +17,23 @@ module Torch
         def grouped_functions
           functions = functions()
 
-          # remove functions
+          # skip functions
           skip_binding = ["unique_dim_consecutive", "einsum", "normal"]
-          skip_args = ["bool[3]", "Dimname", "ScalarType", "MemoryFormat", "Storage", "ConstQuantizerPtr"]
-          functions.reject! { |f| f.ruby_name.start_with?("_") || f.ruby_name.end_with?("_backward") || skip_binding.include?(f.ruby_name) }
+          skip_args = ["bool[3]", "Dimname", "MemoryFormat", "Layout", "Storage", "ConstQuantizerPtr"]
+
+          # remove functions
+          functions.reject! do |f|
+            f.ruby_name.start_with?("_") ||
+            f.ruby_name.end_with?("_backward") ||
+            skip_binding.include?(f.ruby_name) ||
+            f.args.any? { |a| a[:type].include?("Dimname") }
+          end
+
+          # separate out into todo
           todo_functions, functions =
             functions.partition do |f|
               f.args.any? do |a|
-                a[:type].include?("?") && !["Tensor?", "Generator?", "int?"].include?(a[:type]) ||
+                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) }
               end
             end
@@ -96,6 +105,8 @@ void add_%{type}_functions(Module m) {
                 when "Tensor?"
                   # TODO better signature
                   "OptionalTensor"
+                when "ScalarType?"
+                  "OptionalScalarType"
                 when "Tensor[]"
                   "TensorList"
                 when "int"
@@ -121,10 +132,16 @@ void add_%{type}_functions(Module m) {
 
             prefix = def_method == :define_method ? "self." : "torch::"
 
+            body = "#{prefix}#{dispatch}(#{args.join(", ")})"
+            # TODO check type as well
+            if func.ret_size == 2
+              body = "tensor_tuple(#{body})"
+            end
+
             cpp_defs << ".#{def_method}(
     \"#{func.cpp_name}\",
     *[](#{cpp_args.join(", ")}) {
-      return #{prefix}#{dispatch}(#{args.join(", ")});
+      return #{body};
     })"
           end
 
