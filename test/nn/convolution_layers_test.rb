@@ -52,18 +52,14 @@ class ConvolutionLayersTest < Minitest::Test
   end
 
   def test_unfold
-    skip "Not implemented yet"
-
-    unfold =  Torch::NN::Unfold.new(kernel_size: [2, 3])
+    unfold =  Torch::NN::Unfold.new([2, 3])
     input = Torch.randn(2, 5, 3, 4)
     output = unfold.call(input)
     assert_equal [2, 30, 4], output.size
   end
 
   def test_fold
-    skip "Not implemented yet"
-
-    fold = Torch::NN::Fold.new(output_size: [4, 5], kernel_size: [2, 2])
+    fold = Torch::NN::Fold.new([4, 5], [2, 2])
     input = Torch.randn(1, 3 * 2 * 2, 12)
     output = fold.call(input)
     assert_equal [1, 3, 4, 5], output.size

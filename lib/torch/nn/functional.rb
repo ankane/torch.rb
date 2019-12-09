@@ -22,6 +22,22 @@ module Torch
           Torch.conv3d(*args, **options)
         end
 
+        def unfold(input, kernel_size, dilation: 1, padding: 0, stride: 1)
+          if input.dim == 4
+            NN._im2col(input, _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
+          else
+            raise Error, "Input Error: Only 4D input Tensors are supported (got #{input.dim}D)"
+          end
+        end
+
+        def fold(input, output_size, kernel_size, dilation: 1, padding: 0, stride: 1)
+          if input.dim == 3
+            NN._col2im(input, _pair(output_size), _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
+          else
+            raise Error, "Input Error: Only 3D input Tensors are supported (got #{input.dim}D)"
+          end
+        end
+
         def prelu(input, weight)
           Torch.prelu(input, weight)
         end
@@ -224,6 +240,14 @@ module Torch
 
         def softmax_dim(ndim)
           ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
+        end
+
+        def _pair(value)
+          if value.is_a?(Array)
+            value
+          else
+            [value] * 2
+          end
         end
       end
     end

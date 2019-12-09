@@ -39,6 +39,8 @@ require "torch/nn/convnd"
 require "torch/nn/conv1d"
 require "torch/nn/conv2d"
 require "torch/nn/conv3d"
+require "torch/nn/unfold"
+require "torch/nn/fold"
 
 # nn pooling layers
 require "torch/nn/max_poolnd"
