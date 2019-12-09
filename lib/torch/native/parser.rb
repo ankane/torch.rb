@@ -60,7 +60,7 @@ module Torch
           values = args.zip(func.args).map { |a, fa| [fa[:name], a] }.to_h
           values.merge!(options.map { |k, v| [k.to_s, v] }.to_h)
           func.args.each do |fa|
-            values[fa[:name]] ||= fa[:default]
+            values[fa[:name]] = fa[:default] if values[fa[:name]].nil?
           end
 
           arg_types = func.args.map { |a| [a[:name], a[:type]] }.to_h
@@ -78,7 +78,13 @@ module Torch
               when "Tensor[]"
                 v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) }
               when "int"
-                v.is_a?(Integer)
+                if k == "reduction"
+                  v.is_a?(String)
+                else
+                  v.is_a?(Integer)
+                end
+              when "float"
+                v.is_a?(Numeric)
               when /int\[.*\]/
                 if v.is_a?(Integer)
                   size = t[4..-2]

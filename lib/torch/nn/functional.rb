@@ -26,7 +26,7 @@ module Torch
 
         def unfold(input, kernel_size, dilation: 1, padding: 0, stride: 1)
           if input.dim == 4
-            NN._im2col(input, _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
+            NN.im2col(input, _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
           else
             raise Error, "Input Error: Only 4D input Tensors are supported (got #{input.dim}D)"
           end
@@ -34,7 +34,7 @@ module Torch
 
         def fold(input, output_size, kernel_size, dilation: 1, padding: 0, stride: 1)
           if input.dim == 3
-            NN._col2im(input, _pair(output_size), _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
+            NN.col2im(input, _pair(output_size), _pair(kernel_size), _pair(dilation), _pair(padding), _pair(stride))
           else
             raise Error, "Input Error: Only 3D input Tensors are supported (got #{input.dim}D)"
           end
@@ -73,7 +73,7 @@ module Torch
         end
 
         def leaky_relu(input, negative_slope = 0.01)
-          NN._leaky_relu(input, negative_slope)
+          NN.leaky_relu(input, negative_slope)
         end
 
         # linear layers
@@ -94,7 +94,7 @@ module Torch
 
           padding_idx ||= -1
           # weight and indices are swapped from Python interface
-          Torch._embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)
+          Torch.embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)
         end
 
         def embedding_bag(input, weight, offsets: nil, max_norm: nil, norm_type: 2, scale_grad_by_freq: false, mode: "mean", sparse: false, per_sample_weights: nil)
@@ -104,27 +104,27 @@ module Torch
           # TODO handle max_norm and norm_type
           raise NotImplementedYet unless max_norm.nil? && norm_type == 2.0
 
-          Torch._embedding_bag(input, weight, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights)
+          Torch.embedding_bag(input, weight, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights)
         end
 
         # distance functions
 
         def cosine_similarity(x1, x2, dim: 1, eps: 1e-8)
-          Torch._cosine_similarity(x1, x2, dim, eps)
+          Torch.cosine_similarity(x1, x2, dim, eps)
         end
 
         def pairwise_distance(x1, x2, p: 2.0, eps: 1e-6, keepdim: false)
-          Torch._pairwise_distance(x1, x2, p, eps, keepdim)
+          Torch.pairwise_distance(x1, x2, p, eps, keepdim)
         end
 
         # loss functions
 
         def binary_cross_entropy(input, target, weight: nil, reduction: "mean")
-          NN._binary_cross_entropy(input, target, weight, reduction)
+          NN.binary_cross_entropy(input, target, weight, reduction)
         end
 
         def binary_cross_entropy_with_logits(input, target, weight: nil, reduction: "mean", pos_weight: nil)
-          Torch._binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction)
+          Torch.binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction)
         end
 
         def cosine_embedding_loss(input1, input2, target, margin: 0, reduction: "mean")
@@ -137,19 +137,19 @@ module Torch
 
         def ctc_loss(log_probs, targets, input_lengths, target_lengths, blank: 0, reduction: "mean", zero_infinity: false)
           # call to_a on input_lengths and target_lengths for C++
-          Torch._ctc_loss_intlist(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
+          Torch.ctc_loss(log_probs, targets, input_lengths.to_a, target_lengths.to_a, blank, reduction, zero_infinity)
         end
 
         def hinge_embedding_loss(input, target, margin: 1.0, reduction: "mean")
-          Torch._hinge_embedding_loss(input, target, margin, reduction)
+          Torch.hinge_embedding_loss(input, target, margin, reduction)
         end
 
         def kl_div(input, target, reduction: "mean")
-          Torch._kl_div(input, target, reduction)
+          Torch.kl_div(input, target, reduction)
         end
 
         def l1_loss(input, target, reduction: "mean")
-          NN._l1_loss(input, target, reduction)
+          NN.l1_loss(input, target, reduction)
         end
 
         def margin_ranking_loss(input1, input2, target, margin: 0, reduction: "mean")
@@ -157,11 +157,11 @@ module Torch
         end
 
         def mse_loss(input, target, reduction: "mean")
-          NN._mse_loss(input, target, reduction)
+          NN.mse_loss(input, target, reduction)
         end
 
         def multilabel_margin_loss(input, target, reduction: "mean")
-          NN._multilabel_margin_loss(input, target, reduction)
+          NN.multilabel_margin_loss(input, target, reduction)
         end
 
         def multilabel_soft_margin_loss(input, target, weight: nil)
@@ -169,27 +169,27 @@ module Torch
         end
 
         def multi_margin_loss(input, target, p: 1, margin: 1.0, weight: nil, reduction: "mean")
-          NN._multi_margin_loss(input, target, p, margin, weight, reduction)
+          NN.multi_margin_loss(input, target, p, margin, weight, reduction)
         end
 
         def nll_loss(input, target, weight: nil, ignore_index: -100, reduction: "mean")
-          NN._nll_loss(input, target, weight, reduction, ignore_index)
+          NN.nll_loss(input, target, weight, reduction, ignore_index)
         end
 
         def poisson_nll_loss(input, target, log_input: true, full: false, eps: 1e-8, reduction: "mean")
-          Torch._poisson_nll_loss(input, target, log_input, full, eps, reduction)
+          Torch.poisson_nll_loss(input, target, log_input, full, eps, reduction)
         end
 
         def soft_margin_loss(input, target, reduction: "mean")
-          NN._soft_margin_loss(input, target, reduction)
+          NN.soft_margin_loss(input, target, reduction)
         end
 
         def smooth_l1_loss(input, target, reduction: "mean")
-          NN._smooth_l1_loss(input, target, reduction)
+          NN.smooth_l1_loss(input, target, reduction)
         end
 
         def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
-          Torch._triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction)
+          Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction)
         end
 
         # end loss
@@ -205,7 +205,7 @@ module Torch
         end
 
         def softplus(input, beta: 1, threshold: 20)
-          NN._softplus(input, beta, threshold)
+          NN.softplus(input, beta, threshold)
         end
 
         # TODO make dim keyword argument and update examples
@@ -216,9 +216,9 @@ module Torch
 
         def dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._dropout_(input, p, training)
+            Torch.dropout!(input, p, training)
           else
-            Torch._dropout(input, p, training)
+            Torch.dropout(input, p, training)
           end
         end
 
@@ -226,33 +226,33 @@ module Torch
           raise ArgumentError, "dropout probability has to be between 0 and 1, but got #{p}" if p < 0 || p > 1
 
           if inplace
-            Torch._feature_dropout_(input, p, training)
+            Torch.feature_dropout!(input, p, training)
           else
-            Torch._feature_dropout(input, p, training)
+            Torch.feature_dropout(input, p, training)
           end
         end
 
         def dropout3d(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._feature_dropout_(input, p, training)
+            Torch.feature_dropout!(input, p, training)
           else
-            Torch._feature_dropout(input, p, training)
+            Torch.feature_dropout(input, p, training)
           end
         end
 
         def alpha_dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._alpha_dropout_(input, p, training)
+            Torch.alpha_dropout!(input, p, training)
           else
-            Torch._alpha_dropout(input, p, training)
+            Torch.alpha_dropout(input, p, training)
           end
         end
 
         def feature_alpha_dropout(input, p: 0.5, training: true, inplace: false)
           if inplace
-            Torch._feature_alpha_dropout_(input, p, training)
+            Torch.feature_alpha_dropout!(input, p, training)
           else
-            Torch._feature_alpha_dropout(input, p, training)
+            Torch.feature_alpha_dropout(input, p, training)
           end
         end
 
