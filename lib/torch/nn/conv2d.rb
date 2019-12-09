@@ -22,12 +22,6 @@ module Torch
       def extra_inspect
         format("%s, %s, kernel_size: %s, stride: %s", @in_channels, @out_channels, @kernel_size, @stride)
       end
-
-      private
-
-      def _pair(value)
-        value.is_a?(Array) ? value : [value] * 2
-      end
     end
   end
 end

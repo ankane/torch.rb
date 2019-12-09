@@ -216,6 +216,18 @@ module Torch
           end
         str % vars
       end
+
+      def _single(value)
+        value.is_a?(Array) ? value : [value]
+      end
+
+      def _pair(value)
+        value.is_a?(Array) ? value : [value] * 2
+      end
+
+      def _triple(value)
+        value.is_a?(Array) ? value : [value] * 3
+      end
     end
   end
 end

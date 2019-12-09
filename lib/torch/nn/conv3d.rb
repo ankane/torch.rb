@@ -17,12 +17,6 @@ module Torch
         end
         F.conv3d(input, @weight, @bias, @stride, @padding, @dilation, @groups)
       end
-
-      private
-
-      def _triple(value)
-        value.is_a?(Array) ? value : [value] * 3
-      end
     end
   end
 end

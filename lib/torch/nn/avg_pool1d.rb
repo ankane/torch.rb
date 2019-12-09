@@ -13,12 +13,6 @@ module Torch
       def forward(input)
         F.avg_pool1d(input, @kernel_size, @stride, @padding, @ceil_mode, @count_include_pad)
       end
-
-      private
-
-      def _single(value)
-        value.is_a?(Array) ? value : [value]
-      end
     end
   end
 end

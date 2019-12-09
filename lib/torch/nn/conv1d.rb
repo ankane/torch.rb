@@ -17,12 +17,6 @@ module Torch
         end
         F.conv1d(input, @weight, @bias, @stride, @padding, @dilation, @groups)
       end
-
-      private
-
-      def _single(value)
-        value.is_a?(Array) ? value : [value]
-      end
     end
   end
 end
