@@ -2,6 +2,8 @@ module Torch
   module NN
     class Functional
       class << self
+        include Utils
+
         # convolution layers
 
         def conv1d(*args, **options)
@@ -343,14 +345,6 @@ module Torch
 
         def softmax_dim(ndim)
           ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
-        end
-
-        def _single(value)
-          value.is_a?(Array) ? value : [value]
-        end
-
-        def _pair(value)
-          value.is_a?(Array) ? value : [value] * 2
         end
       end
     end

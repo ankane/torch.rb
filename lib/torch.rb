@@ -29,6 +29,7 @@ require "torch/optim/lr_scheduler/step_lr"
 
 # nn parameters
 require "torch/nn/parameter"
+require "torch/nn/utils"
 
 # nn containers
 require "torch/nn/module"
