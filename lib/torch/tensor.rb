@@ -45,8 +45,9 @@ module Torch
       dim.times.map { |i| size(i) }
     end
 
-    def view(*size)
-      _view(size)
+    # mirror Python len()
+    def length
+      size(0)
     end
 
     def item

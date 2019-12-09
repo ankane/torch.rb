@@ -184,4 +184,12 @@ class OperationsTest < Minitest::Test
     x = Torch.randn(2, 3)
     Torch.transpose(x, 0, 1)
   end
+
+  def test_length
+    x = Torch.tensor([1, 2, 3, 5])
+    assert_equal 4, x.length
+
+    x = Torch.zeros(5, 2, 3)
+    assert_equal 5, x.length
+  end
 end
