@@ -86,18 +86,14 @@ module Torch
       _type(enum)
     end
 
-    # start temp operations
-
+    # value and other are swapped for some methods
     def add!(value = 1, other)
       if other.is_a?(Numeric)
         _add__scalar(other, value)
       else
-        # need to use alpha for sparse tensors instead of multiplying
         _add__tensor(other, value)
       end
     end
-
-    # end temp operations
 
     def +(other)
       add(other)
