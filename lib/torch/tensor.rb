@@ -92,6 +92,11 @@ module Torch
       _reshape(size)
     end
 
+    def view(*size)
+      size = size.first if size.size == 1 && size.first.is_a?(Array)
+      _view(size)
+    end
+
     # value and other are swapped for some methods
     def add!(value = 1, other)
       if other.is_a?(Numeric)

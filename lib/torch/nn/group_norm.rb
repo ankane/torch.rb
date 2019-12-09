@@ -29,12 +29,7 @@ module Torch
       end
 
       def extra_inspect
-        format("%{num_groups}, %{num_channels}, eps: %{eps}, affine: %{affine}",
-          num_groups: @num_groups,
-          num_channels: @num_channels,
-          eps: @eps,
-          affine: @affine
-        )
+        format("%{num_groups}, %{num_channels}, eps: %{eps}, affine: %{affine}", **dict)
       end
     end
   end

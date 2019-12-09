@@ -219,6 +219,10 @@ module Torch
           end
         str % vars
       end
+
+      def dict
+        instance_variables.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
+      end
     end
   end
 end

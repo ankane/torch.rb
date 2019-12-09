@@ -84,6 +84,7 @@ require "torch/nn/instance_norm"
 require "torch/nn/instance_norm1d"
 require "torch/nn/instance_norm2d"
 require "torch/nn/instance_norm3d"
+require "torch/nn/local_response_norm"
 
 # nn recurrent layers
 require "torch/nn/rnn_base"

@@ -67,8 +67,6 @@ class NormalizationLayersTest < Minitest::Test
   end
 
   def test_local_response_norm
-    skip "Not implemented yet"
-
     lrn = Torch::NN::LocalResponseNorm.new(2)
     signal_2d = Torch.randn(32, 5, 24, 24)
     signal_4d = Torch.randn(16, 5, 7, 7, 7, 7)
