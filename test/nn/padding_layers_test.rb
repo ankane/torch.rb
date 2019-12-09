@@ -40,6 +40,15 @@ class PaddingLayersTest < Minitest::Test
     output = m.call(input)
   end
 
+  def test_zero_pad2d
+    m = Torch::NN::ZeroPad2d.new(2)
+    input = Torch.randn(1, 1, 3, 3)
+    m.call(input)
+
+    m = Torch::NN::ZeroPad2d.new([1, 1, 2, 0])
+    m.call(input)
+  end
+
   def test_constant_pad1d
     m = Torch::NN::ConstantPad1d.new(2, 3.5)
     input = Torch.randn(1, 2, 4)

@@ -72,6 +72,7 @@ require "torch/nn/constant_padnd"
 require "torch/nn/constant_pad1d"
 require "torch/nn/constant_pad2d"
 require "torch/nn/constant_pad3d"
+require "torch/nn/zero_pad2d"
 
 # nn recurrent layers
 require "torch/nn/rnn_base"
