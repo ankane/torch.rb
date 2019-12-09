@@ -83,7 +83,7 @@ module Torch
         end
 
         def linear(input, weight, bias)
-          NN._linear(input, weight, bias)
+          NN.linear(input, weight, bias)
         end
 
         # sparse layers
