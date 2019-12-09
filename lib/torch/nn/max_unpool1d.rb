@@ -9,7 +9,7 @@ module Torch
       end
 
       def forward(input, indices, output_size: nil)
-        F.max_unpool1d(input, indices, @kernel_size, @stride, @padding, output_size)
+        F.max_unpool1d(input, indices, @kernel_size, stride: @stride, padding: @padding, output_size: output_size)
       end
     end
   end

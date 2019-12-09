@@ -35,15 +35,54 @@ module Torch
         # pooling layers
 
         def max_pool1d(*args, **options)
-          Torch.max_pool1d(*args, **options)
+          return_indices = args.pop if args.size == 7
+          if return_indices
+            Torch.max_pool1d_with_indices(*args, **options)
+          else
+            Torch.max_pool1d(*args, **options)
+          end
         end
 
         def max_pool2d(*args, **options)
-          Torch.max_pool2d(*args, **options)
+          return_indices = args.pop if args.size == 7
+          if return_indices
+            NN.max_pool2d_with_indices(*args, **options)
+          else
+            Torch.max_pool2d(*args, **options)
+          end
         end
 
         def max_pool3d(*args, **options)
-          Torch.max_pool3d(*args, **options)
+          return_indices = args.pop if args.size == 7
+          if return_indices
+            NN.max_pool3d_with_indices(*args, **options)
+          else
+            Torch.max_pool3d(*args, **options)
+          end
+        end
+
+        def max_unpool1d(input, indices, kernel_size, stride: nil, padding: 0, output_size: nil)
+          raise NotImplementedYet
+          kernel_size = _single(kernel_size)
+          if !stride.nil?
+            _stride = _single(stride)
+          else
+            _stride = kernel_size
+          end
+          padding = _single(padding)
+          output_size = _unpool_output_size(input, kernel_size, _stride, padding, output_size)
+          output_size = output_size + [1]
+          NN.max_unpool2d(input.unsqueeze(3), indices.unsqueeze(3), output_size).squeeze(3)
+        end
+
+        def max_unpool2d(*args, **options)
+          raise NotImplementedYet
+          NN.max_unpool2d(*args, **options)
+        end
+
+        def max_unpool3d(*args, **options)
+          raise NotImplementedYet
+          NN.max_unpool3d(*args, **options)
         end
 
         def avg_pool1d(*args, **options)
@@ -272,6 +311,10 @@ module Torch
 
         def softmax_dim(ndim)
           ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
+        end
+
+        def _single(value)
+          value.is_a?(Array) ? value : [value]
         end
 
         def _pair(value)
