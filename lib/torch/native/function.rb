@@ -40,6 +40,8 @@ module Torch
             d = true if d == "True"
             d = false if d == "False"
             d = nil if d == "None"
+
+            next if t == "Generator?"
             args << {name: k, type: t, default: d, pos: pos, has_default: has_default}
           end
           args

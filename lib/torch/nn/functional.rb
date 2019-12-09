@@ -20,7 +20,7 @@ module Torch
         end
 
         def leaky_relu(input, negative_slope = 0.01)
-          Torch.leaky_relu(input, negative_slope)
+          NN._leaky_relu(input, negative_slope)
         end
 
         def max_pool2d(input, kernel_size)
@@ -40,7 +40,7 @@ module Torch
         end
 
         def linear(input, weight, bias)
-          Torch.linear(input, weight, bias)
+          NN._linear(input, weight, bias)
         end
 
         # sparse layers

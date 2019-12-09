@@ -18,6 +18,8 @@ module Torch
           return {error: "wrong number of arguments (given #{args.size}, expected #{expected})"}
         end
 
+        candidates.reject! { |f| args.size > f.args.size }
+
         # exclude functions missing required options
         candidates.reject! do |func|
           # TODO make more generic
@@ -64,6 +66,8 @@ module Torch
               case t
               when "Tensor"
                 v.is_a?(Tensor)
+              when "Tensor?"
+                v.nil? || v.is_a?(Tensor)
               when "Tensor[]"
                 v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) }
               when "int"

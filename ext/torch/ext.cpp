@@ -106,35 +106,9 @@ void Init_ext()
       })
     // begin operations
     .define_singleton_method(
-      "relu",
-      *[](Tensor& input) {
-        return torch::relu(input);
-      })
-    .define_singleton_method(
-      "prelu",
-      *[](torch::Tensor& input, torch::Tensor& weight) {
-        return torch::prelu(input, weight);
-      })
-    .define_singleton_method(
-      "leaky_relu",
-      *[](torch::Tensor& input, Scalar negative_slope) {
-        return torch::leaky_relu(input, negative_slope);
-      })
-    .define_singleton_method(
       "conv2d",
       *[](Tensor& input, Tensor& weight, Tensor& bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, int64_t groups) {
         return torch::conv2d(input, weight, bias, stride, padding, dilation, groups);
-      })
-    // linear layers
-    .define_singleton_method(
-      "bilinear",
-      *[](const Tensor &input1, const Tensor &input2, const Tensor &weight, const Tensor &bias) {
-        return torch::bilinear(input1, input2, weight, bias);
-      })
-    .define_singleton_method(
-      "linear",
-      *[](Tensor& input, Tensor& weight, Tensor& bias) {
-        return torch::linear(input, weight, bias);
       })
     // pooling layers
     .define_singleton_method(
@@ -179,16 +153,11 @@ void Init_ext()
 
   rb_cTensor
     .define_method("cuda?", &torch::Tensor::is_cuda)
-    .define_method("distributed?", &torch::Tensor::is_distributed)
-    .define_method("complex?", &torch::Tensor::is_complex)
-    .define_method("floating_point?", &torch::Tensor::is_floating_point)
-    .define_method("signed?", &torch::Tensor::is_signed)
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
     .define_method("dim", &torch::Tensor::dim)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
-    .define_method("view_as", &torch::Tensor::view_as)
     .define_method(
       "addcmul!",
       *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
@@ -198,21 +167,6 @@ void Init_ext()
       "addcdiv!",
       *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
         return self.addcdiv_(tensor1, tensor2, value);
-      })
-    .define_method(
-      "zero!",
-      *[](Tensor& self) {
-        return self.zero_();
-      })
-    .define_method(
-      "detach",
-      *[](Tensor& self) {
-        return self.detach();
-      })
-    .define_method(
-      "detach!",
-      *[](Tensor& self) {
-        return self.detach_();
       })
     .define_method(
       "_requires_grad!",
@@ -252,66 +206,6 @@ void Init_ext()
         std::stringstream s;
         s << self.device();
         return s.str();
-      })
-    .define_method(
-      "resize_as!",
-      *[](Tensor& self, Tensor& other) {
-        return self.resize_as_(other);
-      })
-    .define_method(
-      "fill!",
-      *[](Tensor& self, Scalar value) {
-        return self.fill_(value);
-      })
-    .define_method(
-      "relu!",
-      *[](Tensor& self) {
-        return self.relu_();
-      })
-    .define_method(
-      "normal!",
-      *[](Tensor& self, double mean, double std) {
-        return self.normal_(mean, std);
-      })
-    .define_method(
-      "random!",
-      *[](Tensor& self, int64_t to) {
-        return self.random_(to);
-      })
-    .define_method(
-      "sub!",
-      *[](Tensor& self, Tensor& other) {
-        return self.sub_(other);
-      })
-    .define_method(
-      "div!",
-      *[](Tensor& self, Tensor& other) {
-        return self.div_(other);
-      })
-    .define_method(
-      "sqrt!",
-      *[](Tensor& self) {
-        return self.sqrt_();
-      })
-    .define_method(
-      "unsqueeze!",
-      *[](Tensor& self, int64_t dim) {
-        return self.unsqueeze_(dim);
-      })
-    .define_method(
-      "copy!",
-      *[](Tensor& self, Tensor& src) {
-        return self.copy_(src);
-      })
-    .define_method(
-      "clone",
-      *[](Tensor& self) {
-        return self.clone();
-      })
-    .define_method(
-      "data",
-      *[](Tensor& self) {
-        return self.data();
       })
     .define_method(
       "_flat_data",

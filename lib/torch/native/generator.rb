@@ -94,7 +94,7 @@ void add_%{type}_functions(Module m) {
 
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
-            fargs = func.args.select { |a| a[:type] != "Generator?" }
+            fargs = func.args #.select { |a| a[:type] != "Generator?" }
 
             cpp_args = []
             fargs.each do |a|
