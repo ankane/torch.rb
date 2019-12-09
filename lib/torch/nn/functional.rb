@@ -123,6 +123,10 @@ module Torch
           NN.softplus(input, beta, threshold)
         end
 
+        def tanhshrink(input)
+          input - input.tanh
+        end
+
         # other activation layers
 
         def softmin(input, dim: nil)

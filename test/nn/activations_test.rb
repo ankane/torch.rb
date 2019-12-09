@@ -42,4 +42,10 @@ class ActivationsTest < Minitest::Test
     input = Torch.randn(2)
     output = m.call(input)
   end
+
+  def test_tanhshrink
+    m = Torch::NN::Tanhshrink.new
+    input = Torch.randn(2)
+    output = m.call(input)
+  end
 end
