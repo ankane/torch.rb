@@ -1,4 +1,4 @@
-# Sequence Models [master]
+# Sequence Models
 
 Follow the [PyTorch tutorial](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html) and run [the code](sequence_models.rb)
 

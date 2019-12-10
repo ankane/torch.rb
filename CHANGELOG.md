@@ -1,4 +1,4 @@
-## 0.1.6 (unreleased)
+## 0.1.6 (2019-12-09)
 
 - Added recurrent layers
 - Added more pooling layers
