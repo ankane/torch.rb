@@ -91,6 +91,10 @@ module Torch
         destination
       end
 
+      def load_state_dict(state_dict)
+        raise NotImplementedYet
+      end
+
       def parameters
         named_parameters.values
       end
