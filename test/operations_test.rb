@@ -192,4 +192,11 @@ class OperationsTest < Minitest::Test
     x = Torch.zeros(5, 2, 3)
     assert_equal 5, x.length
   end
+
+  def test_save_tensor
+    x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
+    tmpfile = Tempfile.new
+    Torch.save(x, tmpfile.path)
+    # assert_equal [[1, 2, 3], [4, 5, 6]], Torch.load(tmpfile.path).to_a
+  end
 end

@@ -300,6 +300,15 @@ module Torch
       Device.new(str)
     end
 
+    def save(obj, f)
+      raise NotImplementedYet unless obj.is_a?(Tensor)
+      File.binwrite(f, _save(obj))
+    end
+
+    def load(f)
+      raise NotImplementedYet
+    end
+
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
 
     def arange(start, finish = nil, step = 1, **options)
