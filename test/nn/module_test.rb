@@ -43,6 +43,11 @@ class ModuleTest < Minitest::Test
     net.cpu
   end
 
+  def test_state_dict
+    net = Net.new
+    assert_equal 10, net.state_dict.size
+  end
+
   private
 
   def net

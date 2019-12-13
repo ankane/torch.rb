@@ -83,8 +83,12 @@ module Torch
         forward(*input)
       end
 
-      def state_dict
-        raise NotImplementedYet
+      def state_dict(destination: nil)
+        destination ||= {}
+        named_parameters.each do |k, v|
+          destination[k] = v
+        end
+        destination
       end
 
       def parameters
