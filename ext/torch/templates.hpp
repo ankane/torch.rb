@@ -5,62 +5,6 @@
 
 using namespace Rice;
 
-template<>
-inline
-long long from_ruby<long long>(Object x)
-{
-  return NUM2LL(x);
-}
-
-template<>
-inline
-Object to_ruby<long long>(long long const & x)
-{
-  return LL2NUM(x);
-}
-
-template<>
-inline
-unsigned long long from_ruby<unsigned long long>(Object x)
-{
-  return NUM2ULL(x);
-}
-
-template<>
-inline
-Object to_ruby<unsigned long long>(unsigned long long const & x)
-{
-  return ULL2NUM(x);
-}
-
-template<>
-inline
-short from_ruby<short>(Object x)
-{
-  return NUM2SHORT(x);
-}
-
-template<>
-inline
-Object to_ruby<short>(short const & x)
-{
-  return INT2NUM(x);
-}
-
-template<>
-inline
-unsigned short from_ruby<unsigned short>(Object x)
-{
-  return NUM2USHORT(x);
-}
-
-template<>
-inline
-Object to_ruby<unsigned short>(unsigned short const & x)
-{
-  return UINT2NUM(x);
-}
-
 // need to wrap torch::IntArrayRef() since
 // it doesn't own underlying data
 class IntArrayRef {

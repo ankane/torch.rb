@@ -1,3 +1,7 @@
+## 0.1.7 (unreleased)
+
+- Fixed installation error with Ruby 2.7
+
 ## 0.1.6 (2019-12-09)
 
 - Added recurrent layers
