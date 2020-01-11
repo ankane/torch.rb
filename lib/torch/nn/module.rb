@@ -79,8 +79,8 @@ module Torch
         _apply(convert)
       end
 
-      def call(*input)
-        forward(*input)
+      def call(*input, **kwargs)
+        forward(*input, **kwargs)
       end
 
       def state_dict(destination: nil)
