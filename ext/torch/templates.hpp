@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef isfinite
+#undef isfinite
+#endif
+
 #include <rice/Array.hpp>
 #include <rice/Object.hpp>
 
@@ -79,12 +83,11 @@ class FanModeType {
     FanModeType(Object o) {
       s = String(o).str();
     }
-    // TODO switch NonlinearityType after LibTorch 1.4 release
-    operator torch::nn::init::FanMode() {
+    operator torch::nn::init::FanModeType() {
       if (s == "fan_in") {
-        return torch::nn::init::FanMode::FanIn;
+        return torch::kFanIn;
       } else if (s == "fan_out") {
-        return torch::nn::init::FanMode::FanOut;
+        return torch::kFanOut;
       } else {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
@@ -104,30 +107,29 @@ class NonlinearityType {
     NonlinearityType(Object o) {
       s = String(o).str();
     }
-    // TODO switch NonlinearityType after LibTorch 1.4 release
-    operator torch::nn::init::Nonlinearity() {
+    operator torch::nn::init::NonlinearityType() {
       if (s == "linear") {
-        return torch::nn::init::Nonlinearity::Linear;
+        return torch::kLinear;
       } else if (s == "conv1d") {
-        return torch::nn::init::Nonlinearity::Conv1D;
+        return torch::kConv1D;
       } else if (s == "conv2d") {
-        return torch::nn::init::Nonlinearity::Conv2D;
+        return torch::kConv2D;
       } else if (s == "conv3d") {
-        return torch::nn::init::Nonlinearity::Conv3D;
+        return torch::kConv3D;
       } else if (s == "conv_transpose1d") {
-        return torch::nn::init::Nonlinearity::ConvTranspose1D;
+        return torch::kConvTranspose1D;
       } else if (s == "conv_transpose2d") {
-        return torch::nn::init::Nonlinearity::ConvTranspose2D;
+        return torch::kConvTranspose2D;
       } else if (s == "conv_transpose3d") {
-        return torch::nn::init::Nonlinearity::ConvTranspose3D;
+        return torch::kConvTranspose3D;
       } else if (s == "sigmoid") {
-        return torch::nn::init::Nonlinearity::Sigmoid;
+        return torch::kSigmoid;
       } else if (s == "tanh") {
-        return torch::nn::init::Nonlinearity::Tanh;
+        return torch::kTanh;
       } else if (s == "relu") {
-        return torch::nn::init::Nonlinearity::ReLU;
+        return torch::kReLU;
       } else if (s == "leaky_relu") {
-        return torch::nn::init::Nonlinearity::LeakyReLU;
+        return torch::kLeakyReLU;
       } else {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
@@ -149,14 +151,14 @@ class MyReduction {
     }
     operator int64_t() {
       if (value.is_nil()) {
-        return Reduction::None;
+        return torch::Reduction::None;
       }
 
       std::string s = String(value).str();
       if (s == "mean") {
-        return Reduction::Mean;
+        return torch::Reduction::Mean;
       } else if (s == "sum") {
-        return Reduction::Sum;
+        return torch::Reduction::Sum;
       } else {
         throw std::runtime_error("Unsupported reduction: " + s);
       }

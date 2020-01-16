@@ -10,6 +10,9 @@ $CXXFLAGS << " -std=c++11"
 # silence ruby/intern.h warning
 $CXXFLAGS << " -Wno-deprecated-register"
 
+# silence torch warnings
+$CXXFLAGS << " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
+
 inc, lib = dir_config("torch")
 
 inc ||= "/usr/local/include"

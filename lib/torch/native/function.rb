@@ -66,6 +66,7 @@ module Torch
             end
 
             next if t == "Generator?"
+            next if t == "MemoryFormat?"
             args << {name: k, type: t, default: d, pos: pos, has_default: has_default}
           end
           args

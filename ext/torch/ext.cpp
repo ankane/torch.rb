@@ -16,6 +16,12 @@
 
 using namespace Rice;
 
+// need to make a distinction between parameters and tensors
+class Parameter: public torch::autograd::Variable {
+  public:
+    Parameter(Tensor&& t) : torch::autograd::Variable(t) { }
+};
+
 extern "C"
 void Init_ext()
 {
@@ -136,7 +142,13 @@ void Init_ext()
           for (size_t i = 0; i < a.size(); i++) {
             vec.push_back(from_ruby<float>(a[i]));
           }
-          t = torch::tensor(vec, options);
+          // hack for requires_grad error
+          if (options.requires_grad()) {
+            t = torch::tensor(vec, options.requires_grad(c10::nullopt));
+            t.set_requires_grad(true);
+          } else {
+            t = torch::tensor(vec, options);
+          }
         }
         return t.reshape(size);
       });
@@ -146,6 +158,7 @@ void Init_ext()
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
     .define_method("dim", &torch::Tensor::dim)
+    .define_method("numel", &torch::Tensor::numel)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
     .define_method(
@@ -260,7 +273,7 @@ void Init_ext()
         auto data = torch::autograd::as_variable_ref(rd).detach();
         data.unsafeGetTensorImpl()->set_allow_tensor_metadata_change(true);
         auto var = data.set_requires_grad(requires_grad);
-        return torch::autograd::Variable(std::move(var));
+        return Parameter(std::move(var));
       });
 
   Class rb_cTensorOptions = define_class_under<torch::TensorOptions>(rb_mTorch, "TensorOptions")
@@ -375,10 +388,10 @@ void Init_ext()
         return torch::nn::init::sparse_(tensor, sparsity, std);
       });
 
-  Class rb_cParameter = define_class_under<torch::autograd::Variable, torch::Tensor>(rb_mNN, "Parameter")
+  Class rb_cParameter = define_class_under<Parameter, torch::Tensor>(rb_mNN, "Parameter")
     .define_method(
       "grad",
-      *[](torch::autograd::Variable& self) {
+      *[](Parameter& self) {
         auto grad = self.grad();
         return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
       });
