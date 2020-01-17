@@ -1,9 +1,9 @@
-## 0.1.8 (unreleased)
+## 0.1.8 (2020-01-17)
 
 - Added support for libtorch 1.4.0
 - Dropped support for libtorch 1.3.1
 
-## 0.1.7 (2019-01-10)
+## 0.1.7 (2020-01-10)
 
 - Fixed installation error with Ruby 2.7
 
