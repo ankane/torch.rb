@@ -1,3 +1,7 @@
+## 0.2.0 (unreleased)
+
+- No longer experimental
+
 ## 0.1.8 (2020-01-17)
 
 - Added support for libtorch 1.4.0

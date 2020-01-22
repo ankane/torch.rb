@@ -2,8 +2,6 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-This gem is currently experimental. There may be breaking changes between each release. Please report any issues you experience.
-
 [![Build Status](https://travis-ci.org/ankane/torch-rb.svg?branch=master)](https://travis-ci.org/ankane/torch-rb)
 
 ## Installation
