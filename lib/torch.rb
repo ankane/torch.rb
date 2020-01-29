@@ -29,6 +29,7 @@ require "torch/optim/lr_scheduler/lambda_lr"
 require "torch/optim/lr_scheduler/multiplicative_lr"
 require "torch/optim/lr_scheduler/step_lr"
 require "torch/optim/lr_scheduler/multi_step_lr"
+require "torch/optim/lr_scheduler/exponential_lr"
 
 # nn parameters
 require "torch/nn/parameter"
