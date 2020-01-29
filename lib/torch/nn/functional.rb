@@ -99,6 +99,34 @@ module Torch
           NN.avg_pool3d(*args, **options)
         end
 
+        def adaptive_max_pool1d(*args, **options)
+          Torch.adaptive_max_pool1d(*args, **options)
+        end
+
+        def adaptive_max_pool2d(input, output_size)
+          output_size = list_with_default(output_size, input.size)
+          NN.adaptive_max_pool2d(input, output_size)
+        end
+
+        def adaptive_max_pool3d(input, output_size)
+          output_size = list_with_default(output_size, input.size)
+          NN.adaptive_max_pool3d(input, output_size)
+        end
+
+        def adaptive_avg_pool1d(*args, **options)
+          Torch.adaptive_avg_pool1d(*args, **options)
+        end
+
+        def adaptive_avg_pool2d(input, output_size)
+          output_size = list_with_default(output_size, input.size)
+          NN.adaptive_avg_pool2d(input, output_size)
+        end
+
+        def adaptive_avg_pool3d(input, output_size)
+          output_size = list_with_default(output_size, input.size)
+          NN.adaptive_avg_pool3d(input, output_size)
+        end
+
         # padding layers
 
         def pad(input, pad, mode: "constant", value: 0)
@@ -437,6 +465,16 @@ module Torch
 
         def softmax_dim(ndim)
           ndim == 0 || ndim == 1 || ndim == 3 ? 0 : 1
+        end
+
+        def list_with_default(out_size, defaults)
+          if out_size.is_a?(Integer)
+            out_size
+          elsif defaults.length < out_size.length
+            raise ArgumentError, "Input dimension should be at least #{out_size.length + 1}"
+          else
+            out_size.zip(defaults.last(out_size.length)).map { |v, d| v || d }
+          end
         end
       end
     end

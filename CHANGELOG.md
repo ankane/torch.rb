@@ -1,6 +1,7 @@
 ## 0.2.0 (unreleased)
 
 - No longer experimental
+- Added adaptive pooling layers
 
 ## 0.1.8 (2020-01-17)
 

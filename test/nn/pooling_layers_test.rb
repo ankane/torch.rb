@@ -101,16 +101,12 @@ class PoolingLayersTest < Minitest::Test
   end
 
   def test_adaptive_max_pool1d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveMaxPool1d.new(5)
     input = Torch.randn(1, 64, 8)
     output = m.call(input)
   end
 
   def test_adaptive_max_pool2d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveMaxPool2d.new([5, 7])
     input = Torch.randn(1, 64, 8, 9)
     output = m.call(input)
@@ -125,8 +121,6 @@ class PoolingLayersTest < Minitest::Test
   end
 
   def test_adaptive_max_pool3d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveMaxPool3d.new([5, 7, 9])
     input = Torch.randn(1, 64, 8, 9, 10)
     output = m.call(input)
@@ -141,16 +135,12 @@ class PoolingLayersTest < Minitest::Test
   end
 
   def test_adaptive_avg_pool1d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveAvgPool1d.new(5)
     input = Torch.randn(1, 64, 8)
     output = m.call(input)
   end
 
   def test_adaptive_avg_pool2d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveAvgPool2d.new([5, 7])
     input = Torch.randn(1, 64, 8, 9)
     output = m.call(input)
@@ -165,8 +155,6 @@ class PoolingLayersTest < Minitest::Test
   end
 
   def test_adaptive_avg_pool3d
-    skip "Not implemented yet"
-
     m = Torch::NN::AdaptiveAvgPool3d.new([5, 7, 9])
     input = Torch.randn(1, 64, 8, 9, 10)
     output = m.call(input)
