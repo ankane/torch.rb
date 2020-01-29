@@ -14,6 +14,19 @@ class LRSchedulerTest < Minitest::Test
     assert_elements_in_delta [0.0475, 0.045125, 0.04286875], lrs
   end
 
+  def test_multiplicative_lr
+    model = Net.new
+    optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
+    lambda1 = ->(epoch) { 0.95 }
+    scheduler = Torch::Optim::LRScheduler::MultiplicativeLR.new(optimizer, [lambda1])
+    lrs = []
+    3.times do
+      scheduler.step
+      lrs << optimizer.param_groups[0][:lr]
+    end
+    assert_elements_in_delta [0.0475, 0.045125, 0.04286875], lrs
+  end
+
   def test_step_lr
     model = Net.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)

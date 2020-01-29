@@ -26,6 +26,7 @@ require "torch/optim/sgd"
 # optim lr_scheduler
 require "torch/optim/lr_scheduler/lr_scheduler"
 require "torch/optim/lr_scheduler/lambda_lr"
+require "torch/optim/lr_scheduler/multiplicative_lr"
 require "torch/optim/lr_scheduler/step_lr"
 
 # nn parameters
