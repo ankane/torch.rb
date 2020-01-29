@@ -3,7 +3,7 @@ module Torch
     class AdaptiveMaxPoolNd < Module
       def initialize(output_size) #, return_indices: false)
         super()
-        @output_size  = output_size
+        @output_size = output_size
         # @return_indices = return_indices
       end
 

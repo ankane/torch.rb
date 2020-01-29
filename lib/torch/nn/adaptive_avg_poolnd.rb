@@ -3,7 +3,7 @@ module Torch
     class AdaptiveAvgPoolNd < Module
       def initialize(output_size)
         super()
-        @output_size  = output_size
+        @output_size = output_size
       end
 
       def extra_inspect
