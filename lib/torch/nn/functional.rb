@@ -397,7 +397,7 @@ module Torch
         end
 
         def cosine_embedding_loss(input1, input2, target, margin: 0, reduction: "mean")
-          raise NotImplementedYet
+          Torch.cosine_embedding_loss(input1, input2, target, margin, reduction)
         end
 
         def cross_entropy(input, target, weight: nil, ignore_index: -100, reduction: "mean")
