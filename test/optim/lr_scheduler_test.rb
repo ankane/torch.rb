@@ -62,4 +62,16 @@ class LRSchedulerTest < Minitest::Test
     end
     assert_elements_in_delta [0.01, 0.002, 0.0004], lrs
   end
+
+  def test_cosine_annealing_lr
+    model = Net.new
+    optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
+    scheduler = Torch::Optim::LRScheduler::CosineAnnealingLR.new(optimizer, 0.4)
+    lrs = []
+    3.times do
+      scheduler.step
+      lrs << optimizer.param_groups[0][:lr]
+    end
+    assert_elements_in_delta [0.025, 0, 0.025], lrs
+  end
 end
