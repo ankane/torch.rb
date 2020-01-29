@@ -19,7 +19,7 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_cosine_embedding_loss
-    skip "No good test case"
+    skip "Needs better test case"
     assert_works Torch::NN::CosineEmbeddingLoss, :float
   end
 
@@ -57,7 +57,7 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_margin_ranking_loss
-    skip
+    skip "Needs better test case"
     assert_works Torch::NN::MarginRankingLoss, :float
   end
 

@@ -422,7 +422,7 @@ module Torch
         end
 
         def margin_ranking_loss(input1, input2, target, margin: 0, reduction: "mean")
-          raise NotImplementedYet
+          Torch.margin_ranking_loss(input1, input2, target, margin, reduction)
         end
 
         def mse_loss(input, target, reduction: "mean")
