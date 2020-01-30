@@ -179,6 +179,9 @@ require "torch/utils/data/tensor_dataset"
 # random
 require "torch/random"
 
+# hub
+require "torch/hub"
+
 module Torch
   class Error < StandardError; end
   class NotImplementedYet < StandardError
