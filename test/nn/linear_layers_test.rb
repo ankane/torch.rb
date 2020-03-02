@@ -25,4 +25,9 @@ class LinearLayersTest < Minitest::Test
     assert_equal [128, 30], output.size
     assert m.inspect
   end
+
+  def test_linear_without_bias
+    m = Torch::NN::Linear.new(20, 30, bias: false)
+    assert_equal 1, m.parameters.size
+  end
 end
