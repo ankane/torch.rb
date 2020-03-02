@@ -2,6 +2,7 @@
 
 - No longer experimental
 - Added adaptive pooling layers
+- Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
 

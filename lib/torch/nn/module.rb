@@ -111,7 +111,7 @@ module Torch
           params[[prefix, name[1..-1]].join] = param if param.is_a?(Parameter)
         end
         @parameters.each do |name, param|
-          params[[prefix, name].join] = param
+          params[[prefix, name].join] = param if param
         end
         params
       end
