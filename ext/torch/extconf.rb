@@ -1,5 +1,8 @@
 require "mkmf-rice"
 
+# Note: Never come back from extconf_mswin.rb.
+require_relative "./extconf_mswin" if /mswin/ =~ RbConfig::CONFIG['host_os']
+
 abort "Missing stdc++" unless have_library("stdc++")
 
 $CXXFLAGS << " -std=c++11"
