@@ -1,8 +1,8 @@
-# Torch-rb
+# Torch.rb
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-[![Build Status](https://travis-ci.org/ankane/torch-rb.svg?branch=master)](https://travis-ci.org/ankane/torch-rb)
+[![Build Status](https://travis-ci.org/ankane/torch.rb.svg?branch=master)](https://travis-ci.org/ankane/torch.rb)
 
 ## Installation
 
@@ -396,22 +396,22 @@ rbenv install [version]
 
 ## History
 
-View the [changelog](https://github.com/ankane/torch-rb/blob/master/CHANGELOG.md)
+View the [changelog](https://github.com/ankane/torch.rb/blob/master/CHANGELOG.md)
 
 ## Contributing
 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
 
-- [Report bugs](https://github.com/ankane/torch-rb/issues)
-- Fix bugs and [submit pull requests](https://github.com/ankane/torch-rb/pulls)
+- [Report bugs](https://github.com/ankane/torch.rb/issues)
+- Fix bugs and [submit pull requests](https://github.com/ankane/torch.rb/pulls)
 - Write, clarify, or fix documentation
 - Suggest or add new features
 
 To get started with development:
 
 ```sh
-git clone https://github.com/ankane/torch-rb.git
-cd torch-rb
+git clone https://github.com/ankane/torch.rb.git
+cd torch.rb
 bundle install
 bundle exec rake compile -- --with-torch-dir=/path/to/libtorch
 bundle exec rake test
