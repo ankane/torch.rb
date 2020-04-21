@@ -22,7 +22,7 @@ class TensorCreationTest < Minitest::Test
   end
 
   def test_full
-    assert_equal [[5, 5, 5], [5, 5, 5]], Torch.full([2, 3], 5).to_a
+    assert_equal [[5, 5, 5], [5, 5, 5]], Torch.full([2, 3], 5, dtype: :long).to_a
   end
 
   def test_full_like
