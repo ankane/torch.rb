@@ -217,4 +217,19 @@ class OperationsTest < Minitest::Test
     end
     assert_match "exponential_ expects lambda >= 0.0", error.message
   end
+
+  def test_normal
+    error = assert_raises do
+      Torch.normal(Torch.zeros(3), Torch.ones(3), out: Torch.randn(2))
+    end
+    assert_match "inconsistent tensor, output size ([2]) is not the same", error.message
+  end
+
+  def test_einsum
+    x = Torch.randn(5)
+    y = Torch.randn(4)
+    # TODO don't require array
+    z = Torch.einsum("i,j->ij", [x, y])
+    assert_equal [4, 5], z.shape
+  end
 end

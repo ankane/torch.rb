@@ -66,6 +66,9 @@ class LossFunctionsTest < Minitest::Test
   end
 
   def test_multi_label_margin_loss
+    x = Torch::NN::MultiLabelMarginLoss.new(reduction: "none").call(Torch.randn(3), Torch.zeros(3, dtype: :long))
+    assert_equal 0, x.dim
+
     skip
     assert_works Torch::NN::MultiLabelMarginLoss, :long
   end
@@ -77,6 +80,9 @@ class LossFunctionsTest < Minitest::Test
 
   def test_multi_margin_loss
     assert_works Torch::NN::MultiMarginLoss, :long
+
+    x = Torch::NN::MultiMarginLoss.new(reduction: "none").call(Torch.tensor([1.0]), Torch.tensor([0]))
+    assert_equal 1, x.dim
   end
 
   def test_nll_loss

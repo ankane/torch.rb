@@ -159,6 +159,8 @@ class MyReduction {
         return torch::Reduction::Mean;
       } else if (s == "sum") {
         return torch::Reduction::Sum;
+      } else if (s == "none") {
+        return torch::Reduction::None;
       } else {
         throw std::runtime_error("Unsupported reduction: " + s);
       }

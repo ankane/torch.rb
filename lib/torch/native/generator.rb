@@ -18,14 +18,12 @@ module Torch
           functions = functions()
 
           # skip functions
-          skip_binding = ["unique_dim_consecutive", "einsum", "normal"]
           skip_args = ["bool[3]", "Dimname", "MemoryFormat", "Layout", "Storage", "ConstQuantizerPtr"]
 
           # remove functions
           functions.reject! do |f|
             f.ruby_name.start_with?("_") ||
             f.ruby_name.end_with?("_backward") ||
-            skip_binding.include?(f.ruby_name) ||
             f.args.any? { |a| a[:type].include?("Dimname") }
           end
 
@@ -34,7 +32,10 @@ module Torch
             functions.partition do |f|
               f.args.any? do |a|
                 a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?"].include?(a[:type]) ||
-                skip_args.any? { |sa| a[:type].include?(sa) }
+                skip_args.any? { |sa| a[:type].include?(sa) } ||
+                # native_functions.yaml is missing size argument for normal
+                # https://pytorch.org/cppdocs/api/function_namespacetorch_1a80253fe5a3ded4716ec929a348adb4b9.html
+                (f.base_name == "normal" && !f.out?)
               end
             end
 
@@ -119,6 +120,8 @@ void add_%{type}_functions(Module m) {
                   "IntArrayRef"
                 when /Tensor\(\S!?\)/
                   "Tensor &"
+                when "str"
+                  "std::string"
                 else
                   a[:type]
                 end

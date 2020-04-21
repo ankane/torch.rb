@@ -99,6 +99,8 @@ module Torch
                 v.nil?
               when "bool"
                 v == true || v == false
+              when "str"
+                v.is_a?(String)
               else
                 raise Error, "Unknown argument type: #{arg_types[k]}. Please report a bug with #{@name}."
               end
