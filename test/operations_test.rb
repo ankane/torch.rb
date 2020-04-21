@@ -230,6 +230,6 @@ class OperationsTest < Minitest::Test
     y = Torch.randn(4)
     # TODO don't require array
     z = Torch.einsum("i,j->ij", [x, y])
-    assert_equal [4, 5], z.shape
+    assert_equal [5, 4], z.shape
   end
 end
