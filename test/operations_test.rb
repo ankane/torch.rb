@@ -199,4 +199,22 @@ class OperationsTest < Minitest::Test
     Torch.save(x, tmpfile.path)
     # assert_equal [[1, 2, 3], [4, 5, 6]], Torch.load(tmpfile.path).to_a
   end
+
+  def test_masked_select
+    skip "Cannot create bool from tensor method yet"
+
+    Torch.masked_select(Torch.tensor(0), Torch.tensor(true))
+  end
+
+  def test_index_select
+    x = Torch.index_select(Torch.tensor(5), 0, Torch.tensor([0]))
+    assert_equal 0, x.dim
+  end
+
+  def test_exponential!
+    error = assert_raises do
+      Torch.empty(3).exponential!(-1.5)
+    end
+    assert_match "exponential_ expects lambda >= 0.0", error.message
+  end
 end
