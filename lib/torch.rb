@@ -381,6 +381,11 @@ module Torch
     end
 
     def tensor(data, **options)
+      if options[:dtype].nil? && data.is_a?(Numo::NArray)
+        numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h
+        options[:dtype] = numo_to_dtype[data.class]
+      end
+
       size = []
       if data.respond_to?(:to_a)
         data = data.to_a

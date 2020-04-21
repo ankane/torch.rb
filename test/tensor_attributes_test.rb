@@ -22,6 +22,20 @@ class TensorAttributesTest < Minitest::Test
     assert_equal :float32, Torch.tensor([1.0]).dtype
   end
 
+  def test_dtype_numo
+    x = Torch.tensor(Numo::DFloat.asarray([1, 2, 3]))
+    assert_equal :float64, x.dtype
+
+    x = Torch.tensor(Numo::SFloat.asarray([1, 2, 3]))
+    assert_equal :float32, x.dtype
+
+    x = Torch.tensor(Numo::Int64.asarray([1, 2, 3]))
+    assert_equal :int64, x.dtype
+
+    x = Torch.tensor(Numo::Int32.asarray([1, 2, 3]))
+    assert_equal :int32, x.dtype
+  end
+
   def test_layout
     # TODO support sparse
     %i(strided).each do |layout|

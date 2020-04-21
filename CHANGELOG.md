@@ -3,6 +3,7 @@
 - No longer experimental
 - Updated libtorch to 1.5.0
 - Added adaptive pooling layers
+- Tensor `dtype` is now based on Numo type for `Torch.tensor`
 - Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
