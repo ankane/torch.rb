@@ -2,7 +2,7 @@ dist: bionic
 language: ruby
 rvm: 2.7
 before_install:
-  - export LIBTORCH_VERSION=1.4.0
+  - export LIBTORCH_VERSION=1.5.0
   - ./test/ci/install_libtorch.sh
 cache:
   bundler: true

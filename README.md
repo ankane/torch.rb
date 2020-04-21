@@ -375,6 +375,14 @@ Here are a few full examples:
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
+Here’s the list of compatible versions.
+
+Torch.rb | LibTorch
+--- | ---
+master | 1.5.0
+0.1.8 | 1.4.0
+0.1.0-0.1.7 | 1.3.1
+
 ### Homebrew
 
 For Mac, you can use Homebrew.

@@ -182,6 +182,10 @@ module Torch
       end
     end
 
+    def random!(from = 0, to)
+      _random__from_to(from, to)
+    end
+
     private
 
     def copy_to(dst, src)

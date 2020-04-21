@@ -1,13 +1,13 @@
 ## 0.2.0 (unreleased)
 
 - No longer experimental
+- Updated libtorch to 1.5.0
 - Added adaptive pooling layers
 - Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
 
-- Added support for libtorch 1.4.0
-- Dropped support for libtorch 1.3.1
+- Updated libtorch to 1.4.0
 
 ## 0.1.7 (2020-01-10)
 
