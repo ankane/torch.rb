@@ -23,7 +23,7 @@ $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
 
 $LDFLAGS << " -Wl,-rpath,#{lib}"
 $LDFLAGS << " -L#{lib}"
-$LDFLAGS << " -ltorch -ltorch_cpu -lc10"
+$LDFLAGS << " -ltorch -ltorch_cpu -ltorch_cuda -lc10"
 
 # generate C++ functions
 puts "Generating C++ functions..."
