@@ -120,7 +120,7 @@ module Torch
     end
 
     def /(other)
-      div(other)
+      true_divide(other)
     end
 
     def %(other)
