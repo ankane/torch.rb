@@ -54,7 +54,7 @@ class TensorAttributesTest < Minitest::Test
 
   def test_device
     x = Torch.tensor([1, 2, 3], device: "cpu")
-    assert_equal "cpu", x.device.type
+    assert_equal "cpu", x.device
   end
 
   def test_device_bad
@@ -79,7 +79,7 @@ class TensorAttributesTest < Minitest::Test
     assert_equal 3, x.size(1)
     assert_equal :float32, x.dtype
     assert_equal :strided, x.layout
-    assert_equal "cpu", x.device.type
+    assert_equal "cpu", x.device
     assert_equal 6, x.numel
     assert_equal 4, x.element_size
     assert !x.cuda?

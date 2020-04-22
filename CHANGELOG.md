@@ -5,7 +5,6 @@
 - Added support for GPUs and OpenMP
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
-- The `device` method now returns a `Torch::Device` object
 - Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
