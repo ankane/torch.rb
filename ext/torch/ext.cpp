@@ -216,8 +216,8 @@ void Init_ext()
         Tensor tensor = self;
 
         // move to CPU to get data
-        torch::Device device(torch::kCPU);
-        if (tensor.device() != device) {
+        if (tensor.device().type() != torch::kCPU) {
+          torch::Device device("cpu");
           tensor = tensor.to(device);
         }
 
