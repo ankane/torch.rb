@@ -22,7 +22,7 @@ $CXXFLAGS << " -Wno-deprecated-register"
 if mac
   $CXXFLAGS << " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
 else
-  $CXXFLAGS << " -Wduplicated-cond"
+  $CXXFLAGS << " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
 
 inc, lib = dir_config("torch")
