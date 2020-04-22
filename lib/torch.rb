@@ -381,7 +381,7 @@ module Torch
     end
 
     def tensor(data, **options)
-      if options[:dtype].nil? && data.is_a?(Numo::NArray)
+      if options[:dtype].nil? && defined?(Numo::NArray) && data.is_a?(Numo::NArray)
         numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h
         options[:dtype] = numo_to_dtype[data.class]
       end
