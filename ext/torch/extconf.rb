@@ -11,8 +11,8 @@ mac = RbConfig::CONFIG["host_os"] =~ /darwin/i
 
 if have_library("omp") || have_library("gomp")
   $CXXFLAGS << " -DAT_PARALLEL_OPENMP=1"
-  $CXXFLAGS << "-Xclang" if mac
-  $CXXFLAGS << "-fopenmp"
+  $CXXFLAGS << " -Xclang" if mac
+  $CXXFLAGS << " -fopenmp"
 end
 
 # silence ruby/intern.h warning
