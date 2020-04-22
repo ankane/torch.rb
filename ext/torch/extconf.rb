@@ -7,11 +7,12 @@ $CXXFLAGS << " -std=c++14"
 # change to 0 for Linux pre-cxx11 ABI version
 $CXXFLAGS << " -D_GLIBCXX_USE_CXX11_ABI=1"
 
-mac = RbConfig::CONFIG["host_os"] =~ /darwin/i
+# TODO check compiler name
+clang = RbConfig::CONFIG["host_os"] =~ /darwin/i
 
 if have_library("omp") || have_library("gomp")
   $CXXFLAGS << " -DAT_PARALLEL_OPENMP=1"
-  $CXXFLAGS << " -Xclang" if mac
+  $CXXFLAGS << " -Xclang" if clang
   $CXXFLAGS << " -fopenmp"
 end
 
@@ -19,7 +20,7 @@ end
 $CXXFLAGS << " -Wno-deprecated-register"
 
 # silence torch warnings
-if mac
+if clang
   $CXXFLAGS << " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
 else
   $CXXFLAGS << " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
