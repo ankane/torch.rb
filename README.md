@@ -395,9 +395,11 @@ Then install the gem (no need for `bundle config`).
 
 ## Performance [master]
 
+### Linux
+
 Deep learning is significantly faster on GPUs.
 
-On Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
@@ -410,6 +412,16 @@ Move a neural network to a GPU
 ```ruby
 net.to("cuda")
 ```
+
+### Mac
+
+Install OpenMP:
+
+```sh
+brew install libomp
+```
+
+Then reinstall the gem.
 
 ## rbenv
 
