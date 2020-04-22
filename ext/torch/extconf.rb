@@ -4,10 +4,10 @@ abort "Missing stdc++" unless have_library("stdc++")
 
 $CXXFLAGS << " -std=c++14"
 
-# needed for Linux pre-cxx11 ABI version
-# $CXXFLAGS << " -D_GLIBCXX_USE_CXX11_ABI=0"
+# change to 0 for Linux pre-cxx11 ABI version
+$CXXFLAGS << " -D_GLIBCXX_USE_CXX11_ABI=1"
 
-if have_library("omp")
+if have_library("omp") || have_library("gomp")
   $CXXFLAGS << " -DAT_PARALLEL_OPENMP=1"
 end
 
