@@ -25,7 +25,7 @@ $LDFLAGS << " -Wl,-rpath,#{lib}"
 $LDFLAGS << " -L#{lib}"
 
 # https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238
-$LDFLAGS << " -lc10 -ltorch -ltorch_cpu"
+$LDFLAGS << " -lc10 -ltorch_cpu -ltorch"
 $LDFLAGS << " -lc10_cuda -ltorch_cuda" if Dir["#{lib}/*torch_cuda*"].any?
 
 # generate C++ functions
