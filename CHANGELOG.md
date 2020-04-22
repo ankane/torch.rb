@@ -2,6 +2,7 @@
 
 - No longer experimental
 - Updated libtorch to 1.5.0
+- Added GPU support
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
 - Added support for OpenMP when available

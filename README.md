@@ -393,6 +393,24 @@ brew install libtorch
 
 Then install the gem (no need for `bundle config`).
 
+## Performance [master]
+
+Deep learning is significantly faster on GPUs.
+
+On Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+
+Check if CUDA is available
+
+```ruby
+Torch::CUDA.available?
+```
+
+Move a neural network to a GPU
+
+```ruby
+net.to("cuda")
+```
+
 ## rbenv
 
 This library uses [Rice](https://github.com/jasonroelofs/rice) to interface with LibTorch. Rice and earlier versions of rbenv don’t play nicely together. If you encounter an error during installation, upgrade ruby-build and reinstall your Ruby version.
