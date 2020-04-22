@@ -300,15 +300,7 @@ void Init_ext()
     .define_method(
       "device",
       *[](torch::TensorOptions& self, std::string device) {
-        torch::DeviceType d;
-        if (device == "cpu") {
-          d = torch::kCPU;
-        } else if (device == "cuda") {
-          d = torch::kCUDA;
-        } else {
-          throw std::runtime_error("Unsupported device: " + device);
-        }
-        return self.device(d);
+        return self.device(device);
       })
     .define_method(
       "requires_grad",
