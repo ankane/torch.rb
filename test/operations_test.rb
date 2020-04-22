@@ -201,8 +201,6 @@ class OperationsTest < Minitest::Test
   end
 
   def test_masked_select
-    skip "Cannot create bool from tensor method yet"
-
     Torch.masked_select(Torch.tensor(0), Torch.tensor(true))
   end
 

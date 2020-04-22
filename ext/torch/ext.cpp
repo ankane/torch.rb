@@ -131,12 +131,15 @@ void Init_ext()
       })
     .define_singleton_method(
       "_tensor",
-      *[](Object o, IntArrayRef size, const torch::TensorOptions &options) {
-        Array a = Array(o);
+      *[](Array a, IntArrayRef size, const torch::TensorOptions &options) {
         auto dtype = options.dtype();
         torch::Tensor t;
         if (dtype == torch::kBool) {
-          throw std::runtime_error("Cannot create bool from tensor method yet");
+          std::vector<uint8_t> vec;
+          for (size_t i = 0; i < a.size(); i++) {
+            vec.push_back(from_ruby<bool>(a[i]));
+          }
+          t = torch::tensor(vec, options);
         } else {
           std::vector<float> vec;
           for (size_t i = 0; i < a.size(); i++) {

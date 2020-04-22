@@ -5,6 +5,7 @@
 - Added support for GPUs and OpenMP
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
+- Improved support for boolean tensors
 - Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
