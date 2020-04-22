@@ -23,8 +23,10 @@ $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
 
 $LDFLAGS << " -Wl,-rpath,#{lib}"
 $LDFLAGS << " -L#{lib}"
-# TODO use torch_cuda instead of/in addition to torch_cpu when available?
-$LDFLAGS << " -ltorch -ltorch_cpu -lc10"
+
+# https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238
+$LDFLAGS << " -lc10 -ltorch -ltorch_cpu"
+$LDFLAGS << " -lc10_cuda -ltorch_cuda" if Dir["#{lib}/*torch_cuda*"].any?
 
 # generate C++ functions
 puts "Generating C++ functions..."
