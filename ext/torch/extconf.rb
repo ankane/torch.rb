@@ -23,7 +23,7 @@ $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
 
 $LDFLAGS << " -Wl,-rpath,#{lib}"
 $LDFLAGS << " -L#{lib}"
-# TODO use torch_cuda instead of torch_cpu when available?
+# TODO use torch_cuda instead of/in addition to torch_cpu when available?
 $LDFLAGS << " -ltorch -ltorch_cpu -lc10"
 
 # generate C++ functions
