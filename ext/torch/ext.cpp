@@ -206,9 +206,7 @@ void Init_ext()
     .define_method(
       "device",
       *[](Tensor& self) {
-        std::stringstream s;
-        s << self.device();
-        return s.str();
+        return self.device();
       })
     .define_method(
       "_flat_data",
@@ -411,6 +409,13 @@ void Init_ext()
       *[](torch::Device& self) {
         std::stringstream s;
         s << self.type();
+        return s.str();
+      })
+    .define_method(
+      "to_s",
+      *[](torch::Device& self) {
+        std::stringstream s;
+        s << self;
         return s.str();
       });
 

@@ -3,9 +3,10 @@
 - No longer experimental
 - Updated libtorch to 1.5.0
 - Added GPU support
+- Added support for OpenMP when available
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
-- Added support for OpenMP when available
+- The `device` method now returns a `Torch::Device` object
 - Fixed error with unbiased linear model
 
 ## 0.1.8 (2020-01-17)
