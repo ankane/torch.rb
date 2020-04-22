@@ -33,6 +33,10 @@ module Torch
       _to(device, _dtype, non_blocking, copy)
     end
 
+    def cpu
+      to("cpu")
+    end
+
     def size(dim = nil)
       if dim
         _size_int(dim)
