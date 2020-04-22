@@ -34,6 +34,27 @@ module Torch
         children.each do |mod|
           mod._apply(fn)
         end
+
+        instance_variables.each do |key|
+          param = instance_variable_get(key)
+          if param.is_a?(Parameter)
+            param_applied = nil
+            Torch.no_grad do
+              fn.call(param)
+            end
+            # TODO should_use_set_data
+            instance_variable_set(key, Parameter.new(param_applied, requires_grad: param.requires_grad))
+
+            if param.grad
+              grad_applied = nil
+              Torch.no_grad do
+                grad_applied = fn.call(param.grad)
+              end
+              # TODO should_use_set_data
+              instance_variable_get(key).grad = grad_applied.requires_grad!(param.grad.requires_grad)
+            end
+          end
+        end
         # TODO apply to more objects
         self
       end
