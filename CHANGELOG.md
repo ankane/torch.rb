@@ -2,8 +2,7 @@
 
 - No longer experimental
 - Updated libtorch to 1.5.0
-- Added GPU support
-- Added support for OpenMP when available
+- Added support for GPUs and OpenMP
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
 - The `device` method now returns a `Torch::Device` object
