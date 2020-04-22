@@ -7,6 +7,10 @@ $CXXFLAGS << " -std=c++14"
 # needed for Linux pre-cxx11 ABI version
 # $CXXFLAGS << " -D_GLIBCXX_USE_CXX11_ABI=0"
 
+if have_library("omp")
+  $CXXFLAGS << " -DAT_PARALLEL_OPENMP=1"
+end
+
 # silence ruby/intern.h warning
 $CXXFLAGS << " -Wno-deprecated-register"
 
