@@ -40,7 +40,7 @@ module Torch
           if param.is_a?(Parameter)
             param_applied = nil
             Torch.no_grad do
-              fn.call(param)
+              param_applied = fn.call(param)
             end
             # TODO should_use_set_data
             instance_variable_set(key, Parameter.new(param_applied, requires_grad: param.requires_grad))
