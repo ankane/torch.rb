@@ -213,48 +213,56 @@ void Init_ext()
     .define_method(
       "_flat_data",
       *[](Tensor& self) {
+        Tensor tensor = self;
+
+        // move to CPU to get data
+        torch::Device device(torch::kCPU);
+        if (tensor.device() != device) {
+          tensor = tensor.to(device);
+        }
+
         Array a;
-        auto dtype = self.dtype();
+        auto dtype = tensor.dtype();
 
         // TODO DRY if someone knows C++
         if (dtype == torch::kByte) {
-          uint8_t* data = self.data_ptr<uint8_t>();
-          for (int i = 0; i < self.numel(); i++) {
+          uint8_t* data = tensor.data_ptr<uint8_t>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kChar) {
-          int8_t* data = self.data_ptr<int8_t>();
-          for (int i = 0; i < self.numel(); i++) {
+          int8_t* data = tensor.data_ptr<int8_t>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(to_ruby<int>(data[i]));
           }
         } else if (dtype == torch::kShort) {
-          int16_t* data = self.data_ptr<int16_t>();
-          for (int i = 0; i < self.numel(); i++) {
+          int16_t* data = tensor.data_ptr<int16_t>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kInt) {
-          int32_t* data = self.data_ptr<int32_t>();
-          for (int i = 0; i < self.numel(); i++) {
+          int32_t* data = tensor.data_ptr<int32_t>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kLong) {
-          int64_t* data = self.data_ptr<int64_t>();
-          for (int i = 0; i < self.numel(); i++) {
+          int64_t* data = tensor.data_ptr<int64_t>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kFloat) {
-          float* data = self.data_ptr<float>();
-          for (int i = 0; i < self.numel(); i++) {
+          float* data = tensor.data_ptr<float>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kDouble) {
-          double* data = self.data_ptr<double>();
-          for (int i = 0; i < self.numel(); i++) {
+          double* data = tensor.data_ptr<double>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i]);
           }
         } else if (dtype == torch::kBool) {
-          bool* data = self.data_ptr<bool>();
-          for (int i = 0; i < self.numel(); i++) {
+          bool* data = tensor.data_ptr<bool>();
+          for (int i = 0; i < tensor.numel(); i++) {
             a.push(data[i] ? True : False);
           }
         } else {
