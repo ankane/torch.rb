@@ -14,7 +14,6 @@ Rake::ExtensionTask.new("torch") do |ext|
   ext.lib_dir = "lib/torch"
 end
 
-# include ext in local installs but not releases
 task :remove_ext do
   Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
     File.unlink(path) if File.exist?(path)
