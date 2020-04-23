@@ -413,16 +413,6 @@ Move a neural network to a GPU
 net.to("cuda")
 ```
 
-### Mac
-
-Install OpenMP:
-
-```sh
-brew install libomp
-```
-
-Then reinstall the gem.
-
 ## rbenv
 
 This library uses [Rice](https://github.com/jasonroelofs/rice) to interface with LibTorch. Rice and earlier versions of rbenv don’t play nicely together. If you encounter an error during installation, upgrade ruby-build and reinstall your Ruby version.
