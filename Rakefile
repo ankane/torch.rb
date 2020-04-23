@@ -16,12 +16,14 @@ end
 
 # include ext in local installs but not releases
 task :remove_ext do
-  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
-    File.unlink(path) if File.exist?(path)
+  if Rake.application.top_level_tasks.include?("release")
+    Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
+      File.unlink(path) if File.exist?(path)
+    end
   end
 end
 
-Rake::Task["release:guard_clean"].enhance [:remove_ext]
+Rake::Task["build"].enhance [:remove_ext]
 
 namespace :generate do
   desc "Generate C++ functions"

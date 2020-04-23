@@ -1,3 +1,7 @@
+## 0.2.1 (unreleased)
+
+- Reduced gem size
+
 ## 0.2.0 (2020-04-22)
 
 - No longer experimental
