@@ -1,4 +1,4 @@
-## 0.2.0 (unreleased)
+## 0.2.0 (2020-04-22)
 
 - No longer experimental
 - Updated libtorch to 1.5.0
