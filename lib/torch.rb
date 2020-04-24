@@ -322,7 +322,7 @@ module Torch
     end
 
     def load(f)
-      raise NotImplementedYet
+      _load(File.binread(f))
     end
 
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---

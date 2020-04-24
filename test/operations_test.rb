@@ -193,11 +193,11 @@ class OperationsTest < Minitest::Test
     assert_equal 5, x.length
   end
 
-  def test_save_tensor
+  def test_save_load
     x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
     tmpfile = Tempfile.new
     Torch.save(x, tmpfile.path)
-    # assert_equal [[1, 2, 3], [4, 5, 6]], Torch.load(tmpfile.path).to_a
+    assert_equal [[1, 2, 3], [4, 5, 6]], Torch.load(tmpfile.path).to_a
   end
 
   def test_masked_select

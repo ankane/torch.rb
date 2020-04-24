@@ -119,6 +119,13 @@ void Init_ext()
         return str;
       })
     .define_singleton_method(
+      "_load",
+      *[](const std::string &s) {
+        std::vector<char> v;
+        std::copy(s.begin(), s.end(), std::back_inserter(v));
+        return torch::pickle_load(v).toTensor();
+      })
+    .define_singleton_method(
       "_binary_cross_entropy_with_logits",
       *[](const Tensor &input, const Tensor &target, OptionalTensor weight, OptionalTensor pos_weight, MyReduction reduction) {
         return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
