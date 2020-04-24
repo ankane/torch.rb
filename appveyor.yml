@@ -1,0 +1,28 @@
+environment:
+  matrix:
+    - RUBY_VERSION: "27-x64"
+
+cache:
+  - vendor/bundle
+
+install:
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - bundle config --local path vendor/bundle
+  - bundle install
+
+build: off
+
+before_build:
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+# build_script:
+#   - curl -fSL -o libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.5.0.zip
+#   - unzip libtorch.zip
+#   - ridk enable
+#   - rake compile -- --with-torch-dir=C:\projects\torch.rb\libtorch
+
+test_script:
+  - ruby -v
+  # - bundle exec rake test
