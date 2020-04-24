@@ -123,7 +123,14 @@ void Init_ext()
       *[](const std::string &s) {
         std::vector<char> v;
         std::copy(s.begin(), s.end(), std::back_inserter(v));
-        return torch::pickle_load(v).toTensor();
+        // https://pytorch.org/docs/master/org/pytorch/IValue.html
+        // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
+        torch::IValue value = torch::pickle_load(v);
+        if (value.isTensor()) {
+          return value.toTensor();
+        } else {
+          throw std::runtime_error("Not implemented yet");
+        }
       })
     .define_singleton_method(
       "_binary_cross_entropy_with_logits",
