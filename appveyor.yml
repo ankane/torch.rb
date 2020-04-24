@@ -21,7 +21,7 @@ build_script:
   - curl -fSL -o libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.5.0.zip
   - unzip -q libtorch.zip
   - ridk enable
-  - rake compile -- --with-torch-dir=C:\projects\torch-rb\libtorch
+  - bundle exec rake compile -- --with-torch-dir=C:\projects\torch-rb\libtorch
 
 test_script:
   - bundle exec rake test
