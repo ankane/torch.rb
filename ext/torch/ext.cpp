@@ -34,6 +34,15 @@ void Init_ext()
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
   add_nn_functions(rb_mNN);
 
+  Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
+    .define_method("generic_dict?", &torch::IValue::isGenericDict)
+    .define_method("tensor?", &torch::IValue::isTensor)
+    .define_method(
+      "to_tensor",
+      *[](torch::IValue& self) {
+        return self.toTensor();
+      });
+
   rb_mTorch.define_singleton_method(
       "grad_enabled?",
       *[]() {
@@ -123,14 +132,8 @@ void Init_ext()
       *[](const std::string &s) {
         std::vector<char> v;
         std::copy(s.begin(), s.end(), std::back_inserter(v));
-        // https://pytorch.org/docs/master/org/pytorch/IValue.html
         // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
-        torch::IValue value = torch::pickle_load(v);
-        if (value.isTensor()) {
-          return value.toTensor();
-        } else {
-          throw std::runtime_error("Not implemented yet");
-        }
+        return torch::pickle_load(v);
       })
     .define_singleton_method(
       "_binary_cross_entropy_with_logits",

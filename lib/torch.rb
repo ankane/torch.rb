@@ -322,7 +322,12 @@ module Torch
     end
 
     def load(f)
-      _load(File.binread(f))
+      ivalue = _load(File.binread(f))
+      if ivalue.tensor?
+        ivalue.to_tensor
+      else
+        raise NotImplementedYet
+      end
     end
 
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
