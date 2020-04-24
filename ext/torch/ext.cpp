@@ -34,6 +34,7 @@ void Init_ext()
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
   add_nn_functions(rb_mNN);
 
+  // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
     .define_method("generic_dict?", &torch::IValue::isGenericDict)
     .define_method("tensor?", &torch::IValue::isTensor)
