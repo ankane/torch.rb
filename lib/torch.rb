@@ -317,8 +317,14 @@ module Torch
     end
 
     def save(obj, f)
-      raise NotImplementedYet unless obj.is_a?(Tensor)
-      File.binwrite(f, _save(obj))
+      ivalue =
+        if obj.is_a?(Tensor)
+          IValue.from_tensor(obj)
+        else
+          raise NotImplementedYet
+        end
+
+      File.binwrite(f, _save(ivalue))
     end
 
     def load(f)

@@ -41,6 +41,12 @@ void Init_ext()
       "to_tensor",
       *[](torch::IValue& self) {
         return self.toTensor();
+      })
+    .define_singleton_method(
+      "from_tensor",
+      *[](torch::Tensor& tensor) {
+        torch::IValue iv(tensor);
+        return iv;
       });
 
   rb_mTorch.define_singleton_method(
@@ -122,7 +128,7 @@ void Init_ext()
     // begin operations
     .define_singleton_method(
       "_save",
-      *[](const Tensor &value) {
+      *[](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
         std::string str(v.begin(), v.end());
         return str;
