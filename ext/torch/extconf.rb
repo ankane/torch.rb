@@ -10,19 +10,21 @@ $CXXFLAGS << " -D_GLIBCXX_USE_CXX11_ABI=1"
 # TODO check compiler name
 clang = RbConfig::CONFIG["host_os"] =~ /darwin/i
 
+# check omp first
 if have_library("omp") || have_library("gomp")
   $CXXFLAGS << " -DAT_PARALLEL_OPENMP=1"
   $CXXFLAGS << " -Xclang" if clang
   $CXXFLAGS << " -fopenmp"
 end
 
-# silence ruby/intern.h warning
-$CXXFLAGS << " -Wno-deprecated-register"
-
-# silence torch warnings
 if clang
+  # silence ruby/intern.h warning
+  $CXXFLAGS << " -Wno-deprecated-register"
+
+  # silence torch warnings
   $CXXFLAGS << " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
 else
+  # silence torch warnings
   $CXXFLAGS << " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
 
