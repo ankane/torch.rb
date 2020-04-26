@@ -460,6 +460,8 @@ module Torch
         IValue.from_int(obj)
       when Tensor
         IValue.from_tensor(obj)
+      when Float
+        IValue.from_double(obj)
       when Hash
         warn "[torch] Saving hashes is experimental"
         dict = {}
@@ -467,6 +469,10 @@ module Torch
           dict[to_ivalue(k)] = to_ivalue(v)
         end
         IValue.from_dict(dict)
+      when true, false
+        IValue.from_bool(dict)
+      when nil
+        IValue.new
       else
         raise Error, "Unknown type: #{obj.class.name}"
       end

@@ -37,6 +37,7 @@ void Init_ext()
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
+    .define_constructor(Constructor<torch::IValue>())
     .define_method("generic_dict?", &torch::IValue::isGenericDict)
     .define_method("tensor?", &torch::IValue::isTensor)
     .define_method(
@@ -57,6 +58,16 @@ void Init_ext()
     .define_singleton_method(
       "from_int",
       *[](long long v) {
+        return torch::IValue(v);
+      })
+    .define_singleton_method(
+      "from_double",
+      *[](double v) {
+        return torch::IValue(v);
+      })
+    .define_singleton_method(
+      "from_bool",
+      *[](bool v) {
         return torch::IValue(v);
       })
     // see https://github.com/pytorch/pytorch/blob/master/torch/csrc/jit/python/pybind_utils.h
