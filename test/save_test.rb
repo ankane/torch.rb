@@ -27,12 +27,8 @@ class SaveTest < Minitest::Test
     assert_save Torch.tensor([[1, 2, 3], [4, 5, 6]])
   end
 
-  # currently broken in LibTorch
   def test_hash
-    error = assert_raises(Torch::Error) do
-      assert_save({"hello" => 1, "world" => 2})
-    end
-    assert_equal "Unsupported type: GenericDict", error.message
+    assert_save({"hello" => 1, "world" => 2})
   end
 
   private

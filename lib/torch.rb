@@ -317,68 +317,11 @@ module Torch
     end
 
     def save(obj, f)
-      ivalue = to_ivalue(obj)
-      File.binwrite(f, _save(ivalue))
+      File.binwrite(f, _save(to_ivalue(obj)))
     end
 
     def load(f)
-      ivalue = _load(File.binread(f))
-      if ivalue.bool?
-        ivalue.to_bool
-      elsif ivalue.double?
-        ivalue.to_double
-      elsif ivalue.int?
-        ivalue.to_int
-      elsif ivalue.none?
-        nil
-      elsif ivalue.string?
-        ivalue.to_string_ref
-      elsif ivalue.tensor?
-        ivalue.to_tensor
-      else
-        type =
-          if ivalue.capsule?
-            "Capsule"
-          elsif ivalue.custom_class?
-            "CustomClass"
-          elsif ivalue.tuple?
-            "Tuple"
-          elsif ivalue.future?
-            "Future"
-          elsif ivalue.r_ref?
-            "RRef"
-          elsif ivalue.int_list?
-            "IntList"
-          elsif ivalue.double_list?
-            "DoubleList"
-          elsif ivalue.bool_list?
-            "BoolList"
-          elsif ivalue.tensor_list?
-            "TensorList"
-          elsif ivalue.list?
-            "List"
-          elsif ivalue.generic_dict?
-            "GenericDict"
-          elsif ivalue.object?
-            "Object"
-          elsif ivalue.module?
-            "Module"
-          elsif ivalue.py_object?
-            "PyObject"
-          elsif ivalue.scalar?
-            "Scalar"
-          elsif ivalue.device?
-            "Device"
-          # elsif ivalue.generator?
-          #   "Generator"
-          elsif ivalue.ptr_type?
-            "PtrType"
-          else
-            "Unknown"
-          end
-
-        raise Error, "Unsupported type: #{type}"
-      end
+      to_ruby(_load(File.binread(f)))
     end
 
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
@@ -514,7 +457,6 @@ module Torch
       when Float
         IValue.from_double(obj)
       when Hash
-        warn "[torch] Saving hashes is experimental"
         dict = {}
         obj.each do |k, v|
           dict[to_ivalue(k)] = to_ivalue(v)
@@ -526,6 +468,69 @@ module Torch
         IValue.new
       else
         raise Error, "Unknown type: #{obj.class.name}"
+      end
+    end
+
+    def to_ruby(ivalue)
+      if ivalue.bool?
+        ivalue.to_bool
+      elsif ivalue.double?
+        ivalue.to_double
+      elsif ivalue.int?
+        ivalue.to_int
+      elsif ivalue.none?
+        nil
+      elsif ivalue.string?
+        ivalue.to_string_ref
+      elsif ivalue.tensor?
+        ivalue.to_tensor
+      elsif ivalue.generic_dict?
+        dict = {}
+        ivalue.to_generic_dict.each do |k, v|
+          dict[to_ruby(k)] = to_ruby(v)
+        end
+        dict
+      else
+        type =
+          if ivalue.capsule?
+            "Capsule"
+          elsif ivalue.custom_class?
+            "CustomClass"
+          elsif ivalue.tuple?
+            "Tuple"
+          elsif ivalue.future?
+            "Future"
+          elsif ivalue.r_ref?
+            "RRef"
+          elsif ivalue.int_list?
+            "IntList"
+          elsif ivalue.double_list?
+            "DoubleList"
+          elsif ivalue.bool_list?
+            "BoolList"
+          elsif ivalue.tensor_list?
+            "TensorList"
+          elsif ivalue.list?
+            "List"
+          elsif ivalue.object?
+            "Object"
+          elsif ivalue.module?
+            "Module"
+          elsif ivalue.py_object?
+            "PyObject"
+          elsif ivalue.scalar?
+            "Scalar"
+          elsif ivalue.device?
+            "Device"
+          # elsif ivalue.generator?
+          #   "Generator"
+          elsif ivalue.ptr_type?
+            "PtrType"
+          else
+            "Unknown"
+          end
+
+        raise Error, "Unsupported type: #{type}"
       end
     end
 

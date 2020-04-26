@@ -87,6 +87,16 @@ void Init_ext()
       *[](torch::IValue& self) {
         return self.toTensor();
       })
+    .define_method(
+      "to_generic_dict",
+      *[](torch::IValue& self) {
+        auto dict = self.toGenericDict();
+        Hash h;
+        for (auto& pair : dict) {
+          h[to_ruby<torch::IValue>(torch::IValue{pair.key()})] = to_ruby<torch::IValue>(torch::IValue{pair.value()});
+        }
+        return h;
+      })
     .define_singleton_method(
       "from_tensor",
       *[](torch::Tensor& v) {
