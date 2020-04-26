@@ -24,6 +24,9 @@ if clang
   # silence torch warnings
   $CXXFLAGS << " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
 else
+  # silence rice warnings
+  $CXXFLAGS << " -Wno-noexcept-type"
+
   # silence torch warnings
   $CXXFLAGS << " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
