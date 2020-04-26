@@ -6,7 +6,7 @@ class SaveTest < Minitest::Test
   end
 
   def test_bool
-    # assert_save true
+    assert_save true
     assert_save false
   end
 

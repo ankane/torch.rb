@@ -480,7 +480,7 @@ module Torch
         end
         IValue.from_dict(dict)
       when true, false
-        IValue.from_bool(dict)
+        IValue.from_bool(obj)
       when nil
         IValue.new
       else
