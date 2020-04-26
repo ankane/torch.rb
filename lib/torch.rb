@@ -323,10 +323,20 @@ module Torch
 
     def load(f)
       ivalue = _load(File.binread(f))
-      if ivalue.tensor?
+      if ivalue.bool?
+        ivalue.to_bool
+      elsif ivalue.double?
+        ivalue.to_double
+      elsif ivalue.int?
+        ivalue.to_int
+      elsif ivalue.none?
+        nil
+      elsif ivalue.string?
+        ivalue.to_string_ref
+      elsif ivalue.tensor?
         ivalue.to_tensor
       else
-        raise NotImplementedYet
+        raise Error, "Unknown type"
       end
     end
 

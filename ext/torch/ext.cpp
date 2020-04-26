@@ -39,7 +39,32 @@ void Init_ext()
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
     .define_constructor(Constructor<torch::IValue>())
     .define_method("generic_dict?", &torch::IValue::isGenericDict)
+    .define_method("bool?", &torch::IValue::isBool)
+    .define_method("double?", &torch::IValue::isDouble)
+    .define_method("int?", &torch::IValue::isInt)
+    .define_method("none?", &torch::IValue::isNone)
+    .define_method("string?", &torch::IValue::isString)
     .define_method("tensor?", &torch::IValue::isTensor)
+    .define_method(
+      "to_bool",
+      *[](torch::IValue& self) {
+        return self.toBool();
+      })
+    .define_method(
+      "to_double",
+      *[](torch::IValue& self) {
+        return self.toDouble();
+      })
+    .define_method(
+      "to_int",
+      *[](torch::IValue& self) {
+        return self.toInt();
+      })
+    .define_method(
+      "to_string_ref",
+      *[](torch::IValue& self) {
+        return self.toStringRef();
+      })
     .define_method(
       "to_tensor",
       *[](torch::IValue& self) {
