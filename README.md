@@ -283,6 +283,22 @@ loss.backward
 optimizer.step
 ```
 
+### Saving and Loading Models [master]
+
+Save a model
+
+```ruby
+Torch.save(net.state_dict, "net.pth")
+```
+
+Load a model
+
+```ruby
+net = Net.new
+net.load_state_dict(Torch.load("net.pth"))
+net.eval
+```
+
 ### Tensor Creation
 
 Here’s a list of functions to create tensors (descriptions from the [C++ docs](https://pytorch.org/cppdocs/notes/tensor_creation.html)):
