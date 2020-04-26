@@ -46,6 +46,25 @@ class ModuleTest < Minitest::Test
   def test_state_dict
     net = Net.new
     assert_equal 10, net.state_dict.size
+
+    optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.001, momentum: 0.9)
+
+    # puts "Model's state_dict:"
+    # net.state_dict.each do |k, v|
+    #   puts "#{k}\t#{v.size}"
+    # end
+
+    # puts "Optimizer's state_dict:"
+    # optimizer.state_dict.each do |k, v|
+    #   puts "#{k}\t#{v}"
+    # end
+
+    tmpfile = Tempfile.new
+    Torch.save(net.state_dict, tmpfile.path)
+
+    # net = Net.new
+    # net.load_state_dict(Torch.load(tmpfile.path))
+    # net.eval
   end
 
   private

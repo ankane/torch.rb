@@ -317,21 +317,7 @@ module Torch
     end
 
     def save(obj, f)
-      ivalue =
-        case obj
-        when Tensor
-          IValue.from_tensor(obj)
-        when Hash
-          warn "[torch] This functionality is experimental"
-          dict = {}
-          obj.each do |k, v|
-            dict[to_ivalue(k)] = to_ivalue(v)
-          end
-          IValue.from_dict(dict)
-        else
-          raise NotImplementedYet
-        end
-
+      ivalue = to_ivalue(obj)
       File.binwrite(f, _save(ivalue))
     end
 
@@ -466,14 +452,23 @@ module Torch
 
     private
 
-    def to_ivalue(v)
-      case v
+    def to_ivalue(obj)
+      case obj
       when String
-        IValue.from_string(v)
+        IValue.from_string(obj)
       when Integer
-        IValue.from_int(v)
+        IValue.from_int(obj)
+      when Tensor
+        IValue.from_tensor(obj)
+      when Hash
+        warn "[torch] Saving hashes is experimental"
+        dict = {}
+        obj.each do |k, v|
+          dict[to_ivalue(k)] = to_ivalue(v)
+        end
+        IValue.from_dict(dict)
       else
-        raise Error, "Unknown type"
+        raise Error, "Unknown type: #{obj.class.name}"
       end
     end
 
