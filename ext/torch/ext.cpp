@@ -23,6 +23,11 @@ class Parameter: public torch::autograd::Variable {
     Parameter(Tensor&& t) : torch::autograd::Variable(t) { }
 };
 
+void handle_error(c10::Error const & ex)
+{
+  throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
+}
+
 extern "C"
 void Init_ext()
 {
@@ -268,6 +273,7 @@ void Init_ext()
       });
 
   rb_cTensor
+    .add_handler<c10::Error>(handle_error)
     .define_method("cuda?", &torch::Tensor::is_cuda)
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
