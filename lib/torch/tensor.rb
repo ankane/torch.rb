@@ -37,6 +37,10 @@ module Torch
       to("cpu")
     end
 
+    def cuda
+      to("cuda")
+    end
+
     def size(dim = nil)
       if dim
         _size_int(dim)

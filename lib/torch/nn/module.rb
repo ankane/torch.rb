@@ -67,8 +67,9 @@ module Torch
         self
       end
 
-      def cuda(device: nil)
-        _apply ->(t) { t.cuda(device) }
+      # TODO add device
+      def cuda
+        _apply ->(t) { t.cuda }
       end
 
       def cpu
