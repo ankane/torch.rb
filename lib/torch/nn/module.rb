@@ -112,8 +112,28 @@ module Torch
         destination
       end
 
+      # TODO add strict option
+      # TODO match PyTorch behavior
       def load_state_dict(state_dict)
-        raise NotImplementedYet
+        state_dict.each do |k, input_param|
+          k1, k2 = k.split(".", 2)
+          mod = named_modules[k1]
+          if mod.is_a?(Module)
+            param = mod.named_parameters[k2]
+            if param.is_a?(Parameter)
+              Torch.no_grad do
+                param.copy!(input_param)
+              end
+            else
+              raise Error, "Unknown parameter: #{k1}"
+            end
+          else
+            raise Error, "Unknown module: #{k1}"
+          end
+        end
+
+        # TODO return missing keys and unexpected keys
+        nil
       end
 
       def parameters

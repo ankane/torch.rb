@@ -55,9 +55,9 @@ class ModuleTest < Minitest::Test
     tmpfile = Tempfile.new
     Torch.save(net.state_dict, tmpfile.path)
 
-    # net = Net.new
-    # net.load_state_dict(Torch.load(tmpfile.path))
-    # net.eval
+    net = Net.new
+    net.load_state_dict(Torch.load(tmpfile.path))
+    net.eval
 
     # optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.001, momentum: 0.9)
 
