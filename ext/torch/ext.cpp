@@ -405,6 +405,7 @@ void Init_ext()
       });
 
   Class rb_cTensorOptions = define_class_under<torch::TensorOptions>(rb_mTorch, "TensorOptions")
+    .add_handler<c10::Error>(handle_error)
     .define_constructor(Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",
@@ -428,13 +429,8 @@ void Init_ext()
     .define_method(
       "device",
       *[](torch::TensorOptions& self, std::string device) {
-        try {
-          // needed to catch exception
-          torch::Device d(device);
-          return self.device(d);
-        } catch (const c10::Error& error) {
-          throw std::runtime_error(error.what_without_backtrace());
-        }
+        torch::Device d(device);
+        return self.device(d);
       })
     .define_method(
       "requires_grad",
