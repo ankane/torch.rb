@@ -5,6 +5,7 @@
 #include <rice/Array.hpp>
 #include <rice/Class.hpp>
 #include <rice/Constructor.hpp>
+#include <rice/Hash.hpp>
 
 #include "templates.hpp"
 
@@ -45,9 +46,32 @@ void Init_ext()
       })
     .define_singleton_method(
       "from_tensor",
-      *[](torch::Tensor& tensor) {
-        torch::IValue iv(tensor);
-        return iv;
+      *[](torch::Tensor& v) {
+        return torch::IValue(v);
+      })
+    .define_singleton_method(
+      "from_string",
+      *[](String v) {
+        return torch::IValue(v.str());
+      })
+    .define_singleton_method(
+      "from_int",
+      *[](long long v) {
+        return torch::IValue(v);
+      })
+    // see https://github.com/pytorch/pytorch/blob/master/torch/csrc/jit/python/pybind_utils.h
+    // createGenericDict and toIValue
+    .define_singleton_method(
+      "from_dict",
+      *[](Hash obj) {
+        auto key_type = c10::AnyType::get();
+        auto value_type = c10::AnyType::get();
+        c10::impl::GenericDict elems(key_type, value_type);
+        elems.reserve(obj.size());
+        for (auto entry : obj) {
+          elems.insert(from_ruby<torch::IValue>(entry.first), from_ruby<torch::IValue>((Object) entry.second));
+        }
+        return torch::IValue(std::move(elems));
       });
 
   rb_mTorch.define_singleton_method(

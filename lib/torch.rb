@@ -318,8 +318,16 @@ module Torch
 
     def save(obj, f)
       ivalue =
-        if obj.is_a?(Tensor)
+        case obj
+        when Tensor
           IValue.from_tensor(obj)
+        when Hash
+          warn "[torch] This functionality is experimental"
+          dict = {}
+          obj.each do |k, v|
+            dict[to_ivalue(k)] = to_ivalue(v)
+          end
+          IValue.from_dict(dict)
         else
           raise NotImplementedYet
         end
@@ -457,6 +465,17 @@ module Torch
     end
 
     private
+
+    def to_ivalue(v)
+      case v
+      when String
+        IValue.from_string(v)
+      when Integer
+        IValue.from_int(v)
+      else
+        raise Error, "Unknown type"
+      end
+    end
 
     def tensor_size(size)
       size.flatten
