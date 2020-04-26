@@ -336,7 +336,48 @@ module Torch
       elsif ivalue.tensor?
         ivalue.to_tensor
       else
-        raise Error, "Unknown type"
+        type =
+          if ivalue.capsule?
+            "Capsule"
+          elsif ivalue.custom_class?
+            "CustomClass"
+          elsif ivalue.tuple?
+            "Tuple"
+          elsif ivalue.future?
+            "Future"
+          elsif ivalue.r_ref?
+            "RRef"
+          elsif ivalue.int_list?
+            "IntList"
+          elsif ivalue.double_list?
+            "DoubleList"
+          elsif ivalue.bool_list?
+            "BoolList"
+          elsif ivalue.tensor_list?
+            "TensorList"
+          elsif ivalue.list?
+            "List"
+          elsif ivalue.generic_dict?
+            "GenericDict"
+          elsif ivalue.object?
+            "Object"
+          elsif ivalue.module?
+            "Module"
+          elsif ivalue.py_object?
+            "PyObject"
+          elsif ivalue.scalar?
+            "Scalar"
+          elsif ivalue.device?
+            "Device"
+          # elsif ivalue.generator?
+          #   "Generator"
+          elsif ivalue.ptr_type?
+            "PtrType"
+          else
+            "Unknown"
+          end
+
+        raise Error, "Unsupported type: #{type}"
       end
     end
 
