@@ -82,7 +82,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "from_int",
-      *[](long long v) {
+      *[](int64_t v) {
         return torch::IValue(v);
       })
     .define_singleton_method(
