@@ -27,6 +27,12 @@ class SaveTest < Minitest::Test
     assert_save Torch.tensor([[1, 2, 3], [4, 5, 6]])
   end
 
+  def test_tensor_list
+    x = Torch.tensor([1, 2, 3])
+    y = Torch.tensor([4, 5, 6])
+    assert_save [x, y]
+  end
+
   def test_hash
     assert_save({"hello" => 1, "world" => 2})
   end
@@ -40,6 +46,8 @@ class SaveTest < Minitest::Test
 
     if obj.is_a?(Torch::Tensor)
       assert_equal obj.to_a, act.to_a
+    elsif obj.is_a?(Array)
+      assert_equal obj.map(&:to_a), act.map(&:to_a)
     elsif obj.nil?
       assert_nil act
     else

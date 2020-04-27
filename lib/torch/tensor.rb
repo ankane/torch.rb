@@ -143,6 +143,7 @@ module Torch
       neg
     end
 
+    # TODO better compare?
     def <=>(other)
       item <=> other
     end

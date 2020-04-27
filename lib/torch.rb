@@ -466,6 +466,12 @@ module Torch
         IValue.from_bool(obj)
       when nil
         IValue.new
+      when Array
+        if obj.all? { |v| v.is_a?(Tensor) }
+          IValue.from_list(obj.map { |v| IValue.from_tensor(v) })
+        else
+          raise Error, "Unknown list type"
+        end
       else
         raise Error, "Unknown type: #{obj.class.name}"
       end
@@ -490,6 +496,8 @@ module Torch
           dict[to_ruby(k)] = to_ruby(v)
         end
         dict
+      elsif ivalue.list?
+        ivalue.to_list.map { |v| to_ruby(v) }
       else
         type =
           if ivalue.capsule?
@@ -510,8 +518,6 @@ module Torch
             "BoolList"
           elsif ivalue.tensor_list?
             "TensorList"
-          elsif ivalue.list?
-            "List"
           elsif ivalue.object?
             "Object"
           elsif ivalue.module?
