@@ -461,7 +461,7 @@ bundle exec rake compile -- --with-torch-dir=/path/to/libtorch
 bundle exec rake test
 ```
 
-You can use [this script](https://gist.github.com/ankane/9b2b5fcbd66d6e4ccfeb9d73e529abe7) for GPU development on the AWS Deep Learning Base AMI (Ubuntu 18.04).
+You can use [this script](https://gist.github.com/ankane/9b2b5fcbd66d6e4ccfeb9d73e529abe7) to test on GPUs with the AWS Deep Learning Base AMI (Ubuntu 18.04).
 
 Here are some good resources for contributors:
 
