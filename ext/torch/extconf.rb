@@ -39,7 +39,7 @@ cuda_inc, cuda_lib = dir_config("cuda")
 cuda_inc ||= "/usr/local/cuda/include"
 cuda_lib ||= "/usr/local/cuda/lib64"
 
-$LDFLAGS << " -L#{lib}" if Dir.exist(lib)
+$LDFLAGS << " -L#{lib}" if Dir.exist?(lib)
 abort "LibTorch not found" unless have_library("torch")
 
 with_cuda = false
