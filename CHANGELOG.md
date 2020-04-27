@@ -1,6 +1,7 @@
 ## 0.2.2 (unreleased)
 
 - Added support for saving tensor lists
+- Added `ndim` and `ndimension` methods to tensors
 
 ## 0.2.1 (2020-04-26)
 

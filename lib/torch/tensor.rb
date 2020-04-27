@@ -4,6 +4,8 @@ module Torch
     include Inspector
 
     alias_method :requires_grad?, :requires_grad
+    alias_method :ndim, :dim
+    alias_method :ndimension, :dim
 
     def self.new(*args)
       FloatTensor.new(*args)
