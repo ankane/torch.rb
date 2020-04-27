@@ -283,7 +283,7 @@ loss.backward
 optimizer.step
 ```
 
-### Saving and Loading Models [master]
+### Saving and Loading Models
 
 Save a model
 

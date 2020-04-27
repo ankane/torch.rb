@@ -1,4 +1,4 @@
-## 0.2.1 (unreleased)
+## 0.2.1 (2020-04-26)
 
 - Added support for saving and loading models
 - Improved error messages
