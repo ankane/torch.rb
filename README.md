@@ -426,7 +426,7 @@ Torch::CUDA.available?
 Move a neural network to a GPU
 
 ```ruby
-net.to("cuda")
+net.cuda
 ```
 
 ## rbenv
