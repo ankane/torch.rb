@@ -2,8 +2,8 @@ $TORCHRB_PREFIX = File.join(File.dirname(File.expand_path(__FILE__)))
 
 inc, lib = dir_config("torch")
 
-inc ||= "C:/libtorch-win-shared-with-deps-1.4.0/libtorch/include"
-lib ||= "C:/libtorch-win-shared-with-deps-1.4.0/libtorch/lib"
+inc ||= "C:/libtorch-win-shared-with-deps-1.5.0/libtorch/include"
+lib ||= "C:/libtorch-win-shared-with-deps-1.5.0/libtorch/lib"
 
 # generate C++ functions
 puts "Generating C++ functions..."
@@ -21,11 +21,13 @@ set(CMAKE_CXX_FLAGS "-Zc:dllexportInlines- -EHsc")
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 project(#{target})
+find_package(Torch REQUIRED)
 
 file(GLOB_RECURSE sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp *.hpp)
+file(GLOB_RECURSE remove_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "build/*")
+list(REMOVE_ITEM sources ${remove_sources})
 message("${sources}")
 
-# Need to place before add_library
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 link_directories("#{$RICE_PREFIX}/lib")
 link_directories("#{RbConfig.expand(RbConfig::MAKEFILE_CONFIG['libdir'])}")
@@ -47,13 +49,22 @@ target_include_directories(#{target} PRIVATE "#{inc}/torch/csrc/api/include")
 target_link_libraries(#{target} PRIVATE #{RbConfig.expand(RbConfig::MAKEFILE_CONFIG['RUBY_SO_NAME'])})
 target_link_libraries(#{target} PUBLIC rice)
 target_link_libraries(#{target} PRIVATE torch)
+target_link_libraries(#{target} PRIVATE torch_cpu)
+target_link_libraries(#{target} PRIVATE torch_cuda)
 target_link_libraries(#{target} PRIVATE c10)
+target_link_libraries(#{target} PRIVATE c10_cuda)
+
+#target_link_libraries(#{target} PRIVATE asmjit)
+#target_link_libraries(#{target} PRIVATE caffe2_detectron_ops_gpu)
 #target_link_libraries(#{target} PRIVATE caffe2_module_test_dynamic)
+#target_link_libraries(#{target} PRIVATE caffe2_nvrtc)
 #target_link_libraries(#{target} PRIVATE clog)
 #target_link_libraries(#{target} PRIVATE cpuinfo)
+#target_link_libraries(#{target} PRIVATE fbgemm)
 #target_link_libraries(#{target} PRIVATE libprotobuf)
 #target_link_libraries(#{target} PRIVATE libprotobuf-lite)
 #target_link_libraries(#{target} PRIVATE libprotoc)
+#target_link_libraries(#{target} PRIVATE mkldnn)
 
 install (TARGETS #{target} DESTINATION "#{$TORCHRB_PREFIX}/../../lib/torch")
 CMAKELISTSTXT

@@ -4,6 +4,10 @@
 #undef isfinite
 #endif
 
+#ifdef isinf
+#undef isinf
+#endif
+
 #ifdef isnan
 #undef isnan
 #endif
