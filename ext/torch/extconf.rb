@@ -39,7 +39,14 @@ cuda_inc, cuda_lib = dir_config("cuda")
 cuda_inc ||= "/usr/local/cuda/include"
 cuda_lib ||= "/usr/local/cuda/lib64"
 
-with_cuda = Dir["#{lib}/*torch_cuda*"].any? && have_library("cuda") && have_library("cudnn")
+with_cuda = Dir["#{lib}/*torch_cuda*"].any? && have_library("cuda")
+if with_cuda
+  # modify $LDFLAGS to find cudnn and revert if not found
+  previous_value = $LDFLAGS.dup
+  $LDFLAGS << " -L#{cuda_lib}"
+  with_cuda = have_library("cudnn")
+  $LDFLAGS = previous_value unless with_cuda
+end
 
 $INCFLAGS << " -I#{inc}"
 $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
@@ -47,7 +54,6 @@ $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
 $LDFLAGS << " -Wl,-rpath,#{lib}"
 $LDFLAGS << ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 $LDFLAGS << " -L#{lib}"
-$LDFLAGS << " -L#{cuda_lib}" if with_cuda
 
 # https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238
 $LDFLAGS << " -lc10 -ltorch_cpu -ltorch"
