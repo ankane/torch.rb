@@ -67,7 +67,7 @@ def test(model, device, test_loader)
 
   test_loss /= test_loader.dataset.size
 
-  puts "Test set: Average loss: %.4f, Accuracy: %d/%d (%f%%)\n\n" % [
+  puts "Test set: Average loss: %.4f, Accuracy: %d/%d (%.1f%%)\n\n" % [
     test_loss, correct, test_loader.dataset.size,
     (100.0 * correct / test_loader.dataset.size).round(1)
   ]
