@@ -42,8 +42,11 @@ cuda_lib ||= "/usr/local/cuda/lib64"
 $LDFLAGS << " -L#{lib}" if Dir.exist(lib)
 abort "LibTorch not found" unless have_library("torch")
 
-$LDFLAGS << " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
-with_cuda = Dir["#{lib}/*torch_cuda*"].any? && have_library("cuda") && have_library("cudnn")
+with_cuda = false
+if Dir["#{lib}/*torch_cuda*"].any?
+  $LDFLAGS << " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
+  with_cuda = have_library("cuda") && have_library("cudnn")
+end
 
 $INCFLAGS << " -I#{inc}"
 $INCFLAGS << " -I#{inc}/torch/csrc/api/include"
