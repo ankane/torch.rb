@@ -461,6 +461,8 @@ bundle exec rake compile -- --with-torch-dir=/path/to/libtorch
 bundle exec rake test
 ```
 
+Use [this script](https://gist.github.com/ankane/9b2b5fcbd66d6e4ccfeb9d73e529abe7) to develop on the AWS Deep Learning Base AMI (Ubuntu 18.04).
+
 Here are some good resources for contributors:
 
 - [PyTorch API](https://pytorch.org/docs/stable/torch.html)
