@@ -174,6 +174,7 @@ require "torch/nn/init"
 
 # utils
 require "torch/utils/data/data_loader"
+require "torch/utils/data/dataset"
 require "torch/utils/data/tensor_dataset"
 
 # hub
