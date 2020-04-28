@@ -67,6 +67,14 @@ module Torch
       _flat_data.first
     end
 
+    def to_i
+      item.to_i
+    end
+
+    def to_f
+      item.to_f
+    end
+
     # unsure if this is correct
     def new
       Torch.empty(0, dtype: dtype)

@@ -230,4 +230,16 @@ class OperationsTest < Minitest::Test
     z = Torch.einsum("i,j->ij", [x, y])
     assert_equal [5, 4], z.shape
   end
+
+  # TODO test raises same error as item if many elements
+  def test_to_i
+    x = Torch.tensor([1.5])
+    assert_equal 1, x.to_i
+  end
+
+  # TODO test raises same error as item if many elements
+  def test_to_f
+    x = Torch.tensor([1.5])
+    assert_equal 1.5, x.to_f
+  end
 end
