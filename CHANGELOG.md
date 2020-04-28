@@ -1,5 +1,6 @@
 ## 0.2.3 (unreleased)
 
+- Added `show_config` and `parallel_info` methods
 - Fixed `inspect` for modules
 
 ## 0.2.2 (2020-04-27)

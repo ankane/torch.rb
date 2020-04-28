@@ -177,6 +177,17 @@ void Init_ext()
       *[](uint64_t seed) {
         return torch::manual_seed(seed);
       })
+    // config
+    .define_singleton_method(
+      "show_config",
+      *[] {
+        return torch::show_config();
+      })
+    .define_singleton_method(
+      "parallel_info",
+      *[] {
+        return torch::get_parallel_info();
+      })
     // begin tensor creation
     .define_singleton_method(
       "_arange",

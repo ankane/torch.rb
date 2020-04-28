@@ -1,6 +1,14 @@
 require_relative "test_helper"
 
 class TorchTest < Minitest::Test
+  def test_show_config
+    assert_match "PyTorch built with:", Torch.show_config
+  end
+
+  def test_parallel_info
+    assert_match "ATen/Parallel:", Torch.parallel_info
+  end
+
   def test_tutorial
     x = Torch.empty(5, 3)
 
