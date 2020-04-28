@@ -193,8 +193,16 @@ module Torch
       end
     end
 
-    def random!(from = 0, to)
-      _random__from_to(from, to)
+    # native functions overlap, so need to handle manually
+    def random!(*args)
+      case args.size
+      when 1
+        _random__to(*args)
+      when 2
+        _random__from_to(*args)
+      else
+        _random_(*args)
+      end
     end
 
     private

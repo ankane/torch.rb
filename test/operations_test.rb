@@ -216,6 +216,13 @@ class OperationsTest < Minitest::Test
     assert_match "inconsistent tensor, output size ([2]) is not the same", error.message
   end
 
+  def test_random!
+    x = Torch.empty(10)
+    assert x.random!.to_a.all? { |v| v >= 0 }
+    assert x.random!(10).to_a.all? { |v| v >= 0 && v < 10 }
+    assert x.random!(10, 20).to_a.all? { |v| v >= 10 && v < 20 }
+  end
+
   def test_einsum
     x = Torch.randn(5)
     y = Torch.randn(4)
