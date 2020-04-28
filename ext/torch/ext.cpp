@@ -40,6 +40,13 @@ void Init_ext()
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
   add_nn_functions(rb_mNN);
 
+  Module rb_mRandom = define_module_under(rb_mTorch, "Random")
+    .define_singleton_method(
+      "initial_seed",
+      *[]() {
+        return at::detail::getDefaultCPUGenerator()->current_seed();
+      });
+
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
     .define_constructor(Constructor<torch::IValue>())

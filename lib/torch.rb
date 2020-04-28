@@ -176,9 +176,6 @@ require "torch/nn/init"
 require "torch/utils/data/data_loader"
 require "torch/utils/data/tensor_dataset"
 
-# random
-require "torch/random"
-
 # hub
 require "torch/hub"
 
