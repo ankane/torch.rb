@@ -2,6 +2,8 @@
 
 - Added `show_config` and `parallel_info` methods
 - Added `initial_seed` and `seed` methods to `Random`
+- Improved data loader
+- Build with MKL-DNN and NNPACK when available
 - Fixed `inspect` for modules
 
 ## 0.2.2 (2020-04-27)
