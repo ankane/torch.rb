@@ -49,6 +49,7 @@ void Init_ext()
     .define_singleton_method(
       "seed",
       *[]() {
+        // TODO set for CUDA when available
         return at::detail::getDefaultCPUGenerator()->seed();
       });
 
