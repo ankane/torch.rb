@@ -1,4 +1,4 @@
-## 0.2.3 (unreleased)
+## 0.2.3 (2020-04-28)
 
 - Added `show_config` and `parallel_info` methods
 - Added `initial_seed` and `seed` methods to `Random`
