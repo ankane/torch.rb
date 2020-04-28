@@ -21,6 +21,7 @@ class Net < Torch::NN::Module
     x = @conv1.call(x)
     x = Torch::NN::F.relu(x)
     x = @conv2.call(x)
+    x = Torch::NN::F.relu(x)
     x = Torch::NN::F.max_pool2d(x, 2)
     x = @dropout1.call(x)
     x = Torch.flatten(x, start_dim: 1)
