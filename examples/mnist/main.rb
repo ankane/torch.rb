@@ -29,7 +29,7 @@ class Net < Torch::NN::Module
     x = Torch::NN::F.relu(x)
     x = @dropout2.call(x)
     x = @fc2.call(x)
-    output = Torch::NN::F.log_softmax(x)
+    output = Torch::NN::F.log_softmax(x, 1)
     output
   end
 end
