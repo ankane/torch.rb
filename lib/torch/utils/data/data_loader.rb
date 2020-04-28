@@ -12,6 +12,10 @@ module Torch
         end
 
         def each
+          # try to keep the random number generator in sync with Python
+          # this makes it easy to compare results
+          base_seed = Torch.empty([], dtype: :int64).random!.item
+
           max_size = @dataset.size
           size.times do |i|
             start_index = i * @batch_size
