@@ -45,6 +45,11 @@ void Init_ext()
       "initial_seed",
       *[]() {
         return at::detail::getDefaultCPUGenerator()->current_seed();
+      })
+    .define_singleton_method(
+      "seed",
+      *[]() {
+        return at::detail::getDefaultCPUGenerator()->seed();
       });
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html

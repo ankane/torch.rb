@@ -1,7 +1,7 @@
 ## 0.2.3 (unreleased)
 
 - Added `show_config` and `parallel_info` methods
-- Added `initial_seed` method to `Random`
+- Added `initial_seed` and `seed` methods to `Random`
 - Fixed `inspect` for modules
 
 ## 0.2.2 (2020-04-27)

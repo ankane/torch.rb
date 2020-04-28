@@ -5,4 +5,9 @@ class RandomTest < Minitest::Test
     Torch.manual_seed(123)
     assert_equal 123, Torch::Random.initial_seed
   end
+
+  def test_seed
+    seed = Torch::Random.seed
+    assert_equal seed, Torch::Random.initial_seed
+  end
 end
