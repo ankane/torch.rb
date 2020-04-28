@@ -1,3 +1,7 @@
+## 0.2.3 (unreleased)
+
+- Fixed `inspect` for modules
+
 ## 0.2.2 (2020-04-27)
 
 - Added support for saving tensor lists

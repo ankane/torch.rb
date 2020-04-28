@@ -70,6 +70,10 @@ class ModuleTest < Minitest::Test
     # Torch.save(optimizer.state_dict, tmpfile2.path)
   end
 
+  def test_inspect
+    assert_match "(conv1): Conv2d(1, 6, kernel_size: [3, 3], stride: [1, 1])", net.inspect
+  end
+
   private
 
   def net

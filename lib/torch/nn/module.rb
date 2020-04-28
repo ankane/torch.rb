@@ -224,12 +224,12 @@ module Torch
 
       def inspect
         name = self.class.name.split("::").last
-        if children.empty?
+        if named_children.empty?
           "#{name}(#{extra_inspect})"
         else
           str = String.new
           str << "#{name}(\n"
-          children.each do |name, mod|
+          named_children.each do |name, mod|
             str << "  (#{name}): #{mod.inspect}\n"
           end
           str << ")"
