@@ -9,7 +9,7 @@
 /vendor
 *.lock
 *.bundle
-*.npz
+/examples/mnist/data
 ml-100k*
 /ext/torch/*_functions.cpp
 /ext/torch/*_functions.hpp

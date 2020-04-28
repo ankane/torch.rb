@@ -4,9 +4,9 @@
 # BSD 3-Clause License
 
 require "torch"
-require "npy"
+require "torchvision"
 
-class Net < Torch::NN::Module
+class MyNet < Torch::NN::Module
   def initialize
     super
     @conv1 = Torch::NN::Conv2d.new(1, 32, 3, stride: 1)
@@ -90,19 +90,28 @@ def normalize(tensor, mean, std)
   tensor.sub(mean).div(std)
 end
 
-data = Npy.load_npz("mnist.npz")
-datasets = [data["x_train"], data["y_train"], data["x_test"], data["y_test"]]
-x_train, y_train, x_valid, y_valid = datasets.map { |ds| Torch.from_numo(ds) }
-x_train = normalize(x_train.float.reshape([60000, 1, 28, 28]) / 255, 0.1307, 0.3081)
-x_valid = normalize(x_valid.float.reshape([10000, 1, 28, 28]) / 255, 0.1307, 0.3081)
-
-train_dataset = Torch::Utils::Data::TensorDataset.new(x_train, y_train.long)
-test_dataset = Torch::Utils::Data::TensorDataset.new(x_valid, y_valid.long)
+root = File.join(__dir__, "data")
+train_dataset = TorchVision::Datasets::MNIST.new(root,
+  train: true,
+  download: true,
+  transform: TorchVision::Transforms::Compose.new([
+    TorchVision::Transforms::ToTensor.new,
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+  ])
+)
+test_dataset = TorchVision::Datasets::MNIST.new(root,
+  train: false,
+  download: true,
+  transform: TorchVision::Transforms::Compose.new([
+    TorchVision::Transforms::ToTensor.new,
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+  ])
+)
 
 train_loader = Torch::Utils::Data::DataLoader.new(train_dataset, batch_size: batch_size)
 test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: batch_size)
 
-model = Net.new.to(device)
+model = MyNet.new.to(device)
 optimizer = Torch::Optim::Adadelta.new(model.parameters, lr: lr)
 
 scheduler = Torch::Optim::LRScheduler::StepLR.new(optimizer, step_size: 1, gamma: gamma)
