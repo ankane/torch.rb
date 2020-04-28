@@ -1,3 +1,7 @@
+## 0.2.4 (unreleased)
+
+- Added `to_i` and `to_f` to tensors
+
 ## 0.2.3 (2020-04-28)
 
 - Added `show_config` and `parallel_info` methods
