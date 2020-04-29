@@ -108,8 +108,8 @@ test_dataset = TorchVision::Datasets::MNIST.new(root,
   ])
 )
 
-train_loader = Torch::Utils::Data::DataLoader.new(train_dataset, batch_size: batch_size)
-test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: batch_size)
+train_loader = Torch::Utils::Data::DataLoader.new(train_dataset, batch_size: batch_size, shuffle: true)
+test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: batch_size, shuffle: true)
 
 model = MyNet.new.to(device)
 optimizer = Torch::Optim::Adadelta.new(model.parameters, lr: lr)
