@@ -20,7 +20,14 @@ module Torch
 
       # TODO add more parameters
       def extra_inspect
-        format("%s, %s, kernel_size: %s, stride: %s", @in_channels, @out_channels, @kernel_size, @stride)
+        s = String.new("%{in_channels}, %{out_channels}, kernel_size: %{kernel_size}, stride: %{stride}")
+        s += ", padding: %{padding}" if @padding != [0] * @padding.size
+        s += ", dilation: %{dilation}" if @dilation != [1] * @dilation.size
+        s += ", output_padding: %{output_padding}" if @output_padding != [0] * @output_padding.size
+        s += ", groups: %{groups}" if @groups != 1
+        s += ", bias: false" unless @bias
+        s += ", padding_mode: %{padding_mode}" if @padding_mode != "zeros"
+        format(s, **dict)
       end
     end
   end
