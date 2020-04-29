@@ -230,7 +230,9 @@ module Torch
           str = String.new
           str << "#{name}(\n"
           named_children.each do |name, mod|
-            str << "  (#{name}): #{mod.inspect}\n"
+            mod_str = mod.inspect
+            mod_str = mod_str.lines.join("  ")
+            str << "  (#{name}): #{mod_str}\n"
           end
           str << ")"
         end
