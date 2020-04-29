@@ -11,22 +11,27 @@ require_relative "../../lib/torch/native/generator"
 Torch::Native::Generator.generate_cpp_functions
 
 target = 'ext'
+source_dir = "../../../../ext/torch" if $0=~/\.\.\/\.\.\/\.\.\/\.\.\/ext\/torch/
+run_install = source_dir ? "FALSE" : "TRUE"
 
 cmakeliststxt = <<"CMAKELISTSTXT"
 cmake_minimum_required(VERSION 3.12)
+project(#{target})
+
+message(STATUS "CMAKE_SOURCE_DIR: " ${CMAKE_SOURCE_DIR})
+message(STATUS "CMAKE_BINARY_DIR: " ${CMAKE_BINARY_DIR})
 
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-Zc:dllexportInlines- -EHsc")
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-project(#{target})
 find_package(Torch REQUIRED)
 
-file(GLOB_RECURSE sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp *.hpp)
-file(GLOB_RECURSE remove_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "build/*")
+file(GLOB_RECURSE sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ext.cpp templates.cpp *_functions.cpp *_functions.hpp)
+file(GLOB_RECURSE remove_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CMake* detect_cuda_*)
 list(REMOVE_ITEM sources ${remove_sources})
-message("${sources}")
+message(STATUS "SOURCES: ${sources}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 link_directories("#{$RICE_PREFIX}/lib")
@@ -50,34 +55,27 @@ target_link_libraries(#{target} PRIVATE #{RbConfig.expand(RbConfig::MAKEFILE_CON
 target_link_libraries(#{target} PUBLIC rice)
 target_link_libraries(#{target} PRIVATE torch)
 target_link_libraries(#{target} PRIVATE torch_cpu)
-target_link_libraries(#{target} PRIVATE torch_cuda)
 target_link_libraries(#{target} PRIVATE c10)
-target_link_libraries(#{target} PRIVATE c10_cuda)
 
-#target_link_libraries(#{target} PRIVATE asmjit)
-#target_link_libraries(#{target} PRIVATE caffe2_detectron_ops_gpu)
-#target_link_libraries(#{target} PRIVATE caffe2_module_test_dynamic)
-#target_link_libraries(#{target} PRIVATE caffe2_nvrtc)
-#target_link_libraries(#{target} PRIVATE clog)
-#target_link_libraries(#{target} PRIVATE cpuinfo)
-#target_link_libraries(#{target} PRIVATE fbgemm)
-#target_link_libraries(#{target} PRIVATE libprotobuf)
-#target_link_libraries(#{target} PRIVATE libprotobuf-lite)
-#target_link_libraries(#{target} PRIVATE libprotoc)
-#target_link_libraries(#{target} PRIVATE mkldnn)
+#target_link_libraries(#{target} PRIVATE torch_cuda)
+#target_link_libraries(#{target} PRIVATE c10_cuda)
 
-install (TARGETS #{target} DESTINATION "#{$TORCHRB_PREFIX}/../../lib/torch")
+if(#{run_install})
+  install (TARGETS #{target} DESTINATION "#{$TORCHRB_PREFIX}/../../lib/torch")
+endif()
 CMAKELISTSTXT
 
-f = File.open("CMakeLists.txt", mode="w")
+fname = source_dir ? "#{source_dir}/CMakeLists.txt" : "CMakeLists.txt"
+f = File.open(fname, mode="w")
 f.write(cmakeliststxt)
 
 #-----------------------------------------
+
+source_dir = source_dir || "."
+
 howtocompile = <<"HOWTOCOMPILE"
-(Remove the build directory)
-mkdir build
-cd build
-cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="c:/Program Files/LLVM/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER="c:/Program Files/LLVM/bin/clang-cl.exe"
+(Remove generated files and the CMakeFiles directory if necessary.)
+cmake -S #{source_dir} -B . -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="c:/Program Files/LLVM/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER="c:/Program Files/LLVM/bin/clang-cl.exe"
 nmake
 HOWTOCOMPILE
 
@@ -86,36 +84,7 @@ f.write(howtocompile)
 
 #-----------------------------------------
 
-maketop = <<"MAKETOP"
-all:
-	pushd build & $(MAKE) /nologo /$(MAKEFLAGS) all & popd
-	-copy /Y build\\ext.* .
-
-clean:
-	pushd build & $(MAKE) /nologo /$(MAKEFLAGS) clean & popd
-
-clean-build:
-	-rd /S /Q build
-	-del /Q ..\\..\\lib\\torch\\ext.*
-
-install:
-	pushd build & $(MAKE) /nologo /$(MAKEFLAGS) install & popd
-
-.PHONY: all clean clean-build install
-MAKETOP
-
-f = File.open("Makefile", mode="w")
-f.write(maketop)
-
-
-#-----------------------------------------
-require 'fileutils'
-
-build_dir = 'build'
-FileUtils.mkdir(build_dir) unless File.directory?(build_dir)
-FileUtils.cd(build_dir) do
-  system "cmake .. -G \"NMake Makefiles\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=\"c:/Program Files/LLVM/bin/clang-cl.exe\" -DCMAKE_CXX_COMPILER=\"c:/Program Files/LLVM/bin/clang-cl.exe\""
-end
+system "cmake -S #{source_dir} -B . -G \"NMake Makefiles\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=\"c:/Program Files/LLVM/bin/clang-cl.exe\" -DCMAKE_CXX_COMPILER=\"c:/Program Files/LLVM/bin/clang-cl.exe\""
 
 # Never go back to extconf.rb
 exit
