@@ -86,10 +86,6 @@ use_cuda = Torch::CUDA.available?
 device = Torch.device(use_cuda ? "cuda" : "cpu")
 puts "Device type: #{device.type}"
 
-def normalize(tensor, mean, std)
-  tensor.sub(mean).div(std)
-end
-
 root = File.join(__dir__, "data")
 train_dataset = TorchVision::Datasets::MNIST.new(root,
   train: true,
