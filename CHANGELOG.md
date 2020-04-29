@@ -2,6 +2,7 @@
 
 - Added `to_i` and `to_f` to tensors
 - Added `shuffle` option to data loader
+- Fixed `modules` and `named_modules` for nested modules
 
 ## 0.2.3 (2020-04-28)
 

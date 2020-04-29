@@ -186,8 +186,22 @@ module Torch
         named_modules.values
       end
 
-      def named_modules
-        {"" => self}.merge(named_children)
+      # TODO return enumerator?
+      def named_modules(memo: nil, prefix: "")
+        ret = {}
+        memo ||= Set.new
+        unless memo.include?(self)
+          memo << self
+          ret[prefix] = self
+          named_children.each do |name, mod|
+            next unless mod.is_a?(Module)
+            submodule_prefix = prefix + (!prefix.empty? ? "." : "") + name
+            mod.named_modules(memo: memo, prefix: submodule_prefix).each do |m|
+              ret[m[0]] = m[1]
+            end
+          end
+        end
+        ret
       end
 
       def train(mode = true)
