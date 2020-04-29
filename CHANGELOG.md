@@ -1,4 +1,4 @@
-## 0.2.4 (unreleased)
+## 0.2.4 (2020-04-29)
 
 - Added `to_i` and `to_f` to tensors
 - Added `shuffle` option to data loader
