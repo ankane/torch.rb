@@ -25,7 +25,7 @@ module Torch
             end
 
             if floating_point?
-              sci = max / min.to_f > 1000 || max > 1e8 || min < 1e-4
+              sci = max > 1e8 || max < 1e-4
 
               all_int = values.all? { |v| v.finite? && v == v.to_i }
               decimal = all_int ? 1 : 4

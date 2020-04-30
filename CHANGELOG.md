@@ -1,5 +1,26 @@
-## 0.2.1 (unreleased)
+## 0.2.4 (2020-04-29)
 
+- Added `to_i` and `to_f` to tensors
+- Added `shuffle` option to data loader
+- Fixed `modules` and `named_modules` for nested modules
+
+## 0.2.3 (2020-04-28)
+
+- Added `show_config` and `parallel_info` methods
+- Added `initial_seed` and `seed` methods to `Random`
+- Improved data loader
+- Build with MKL-DNN and NNPACK when available
+- Fixed `inspect` for modules
+
+## 0.2.2 (2020-04-27)
+
+- Added support for saving tensor lists
+- Added `ndim` and `ndimension` methods to tensors
+
+## 0.2.1 (2020-04-26)
+
+- Added support for saving and loading models
+- Improved error messages
 - Reduced gem size
 
 ## 0.2.0 (2020-04-22)

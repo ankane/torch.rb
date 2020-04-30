@@ -46,6 +46,32 @@ class ModuleTest < Minitest::Test
   def test_state_dict
     net = Net.new
     assert_equal 10, net.state_dict.size
+
+    # puts "Model's state_dict:"
+    # net.state_dict.each do |k, v|
+    #   puts "#{k}\t#{v.size}"
+    # end
+
+    tmpfile = Tempfile.new
+    Torch.save(net.state_dict, tmpfile.path)
+
+    net = Net.new
+    net.load_state_dict(Torch.load(tmpfile.path))
+    net.eval
+
+    # optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.001, momentum: 0.9)
+
+    # puts "Optimizer's state_dict:"
+    # optimizer.state_dict.each do |k, v|
+    #   puts "#{k}\t#{v}"
+    # end
+
+    # tmpfile2 = Tempfile.new
+    # Torch.save(optimizer.state_dict, tmpfile2.path)
+  end
+
+  def test_inspect
+    assert_match "(conv1): Conv2d(1, 6, kernel_size: [3, 3], stride: [1, 1])", net.inspect
   end
 
   private

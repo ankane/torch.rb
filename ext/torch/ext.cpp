@@ -5,6 +5,7 @@
 #include <rice/Array.hpp>
 #include <rice/Class.hpp>
 #include <rice/Constructor.hpp>
+#include <rice/Hash.hpp>
 
 #include "templates.hpp"
 
@@ -22,6 +23,11 @@ class Parameter: public torch::autograd::Variable {
     Parameter(Tensor&& t) : torch::autograd::Variable(t) { }
 };
 
+void handle_error(c10::Error const & ex)
+{
+  throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
+}
+
 extern "C"
 void Init_ext()
 {
@@ -33,6 +39,141 @@ void Init_ext()
 
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
   add_nn_functions(rb_mNN);
+
+  Module rb_mRandom = define_module_under(rb_mTorch, "Random")
+    .define_singleton_method(
+      "initial_seed",
+      *[]() {
+        return at::detail::getDefaultCPUGenerator()->current_seed();
+      })
+    .define_singleton_method(
+      "seed",
+      *[]() {
+        // TODO set for CUDA when available
+        return at::detail::getDefaultCPUGenerator()->seed();
+      });
+
+  // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
+  Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
+    .define_constructor(Constructor<torch::IValue>())
+    .define_method("bool?", &torch::IValue::isBool)
+    .define_method("bool_list?", &torch::IValue::isBoolList)
+    .define_method("capsule?", &torch::IValue::isCapsule)
+    .define_method("custom_class?", &torch::IValue::isCustomClass)
+    .define_method("device?", &torch::IValue::isDevice)
+    .define_method("double?", &torch::IValue::isDouble)
+    .define_method("double_list?", &torch::IValue::isDoubleList)
+    .define_method("future?", &torch::IValue::isFuture)
+    // .define_method("generator?", &torch::IValue::isGenerator)
+    .define_method("generic_dict?", &torch::IValue::isGenericDict)
+    .define_method("list?", &torch::IValue::isList)
+    .define_method("int?", &torch::IValue::isInt)
+    .define_method("int_list?", &torch::IValue::isIntList)
+    .define_method("module?", &torch::IValue::isModule)
+    .define_method("none?", &torch::IValue::isNone)
+    .define_method("object?", &torch::IValue::isObject)
+    .define_method("ptr_type?", &torch::IValue::isPtrType)
+    .define_method("py_object?", &torch::IValue::isPyObject)
+    .define_method("r_ref?", &torch::IValue::isRRef)
+    .define_method("scalar?", &torch::IValue::isScalar)
+    .define_method("string?", &torch::IValue::isString)
+    .define_method("tensor?", &torch::IValue::isTensor)
+    .define_method("tensor_list?", &torch::IValue::isTensorList)
+    .define_method("tuple?", &torch::IValue::isTuple)
+    .define_method(
+      "to_bool",
+      *[](torch::IValue& self) {
+        return self.toBool();
+      })
+    .define_method(
+      "to_double",
+      *[](torch::IValue& self) {
+        return self.toDouble();
+      })
+    .define_method(
+      "to_int",
+      *[](torch::IValue& self) {
+        return self.toInt();
+      })
+    .define_method(
+      "to_list",
+      *[](torch::IValue& self) {
+        auto list = self.toListRef();
+        Array obj;
+        for (auto& elem : list) {
+          obj.push(to_ruby<torch::IValue>(torch::IValue{elem}));
+        }
+        return obj;
+      })
+    .define_method(
+      "to_string_ref",
+      *[](torch::IValue& self) {
+        return self.toStringRef();
+      })
+    .define_method(
+      "to_tensor",
+      *[](torch::IValue& self) {
+        return self.toTensor();
+      })
+    .define_method(
+      "to_generic_dict",
+      *[](torch::IValue& self) {
+        auto dict = self.toGenericDict();
+        Hash obj;
+        for (auto& pair : dict) {
+          obj[to_ruby<torch::IValue>(torch::IValue{pair.key()})] = to_ruby<torch::IValue>(torch::IValue{pair.value()});
+        }
+        return obj;
+      })
+    .define_singleton_method(
+      "from_tensor",
+      *[](torch::Tensor& v) {
+        return torch::IValue(v);
+      })
+    // TODO create specialized list types?
+    .define_singleton_method(
+      "from_list",
+      *[](Array obj) {
+        c10::impl::GenericList list(c10::AnyType::get());
+        for (auto entry : obj) {
+          list.push_back(from_ruby<torch::IValue>(entry));
+        }
+        return torch::IValue(list);
+      })
+    .define_singleton_method(
+      "from_string",
+      *[](String v) {
+        return torch::IValue(v.str());
+      })
+    .define_singleton_method(
+      "from_int",
+      *[](int64_t v) {
+        return torch::IValue(v);
+      })
+    .define_singleton_method(
+      "from_double",
+      *[](double v) {
+        return torch::IValue(v);
+      })
+    .define_singleton_method(
+      "from_bool",
+      *[](bool v) {
+        return torch::IValue(v);
+      })
+    // see https://github.com/pytorch/pytorch/blob/master/torch/csrc/jit/python/pybind_utils.h
+    // createGenericDict and toIValue
+    .define_singleton_method(
+      "from_dict",
+      *[](Hash obj) {
+        auto key_type = c10::AnyType::get();
+        auto value_type = c10::AnyType::get();
+        c10::impl::GenericDict elems(key_type, value_type);
+        elems.reserve(obj.size());
+        for (auto entry : obj) {
+          elems.insert(from_ruby<torch::IValue>(entry.first), from_ruby<torch::IValue>((Object) entry.second));
+        }
+        return torch::IValue(std::move(elems));
+      });
 
   rb_mTorch.define_singleton_method(
       "grad_enabled?",
@@ -48,6 +189,17 @@ void Init_ext()
       "manual_seed",
       *[](uint64_t seed) {
         return torch::manual_seed(seed);
+      })
+    // config
+    .define_singleton_method(
+      "show_config",
+      *[] {
+        return torch::show_config();
+      })
+    .define_singleton_method(
+      "parallel_info",
+      *[] {
+        return torch::get_parallel_info();
       })
     // begin tensor creation
     .define_singleton_method(
@@ -113,10 +265,18 @@ void Init_ext()
     // begin operations
     .define_singleton_method(
       "_save",
-      *[](const Tensor &value) {
+      *[](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
         std::string str(v.begin(), v.end());
         return str;
+      })
+    .define_singleton_method(
+      "_load",
+      *[](const std::string &s) {
+        std::vector<char> v;
+        std::copy(s.begin(), s.end(), std::back_inserter(v));
+        // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
+        return torch::pickle_load(v);
       })
     .define_singleton_method(
       "_binary_cross_entropy_with_logits",
@@ -157,6 +317,7 @@ void Init_ext()
       });
 
   rb_cTensor
+    .add_handler<c10::Error>(handle_error)
     .define_method("cuda?", &torch::Tensor::is_cuda)
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
@@ -212,6 +373,20 @@ void Init_ext()
         std::stringstream s;
         s << self.device();
         return s.str();
+      })
+    .define_method(
+      "_data_str",
+      *[](Tensor& self) {
+        Tensor tensor = self;
+
+        // move to CPU to get data
+        if (tensor.device().type() != torch::kCPU) {
+          torch::Device device("cpu");
+          tensor = tensor.to(device);
+        }
+
+        auto data_ptr = (const char *) tensor.data_ptr();
+        return std::string(data_ptr, tensor.numel() * tensor.element_size());
       })
     .define_method(
       "_flat_data",
@@ -288,6 +463,7 @@ void Init_ext()
       });
 
   Class rb_cTensorOptions = define_class_under<torch::TensorOptions>(rb_mTorch, "TensorOptions")
+    .add_handler<c10::Error>(handle_error)
     .define_constructor(Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",
@@ -311,13 +487,8 @@ void Init_ext()
     .define_method(
       "device",
       *[](torch::TensorOptions& self, std::string device) {
-        try {
-          // needed to catch exception
-          torch::Device d(device);
-          return self.device(d);
-        } catch (const c10::Error& error) {
-          throw std::runtime_error(error.what_without_backtrace());
-        }
+        torch::Device d(device);
+        return self.device(d);
       })
     .define_method(
       "requires_grad",

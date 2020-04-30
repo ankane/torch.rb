@@ -283,6 +283,22 @@ loss.backward
 optimizer.step
 ```
 
+### Saving and Loading Models
+
+Save a model
+
+```ruby
+Torch.save(net.state_dict, "net.pth")
+```
+
+Load a model
+
+```ruby
+net = Net.new
+net.load_state_dict(Torch.load("net.pth"))
+net.eval
+```
+
 ### Tensor Creation
 
 Here’s a list of functions to create tensors (descriptions from the [C++ docs](https://pytorch.org/cppdocs/notes/tensor_creation.html)):
@@ -410,7 +426,7 @@ Torch::CUDA.available?
 Move a neural network to a GPU
 
 ```ruby
-net.to("cuda")
+net.cuda
 ```
 
 ## rbenv
@@ -444,6 +460,8 @@ bundle install
 bundle exec rake compile -- --with-torch-dir=/path/to/libtorch
 bundle exec rake test
 ```
+
+You can use [this script](https://gist.github.com/ankane/9b2b5fcbd66d6e4ccfeb9d73e529abe7) to test on GPUs with the AWS Deep Learning Base AMI (Ubuntu 18.04).
 
 Here are some good resources for contributors:
 

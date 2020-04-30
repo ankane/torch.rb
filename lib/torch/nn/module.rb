@@ -67,8 +67,9 @@ module Torch
         self
       end
 
-      def cuda(device: nil)
-        _apply ->(t) { t.cuda(device) }
+      # TODO add device
+      def cuda
+        _apply ->(t) { t.cuda }
       end
 
       def cpu
@@ -112,8 +113,28 @@ module Torch
         destination
       end
 
+      # TODO add strict option
+      # TODO match PyTorch behavior
       def load_state_dict(state_dict)
-        raise NotImplementedYet
+        state_dict.each do |k, input_param|
+          k1, k2 = k.split(".", 2)
+          mod = named_modules[k1]
+          if mod.is_a?(Module)
+            param = mod.named_parameters[k2]
+            if param.is_a?(Parameter)
+              Torch.no_grad do
+                param.copy!(input_param)
+              end
+            else
+              raise Error, "Unknown parameter: #{k1}"
+            end
+          else
+            raise Error, "Unknown module: #{k1}"
+          end
+        end
+
+        # TODO return missing keys and unexpected keys
+        nil
       end
 
       def parameters
@@ -165,8 +186,22 @@ module Torch
         named_modules.values
       end
 
-      def named_modules
-        {"" => self}.merge(named_children)
+      # TODO return enumerator?
+      def named_modules(memo: nil, prefix: "")
+        ret = {}
+        memo ||= Set.new
+        unless memo.include?(self)
+          memo << self
+          ret[prefix] = self
+          named_children.each do |name, mod|
+            next unless mod.is_a?(Module)
+            submodule_prefix = prefix + (!prefix.empty? ? "." : "") + name
+            mod.named_modules(memo: memo, prefix: submodule_prefix).each do |m|
+              ret[m[0]] = m[1]
+            end
+          end
+        end
+        ret
       end
 
       def train(mode = true)
@@ -203,13 +238,15 @@ module Torch
 
       def inspect
         name = self.class.name.split("::").last
-        if children.empty?
+        if named_children.empty?
           "#{name}(#{extra_inspect})"
         else
           str = String.new
           str << "#{name}(\n"
-          children.each do |name, mod|
-            str << "  (#{name}): #{mod.inspect}\n"
+          named_children.each do |name, mod|
+            mod_str = mod.inspect
+            mod_str = mod_str.lines.join("  ")
+            str << "  (#{name}): #{mod_str}\n"
           end
           str << ")"
         end

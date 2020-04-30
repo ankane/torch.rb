@@ -23,7 +23,7 @@ module Torch
         if bias
           @bias = Parameter.new(Tensor.new(out_channels))
         else
-          raise NotImplementedError
+          register_parameter("bias", nil)
         end
         reset_parameters
       end

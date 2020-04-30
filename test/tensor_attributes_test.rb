@@ -1,6 +1,13 @@
 require_relative "test_helper"
 
 class TensorAttributesTest < Minitest::Test
+  def test_dim
+    x = Torch.empty(3, 4, 5)
+    assert_equal 3, x.dim
+    assert_equal 3, x.ndim
+    assert_equal 3, x.ndimension
+  end
+
   def test_dtype
     %i(uint8 int8 int16 int32 int64 float32 float64).each do |dtype|
       x = Torch.tensor([1, 2, 3], dtype: dtype)

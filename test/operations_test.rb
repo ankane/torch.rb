@@ -193,13 +193,6 @@ class OperationsTest < Minitest::Test
     assert_equal 5, x.length
   end
 
-  def test_save_tensor
-    x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
-    tmpfile = Tempfile.new
-    Torch.save(x, tmpfile.path)
-    # assert_equal [[1, 2, 3], [4, 5, 6]], Torch.load(tmpfile.path).to_a
-  end
-
   def test_masked_select
     Torch.masked_select(Torch.tensor(0), Torch.tensor(true))
   end
@@ -221,6 +214,13 @@ class OperationsTest < Minitest::Test
       Torch.normal(Torch.zeros(3), Torch.ones(3), out: Torch.randn(2))
     end
     assert_match "inconsistent tensor, output size ([2]) is not the same", error.message
+  end
+
+  def test_random!
+    x = Torch.empty(10)
+    assert x.random!.to_a.all? { |v| v >= 0 }
+    assert x.random!(10).to_a.all? { |v| v >= 0 && v < 10 }
+    assert x.random!(10, 20).to_a.all? { |v| v >= 10 && v < 20 }
   end
 
   def test_einsum

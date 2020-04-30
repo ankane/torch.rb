@@ -12,7 +12,8 @@ module Torch
       end
 
       def extra_inspect
-        format("kernel_size: %s", @kernel_size)
+        s = "kernel_size: %{kernel_size}, stride: %{stride}, padding: %{padding}, dilation: %{dilation}, ceil_mode: %{ceil_mode}"
+        format(s, **dict)
       end
     end
   end

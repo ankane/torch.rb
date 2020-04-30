@@ -4,9 +4,9 @@
 # BSD 3-Clause License
 
 require "torch"
-require "npy"
+require "torchvision"
 
-class Net < Torch::NN::Module
+class MyNet < Torch::NN::Module
   def initialize
     super
     @conv1 = Torch::NN::Conv2d.new(1, 32, 3, stride: 1)
@@ -21,6 +21,7 @@ class Net < Torch::NN::Module
     x = @conv1.call(x)
     x = Torch::NN::F.relu(x)
     x = @conv2.call(x)
+    x = Torch::NN::F.relu(x)
     x = Torch::NN::F.max_pool2d(x, 2)
     x = @dropout1.call(x)
     x = Torch.flatten(x, start_dim: 1)
@@ -28,7 +29,7 @@ class Net < Torch::NN::Module
     x = Torch::NN::F.relu(x)
     x = @dropout2.call(x)
     x = @fc2.call(x)
-    output = Torch::NN::F.log_softmax(x)
+    output = Torch::NN::F.log_softmax(x, 1)
     output
   end
 end
@@ -67,7 +68,7 @@ def test(model, device, test_loader)
 
   test_loss /= test_loader.dataset.size
 
-  puts "Test set: Average loss: %.4f, Accuracy: %d/%d (%.0f%%)\n\n" % [
+  puts "Test set: Average loss: %.4f, Accuracy: %d/%d (%.1f%%)\n\n" % [
     test_loss, correct, test_loader.dataset.size,
     100.0 * correct / test_loader.dataset.size
   ]
@@ -85,23 +86,28 @@ use_cuda = Torch::CUDA.available?
 device = Torch.device(use_cuda ? "cuda" : "cpu")
 puts "Device type: #{device.type}"
 
-def normalize(tensor, mean, std)
-  tensor.sub(mean).div(std)
-end
+root = File.join(__dir__, "data")
+train_dataset = TorchVision::Datasets::MNIST.new(root,
+  train: true,
+  download: true,
+  transform: TorchVision::Transforms::Compose.new([
+    TorchVision::Transforms::ToTensor.new,
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+  ])
+)
+test_dataset = TorchVision::Datasets::MNIST.new(root,
+  train: false,
+  download: true,
+  transform: TorchVision::Transforms::Compose.new([
+    TorchVision::Transforms::ToTensor.new,
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+  ])
+)
 
-data = Npy.load_npz("mnist.npz")
-datasets = [data["x_train"], data["y_train"], data["x_test"], data["y_test"]]
-x_train, y_train, x_valid, y_valid = datasets.map { |ds| Torch.from_numo(ds) }
-x_train = normalize(x_train.float.reshape([60000, 1, 28, 28]) / 255, 0.1307, 0.3081)
-x_valid = normalize(x_valid.float.reshape([10000, 1, 28, 28]) / 255, 0.1307, 0.3081)
+train_loader = Torch::Utils::Data::DataLoader.new(train_dataset, batch_size: batch_size, shuffle: true)
+test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: batch_size, shuffle: true)
 
-train_dataset = Torch::Utils::Data::TensorDataset.new(x_train, y_train.long)
-test_dataset = Torch::Utils::Data::TensorDataset.new(x_valid, y_valid.long)
-
-train_loader = Torch::Utils::Data::DataLoader.new(train_dataset, batch_size: batch_size)
-test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: batch_size)
-
-model = Net.new.to(device)
+model = MyNet.new.to(device)
 optimizer = Torch::Optim::Adadelta.new(model.parameters, lr: lr)
 
 scheduler = Torch::Optim::LRScheduler::StepLR.new(optimizer, step_size: 1, gamma: gamma)

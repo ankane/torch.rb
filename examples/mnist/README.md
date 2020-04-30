@@ -1,15 +1,9 @@
 # MNIST Example
 
-Download the [MNIST dataset](https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz)
+Install [torchvision](https://github.com/ankane/torchvision)
 
 ```sh
-wget https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
-```
-
-Install [npy](https://github.com/ankane/npy) to read the file
-
-```sh
-gem install npy
+gem install torchvision
 ```
 
 And run [the code](main.rb)

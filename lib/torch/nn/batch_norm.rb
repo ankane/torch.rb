@@ -70,6 +70,11 @@ module Torch
           momentum: exponential_average_factor, eps: @eps
         )
       end
+
+      def extra_inspect
+        s = "%{num_features}, eps: %{eps}, momentum: %{momentum}, affine: %{affine}, track_running_stats: %{track_running_stats}"
+        format(s, **dict)
+      end
     end
   end
 end

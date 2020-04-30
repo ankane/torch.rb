@@ -4,6 +4,8 @@ module Torch
     include Inspector
 
     alias_method :requires_grad?, :requires_grad
+    alias_method :ndim, :dim
+    alias_method :ndimension, :dim
 
     def self.new(*args)
       FloatTensor.new(*args)
@@ -23,8 +25,17 @@ module Torch
       inspect
     end
 
+    # TODO make more performant
     def to_a
-      reshape_arr(_flat_data, shape)
+      arr = _flat_data
+      if shape.empty?
+        arr
+      else
+        shape[1..-1].reverse.each do |dim|
+          arr = arr.each_slice(dim)
+        end
+        arr.to_a
+      end
     end
 
     # TODO support dtype
@@ -35,6 +46,10 @@ module Torch
 
     def cpu
       to("cpu")
+    end
+
+    def cuda
+      to("cuda")
     end
 
     def size(dim = nil)
@@ -58,7 +73,15 @@ module Torch
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
       end
-      _flat_data.first
+      to_a.first
+    end
+
+    def to_i
+      item.to_i
+    end
+
+    def to_f
+      item.to_f
     end
 
     # unsure if this is correct
@@ -74,7 +97,7 @@ module Torch
     def numo
       cls = Torch._dtype_to_numo[dtype]
       raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.cast(_flat_data).reshape(*shape)
+      cls.from_string(_data_str).reshape(*shape)
     end
 
     def new_ones(*size, **options)
@@ -100,15 +123,6 @@ module Torch
     def view(*size)
       size = size.first if size.size == 1 && size.first.is_a?(Array)
       _view(size)
-    end
-
-    # value and other are swapped for some methods
-    def add!(value = 1, other)
-      if other.is_a?(Numeric)
-        _add__scalar(other, value)
-      else
-        _add__tensor(other, value)
-      end
     end
 
     def +(other)
@@ -139,6 +153,7 @@ module Torch
       neg
     end
 
+    # TODO better compare?
     def <=>(other)
       item <=> other
     end
@@ -186,26 +201,33 @@ module Torch
       end
     end
 
-    def random!(from = 0, to)
-      _random__from_to(from, to)
+    # native functions that need manually defined
+
+    # value and other are swapped for some methods
+    def add!(value = 1, other)
+      if other.is_a?(Numeric)
+        _add__scalar(other, value)
+      else
+        _add__tensor(other, value)
+      end
+    end
+
+    # native functions overlap, so need to handle manually
+    def random!(*args)
+      case args.size
+      when 1
+        _random__to(*args)
+      when 2
+        _random__from_to(*args)
+      else
+        _random_(*args)
+      end
     end
 
     private
 
     def copy_to(dst, src)
       dst.copy!(src)
-    end
-
-    def reshape_arr(arr, dims)
-      if dims.empty?
-        arr
-      else
-        arr = arr.flatten
-        dims[1..-1].reverse.each do |dim|
-          arr = arr.each_slice(dim)
-        end
-        arr.to_a
-      end
     end
   end
 end
