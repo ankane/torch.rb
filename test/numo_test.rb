@@ -2,11 +2,13 @@ require_relative "test_helper"
 
 class NumoTest < Minitest::Test
   def test_numo
-    x = Torch.ones(2, 3)
+    x = Torch.tensor([[1, 2, 3], [4, 5, 6]], dtype: :float32)
     assert x.numo.is_a?(Numo::SFloat)
+    assert_equal x.to_a, x.numo.to_a
 
-    x = Torch.ones(2, 3, dtype: :long)
+    x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
     assert x.numo.is_a?(Numo::Int64)
+    assert_equal x.to_a, x.numo.to_a
   end
 
   def test_from_numo

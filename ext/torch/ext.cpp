@@ -375,6 +375,20 @@ void Init_ext()
         return s.str();
       })
     .define_method(
+      "_data_str",
+      *[](Tensor& self) {
+        Tensor tensor = self;
+
+        // move to CPU to get data
+        if (tensor.device().type() != torch::kCPU) {
+          torch::Device device("cpu");
+          tensor = tensor.to(device);
+        }
+
+        auto data_ptr = (const char *) tensor.data_ptr();
+        return std::string(data_ptr, tensor.numel() * tensor.element_size());
+      })
+    .define_method(
       "_flat_data",
       *[](Tensor& self) {
         Tensor tensor = self;

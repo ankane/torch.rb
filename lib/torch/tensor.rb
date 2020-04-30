@@ -88,7 +88,7 @@ module Torch
     def numo
       cls = Torch._dtype_to_numo[dtype]
       raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.cast(_flat_data).reshape(*shape)
+      cls.from_string(_data_str).reshape(*shape)
     end
 
     def new_ones(*size, **options)
