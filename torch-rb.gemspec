@@ -11,6 +11,11 @@ Gem::Specification.new do |spec|
   spec.email         = "andrew@chartkick.com"
 
   spec.files         = Dir["*.{md,txt}", "{ext,lib}/**/*"]
+  spec.files.reject! { |fn| 
+    (fn =~ /CMakeLists\.txt|ext\/torch\/build|Makefile/) ||
+    (fn =~ /ext\.lib|ext\.so/)
+  }
+
   spec.require_path  = "lib"
   spec.extensions    = ["ext/torch/extconf.rb"]
 

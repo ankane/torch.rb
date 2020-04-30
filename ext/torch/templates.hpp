@@ -4,6 +4,18 @@
 #undef isfinite
 #endif
 
+#ifdef isnan
+#undef isnan
+#endif
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
 #include <rice/Array.hpp>
 #include <rice/Object.hpp>
 
