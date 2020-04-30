@@ -125,15 +125,6 @@ module Torch
       _view(size)
     end
 
-    # value and other are swapped for some methods
-    def add!(value = 1, other)
-      if other.is_a?(Numeric)
-        _add__scalar(other, value)
-      else
-        _add__tensor(other, value)
-      end
-    end
-
     def +(other)
       add(other)
     end
@@ -207,6 +198,17 @@ module Torch
         copy_to(_slice_tensor(0, index.begin, finish, 1), value)
       else
         raise Error, "Unsupported index type: #{index.class.name}"
+      end
+    end
+
+    # native functions that need manually defined
+
+    # value and other are swapped for some methods
+    def add!(value = 1, other)
+      if other.is_a?(Numeric)
+        _add__scalar(other, value)
+      else
+        _add__tensor(other, value)
       end
     end
 
