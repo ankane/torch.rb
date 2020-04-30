@@ -48,6 +48,7 @@ set CXX=c:/Program Files/LLVM/bin/clang-cl.exe
 ```bat
 git clone https://github.com/golirev/torch.rb.git
 cd torch.rb
+git checkout gl_mswin_****  # Change to the branch you want
 bundle install  # Requires Rice modified for Windows.
 REM bundle exec rake install -- --with-torch-dir=/path/to/libtorch  # This option is not respected at least in mswin for now.
 bundle exec gem install -- --with-torch-dir=/path/to/libtorch
