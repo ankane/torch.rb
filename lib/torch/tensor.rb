@@ -25,8 +25,17 @@ module Torch
       inspect
     end
 
+    # TODO make more performant
     def to_a
-      reshape_arr(_flat_data, shape)
+      arr = _flat_data
+      if shape.empty?
+        arr
+      else
+        shape[1..-1].reverse.each do |dim|
+          arr = arr.each_slice(dim)
+        end
+        arr.to_a
+      end
     end
 
     # TODO support dtype
@@ -217,18 +226,6 @@ module Torch
 
     def copy_to(dst, src)
       dst.copy!(src)
-    end
-
-    def reshape_arr(arr, dims)
-      if dims.empty?
-        arr
-      else
-        arr = arr.flatten
-        dims[1..-1].reverse.each do |dim|
-          arr = arr.each_slice(dim)
-        end
-        arr.to_a
-      end
     end
   end
 end
