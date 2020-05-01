@@ -22,6 +22,20 @@ It can take a few minutes to compile the extension.
 
 ## Getting Started
 
+Deep learning is significantly faster with a GPU. If you don’t have an NVIDIA GPU, we recommend using a cloud service. [Paperspace](https://www.paperspace.com/) has a great free plan.
+
+We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to make it easy to get started. On Paperspace, create a notebook with a custom container, and for the container name, use:
+
+```text
+ankane/ml-stack:torch-gpu
+```
+
+Leave the other fields in that section blank.
+
+Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
+
+## API
+
 This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.html). There are a few changes to make it more Ruby-like:
 
 - Methods that perform in-place modifications end with `!` instead of `_` (`add!` instead of `add_`)
