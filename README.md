@@ -30,9 +30,7 @@ We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to mak
 ankane/ml-stack:torch-gpu
 ```
 
-Leave the other fields in that section blank.
-
-Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
+Leave the other fields in that section blank. Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
 
 ## API
 
