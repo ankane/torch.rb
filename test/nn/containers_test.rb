@@ -3,7 +3,7 @@ require_relative "../test_helper"
 class ContainersTest < Minitest::Test
   # https://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
   def test_tutorial
-    net = Net.new
+    net = TestNet.new
     assert net.inspect
 
     params = net.parameters

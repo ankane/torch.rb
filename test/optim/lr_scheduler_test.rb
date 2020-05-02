@@ -2,7 +2,7 @@ require_relative "../test_helper"
 
 class LRSchedulerTest < Minitest::Test
   def test_lambda_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     lambda1 = ->(epoch) { 0.95 ** epoch }
     scheduler = Torch::Optim::LRScheduler::LambdaLR.new(optimizer, [lambda1])
@@ -15,7 +15,7 @@ class LRSchedulerTest < Minitest::Test
   end
 
   def test_multiplicative_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     lambda1 = ->(epoch) { 0.95 }
     scheduler = Torch::Optim::LRScheduler::MultiplicativeLR.new(optimizer, [lambda1])
@@ -28,7 +28,7 @@ class LRSchedulerTest < Minitest::Test
   end
 
   def test_step_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     scheduler = Torch::Optim::LRScheduler::StepLR.new(optimizer, step_size: 1, gamma: 0.1)
     lrs = []
@@ -40,7 +40,7 @@ class LRSchedulerTest < Minitest::Test
   end
 
   def test_multi_step_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     scheduler = Torch::Optim::LRScheduler::MultiStepLR.new(optimizer, [1, 2], gamma: 0.1)
     lrs = []
@@ -52,7 +52,7 @@ class LRSchedulerTest < Minitest::Test
   end
 
   def test_exponential_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     scheduler = Torch::Optim::LRScheduler::ExponentialLR.new(optimizer, 0.2)
     lrs = []
@@ -64,7 +64,7 @@ class LRSchedulerTest < Minitest::Test
   end
 
   def test_cosine_annealing_lr
-    model = Net.new
+    model = TestNet.new
     optimizer = Torch::Optim::SGD.new(model.parameters, lr: 0.05)
     scheduler = Torch::Optim::LRScheduler::CosineAnnealingLR.new(optimizer, 0.4)
     lrs = []

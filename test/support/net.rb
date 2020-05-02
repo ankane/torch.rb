@@ -1,4 +1,4 @@
-class Net < Torch::NN::Module
+class TestNet < Torch::NN::Module
   def initialize
     super
     @conv1 = Torch::NN::Conv2d.new(1, 6, 3)

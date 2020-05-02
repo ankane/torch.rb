@@ -204,7 +204,7 @@ end
 Define a neural network
 
 ```ruby
-class Net < Torch::NN::Module
+class MyNet < Torch::NN::Module
   def initialize
     super
     @conv1 = Torch::NN::Conv2d.new(1, 6, 3)
@@ -238,7 +238,7 @@ end
 Create an instance of it
 
 ```ruby
-net = Net.new
+net = MyNet.new
 input = Torch.randn(1, 1, 32, 32)
 net.call(input)
 ```
@@ -306,7 +306,7 @@ Torch.save(net.state_dict, "net.pth")
 Load a model
 
 ```ruby
-net = Net.new
+net = MyNet.new
 net.load_state_dict(Torch.load("net.pth"))
 net.eval
 ```

@@ -37,14 +37,14 @@ class ModuleTest < Minitest::Test
   end
 
   def test_to
-    net = Net.new
+    net = TestNet.new
     device = Torch::CUDA.available? ? "cuda" : "cpu"
     net.to(device)
     net.cpu
   end
 
   def test_state_dict
-    net = Net.new
+    net = TestNet.new
     assert_equal 10, net.state_dict.size
 
     # puts "Model's state_dict:"
@@ -55,7 +55,7 @@ class ModuleTest < Minitest::Test
     tmpfile = Tempfile.new
     Torch.save(net.state_dict, tmpfile.path)
 
-    net = Net.new
+    net = TestNet.new
     net.load_state_dict(Torch.load(tmpfile.path))
     net.eval
 
@@ -77,6 +77,6 @@ class ModuleTest < Minitest::Test
   private
 
   def net
-    @net ||= Net.new
+    @net ||= TestNet.new
   end
 end

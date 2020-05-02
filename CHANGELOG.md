@@ -1,3 +1,7 @@
+## 0.2.5 (unreleased)
+
+- Added `Torch::Hub.download_url_to_file`
+
 ## 0.2.4 (2020-04-29)
 
 - Added `to_i` and `to_f` to tensors

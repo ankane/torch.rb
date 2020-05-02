@@ -1,6 +1,11 @@
 # ext
 require "torch/ext"
 
+# stdlib
+require "fileutils"
+require "net/http"
+require "tmpdir"
+
 # native functions
 require "torch/native/generator"
 require "torch/native/parser"

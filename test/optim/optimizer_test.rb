@@ -41,7 +41,7 @@ class OptimizerTest < Minitest::Test
   private
 
   def assert_works(cls)
-    net = Net.new
+    net = TestNet.new
     optimizer = cls.new(net.parameters, lr: 0.01)
     input = Torch.randn(1, 1, 32, 32)
     target = Torch.randn(10)
