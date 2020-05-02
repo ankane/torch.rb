@@ -1,6 +1,6 @@
 ## 0.2.5 (unreleased)
 
-- Added `Torch::Hub.download_url_to_file`
+- Added `download_url_to_file` and `load_state_dict_from_url` to `Torch::Hub`
 
 ## 0.2.4 (2020-04-29)
 
