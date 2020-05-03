@@ -2,6 +2,8 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
+For computer vision tasks, also check out [TorchVision](https://github.com/ankane/torchvision)
+
 [![Build Status](https://travis-ci.org/ankane/torch.rb.svg?branch=master)](https://travis-ci.org/ankane/torch.rb)
 
 ## Installation
