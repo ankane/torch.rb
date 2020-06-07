@@ -1,4 +1,4 @@
-## 0.2.5 (unreleased)
+## 0.2.5 (2020-06-07)
 
 - Added `download_url_to_file` and `load_state_dict_from_url` to `Torch::Hub`
 - Improved error messages
