@@ -23,7 +23,7 @@ class Parameter: public torch::autograd::Variable {
     Parameter(Tensor&& t) : torch::autograd::Variable(t) { }
 };
 
-void handle_error(c10::Error const & ex)
+void handle_error(torch::Error const & ex)
 {
   throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
 }
@@ -35,6 +35,7 @@ void Init_ext()
   add_torch_functions(rb_mTorch);
 
   Class rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor");
+  rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
 
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
@@ -317,7 +318,6 @@ void Init_ext()
       });
 
   rb_cTensor
-    .add_handler<c10::Error>(handle_error)
     .define_method("cuda?", &torch::Tensor::is_cuda)
     .define_method("sparse?", &torch::Tensor::is_sparse)
     .define_method("quantized?", &torch::Tensor::is_quantized)
@@ -388,6 +388,7 @@ void Init_ext()
         auto data_ptr = (const char *) tensor.data_ptr();
         return std::string(data_ptr, tensor.numel() * tensor.element_size());
       })
+    // TODO figure out a better way to do this
     .define_method(
       "_flat_data",
       *[](Tensor& self) {
@@ -402,46 +403,40 @@ void Init_ext()
         Array a;
         auto dtype = tensor.dtype();
 
+        Tensor view = tensor.view({tensor.numel()});
+
         // TODO DRY if someone knows C++
         if (dtype == torch::kByte) {
-          uint8_t* data = tensor.data_ptr<uint8_t>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<uint8_t>());
           }
         } else if (dtype == torch::kChar) {
-          int8_t* data = tensor.data_ptr<int8_t>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(to_ruby<int>(data[i]));
+            a.push(to_ruby<int>(view[i].item().to<int8_t>()));
           }
         } else if (dtype == torch::kShort) {
-          int16_t* data = tensor.data_ptr<int16_t>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<int16_t>());
           }
         } else if (dtype == torch::kInt) {
-          int32_t* data = tensor.data_ptr<int32_t>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<int32_t>());
           }
         } else if (dtype == torch::kLong) {
-          int64_t* data = tensor.data_ptr<int64_t>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<int64_t>());
           }
         } else if (dtype == torch::kFloat) {
-          float* data = tensor.data_ptr<float>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<float>());
           }
         } else if (dtype == torch::kDouble) {
-          double* data = tensor.data_ptr<double>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i]);
+            a.push(view[i].item().to<double>());
           }
         } else if (dtype == torch::kBool) {
-          bool* data = tensor.data_ptr<bool>();
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(data[i] ? True : False);
+            a.push(view[i].item().to<bool>() ? True : False);
           }
         } else {
           throw std::runtime_error("Unsupported type");

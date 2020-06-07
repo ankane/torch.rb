@@ -1,6 +1,8 @@
 ## 0.2.5 (unreleased)
 
 - Added `download_url_to_file` and `load_state_dict_from_url` to `Torch::Hub`
+- Improved error messages
+- Fixed tensor slicing
 
 ## 0.2.4 (2020-04-29)
 

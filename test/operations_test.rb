@@ -230,4 +230,9 @@ class OperationsTest < Minitest::Test
     z = Torch.einsum("i,j->ij", [x, y])
     assert_equal [5, 4], z.shape
   end
+
+  def test_select
+    slice = Torch.arange(0, 100).view([10, 10]).select(1, 3)
+    assert_equal [3, 13, 23, 33, 43, 53, 63, 73, 83, 93], slice.to_a
+  end
 end
