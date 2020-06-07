@@ -458,7 +458,7 @@ void Init_ext()
       });
 
   Class rb_cTensorOptions = define_class_under<torch::TensorOptions>(rb_mTorch, "TensorOptions")
-    .add_handler<c10::Error>(handle_error)
+    .add_handler<torch::Error>(handle_error)
     .define_constructor(Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",
