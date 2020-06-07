@@ -32,6 +32,7 @@ extern "C"
 void Init_ext()
 {
   Module rb_mTorch = define_module("Torch");
+  rb_mTorch.add_handler<torch::Error>(handle_error);
   add_torch_functions(rb_mTorch);
 
   Class rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor");
@@ -39,9 +40,11 @@ void Init_ext()
   add_tensor_functions(rb_cTensor);
 
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
+  rb_mNN.add_handler<torch::Error>(handle_error);
   add_nn_functions(rb_mNN);
 
   Module rb_mRandom = define_module_under(rb_mTorch, "Random")
+    .add_handler<torch::Error>(handle_error)
     .define_singleton_method(
       "initial_seed",
       *[]() {
@@ -56,6 +59,7 @@ void Init_ext()
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
+    .add_handler<torch::Error>(handle_error)
     .define_constructor(Constructor<torch::IValue>())
     .define_method("bool?", &torch::IValue::isBool)
     .define_method("bool_list?", &torch::IValue::isBoolList)
@@ -564,6 +568,7 @@ void Init_ext()
       });
 
   Class rb_cParameter = define_class_under<Parameter, torch::Tensor>(rb_mNN, "Parameter")
+    .add_handler<torch::Error>(handle_error)
     .define_method(
       "grad",
       *[](Parameter& self) {
@@ -573,6 +578,7 @@ void Init_ext()
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
     .define_constructor(Constructor<torch::Device, std::string>())
+    .add_handler<torch::Error>(handle_error)
     .define_method("index", &torch::Device::index)
     .define_method("index?", &torch::Device::has_index)
     .define_method(
@@ -584,6 +590,7 @@ void Init_ext()
       });
 
   Module rb_mCUDA = define_module_under(rb_mTorch, "CUDA")
+    .add_handler<torch::Error>(handle_error)
     .define_singleton_method("available?", &torch::cuda::is_available)
     .define_singleton_method("device_count", &torch::cuda::device_count);
 }
