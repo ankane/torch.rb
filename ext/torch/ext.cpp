@@ -403,7 +403,7 @@ void Init_ext()
         Array a;
         auto dtype = tensor.dtype();
 
-        Tensor view = tensor.view({tensor.numel()});
+        Tensor view = tensor.reshape({tensor.numel()});
 
         // TODO DRY if someone knows C++
         if (dtype == torch::kByte) {
