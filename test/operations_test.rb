@@ -236,6 +236,14 @@ class OperationsTest < Minitest::Test
     assert_equal [3, 13, 23, 33, 43, 53, 63, 73, 83, 93], x.select(1, 3).to_a
   end
 
+  # ensure friendly error message (no C++ trace)
+  def test_select_error
+    error = assert_raises do
+      Torch.arange(0, 100).view([10, 10]).select(2, 0)
+    end
+    assert_equal "Dimension out of range (expected to be in range of [-2, 1], but got 2)", error.message
+  end
+
   def test_narrow
     x = Torch.arange(0, 100).view([10, 10])
     expected = [[3, 4], [13, 14], [23, 24], [33, 34], [43, 44], [53, 54], [63, 64], [73, 74], [83, 84], [93, 94]]
