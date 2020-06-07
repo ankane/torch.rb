@@ -14,7 +14,7 @@ module Torch
           if dtype == :bool
             fmt = "%s"
           else
-            values = to_a.flatten
+            values = _flat_data
             abs = values.select { |v| v != 0 }.map(&:abs)
             max = abs.max || 1
             min = abs.min || 1
