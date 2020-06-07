@@ -1,6 +1,6 @@
 module Torch
   module Inspector
-    # TODO make more performance, especially when summarizing
+    # TODO make more performant, especially when summarizing
     # how? only read data that will be displayed
     def inspect
       data =
