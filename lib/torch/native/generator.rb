@@ -31,7 +31,7 @@ module Torch
           todo_functions, functions =
             functions.partition do |f|
               f.args.any? do |a|
-                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?"].include?(a[:type]) ||
+                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?", "Tensor?[]"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) } ||
                 # native_functions.yaml is missing size argument for normal
                 # https://pytorch.org/cppdocs/api/function_namespacetorch_1a80253fe5a3ded4716ec929a348adb4b9.html
@@ -111,6 +111,9 @@ void add_%{type}_functions(Module m) {
                 when "ScalarType?"
                   "OptionalScalarType"
                 when "Tensor[]"
+                  "TensorList"
+                when "Tensor?[]"
+                  # TODO make optional
                   "TensorList"
                 when "int"
                   "int64_t"

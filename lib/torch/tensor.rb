@@ -170,6 +170,8 @@ module Torch
           finish += 1 unless index.exclude_end?
           result = result._slice_tensor(dim, index.begin, finish, 1)
           dim += 1
+        elsif index.is_a?(Tensor)
+          result = result.index([index])
         elsif index.nil?
           result = result.unsqueeze(dim)
           dim += 1

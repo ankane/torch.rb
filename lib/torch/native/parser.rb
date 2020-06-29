@@ -75,7 +75,7 @@ module Torch
                 v.is_a?(Tensor)
               when "Tensor?"
                 v.nil? || v.is_a?(Tensor)
-              when "Tensor[]"
+              when "Tensor[]", "Tensor?[]"
                 v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) }
               when "int"
                 if k == "reduction"
