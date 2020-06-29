@@ -1,4 +1,4 @@
-## 0.2.6 (unreleased)
+## 0.2.6 (2020-06-29)
 
 - Added support for indexing with tensors
 - Added `contiguous` methods
