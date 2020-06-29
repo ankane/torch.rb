@@ -145,7 +145,7 @@ module Torch
         params = {}
         if recurse
           named_children.each do |name, mod|
-            params.merge!(mod.named_parameters(prefix: "#{name}.", recurse: recurse))
+            params.merge!(mod.named_parameters(prefix: "#{prefix}#{name}.", recurse: recurse))
           end
         end
         instance_variables.each do |name|
