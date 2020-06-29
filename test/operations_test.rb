@@ -159,7 +159,7 @@ class OperationsTest < Minitest::Test
     assert_equal :float32, x.dtype
   end
 
-  def test_accessor
+  def test_getter
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [0, 1, 2], x[0].to_a
     assert_equal 5, x[1, 2].item
@@ -172,10 +172,30 @@ class OperationsTest < Minitest::Test
     # end
   end
 
-  def test_accessor_tensor
+  def test_getter_tensor
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
     assert_equal [2], x[index].to_a
+  end
+
+  def test_setter
+    x = Torch.tensor([1, 2, 3])
+    index = Torch.tensor([false, true, false])
+    x[index] = 9
+    assert_equal [1, 9, 3], x.to_a
+  end
+
+  def test_setter_float
+    x = Torch.tensor([1.0, 2, 3])
+    index = Torch.tensor([false, true, false])
+    x[index] = 9
+    assert_equal [1, 9, 3], x.to_a
+  end
+
+  def test_clamp
+    x = Torch.tensor([1, 2, 3, 4, 5])
+    x.clamp!(2, 4)
+    assert_equal [2, 2, 3, 4, 4], x.to_a
   end
 
   def test_transpose
