@@ -1,6 +1,7 @@
 ## 0.2.6 (unreleased)
 
 - Added support for indexing with tensors
+- Added `contiguous` methods
 - Fixed named parameters for nested parameters
 
 ## 0.2.5 (2020-06-07)

@@ -330,6 +330,11 @@ void Init_ext()
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
     .define_method(
+      "contiguous?",
+      *[](Tensor& self) {
+        return self.is_contiguous();
+      })
+    .define_method(
       "addcmul!",
       *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
         return self.addcmul_(tensor1, tensor2, value);
