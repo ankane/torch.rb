@@ -158,6 +158,7 @@ module Torch
       item <=> other
     end
 
+    # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def [](*indexes)
       result = self
@@ -185,6 +186,7 @@ module Torch
       result
     end
 
+    # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def []=(index, value)
       raise ArgumentError, "Tensor does not support deleting items" if value.nil?
