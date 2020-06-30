@@ -1,6 +1,7 @@
 ## 0.2.7 (unreleased)
 
 - Made tensors enumerable
+- Improved performance of `inspect` method
 
 ## 0.2.6 (2020-06-29)
 
