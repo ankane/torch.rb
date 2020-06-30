@@ -286,8 +286,11 @@ module Torch
         str % vars
       end
 
+      # used for format
+      # remove tensors for performance
+      # so we can skip call to inspect
       def dict
-        instance_variables.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
+        instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
       end
     end
   end
