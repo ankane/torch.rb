@@ -1,4 +1,4 @@
-## 0.2.7 (unreleased)
+## 0.2.7 (2020-06-29)
 
 - Made tensors enumerable
 - Improved performance of `inspect` method
