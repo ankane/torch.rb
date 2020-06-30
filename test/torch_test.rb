@@ -56,17 +56,17 @@ class TorchTest < Minitest::Test
     assert_kind_of Numo::SFloat, b
   end
 
-  # no C++ trace
-  def test_friendly_error_tensor
-    error = assert_raises do
+  # TODO use Torch::Error
+  def test_friendly_error_tensor_no_cpp_trace
+    error = assert_raises(RuntimeError) do
       Torch.arange(0, 100).view([10, 10]).select(2, 0)
     end
     assert_equal "Dimension out of range (expected to be in range of [-2, 1], but got 2)", error.message
   end
 
-  # no C++ trace
-  def test_friendly_error_torch
-    error = assert_raises do
+  # TODO use Torch::Error
+  def test_friendly_error_torch_no_cpp_trace
+    error = assert_raises(RuntimeError) do
       Torch.select(Torch.arange(0, 100).view([10, 10]), 2, 0)
     end
     assert_equal "Dimension out of range (expected to be in range of [-2, 1], but got 2)", error.message
