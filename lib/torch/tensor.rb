@@ -34,6 +34,10 @@ module Torch
       logical_or(other)
     end
 
+    def ^(other)
+      logical_xor(other)
+    end
+
     def each
       return enum_for(:each) unless block_given?
 

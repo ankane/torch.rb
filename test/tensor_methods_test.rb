@@ -56,5 +56,6 @@ class TensorMethodsTest < Minitest::Test
     y = Torch.tensor([true, false, true, false])
     assert_equal [true, false, false, false], (x & y).to_a
     assert_equal [true, true, true, false], (x | y).to_a
+    assert_equal [false, true, true, false], (x ^ y).to_a
   end
 end
