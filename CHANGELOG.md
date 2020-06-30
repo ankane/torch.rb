@@ -1,3 +1,7 @@
+## 0.2.7 (unreleased)
+
+- Made tensors enumerable
+
 ## 0.2.6 (2020-06-29)
 
 - Added support for indexing with tensors

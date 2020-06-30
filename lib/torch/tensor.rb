@@ -1,6 +1,7 @@
 module Torch
   class Tensor
     include Comparable
+    include Enumerable
     include Inspector
 
     alias_method :requires_grad?, :requires_grad
@@ -23,6 +24,14 @@ module Torch
 
     def to_s
       inspect
+    end
+
+    def each
+      return enum_for(:each) unless block_given?
+
+      size(0).times do |i|
+        yield self[i]
+      end
     end
 
     # TODO make more performant
