@@ -25,6 +25,11 @@ class TensorMethodsTest < Minitest::Test
     assert_equal "only one element tensors can be converted to Ruby scalars", error.message
   end
 
+  def test_to_dtype
+    x = Torch.tensor([1, 2, 3])
+    assert_equal :float64, x.to(dtype: :float64).dtype
+  end
+
   def test_each
     x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
     result = []

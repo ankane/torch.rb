@@ -47,10 +47,12 @@ module Torch
       end
     end
 
-    # TODO support dtype
-    def to(device, non_blocking: false, copy: false)
+    def to(device = nil, dtype: nil, non_blocking: false, copy: false)
+      device ||= self.device
       device = Device.new(device) if device.is_a?(String)
-      _to(device, _dtype, non_blocking, copy)
+      dtype ||= self.dtype
+      # TODO raise error for unknown dtype
+      _to(device, DTYPE_TO_ENUM[dtype], non_blocking, copy)
     end
 
     def cpu
