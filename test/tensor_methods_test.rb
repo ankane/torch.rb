@@ -1,16 +1,28 @@
 require_relative "test_helper"
 
 class TensorMethodsTest < Minitest::Test
-  # TODO test raises same error as item if many elements
   def test_to_i
     x = Torch.tensor([1.5])
     assert_equal 1, x.to_i
   end
 
-  # TODO test raises same error as item if many elements
+  def test_to_i_multiple
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([1.5, 2.5]).to_i
+    end
+    assert_equal "only one element tensors can be converted to Ruby scalars", error.message
+  end
+
   def test_to_f
     x = Torch.tensor([1.5])
     assert_equal 1.5, x.to_f
+  end
+
+  def test_to_f_multiple
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([1.5, 2.5]).to_f
+    end
+    assert_equal "only one element tensors can be converted to Ruby scalars", error.message
   end
 
   def test_each
