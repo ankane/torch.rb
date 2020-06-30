@@ -26,18 +26,6 @@ module Torch
       inspect
     end
 
-    def &(other)
-      logical_and(other)
-    end
-
-    def |(other)
-      logical_or(other)
-    end
-
-    def ^(other)
-      logical_xor(other)
-    end
-
     def each
       return enum_for(:each) unless block_given?
 
@@ -172,6 +160,18 @@ module Torch
 
     def -@
       neg
+    end
+
+    def &(other)
+      logical_and(other)
+    end
+
+    def |(other)
+      logical_or(other)
+    end
+
+    def ^(other)
+      logical_xor(other)
     end
 
     # TODO better compare?
