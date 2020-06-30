@@ -18,7 +18,6 @@ module Torch
         F.conv2d(input, @weight, @bias, @stride, @padding, @dilation, @groups)
       end
 
-      # TODO add more parameters
       def extra_inspect
         s = String.new("%{in_channels}, %{out_channels}, kernel_size: %{kernel_size}, stride: %{stride}")
         s += ", padding: %{padding}" if @padding != [0] * @padding.size
