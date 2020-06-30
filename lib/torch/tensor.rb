@@ -215,11 +215,11 @@ module Torch
       value = Torch.tensor(value, dtype: dtype) unless value.is_a?(Tensor)
 
       if index.is_a?(Numeric)
-        copy_to(_select_int(0, index), value)
+        index_put!([Torch.tensor(index)], value)
       elsif index.is_a?(Range)
         finish = index.end
         finish += 1 unless index.exclude_end?
-        copy_to(_slice_tensor(0, index.begin, finish, 1), value)
+        _slice_tensor(0, index.begin, finish, 1).copy!(value)
       elsif index.is_a?(Tensor)
         index_put!([index], value)
       else
@@ -253,12 +253,6 @@ module Torch
     def clamp!(min, max)
       _clamp_min_(min)
       _clamp_max_(max)
-    end
-
-    private
-
-    def copy_to(dst, src)
-      dst.copy!(src)
     end
   end
 end
