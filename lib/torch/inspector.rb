@@ -36,7 +36,7 @@ module Torch
           nonzero_finite_max = nonzero_finite_abs.max.double
 
           nonzero_finite_vals.each do |value|
-            if value != Torch.ceil(value)
+            if value.item != value.item.ceil
               @int_mode = false
               break
             end
@@ -134,7 +134,7 @@ module Torch
 
         # In an empty tensor, there are no elements to infer if the dtype
         # should be int64, so it must be shown explicitly.
-        if slf.dtype != :float32
+        if slf.dtype != :int64
           suffixes << "dtype: #{slf.dtype.inspect}"
         end
         tensor_str = "[]"
@@ -159,7 +159,7 @@ module Torch
         suffixes << "requires_grad: true"
       end
 
-      add_suffixes(prefix + tensor_str, suffixes, indent, force_newline: slf.sparse?)
+      add_suffixes(prefix + tensor_str, suffixes, indent, slf.sparse?)
     end
 
     def add_suffixes(tensor_str, suffixes, indent, force_newline)

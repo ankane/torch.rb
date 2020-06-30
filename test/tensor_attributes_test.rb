@@ -97,12 +97,11 @@ class TensorAttributesTest < Minitest::Test
   end
 
   def test_inspect
-    assert_equal "tensor(5.0)", Torch.tensor(5.0).inspect
+    assert_equal "tensor(5.)", Torch.tensor(5.0).inspect
     assert_equal "tensor([])", Torch.tensor([]).inspect
-    assert_equal "tensor([1.0, 1.0, 1.0, 1.0, 1.0])", Torch.ones(5).inspect
+    assert_equal "tensor([1., 1., 1., 1., 1.])", Torch.ones(5).inspect
     assert_equal "tensor([ 1.0000, -1.2500], requires_grad: true)", Torch.tensor([1, -1.25], requires_grad: true).inspect
-    # TODO fix infinite formatting
-    assert_equal "tensor([       Inf])", Torch.tensor([100.0]).exp.inspect
+    assert_equal "tensor([Inf])", Torch.tensor([100.0]).exp.inspect
   end
 
   def test_tensor
