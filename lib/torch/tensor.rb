@@ -50,9 +50,12 @@ module Torch
     def to(device = nil, dtype: nil, non_blocking: false, copy: false)
       device ||= self.device
       device = Device.new(device) if device.is_a?(String)
+
       dtype ||= self.dtype
-      # TODO raise error for unknown dtype
-      _to(device, DTYPE_TO_ENUM[dtype], non_blocking, copy)
+      enum = DTYPE_TO_ENUM[dtype]
+      raise Error, "Unknown type: #{dtype}" unless enum
+
+      _to(device, enum, non_blocking, copy)
     end
 
     def cpu
