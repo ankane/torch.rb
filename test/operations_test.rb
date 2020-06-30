@@ -178,14 +178,26 @@ class OperationsTest < Minitest::Test
     assert_equal [2], x[index].to_a
   end
 
-  def test_setter
+  def test_setter_numeric
+    x = Torch.tensor([1, 2, 3])
+    x[1] = 9
+    assert_equal [1, 9, 3], x.to_a
+  end
+
+  def test_setter_range
+    x = Torch.tensor([1, 2, 3])
+    x[1..2] = 9
+    assert_equal [1, 9, 9], x.to_a
+  end
+
+  def test_setter_tensor
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
     x[index] = 9
     assert_equal [1, 9, 3], x.to_a
   end
 
-  def test_setter_float
+  def test_setter_tensor_float
     x = Torch.tensor([1.0, 2, 3])
     index = Torch.tensor([false, true, false])
     x[index] = 9
