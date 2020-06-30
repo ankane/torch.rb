@@ -26,6 +26,14 @@ module Torch
       inspect
     end
 
+    def &(other)
+      logical_and(other)
+    end
+
+    def |(other)
+      logical_or(other)
+    end
+
     def each
       return enum_for(:each) unless block_given?
 

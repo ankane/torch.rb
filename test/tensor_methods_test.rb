@@ -50,4 +50,11 @@ class TensorMethodsTest < Minitest::Test
     x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
     assert_equal [[1, 2, 3], [4, 5, 6]], x.map { |v| v.to_a }
   end
+
+  def test_boolean_operators
+    x = Torch.tensor([true, true, false, false])
+    y = Torch.tensor([true, false, true, false])
+    assert_equal [true, false, false, false], (x & y).to_a
+    assert_equal [true, true, true, false], (x | y).to_a
+  end
 end
