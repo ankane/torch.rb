@@ -351,8 +351,8 @@ void Init_ext()
       })
     .define_method(
       "_backward",
-      *[](Tensor& self, Object gradient) {
-        return gradient.is_nil() ? self.backward() : self.backward(from_ruby<torch::Tensor>(gradient));
+      *[](Tensor& self, Object gradient, bool retain_graph, bool create_graph) {
+        return gradient.is_nil() ? self.backward() : self.backward(from_ruby<torch::Tensor>(gradient), retain_graph, create_graph);
       })
     .define_method(
       "grad",
