@@ -42,7 +42,7 @@ This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.htm
 - Methods that return booleans use `?` instead of `is_`  (`tensor?` instead of `is_tensor`)
 - Numo is used instead of NumPy (`x.numo` instead of `x.numpy()`)
 
-It should be possible to convert many PyTorch tutorials to Ruby. Feel free to open an issue if you run into problems.
+You can follow PyTorch tutorials and convert the code to Ruby in many cases. Feel free to open an issue if you run into problems.
 
 ## Tutorial
 
