@@ -1,7 +1,7 @@
-## 0.3.0 (unreleased)
+## 0.3.0 (2020-07-29)
 
 - Updated LibTorch to 1.6.0
-- Removed `state_dict` method for optimizers temporarily until `load_state_dict` is implemented
+- Removed `state_dict` method from optimizers until `load_state_dict` is implemented
 
 ## 0.2.7 (2020-06-29)
 
