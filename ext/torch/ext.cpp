@@ -48,13 +48,14 @@ void Init_ext()
     .define_singleton_method(
       "initial_seed",
       *[]() {
-        return at::detail::getDefaultCPUGenerator()->current_seed();
+        return at::detail::getDefaultCPUGenerator().current_seed();
       })
     .define_singleton_method(
       "seed",
       *[]() {
         // TODO set for CUDA when available
-        return at::detail::getDefaultCPUGenerator()->seed();
+        auto generator = at::detail::getDefaultCPUGenerator();
+        return generator.seed();
       });
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
@@ -460,7 +461,7 @@ void Init_ext()
     .define_singleton_method(
       "_make_subclass",
       *[](Tensor& rd, bool requires_grad) {
-        auto data = torch::autograd::as_variable_ref(rd).detach();
+        auto data = rd.detach();
         data.unsafeGetTensorImpl()->set_allow_tensor_metadata_change(true);
         auto var = data.set_requires_grad(requires_grad);
         return Parameter(std::move(var));

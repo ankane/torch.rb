@@ -1,3 +1,7 @@
+## 0.3.0 (unreleased)
+
+- Updated LibTorch to 1.6.0
+
 ## 0.2.7 (2020-06-29)
 
 - Made tensors enumerable
@@ -43,7 +47,7 @@
 ## 0.2.0 (2020-04-22)
 
 - No longer experimental
-- Updated libtorch to 1.5.0
+- Updated LibTorch to 1.5.0
 - Added support for GPUs and OpenMP
 - Added adaptive pooling layers
 - Tensor `dtype` is now based on Numo type for `Torch.tensor`
@@ -52,7 +56,7 @@
 
 ## 0.1.8 (2020-01-17)
 
-- Updated libtorch to 1.4.0
+- Updated LibTorch to 1.4.0
 
 ## 0.1.7 (2020-01-10)
 
