@@ -470,11 +470,7 @@ module Torch
       when nil
         IValue.new
       when Array
-        if obj.all? { |v| v.is_a?(Tensor) }
-          IValue.from_list(obj.map { |v| IValue.from_tensor(v) })
-        else
-          raise Error, "Unknown list type"
-        end
+        IValue.from_list(obj.map { |v| to_ivalue(v) })
       else
         raise Error, "Unknown type: #{obj.class.name}"
       end
