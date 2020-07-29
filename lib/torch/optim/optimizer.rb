@@ -33,8 +33,8 @@ module Torch
 
       def state_dict
         pack_group = lambda do |group|
-          packed = group.select { |k, _| k != :params }.to_h
-          packed[:params] = group[:params].map { |p| p.object_id }
+          packed = group.select { |k, _| k != :params }.map { |k, v| [k.to_s, v] }.to_h
+          packed["params"] = group[:params].map { |p| p.object_id }
           packed
         end
 
@@ -42,8 +42,8 @@ module Torch
         packed_state = @state.map { |k, v| [k.is_a?(Tensor) ? k.object_id : k, v] }.to_h
 
         {
-          state: packed_state,
-          param_groups: param_groups
+          "state" => packed_state,
+          "param_groups" => param_groups
         }
       end
 
