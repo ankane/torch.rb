@@ -56,7 +56,11 @@ class OptimizerTest < Minitest::Test
       optimizer.step
     end
 
-    state_dict = optimizer.state_dict
+    # tmpfile = Tempfile.new
+    # Torch.save(optimizer.state_dict, tmpfile.path)
+    # state_dict = Torch.load(tmpfile.path)
+    # assert_equal optimizer.state_dict, state_dict
+
     # optimizer.load_state_dict(state_dict)
   end
 end

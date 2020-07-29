@@ -32,6 +32,8 @@ module Torch
       end
 
       def state_dict
+        raise NotImplementedYet
+
         pack_group = lambda do |group|
           packed = group.select { |k, _| k != :params }.map { |k, v| [k.to_s, v] }.to_h
           packed["params"] = group[:params].map { |p| p.object_id }
