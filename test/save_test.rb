@@ -27,10 +27,14 @@ class SaveTest < Minitest::Test
     assert_save Torch.tensor([[1, 2, 3], [4, 5, 6]])
   end
 
-  def test_tensor_list
+  def test_list_tensor
     x = Torch.tensor([1, 2, 3])
     y = Torch.tensor([4, 5, 6])
     assert_save [x, y]
+  end
+
+  def test_list_integer
+    assert_save [1, 2, 3]
   end
 
   def test_hash
@@ -46,7 +50,7 @@ class SaveTest < Minitest::Test
 
     if obj.is_a?(Torch::Tensor)
       assert_equal obj.to_a, act.to_a
-    elsif obj.is_a?(Array)
+    elsif obj.is_a?(Array) && obj.first.is_a?(Torch::Tensor)
       assert_equal obj.map(&:to_a), act.map(&:to_a)
     elsif obj.nil?
       assert_nil act
