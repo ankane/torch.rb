@@ -7,6 +7,10 @@
 #include <rice/Constructor.hpp>
 #include <rice/Hash.hpp>
 
+// after Rice
+#include <ruby.h>
+#include <numo/narray.h>
+
 #include "templates.hpp"
 
 // generated with:
@@ -290,9 +294,9 @@ void Init_ext()
         return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
       })
     .define_singleton_method(
-      "_from_blob",
-      *[](String s, IntArrayRef size, const torch::TensorOptions &options) {
-        void *data = const_cast<char *>(s.c_str());
+      "_from_numo",
+      *[](Object ndarray, IntArrayRef size, const torch::TensorOptions &options) {
+        void *data = na_get_pointer_for_read_write(ndarray);
         return torch::from_blob(data, size, options);
       })
     .define_singleton_method(

@@ -50,8 +50,6 @@ class NumoTest < Minitest::Test
     a.inplace!
     a += 1
     assert_equal [2, 2, 2, 2, 2], a.to_a
-    assert_equal [1, 1, 1, 1, 1], b.to_a
-    # TODO should be
-    # assert_equal [2, 2, 2, 2, 2], b.to_a
+    assert_equal [2, 2, 2, 2, 2], b.to_a
   end
 end

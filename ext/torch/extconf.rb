@@ -54,6 +54,14 @@ end
 $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
 
+$LOAD_PATH.each do |x|
+  if File.exist?(File.join(x, "numo/numo/narray.h"))
+    $INCFLAGS += " -I#{x}/numo"
+    break
+  end
+end
+abort "Missing numo-narray" unless have_header("numo/narray.h")
+
 $LDFLAGS += " -Wl,-rpath,#{lib}"
 $LDFLAGS += ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 
