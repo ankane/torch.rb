@@ -389,8 +389,8 @@ void Init_ext()
         return s.str();
       })
     .define_method(
-      "_data_str",
-      *[](Tensor& self) {
+      "_numo",
+      *[](Tensor& self, Object ndarray) {
         Tensor tensor = self;
 
         // move to CPU to get data
@@ -399,8 +399,8 @@ void Init_ext()
           tensor = tensor.to(device);
         }
 
-        auto data_ptr = (const char *) tensor.data_ptr();
-        return std::string(data_ptr, tensor.numel() * tensor.element_size());
+        auto ptr = (char *) tensor.data_ptr();
+        nary_set_pointer(ndarray, ptr, tensor.numel() * tensor.element_size());
       })
     // TODO figure out a better way to do this
     .define_method(

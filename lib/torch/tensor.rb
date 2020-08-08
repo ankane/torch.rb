@@ -108,11 +108,12 @@ module Torch
       _backward(gradient, retain_graph, create_graph)
     end
 
-    # TODO read directly from memory
     def numo
       cls = Torch._dtype_to_numo[dtype]
       raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.from_string(_data_str).reshape(*shape)
+      obj = cls.new(*shape)
+      _numo(obj)
+      obj
     end
 
     def new_ones(*size, **options)

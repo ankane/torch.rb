@@ -39,9 +39,7 @@ class NumoTest < Minitest::Test
     b = a.numo
     a.add!(1)
     assert_equal [2, 2, 2, 2, 2], a.to_a
-    assert_equal [1, 1, 1, 1, 1], b.to_a
-    # TODO should be
-    # assert_equal [2, 2, 2, 2, 2], b.to_a
+    assert_equal [2, 2, 2, 2, 2], b.to_a
   end
 
   def test_bridge_from
