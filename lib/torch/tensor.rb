@@ -103,8 +103,9 @@ module Torch
       Torch.empty(0, dtype: dtype)
     end
 
-    def backward(gradient = nil)
-      _backward(gradient)
+    def backward(gradient = nil, retain_graph: nil, create_graph: false)
+      retain_graph = create_graph if retain_graph.nil?
+      _backward(gradient, retain_graph, create_graph)
     end
 
     # TODO read directly from memory

@@ -1,3 +1,7 @@
+## 0.3.1 (unreleased)
+
+- Added `create_graph` and `retain_graph` options to `backward` method
+
 ## 0.3.0 (2020-07-29)
 
 - Updated LibTorch to 1.6.0
