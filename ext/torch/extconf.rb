@@ -54,6 +54,7 @@ end
 $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
 
+# same pattern as Numo extensions
 $LOAD_PATH.each do |x|
   if File.exist?("#{x}/numo/numo/narray.h")
     $INCFLAGS += " -I#{x}/numo"
