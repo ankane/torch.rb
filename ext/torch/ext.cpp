@@ -296,7 +296,7 @@ void Init_ext()
     .define_singleton_method(
       "_from_numo",
       *[](Object ndarray, IntArrayRef size, const torch::TensorOptions &options) {
-        void *data = nary_get_pointer_for_read_write(ndarray);
+        char *data = nary_get_pointer_for_read_write(ndarray);
         return torch::from_blob(data, size, options);
       })
     .define_singleton_method(
