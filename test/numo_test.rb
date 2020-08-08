@@ -33,4 +33,14 @@ class NumoTest < Minitest::Test
     end
     assert_equal error.message, "Cannot convert Numo::UInt64 to tensor"
   end
+
+  def test_bridge
+    a = Torch.ones(5)
+    b = a.numo
+    a.add!(1)
+    assert_equal [2, 2, 2, 2, 2], a.to_a
+    assert_equal [1, 1, 1, 1, 1], b.to_a
+    # TODO should be
+    # assert_equal [2, 2, 2, 2, 2], b.to_a
+  end
 end
