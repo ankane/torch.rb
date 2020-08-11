@@ -4,6 +4,7 @@ require "torch/ext"
 # stdlib
 require "fileutils"
 require "net/http"
+require "set"
 require "tmpdir"
 
 # native functions
