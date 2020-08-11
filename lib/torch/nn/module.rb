@@ -187,7 +187,7 @@ module Torch
       end
 
       # TODO return enumerator?
-      def named_modules(memo: nil, prefix: "")
+      def named_modules(memo: [], prefix: "")
         ret = {}
         memo ||= Set.new
         unless memo.include?(self)
