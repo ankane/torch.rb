@@ -1,6 +1,7 @@
-## 0.3.1 (unreleased)
+## 0.3.1 (2020-08-17)
 
 - Added `create_graph` and `retain_graph` options to `backward` method
+- Fixed error when `set` not required
 
 ## 0.3.0 (2020-07-29)
 
