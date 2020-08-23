@@ -19,7 +19,7 @@ end
 data.shuffle!
 
 train_set = data.first(80000)
-test_set = data.last(20000)
+valid_set = data.last(20000)
 
 # should just use train set, but keep prediction logic simple for now
 n_users = data.map { |v| v[:user_id] }.max + 1
@@ -47,41 +47,37 @@ model = MatrixFactorization.new(n_users, n_items, n_factors: 128)
 optimizer = Torch::Optim::Adam.new(model.parameters, lr: 1e-3, weight_decay: 1e-9)
 loss_func = Torch::NN::MSELoss.new
 
+def to_tensors(data)
+  [
+    Torch.tensor(data.map { |v| v[:user_id] }),
+    Torch.tensor(data.map { |v| v[:item_id] }),
+    Torch.tensor(data.map { |v| v[:rating] })
+  ]
+end
+
+valid_user, valid_item, valid_rating = to_tensors(valid_set)
+
 10.times do |epoch|
-  epoch_loss = 0.0
+  train_loss = 0.0
+  started_at = Time.now
 
-  batches = train_set.each_slice(1024)
+  batches = train_set.each_slice(64)
   batches.each do |batch|
-    user = Torch.tensor(batch.map { |v| v[:user_id] })
-    item = Torch.tensor(batch.map { |v| v[:item_id] })
-    rating = Torch.tensor(batch.map { |v| v[:rating] })
-
+    user, item, rating = to_tensors(batch)
     prediction = model.call(user, item)
 
     optimizer.zero_grad
 
     loss = loss_func.call(prediction, rating)
-    epoch_loss += loss.item * batch.size
+    train_loss += loss.item * batch.size
 
     loss.backward
     optimizer.step
   end
 
-  epoch_loss /= train_set.size
+  train_loss /= train_set.size
+  valid_loss = Torch.no_grad { loss_func.call(model.call(valid_user, valid_item), valid_rating).item }
+  time = Time.now - started_at
 
-  puts "Epoch %d: loss %.3f" % [epoch, epoch_loss]
+  puts "epoch: %d, train loss: %.3f, valid loss: %.3f, time: %ds" % [epoch, train_loss, valid_loss, time]
 end
-
-def rmse(model, dataset)
-  user = Torch.tensor(dataset.map { |v| v[:user_id] })
-  item = Torch.tensor(dataset.map { |v| v[:item_id] })
-  rating = Torch.tensor(dataset.map { |v| v[:rating] })
-
-  prediction = model.call(user, item)
-  Math.sqrt(((rating - prediction)**2).mean.item)
-end
-
-train_rmse = rmse(model, train_set)
-test_rmse = rmse(model, test_set)
-
-puts "Train RMSE %.3f, test RMSE %.3f" % [train_rmse, test_rmse]
