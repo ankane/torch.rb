@@ -426,6 +426,9 @@ module Torch
         end
 
         def mse_loss(input, target, reduction: "mean")
+          if target.size != input.size
+            warn "Using a target size (#{target.size}) that is different to the input size (#{input.size}). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size."
+          end
           NN.mse_loss(input, target, reduction)
         end
 
