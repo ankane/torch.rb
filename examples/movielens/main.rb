@@ -21,9 +21,9 @@ data.shuffle!
 train_set = data.first(80000)
 valid_set = data.last(20000)
 
-# should get unique ids and map to index, but keep logic simple for now
-n_users = train_set.map { |v| v[:user_id] }.max + 1
-n_items = train_set.map { |v| v[:item_id] }.max + 1
+# should just use train set, but keep prediction logic simple for now
+n_users = data.map { |v| v[:user_id] }.max + 1
+n_items = data.map { |v| v[:item_id] }.max + 1
 
 class ScaledEmbedding < Torch::NN::Embedding
   def reset_parameters
