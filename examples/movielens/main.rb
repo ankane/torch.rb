@@ -27,6 +27,7 @@ n_items = train_set.map { |v| v[:item_id] }.max + 1
 
 class ScaledEmbedding < Torch::NN::Embedding
   def reset_parameters
+    # sets initial weights, very important
     @weight.data.normal!(0, 1.0 / @embedding_dim)
   end
 end
