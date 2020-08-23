@@ -61,13 +61,13 @@ loss_func = Torch::NN::MSELoss.new
     optimizer.zero_grad
 
     loss = loss_func.call(prediction, rating)
-    epoch_loss += loss.item
+    epoch_loss += loss.item * batch.size
 
     loss.backward
     optimizer.step
   end
 
-  epoch_loss /= batches.size
+  epoch_loss /= train_set.size
 
   puts "Epoch %d: loss %.3f" % [epoch, epoch_loss]
 end
