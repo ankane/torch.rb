@@ -79,5 +79,5 @@ valid_user, valid_item, valid_rating = to_tensors(valid_set)
   valid_loss = Torch.no_grad { loss_func.call(model.call(valid_user, valid_item), valid_rating).item }
   time = Time.now - started_at
 
-  puts "epoch: %d, train loss: %.3f, valid loss: %.3f, time: %ds" % [epoch, train_loss, valid_loss, time]
+  puts "epoch: %d, train mse: %.3f, valid mse: %.3f, time: %ds" % [epoch, train_loss, valid_loss, time]
 end
