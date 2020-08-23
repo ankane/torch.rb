@@ -16,4 +16,10 @@ class FunctionalTest < Minitest::Test
     y = Torch.tensor([1, 1, 1]).float
     assert_in_delta 5 / 3.0, Torch::NN::Functional.mse_loss(x, y).item
   end
+
+  def test_mse_loss_different_shapes
+    x = Torch.tensor([1, 2, 3]).float
+    y = Torch.tensor([[1, 1, 1]]).float
+    assert_output(nil, /incorrect results/) { Torch::NN::Functional.mse_loss(x, y) }
+  end
 end
