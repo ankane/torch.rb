@@ -84,4 +84,4 @@ end
 train_rmse = rmse(model, train_set)
 test_rmse = rmse(model, test_set)
 
-puts "Train RSME %.3f, test RMSE %.3f" % [train_rmse, test_rmse]
+puts "Train RMSE %.3f, test RMSE %.3f" % [train_rmse, test_rmse]
