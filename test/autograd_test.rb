@@ -43,4 +43,14 @@ class AutogradTest < Minitest::Test
     assert !y.requires_grad
     assert Torch.grad_enabled?
   end
+
+  def test_enable_grad
+    assert Torch.grad_enabled?
+    Torch.no_grad do
+      assert !Torch.grad_enabled?
+      Torch.enable_grad do
+        assert Torch.grad_enabled?
+      end
+    end
+  end
 end

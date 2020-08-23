@@ -1,3 +1,7 @@
+## 0.3.2 (unreleased)
+
+- Added `enable_grad` method
+
 ## 0.3.1 (2020-08-17)
 
 - Added `create_graph` and `retain_graph` options to `backward` method

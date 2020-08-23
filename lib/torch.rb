@@ -316,6 +316,16 @@ module Torch
       end
     end
 
+    def enable_grad
+      previous_value = grad_enabled?
+      begin
+        _set_grad_enabled(true)
+        yield
+      ensure
+        _set_grad_enabled(previous_value)
+      end
+    end
+
     def device(str)
       Device.new(str)
     end
