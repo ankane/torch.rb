@@ -43,7 +43,7 @@ class MatrixFactorization < Torch::NN::Module
   end
 end
 
-model = MatrixFactorization.new(n_users, n_items, n_factors: 128)
+model = MatrixFactorization.new(n_users, n_items, n_factors: 20)
 optimizer = Torch::Optim::Adam.new(model.parameters, lr: 1e-3, weight_decay: 1e-9)
 loss_func = Torch::NN::MSELoss.new
 
