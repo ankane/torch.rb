@@ -14,6 +14,7 @@ module Torch
         def length
           @indices.length
         end
+        alias_method :size, :length
 
         def to_a
           @indices.map { |i| @dataset[i] }
