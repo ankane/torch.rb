@@ -3,6 +3,7 @@
 - Added `enable_grad` method
 - Added `random_split` method
 - Added `collate_fn` option to `DataLoader`
+- Added `grad=` method to `Tensor`
 - Fixed error with `grad` method when empty
 - Fixed `EmbeddingBag`
 

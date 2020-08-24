@@ -362,6 +362,11 @@ void Init_ext()
         return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
       })
     .define_method(
+      "grad=",
+      *[](Tensor& self, torch::Tensor& grad) {
+        self.grad() = grad;
+      })
+    .define_method(
       "_dtype",
       *[](Tensor& self) {
         return (int) at::typeMetaToScalarType(self.dtype());
@@ -581,6 +586,11 @@ void Init_ext()
       *[](Parameter& self) {
         auto grad = self.grad();
         return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
+      })
+    .define_method(
+      "grad=",
+      *[](Parameter& self, torch::Tensor& grad) {
+        self.grad() = grad;
       });
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
