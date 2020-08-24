@@ -37,8 +37,8 @@ module Torch
             end
 
           indexes.each_slice(@batch_size) do |idx|
-            batch = idx.map { |i| @dataset[i] }
-            yield @collate_fn.call(batch)
+            # TODO improve performance
+            yield @collate_fn.call(idx.map { |i| @dataset[i] })
           end
         end
 
@@ -58,7 +58,7 @@ module Torch
           when Array
             batch.transpose.map { |v| default_convert(v) }
           else
-            raise NotImpelmentYet
+            raise NotImplementedYet
           end
         end
 
