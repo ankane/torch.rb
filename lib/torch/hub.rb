@@ -19,7 +19,7 @@ module Torch
             when Net::HTTPRedirection
               location = response["location"]
             when Net::HTTPSuccess
-              tmp = "#{Dir.tmpdir}/#{Time.now.to_f}" # TODO better name
+              tmp = Dir::Tmpname.create("torch") {}
               File.open(tmp, "wb") do |f|
                 response.read_body do |chunk|
                   f.write(chunk)
