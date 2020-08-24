@@ -33,4 +33,11 @@ class DataUtilsTest < Minitest::Test
     end
     assert_equal "Tensors must all have same dim 0 size", error.message
   end
+
+  def test_random_split
+    s1, s2 = Torch::Utils::Data.random_split((0..9).to_a, [3, 7])
+    assert_equal 3, s1.length
+    assert_equal 7, s2.length
+    assert_equal 45, (s1.to_a + s2.to_a).sum
+  end
 end
