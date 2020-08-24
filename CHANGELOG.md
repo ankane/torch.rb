@@ -2,6 +2,7 @@
 
 - Added `enable_grad` method
 - Added `random_split` method
+- Added `collate_fn` option to `DataLoader`
 - Fixed error with `grad` method when empty
 
 ## 0.3.1 (2020-08-17)

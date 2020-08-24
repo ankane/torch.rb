@@ -6,10 +6,22 @@ module Torch
 
         attr_reader :dataset
 
-        def initialize(dataset, batch_size: 1, shuffle: false)
+        def initialize(dataset, batch_size: 1, shuffle: false, collate_fn: nil)
           @dataset = dataset
           @batch_size = batch_size
           @shuffle = shuffle
+
+          @batch_sampler = nil
+
+          if collate_fn.nil?
+            if auto_collation?
+              collate_fn = method(:default_collate)
+            else
+              collate_fn = method(:default_convert)
+            end
+          end
+
+          @collate_fn = collate_fn
         end
 
         def each
@@ -26,7 +38,7 @@ module Torch
 
           indexes.each_slice(@batch_size) do |idx|
             batch = idx.map { |i| @dataset[i] }
-            yield collate(batch)
+            yield @collate_fn.call(batch)
           end
         end
 
@@ -36,7 +48,7 @@ module Torch
 
         private
 
-        def collate(batch)
+        def default_convert(batch)
           elem = batch[0]
           case elem
           when Tensor
@@ -44,10 +56,14 @@ module Torch
           when Integer
             Torch.tensor(batch)
           when Array
-            batch.transpose.map { |v| collate(v) }
+            batch.transpose.map { |v| default_convert(v) }
           else
             raise NotImpelmentYet
           end
+        end
+
+        def auto_collation?
+          !@batch_sampler.nil?
         end
       end
     end
