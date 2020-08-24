@@ -373,7 +373,8 @@ module Torch
             end
 
           # weight and input swapped
-          Torch.embedding_bag(weight, input, offsets, scale_grad_by_freq, mode_enum, sparse, per_sample_weights)
+          ret, _, _, _ = Torch.embedding_bag(weight, input, offsets, scale_grad_by_freq, mode_enum, sparse, per_sample_weights)
+          ret
         end
 
         # distance functions

@@ -4,6 +4,7 @@
 - Added `random_split` method
 - Added `collate_fn` option to `DataLoader`
 - Fixed error with `grad` method when empty
+- Fixed `EmbeddingBag`
 
 ## 0.3.1 (2020-08-17)
 
