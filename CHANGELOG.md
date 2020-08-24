@@ -1,4 +1,4 @@
-## 0.3.2 (unreleased)
+## 0.3.2 (2020-08-24)
 
 - Added `enable_grad` method
 - Added `random_split` method
