@@ -7,25 +7,26 @@ module Torch
 
       def download_url_to_file(url, dst)
         uri = URI(url)
-        tmp = "#{Dir.tmpdir}/#{Time.now.to_f}" # TODO better name
+        tmp = nil
         location = nil
 
+        puts "Downloading #{url}..."
         Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
           request = Net::HTTP::Get.new(uri)
 
-          puts "Downloading #{url}..."
-          File.open(tmp, "wb") do |f|
-            http.request(request) do |response|
-              case response
-              when Net::HTTPRedirection
-                location = response["location"]
-              when Net::HTTPSuccess
+          http.request(request) do |response|
+            case response
+            when Net::HTTPRedirection
+              location = response["location"]
+            when Net::HTTPSuccess
+              tmp = "#{Dir.tmpdir}/#{Time.now.to_f}" # TODO better name
+              File.open(tmp, "wb") do |f|
                 response.read_body do |chunk|
                   f.write(chunk)
                 end
-              else
-                raise Error, "Bad response"
               end
+            else
+              raise Error, "Bad response"
             end
           end
         end
