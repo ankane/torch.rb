@@ -1,6 +1,7 @@
 ## 0.3.2 (unreleased)
 
 - Added `enable_grad` method
+- Fixed error with `grad` method when empty
 
 ## 0.3.1 (2020-08-17)
 

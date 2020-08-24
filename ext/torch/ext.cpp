@@ -358,7 +358,8 @@ void Init_ext()
     .define_method(
       "grad",
       *[](Tensor& self) {
-        return self.grad();
+        auto grad = self.grad();
+        return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
       })
     .define_method(
       "_dtype",
