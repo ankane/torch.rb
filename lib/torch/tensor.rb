@@ -216,7 +216,11 @@ module Torch
 
     # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
-    def []=(index, value)
+    def []=(*indexes, value)
+      # TODO support
+      raise "Setting multiple dimensions at once not supported yet" if indexes.size > 1
+      index = indexes.first
+
       raise ArgumentError, "Tensor does not support deleting items" if value.nil?
 
       value = Torch.tensor(value, dtype: dtype) unless value.is_a?(Tensor)

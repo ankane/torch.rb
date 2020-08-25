@@ -117,6 +117,22 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [1, 9, 9], x.to_a
   end
 
+  def test_setter_range_end_negative
+    skip "Multiple dimensions not supported yet"
+
+    x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
+    x[1, 1..-1] = 9
+    assert_equal [[0, 1, 2], [3, 9, 9]], x.to_a
+  end
+
+  def test_setter_range_end_negative_exclude_end
+    skip "Multiple dimensions not supported yet"
+
+    x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
+    x[1, 1...-1] = 9
+    assert_equal [[0, 1, 2], [3, 9, 5]], x.to_a
+  end
+
   def test_setter_tensor
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
