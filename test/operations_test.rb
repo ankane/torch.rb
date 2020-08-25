@@ -226,4 +226,10 @@ class OperationsTest < Minitest::Test
     expected = [[3, 4], [13, 14], [23, 24], [33, 34], [43, 44], [53, 54], [63, 64], [73, 74], [83, 84], [93, 94]]
     assert_equal expected, x.narrow(1, 3, 2).to_a
   end
+
+  def test_hann_window
+    assert_equal [1], Torch.hann_window(1).to_a
+    assert_equal [0, 1], Torch.hann_window(2).to_a
+    assert_equal :float32, Torch.hann_window(1).dtype
+  end
 end

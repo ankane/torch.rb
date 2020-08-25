@@ -126,9 +126,11 @@ module Torch
         end
 
         func = candidates.first
+        args = func.args.map { |a| final_values[a[:name]] }
+        args << TensorOptions.new.dtype(6) if func.tensor_options
         {
           name: func.cpp_name,
-          args: func.args.map { |a| final_values[a[:name]] }
+          args: args
         }
       end
     end

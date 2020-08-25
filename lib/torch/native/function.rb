@@ -1,10 +1,14 @@
 module Torch
   module Native
     class Function
-      attr_reader :function
+      attr_reader :function, :tensor_options
 
       def initialize(function)
         @function = function
+
+        tensor_options_str = ", *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None)"
+        @tensor_options = @function["func"].include?(tensor_options_str)
+        @function["func"].sub!(tensor_options_str, ")")
       end
 
       def func

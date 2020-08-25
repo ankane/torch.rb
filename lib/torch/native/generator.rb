@@ -33,6 +33,8 @@ module Torch
               f.args.any? do |a|
                 a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?", "Tensor?[]"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) } ||
+                # call to 'range' is ambiguous
+                f.cpp_name == "_range" ||
                 # native_functions.yaml is missing size argument for normal
                 # https://pytorch.org/cppdocs/api/function_namespacetorch_1a80253fe5a3ded4716ec929a348adb4b9.html
                 (f.base_name == "normal" && !f.out?)
@@ -125,6 +127,8 @@ void add_%{type}_functions(Module m) {
                   "Tensor &"
                 when "str"
                   "std::string"
+                when "TensorOptions"
+                  "const torch::TensorOptions &"
                 else
                   a[:type]
                 end
