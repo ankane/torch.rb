@@ -195,6 +195,7 @@ module Torch
           result = result._select_int(dim, index)
         elsif index.is_a?(Range)
           finish = index.end
+          finish = size(dim) + finish + 1 if finish && finish < 0
           finish += 1 unless index.exclude_end?
           result = result._slice_tensor(dim, index.begin, finish, 1)
           dim += 1
@@ -224,6 +225,7 @@ module Torch
         index_put!([Torch.tensor(index)], value)
       elsif index.is_a?(Range)
         finish = index.end
+        finish = size(dim) + finish + 1 if finish && finish < 0
         finish += 1 unless index.exclude_end?
         _slice_tensor(0, index.begin, finish, 1).copy!(value)
       elsif index.is_a?(Tensor)
