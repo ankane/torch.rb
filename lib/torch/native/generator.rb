@@ -41,24 +41,6 @@ module Torch
               end
             end
 
-          # generate additional functions for optional arguments
-          # there may be a better way to do this
-          optional_functions, functions = functions.partition { |f| f.args.any? { |a| a[:type] == "int?" } }
-          optional_functions.each do |f|
-            next if f.ruby_name == "cross"
-            next if f.ruby_name.start_with?("avg_pool") && f.out?
-
-            opt_args = f.args.select { |a| a[:type] == "int?" }
-            if opt_args.size == 1
-              sep = f.name.include?(".") ? "_" : "."
-              f1 = Function.new(f.function.merge("func" => f.func.sub("(", "#{sep}#{opt_args.first[:name]}(").gsub("int?", "int")))
-              # TODO only remove some arguments
-              f2 = Function.new(f.function.merge("func" => f.func.sub(/, int\?.+\) ->/, ") ->")))
-              functions << f1
-              functions << f2
-            end
-          end
-
           # todo_functions.each do |f|
           #   puts f.func
           #   puts
@@ -99,7 +81,8 @@ void add_%{type}_functions(Module m) {
 
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
-            fargs = func.args #.select { |a| a[:type] != "Generator?" }
+            fargs = func.args.dup #.select { |a| a[:type] != "Generator?" }
+            fargs << {name: "options", type: "TensorOptions"} if func.tensor_options
 
             cpp_args = []
             fargs.each do |a|
@@ -119,6 +102,8 @@ void add_%{type}_functions(Module m) {
                   "TensorList"
                 when "int"
                   "int64_t"
+                when "int?"
+                  "torch::optional<int64_t>"
                 when "float"
                   "double"
                 when /\Aint\[/

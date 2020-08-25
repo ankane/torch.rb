@@ -236,6 +236,17 @@ OptionalScalarType from_ruby<OptionalScalarType>(Object x)
   return OptionalScalarType(x);
 }
 
+template<>
+inline
+torch::optional<int64_t> from_ruby<torch::optional<int64_t>>(Object x)
+{
+  if (x.is_nil()) {
+    return torch::nullopt;
+  } else {
+    return torch::optional<int64_t>{from_ruby<int64_t>(x)};
+  }
+}
+
 typedef torch::Device Device;
 
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);

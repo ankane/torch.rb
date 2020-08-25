@@ -244,13 +244,13 @@ module Torch
       end
     end
 
-    # native functions overlap, so need to handle manually
+    # parser can't handle overlap, so need to handle manually
     def random!(*args)
       case args.size
       when 1
         _random__to(*args)
       when 2
-        _random__from_to(*args)
+        _random__from(*args)
       else
         _random_(*args)
       end

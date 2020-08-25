@@ -83,6 +83,8 @@ module Torch
                 else
                   v.is_a?(Integer)
                 end
+              when "int?"
+                v.is_a?(Integer) || v.nil?
               when "float"
                 v.is_a?(Numeric)
               when /int\[.*\]/
