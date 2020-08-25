@@ -94,7 +94,7 @@ void add_%{type}_functions(Module m) {
                   # TODO better signature
                   "OptionalTensor"
                 when "ScalarType?"
-                  "OptionalScalarType"
+                  "torch::optional<ScalarType>"
                 when "Tensor[]"
                   "TensorList"
                 when "Tensor?[]"
