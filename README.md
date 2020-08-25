@@ -2,7 +2,11 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-Check out [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks and [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
+Check out:
+
+- [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks
+- [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
+- [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
 
 [![Build Status](https://travis-ci.org/ankane/torch.rb.svg?branch=master)](https://travis-ci.org/ankane/torch.rb)
 
