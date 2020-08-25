@@ -508,6 +508,7 @@ void Init_ext()
       });
 
   Module rb_mInit = define_module_under(rb_mNN, "Init")
+    .add_handler<torch::Error>(handle_error)
     .define_singleton_method(
       "_calculate_gain",
       *[](NonlinearityType nonlinearity, double param) {
@@ -594,8 +595,8 @@ void Init_ext()
       });
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
-    .define_constructor(Constructor<torch::Device, std::string>())
     .add_handler<torch::Error>(handle_error)
+    .define_constructor(Constructor<torch::Device, std::string>())
     .define_method("index", &torch::Device::index)
     .define_method("index?", &torch::Device::has_index)
     .define_method(
