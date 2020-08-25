@@ -188,30 +188,30 @@ module Torch
     # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def [](*indexes)
-      result = self
-      dim = 0
-      indexes.each do |index|
-        if index.is_a?(Numeric)
-          result = result._select_int(dim, index)
-        elsif index.is_a?(Range)
-          finish = index.end
-          finish = size(dim) + finish + 1 if finish && finish < 0
-          finish += 1 unless index.exclude_end?
-          result = result._slice_tensor(dim, index.begin, finish, 1)
-          dim += 1
-        elsif index.is_a?(Tensor)
-          result = result.index([index])
-        elsif index.nil?
-          result = result.unsqueeze(dim)
-          dim += 1
-        elsif index == true
-          result = result.unsqueeze(dim)
-          # TODO handle false
-        else
-          raise Error, "Unsupported index type: #{index.class.name}"
+      tensor_indexes =
+        indexes.map do |index|
+          case index
+          when Integer
+            TensorIndex.integer(index)
+          when Range
+            finish = index.end
+            if finish == -1 && !index.exclude_end?
+              finish = nil
+            else
+              finish += 1 unless index.exclude_end?
+            end
+            TensorIndex.slice(index.begin, finish)
+          when Tensor
+            TensorIndex.tensor(index)
+          when nil
+            TensorIndex.none
+          when true, false
+            TensorIndex.boolean(index)
+          else
+            raise Error, "Unsupported index type: #{index.class.name}"
+          end
         end
-      end
-      result
+      _index(tensor_indexes)
     end
 
     # based on python_variable_indexing.cpp and

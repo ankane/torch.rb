@@ -93,6 +93,8 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [[[0, 1, 2], [3, 4, 5]]], x[nil].to_a
     assert_equal [1, 2], x[0, 1..-1].to_a
     assert_equal [1], x[0, 1...-1].to_a
+    assert_equal [0, 1], x[0, 0...-1].to_a
+    assert_equal [[0, 1, 2]], x[0...-1].to_a
     # assert_equal [], x[false].to_a
     # if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.6.0")
     #   assert_equal [1, 2], x[0, eval("1..")].to_a

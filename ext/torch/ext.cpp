@@ -16,6 +16,7 @@
 #include "nn_functions.hpp"
 
 using namespace Rice;
+using torch::indexing::TensorIndex;
 
 // need to make a distinction between parameters and tensors
 class Parameter: public torch::autograd::Variable {
@@ -26,6 +27,15 @@ class Parameter: public torch::autograd::Variable {
 void handle_error(torch::Error const & ex)
 {
   throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
+}
+
+std::vector<TensorIndex> index_vector(Array a) {
+  auto indices = std::vector<TensorIndex>();
+  indices.reserve(a.size());
+  for (size_t i = 0; i < a.size(); i++) {
+    indices.push_back(from_ruby<TensorIndex>(a[i]));
+  }
+  return indices;
 }
 
 extern "C"
@@ -57,6 +67,13 @@ void Init_ext()
         auto generator = at::detail::getDefaultCPUGenerator();
         return generator.seed();
       });
+
+  Class rb_cTensorIndex = define_class_under<TensorIndex>(rb_mTorch, "TensorIndex")
+    .define_singleton_method("boolean", *[](bool value) { return TensorIndex(value); })
+    .define_singleton_method("integer", *[](int64_t value) { return TensorIndex(value); })
+    .define_singleton_method("tensor", *[](torch::Tensor& value) { return TensorIndex(value); })
+    .define_singleton_method("slice", *[](torch::optional<int64_t> start_index, torch::optional<int64_t> stop_index) { return TensorIndex(torch::indexing::Slice(start_index, stop_index)); })
+    .define_singleton_method("none", *[]() { return TensorIndex(torch::indexing::None); });
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
@@ -330,6 +347,12 @@ void Init_ext()
     .define_method("numel", &torch::Tensor::numel)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
+    .define_method(
+      "_index",
+      *[](Tensor& self, Array indices) {
+        auto vec = index_vector(indices);
+        return self.index(vec);
+      })
     .define_method(
       "contiguous?",
       *[](Tensor& self) {
