@@ -354,6 +354,12 @@ void Init_ext()
         return self.index(vec);
       })
     .define_method(
+      "_index_put_custom",
+      *[](Tensor& self, Array indices, torch::Tensor& value) {
+        auto vec = index_vector(indices);
+        return self.index_put_(vec, value);
+      })
+    .define_method(
       "contiguous?",
       *[](Tensor& self) {
         return self.is_contiguous();
