@@ -1,7 +1,6 @@
 # ported from PyTorch Examples
 # https://github.com/pytorch/examples/blob/master/mnist/main.py
-# Copyright (c) 2017 PyTorch contributors, 2019 Andrew Kane
-# BSD 3-Clause License
+# see LICENSE-mnist-example.txt
 
 require "torch"
 require "torchvision"

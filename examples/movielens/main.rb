@@ -1,7 +1,6 @@
 # based on Spotlight
 # https://github.com/maciejkula/spotlight
-# Copyright (c) 2017 Maciej Kula, 2019 Andrew Kane
-# MIT License
+# see LICENSE-movielens-example.txt
 
 require "torch"
 require "csv"

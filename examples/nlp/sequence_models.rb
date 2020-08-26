@@ -1,7 +1,6 @@
 # ported from PyTorch Tutorials
 # https://github.com/pytorch/tutorials/blob/master/beginner_source/nlp/sequence_models_tutorial.py
-# Copyright (c) 2017 PyTorch contributors, 2019 Andrew Kane
-# BSD 3-Clause License
+# see LICENSE-nlp-examples.txt
 
 require "torch"
 
