@@ -471,6 +471,11 @@ module Torch
       _stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
     end
 
+    def clamp(tensor, min, max)
+      tensor = _clamp_min(tensor, min)
+      _clamp_max(tensor, max)
+    end
+
     private
 
     def to_ivalue(obj)
