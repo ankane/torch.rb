@@ -1,4 +1,4 @@
-## 0.3.4 (unreleased)
+## 0.3.4 (2020-08-26)
 
 - Added `Torch.clamp` method
 
