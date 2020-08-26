@@ -1,3 +1,7 @@
+## 0.3.4 (unreleased)
+
+- Added `Torch.clamp` method
+
 ## 0.3.3 (2020-08-25)
 
 - Added spectral ops
