@@ -1,6 +1,7 @@
 ## 0.3.3 (unreleased)
 
 - Added spectral ops
+- Fixed tensor indexing
 
 ## 0.3.2 (2020-08-24)
 
