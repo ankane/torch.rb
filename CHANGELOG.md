@@ -1,6 +1,6 @@
-## 0.3.5 (unreleased)
+## 0.3.5 (2020-09-04)
 
-- Fixed `dtype` of `randperm`
+- Fixed error with data loader (due to `dtype` of `randperm`)
 
 ## 0.3.4 (2020-08-26)
 
