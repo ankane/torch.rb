@@ -5,20 +5,24 @@ class TensorCreationTest < Minitest::Test
     assert_equal [0, 1, 2, 3, 4], Torch.arange(5).to_a
     assert_equal [1, 2, 3], Torch.arange(1, 4).to_a
     assert_equal [1, 1.5, 2], Torch.arange(1, 2.5, 0.5).to_a
+    assert_equal :int64, Torch.arange(5).dtype
   end
 
   def test_empty
     assert_equal [2, 3], Torch.empty(2, 3).shape
+    assert_equal :float32, Torch.empty(2, 3).dtype
   end
 
   def test_empty_like
     input = Torch.empty(2, 3)
     assert_equal [2, 3], Torch.empty_like(input).shape
+    assert_equal :float32, Torch.empty_like(input).dtype
   end
 
   def test_eye
     assert_equal [[1, 0], [0, 1]], Torch.eye(2).to_a
     assert_equal [[1, 0, 0], [0, 1, 0]], Torch.eye(2, 3).to_a
+    assert_equal :float32, Torch.eye(2).dtype
   end
 
   def test_full
@@ -86,6 +90,7 @@ class TensorCreationTest < Minitest::Test
 
   def test_randperm
     assert_equal [0, 1, 2, 3], Torch.randperm(4).to_a.sort
+    assert_equal :int64, Torch.randperm(4).dtype
   end
 
   def test_zeros

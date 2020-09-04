@@ -388,6 +388,10 @@ module Torch
     end
 
     def randperm(n, **options)
+      # dtype hack in Python
+      # https://github.com/pytorch/pytorch/blob/v1.6.0/tools/autograd/gen_python_functions.py#L1307-L1311
+      options[:dtype] ||= :int64
+
       _randperm(n, tensor_options(**options))
     end
 

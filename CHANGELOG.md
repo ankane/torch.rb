@@ -1,3 +1,7 @@
+## 0.3.5 (unreleased)
+
+- Fixed `dtype` of `randperm`
+
 ## 0.3.4 (2020-08-26)
 
 - Added `Torch.clamp` method
