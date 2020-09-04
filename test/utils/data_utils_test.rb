@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 
 class DataUtilsTest < Minitest::Test
-  def test_works
+  def test_data_loader
     x = Torch.tensor([[1, 2], [3, 4], [5, 6]])
     y = Torch.tensor([5, 10, 15])
     dataset = Torch::Utils::Data::TensorDataset.new(x, y)
@@ -21,6 +21,15 @@ class DataUtilsTest < Minitest::Test
 
     # make sure other enum functions work
     loader.each_with_index do |(xb, yb), i|
+    end
+  end
+
+  def test_data_loader_shuffle
+    x = Torch.tensor([[1, 2], [3, 4], [5, 6]])
+    y = Torch.tensor([5, 10, 15])
+    dataset = Torch::Utils::Data::TensorDataset.new(x, y)
+    loader = Torch::Utils::Data::DataLoader.new(dataset, batch_size: 2, shuffle: true)
+    loader.each do |xb, yb|
     end
   end
 
