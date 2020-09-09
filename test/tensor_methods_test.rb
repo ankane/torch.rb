@@ -137,4 +137,10 @@ class TensorMethodsTest < Minitest::Test
     x[index] = 9
     assert_equal [1, 9, 3], x.to_a
   end
+
+  def test_fill_diagonal
+    x = Torch.ones(2, 2)
+    assert_equal [[3, 1], [1, 3]], x.fill_diagonal!(3).to_a
+    assert_equal [[3, 1], [1, 3]], x.to_a
+  end
 end
