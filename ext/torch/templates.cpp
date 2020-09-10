@@ -1,5 +1,6 @@
 #include <torch/torch.h>
 #include <rice/Object.hpp>
+#include <rice/Array.hpp>
 #include "templates.hpp"
 
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x) {
@@ -52,4 +53,11 @@ Object wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
   a.push(to_ruby<double>(std::get<2>(x)));
   a.push(to_ruby<int64_t>(std::get<3>(x)));
   return Object(a);
+}
+
+Array wrap(std::vector<torch::Tensor> x) {
+  Array a;
+  for(torch::Tensor t : x)
+    a.push(to_ruby<torch::Tensor>(t));
+  return a;
 }

@@ -130,8 +130,8 @@ void add_%{type}_functions(Module m) {
             prefix = def_method == :define_method ? "self." : "torch::"
 
             body = "#{prefix}#{dispatch}(#{args.join(", ")})"
-            # TODO check type as well
-            if func.ret_size > 1
+
+            if func.ret_size > 1 || func.ret_array?
               body = "wrap(#{body})"
             end
 

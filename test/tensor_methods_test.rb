@@ -143,4 +143,28 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [[3, 1], [1, 3]], x.fill_diagonal!(3).to_a
     assert_equal [[3, 1], [1, 3]], x.to_a
   end
+
+  def test_chunk
+    x = Torch.ones(2, 2)
+    assert_equal [[[1, 1], [1, 1]]], x.chunk(1, 1).to_a.map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], x.chunk(2, 1).to_a.map(&:to_a)
+  end
+
+  def test_split
+    x = Torch.ones(2, 2)
+    assert_equal [[[1, 1], [1, 1]]], x.split(2, 1).to_a.map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], x.split(1, 1).to_a.map(&:to_a)
+  end
+
+  def test_class_chunk
+    x = Torch.ones(2, 2)
+    assert_equal [[[1, 1], [1, 1]]], Torch.chunk(x, 1, 1).to_a.map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], Torch.chunk(x, 2, 1).to_a.map(&:to_a)
+  end
+
+  def test_class_split
+    x = Torch.ones(2, 2)
+    assert_equal [[[1, 1], [1, 1]]], Torch.split(x, 2, 1).to_a.map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], Torch.split(x, 1, 1).to_a.map(&:to_a)
+  end
 end
