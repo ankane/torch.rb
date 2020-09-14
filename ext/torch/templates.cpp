@@ -1,6 +1,5 @@
 #include <torch/torch.h>
 #include <rice/Object.hpp>
-#include <rice/Array.hpp>
 #include "templates.hpp"
 
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x) {
