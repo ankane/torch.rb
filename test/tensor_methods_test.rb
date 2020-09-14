@@ -146,25 +146,39 @@ class TensorMethodsTest < Minitest::Test
 
   def test_chunk
     x = Torch.ones(2, 2)
-    assert_equal [[[1, 1], [1, 1]]], x.chunk(1, 1).to_a.map(&:to_a)
-    assert_equal [[[1], [1]], [[1], [1]]], x.chunk(2, 1).to_a.map(&:to_a)
-  end
-
-  def test_split
-    x = Torch.ones(2, 2)
-    assert_equal [[[1, 1], [1, 1]]], x.split(2, 1).to_a.map(&:to_a)
-    assert_equal [[[1], [1]], [[1], [1]]], x.split(1, 1).to_a.map(&:to_a)
+    assert_equal [[[1, 1], [1, 1]]], x.chunk(1, 1).map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], x.chunk(2, 1).map(&:to_a)
   end
 
   def test_class_chunk
     x = Torch.ones(2, 2)
-    assert_equal [[[1, 1], [1, 1]]], Torch.chunk(x, 1, 1).to_a.map(&:to_a)
-    assert_equal [[[1], [1]], [[1], [1]]], Torch.chunk(x, 2, 1).to_a.map(&:to_a)
+    assert_equal [[[1, 1], [1, 1]]], Torch.chunk(x, 1, 1).map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], Torch.chunk(x, 2, 1).map(&:to_a)
+  end
+
+  def test_split
+    x = Torch.ones(2, 2)
+    assert_equal [[[1, 1], [1, 1]]], x.split(2, 1).map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], x.split(1, 1).map(&:to_a)
   end
 
   def test_class_split
     x = Torch.ones(2, 2)
-    assert_equal [[[1, 1], [1, 1]]], Torch.split(x, 2, 1).to_a.map(&:to_a)
-    assert_equal [[[1], [1]], [[1], [1]]], Torch.split(x, 1, 1).to_a.map(&:to_a)
+    assert_equal [[[1, 1], [1, 1]]], Torch.split(x, 2, 1).map(&:to_a)
+    assert_equal [[[1], [1]], [[1], [1]]], Torch.split(x, 1, 1).map(&:to_a)
+  end
+
+  def test_unbind
+    x = Torch.tensor([[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]])
+    assert_equal [[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]], x.unbind.map(&:to_a)
+    assert_equal [[[0, 1, 2], [3, 4, 5], [6, 7, 8]]], x.unbind(1).map(&:to_a)
+    assert_equal [[[0], [3], [6]], [[1], [4], [7]], [[2], [5], [8]]], x.unbind(2).map(&:to_a)
+  end
+
+  def test_unbind
+    x = Torch.tensor([[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]])
+    assert_equal [[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]], Torch.unbind(x).map(&:to_a)
+    assert_equal [[[0, 1, 2], [3, 4, 5], [6, 7, 8]]], Torch.unbind(x, 1).map(&:to_a)
+    assert_equal [[[0], [3], [6]], [[1], [4], [7]], [[2], [5], [8]]], Torch.unbind(x, 2).map(&:to_a)
   end
 end
