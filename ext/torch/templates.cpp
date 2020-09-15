@@ -53,3 +53,10 @@ Object wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
   a.push(to_ruby<int64_t>(std::get<3>(x)));
   return Object(a);
 }
+
+Object wrap(std::vector<torch::Tensor> x) {
+  Array a;
+  for(auto& t : x)
+    a.push(to_ruby<torch::Tensor>(t));
+  return Object(a);
+}

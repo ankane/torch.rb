@@ -86,6 +86,10 @@ module Torch
         @ret_size ||= func.split("->").last.split(", ").size
       end
 
+      def ret_array?
+        @ret_array ||= func.split("->").last.include?('[]')
+      end
+
       def out?
         out_size > 0 && base_name[-1] != "_"
       end
