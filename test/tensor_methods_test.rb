@@ -175,7 +175,7 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [[[0], [3], [6]], [[1], [4], [7]], [[2], [5], [8]]], x.unbind(2).map(&:to_a)
   end
 
-  def test_unbind
+  def test_class_unbind
     x = Torch.tensor([[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]])
     assert_equal [[[0, 1, 2]], [[3, 4, 5]], [[6, 7, 8]]], Torch.unbind(x).map(&:to_a)
     assert_equal [[[0, 1, 2], [3, 4, 5], [6, 7, 8]]], Torch.unbind(x, 1).map(&:to_a)

@@ -56,7 +56,8 @@ Object wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
 
 Object wrap(std::vector<torch::Tensor> x) {
   Array a;
-  for(auto& t : x)
+  for (auto& t : x) {
     a.push(to_ruby<torch::Tensor>(t));
+  }
   return Object(a);
 }
