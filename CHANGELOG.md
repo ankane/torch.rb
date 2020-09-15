@@ -1,3 +1,7 @@
+## 0.3.6 (unreleased)
+
+- Fixed error with methods that return a tensor list (`chunk`, `split`, and `unbind`)
+
 ## 0.3.5 (2020-09-04)
 
 - Fixed error with data loader (due to `dtype` of `randperm`)
