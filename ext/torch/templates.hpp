@@ -243,6 +243,18 @@ torch::optional<bool> from_ruby<torch::optional<bool>>(Object x)
   }
 }
 
+template<>
+inline
+torch::optional<torch::Scalar> from_ruby<torch::optional<torch::Scalar>>(Object x)
+{
+  if (x.is_nil()) {
+    return torch::nullopt;
+  } else {
+    // Scalar, not torch::Scalar for last part
+    return torch::optional<torch::Scalar>{from_ruby<Scalar>(x)};
+  }
+}
+
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);

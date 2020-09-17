@@ -18,12 +18,12 @@ module Torch
           functions = functions()
 
           # skip functions
-          skip_args = ["bool[3]", "Dimname", "Layout", "Storage", "ConstQuantizerPtr"]
+          skip_args = ["Dimname", "Layout", "Storage", "ConstQuantizerPtr"]
 
           # remove functions
           functions.reject! do |f|
             f.ruby_name.start_with?("_") ||
-            f.ruby_name.end_with?("_backward") ||
+            f.ruby_name.include?("_backward") ||
             f.args.any? { |a| a[:type].include?("Dimname") }
           end
 
@@ -31,7 +31,6 @@ module Torch
           todo_functions, functions =
             functions.partition do |f|
               f.args.any? do |a|
-                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "float?", "bool?", "ScalarType?", "Tensor?[]"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) } ||
                 # call to 'range' is ambiguous
                 f.cpp_name == "_range" ||
@@ -108,6 +107,8 @@ void add_%{type}_functions(Module m) {
                   "torch::optional<double>"
                 when "bool?"
                   "torch::optional<bool>"
+                when "Scalar?"
+                  "torch::optional<torch::Scalar>"
                 when "float"
                   "double"
                 when /\Aint\[/

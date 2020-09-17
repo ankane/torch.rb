@@ -101,6 +101,10 @@ module Torch
                 v.is_a?(Array) && v.all? { |v2| v2.is_a?(Integer) }
               when "Scalar"
                 v.is_a?(Numeric)
+              when "Scalar?"
+                v.is_a?(Numeric) || v.nil?
+              when "ScalarType"
+                false # not supported yet
               when "ScalarType?"
                 v.nil?
               when "bool"
