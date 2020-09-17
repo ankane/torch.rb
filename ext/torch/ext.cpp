@@ -302,11 +302,6 @@ void Init_ext()
         return torch::pickle_load(v);
       })
     .define_singleton_method(
-      "_binary_cross_entropy_with_logits",
-      *[](const Tensor &input, const Tensor &target, OptionalTensor weight, OptionalTensor pos_weight, MyReduction reduction) {
-        return torch::binary_cross_entropy_with_logits(input, target, weight, pos_weight, reduction);
-      })
-    .define_singleton_method(
       "_from_blob",
       *[](String s, IntArrayRef size, const torch::TensorOptions &options) {
         void *data = const_cast<char *>(s.c_str());
