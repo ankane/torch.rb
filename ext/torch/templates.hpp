@@ -10,6 +10,7 @@
 using namespace Rice;
 
 using torch::Device;
+using torch::Scalar;
 using torch::ScalarType;
 using torch::Tensor;
 
@@ -34,30 +35,6 @@ inline
 IntArrayRef from_ruby<IntArrayRef>(Object x)
 {
   return IntArrayRef(x);
-}
-
-// for now
-class Scalar {
-  torch::Scalar value;
-  public:
-    Scalar(Object o) {
-      // TODO cast based on Ruby type
-      if (o.rb_type() == T_FIXNUM) {
-        value = torch::Scalar(from_ruby<int64_t>(o));
-      } else {
-        value = torch::Scalar(from_ruby<float>(o));
-      }
-    }
-    operator torch::Scalar() {
-      return value;
-    }
-};
-
-template<>
-inline
-Scalar from_ruby<Scalar>(Object x)
-{
-  return Scalar(x);
 }
 
 class TensorList {
@@ -194,6 +171,17 @@ class OptionalTensor {
 
 template<>
 inline
+Scalar from_ruby<Scalar>(Object x)
+{
+  if (x.rb_type() == T_FIXNUM) {
+    return torch::Scalar(from_ruby<int64_t>(x));
+  } else {
+    return torch::Scalar(from_ruby<double>(x));
+  }
+}
+
+template<>
+inline
 OptionalTensor from_ruby<OptionalTensor>(Object x)
 {
   return OptionalTensor(x);
@@ -245,13 +233,12 @@ torch::optional<bool> from_ruby<torch::optional<bool>>(Object x)
 
 template<>
 inline
-torch::optional<torch::Scalar> from_ruby<torch::optional<torch::Scalar>>(Object x)
+torch::optional<Scalar> from_ruby<torch::optional<Scalar>>(Object x)
 {
   if (x.is_nil()) {
     return torch::nullopt;
   } else {
-    // Scalar, not torch::Scalar for last part
-    return torch::optional<torch::Scalar>{from_ruby<Scalar>(x)};
+    return torch::optional<Scalar>{from_ruby<Scalar>(x)};
   }
 }
 
