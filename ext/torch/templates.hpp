@@ -232,6 +232,17 @@ torch::optional<double> from_ruby<torch::optional<double>>(Object x)
   }
 }
 
+template<>
+inline
+torch::optional<bool> from_ruby<torch::optional<bool>>(Object x)
+{
+  if (x.is_nil()) {
+    return torch::nullopt;
+  } else {
+    return torch::optional<bool>{from_ruby<bool>(x)};
+  }
+}
+
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);

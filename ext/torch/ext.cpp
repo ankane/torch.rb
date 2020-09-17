@@ -380,11 +380,6 @@ void Init_ext()
         return self.set_requires_grad(requires_grad);
       })
     .define_method(
-      "_backward",
-      *[](Tensor& self, OptionalTensor gradient, bool create_graph, bool retain_graph) {
-        return self.backward(gradient, create_graph, retain_graph);
-      })
-    .define_method(
       "grad",
       *[](Tensor& self) {
         auto grad = self.grad();
