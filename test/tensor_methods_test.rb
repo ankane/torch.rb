@@ -101,6 +101,7 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [], x[false].to_a
     if RUBY_VERSION.to_f > 2.6
       assert_equal [1, 2], x[0, eval("1..")].to_a
+      assert_equal [1], x[0, eval("(1...)")].to_a
     end
     if RUBY_VERSION.to_f > 2.7
       assert_equal [0, 1], x[0, eval("..2")].to_a
