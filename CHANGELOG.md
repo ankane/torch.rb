@@ -2,6 +2,7 @@
 
 - Added `inplace` option for leaky ReLU
 - Fixed error with methods that return a tensor list (`chunk`, `split`, and `unbind`)
+- Fixed error with buffers on GPU
 
 ## 0.3.5 (2020-09-04)
 

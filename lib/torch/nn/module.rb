@@ -55,7 +55,12 @@ module Torch
             end
           end
         end
-        # TODO apply to more objects
+
+        @buffers.each_key do |k|
+          buf = @buffers[k]
+          @buffers[k] = fn.call(buf) unless buf.nil?
+        end
+
         self
       end
 

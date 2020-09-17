@@ -74,6 +74,13 @@ class ModuleTest < Minitest::Test
     assert_match "(conv1): Conv2d(1, 6, kernel_size: [3, 3], stride: [1, 1])", net.inspect
   end
 
+  def test_apply_buffers
+    mod = Torch::NN::BatchNorm.new(1)
+    assert_equal :float32, mod.named_buffers["running_mean"].dtype
+    mod.half
+    assert_equal :float16, mod.named_buffers["running_mean"].dtype
+  end
+
   private
 
   def net
