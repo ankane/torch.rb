@@ -18,7 +18,7 @@ module Torch
           functions = functions()
 
           # skip functions
-          skip_args = ["Dimname", "Layout", "Storage", "ConstQuantizerPtr"]
+          skip_args = ["Layout", "Storage", "ConstQuantizerPtr"]
 
           # remove functions
           functions.reject! do |f|
