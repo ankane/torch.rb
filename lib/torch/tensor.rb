@@ -230,7 +230,7 @@ module Torch
         when Integer
           TensorIndex.integer(index)
         when Range
-          finish = index.end
+          finish = index.end || -1
           if finish == -1 && !index.exclude_end?
             finish = nil
           else
