@@ -16,6 +16,8 @@ module Torch
         def size
           @tensors[0].size(0)
         end
+        alias_method :length, :size
+        alias_method :count, :size
       end
     end
   end

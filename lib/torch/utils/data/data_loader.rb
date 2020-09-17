@@ -45,6 +45,8 @@ module Torch
         def size
           (@dataset.size / @batch_size.to_f).ceil
         end
+        alias_method :length, :size
+        alias_method :count, :size
 
         private
 

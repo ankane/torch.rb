@@ -6,8 +6,14 @@ class DataUtilsTest < Minitest::Test
     y = Torch.tensor([5, 10, 15])
     dataset = Torch::Utils::Data::TensorDataset.new(x, y)
     assert_equal 3, dataset.size
+    assert_equal 3, dataset.length
+    assert_equal 3, dataset.count
 
     loader = Torch::Utils::Data::DataLoader.new(dataset, batch_size: 2)
+    assert_equal 2, loader.size
+    assert_equal 2, loader.length
+    assert_equal 2, loader.count
+
     x_out = []
     y_out = []
     loader.each do |xb, yb|
