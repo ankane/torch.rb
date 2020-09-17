@@ -178,8 +178,12 @@ module Torch
           Torch.hardshrink(input, lambd)
         end
 
-        def leaky_relu(input, negative_slope = 0.01)
-          NN.leaky_relu(input, negative_slope)
+        def leaky_relu(input, negative_slope = 0.01, inplace: false)
+          if inplace
+            NN.leaky_relu!(input, negative_slope)
+          else
+            NN.leaky_relu(input, negative_slope)
+          end
         end
 
         def log_sigmoid(input)
