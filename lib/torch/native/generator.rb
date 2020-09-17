@@ -31,7 +31,7 @@ module Torch
           todo_functions, functions =
             functions.partition do |f|
               f.args.any? do |a|
-                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "ScalarType?", "Tensor?[]"].include?(a[:type]) ||
+                a[:type].include?("?") && !["Tensor?", "Generator?", "int?", "float?", "ScalarType?", "Tensor?[]"].include?(a[:type]) ||
                 skip_args.any? { |sa| a[:type].include?(sa) } ||
                 # call to 'range' is ambiguous
                 f.cpp_name == "_range" ||
@@ -104,6 +104,8 @@ void add_%{type}_functions(Module m) {
                   "int64_t"
                 when "int?"
                   "torch::optional<int64_t>"
+                when "float?"
+                  "torch::optional<double>"
                 when "float"
                   "double"
                 when /\Aint\[/

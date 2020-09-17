@@ -221,6 +221,17 @@ torch::optional<int64_t> from_ruby<torch::optional<int64_t>>(Object x)
   }
 }
 
+template<>
+inline
+torch::optional<double> from_ruby<torch::optional<double>>(Object x)
+{
+  if (x.is_nil()) {
+    return torch::nullopt;
+  } else {
+    return torch::optional<double>{from_ruby<double>(x)};
+  }
+}
+
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);
