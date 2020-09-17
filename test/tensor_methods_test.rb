@@ -82,6 +82,9 @@ class TensorMethodsTest < Minitest::Test
     assert_equal :float64, x.double.dtype
     assert_equal :int32, x.int.dtype
     assert_equal :float32, x.dtype
+    # TODO
+    # assert_equal :float32, x.type(Torch::FloatTensor).dtype
+    # assert_equal :float64, x.type(Torch::DoubleTensor).dtype
   end
 
   def test_getter
