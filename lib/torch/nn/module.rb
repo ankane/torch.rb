@@ -58,7 +58,10 @@ module Torch
 
         @buffers.each_key do |k|
           buf = @buffers[k]
-          @buffers[k] = fn.call(buf) unless buf.nil?
+          unless buf.nil?
+            @buffers[k] = fn.call(buf)
+            instance_variable_set("@#{k}", @buffers[k])
+          end
         end
 
         self

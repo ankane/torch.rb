@@ -78,9 +78,11 @@ class ModuleTest < Minitest::Test
     mod = Torch::NN::BatchNorm.new(1)
     assert_equal :float32, mod.running_mean.dtype
     assert_equal :float32, mod.named_buffers["running_mean"].dtype
+    assert_equal :float32, mod.instance_variable_get(:@running_mean).dtype
     mod.half
     assert_equal :float16, mod.running_mean.dtype
     assert_equal :float16, mod.named_buffers["running_mean"].dtype
+    assert_equal :float16, mod.instance_variable_get(:@running_mean).dtype
   end
 
   private
