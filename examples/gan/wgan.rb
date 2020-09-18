@@ -169,7 +169,7 @@ gen_imgs = nil
       # normalize and save image
       img = gen_imgs.data[0]
       img = norm_ip(img.clone, img.min.to_f, img.max.to_f)
-      ndarr = img.mul(255).add!(0.5).clamp!(0, 255).permute([1, 2, 0]).numo
+      ndarr = img.mul(255).add!(0.5).clamp!(0, 255).permute(1, 2, 0).numo
       Magro::IO.imsave("images/#{batches_done}.png", ndarr)
     end
     batches_done += 1
