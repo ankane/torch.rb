@@ -496,11 +496,14 @@ module Torch
           # Give this variable a short name because it has to be repeated multiple times below.
           sfl = scale_factor_list
 
-          # TODO: rewrite _interp_output_size as inner function when TS supports closures, or just inline it.
           closed_over_args = [input, size, scale_factor, recompute_scale_factor]
           output_size = _interp_output_size(closed_over_args)
           if input.dim == 3 and mode == "nearest"
             NN.upsample_nearest1d(input, output_size, sfl[0])
+          elsif input.dim == 4 and mode == "nearest"
+            NN.upsample_nearest2d(input, output_size, sfl[0], sfl[1])
+          elsif input.dim == 5 and mode == "nearest"
+            NN.upsample_nearest3d(input, output_size, sfl[0], sfl[1], sfl[2])
           else
             raise NotImplementedYet
           end

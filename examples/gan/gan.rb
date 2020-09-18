@@ -1,6 +1,7 @@
 # ported from PyTorch-GAN
 # https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/gan/gan.py
-# see LICENSE-gan-example.txt
+# see LICENSE-gan-examples.txt
+# paper: https://arxiv.org/abs/1406.2661
 
 require "torch"
 require "torchvision"

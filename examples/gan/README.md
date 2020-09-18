@@ -1,4 +1,8 @@
-# Generative Adversarial Network Example
+# Generative Adversarial Network Examples
+
+Ported from [PyTorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
+
+## Requirements
 
 Install [torchvision](https://github.com/ankane/torchvision) and [magro](https://github.com/yoshoku/magro)
 
@@ -6,10 +10,23 @@ Install [torchvision](https://github.com/ankane/torchvision) and [magro](https:/
 gem install torchvision magro
 ```
 
-And run [the code](main.rb)
+## Implementations
+
+- [GAN](#gan)
+- [Deep Convolutional GAN](#deep-convolutional-gan)
+
+### GAN
 
 ```sh
-ruby main.rb
+ruby gan.rb
 ```
 
-Ported from [PyTorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/gan/gan.py)
+[Code](gan.rb), [Original Code](https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/gan/gan.py), [Paper](https://arxiv.org/abs/1406.2661)
+
+### Deep Convolutional GAN
+
+```sh
+ruby dcgan.rb
+```
+
+[Code](dcgan.rb), [Original Code](https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/dcgan/dcgan.py), [Paper](https://arxiv.org/abs/1511.06434)

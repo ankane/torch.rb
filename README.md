@@ -402,7 +402,7 @@ Here are a few full examples:
 - [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Sequence models and word embeddings](examples/nlp)
-- [Generative Adversarial Network](examples/gan)
+- [Generative Adversarial Networks](examples/gan)
 
 ## LibTorch Installation
 
