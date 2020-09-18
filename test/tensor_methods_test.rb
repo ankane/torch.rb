@@ -89,6 +89,13 @@ class TensorMethodsTest < Minitest::Test
     assert_equal :int64, x.dtype
   end
 
+  def test_type_invalid
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([1, 2, 3]).type(:bad)
+    end
+    assert_equal "Invalid type: bad", error.message
+  end
+
   def test_type_class
     x = Torch.tensor([1, 2, 3])
     assert_equal :int64, x.dtype
