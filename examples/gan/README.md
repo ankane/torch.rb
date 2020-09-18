@@ -1,10 +1,10 @@
-# Generative Adversarial Network Examples
+# Generative Adversarial Networks
 
 Ported from [PyTorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
 ## Requirements
 
-Install [torchvision](https://github.com/ankane/torchvision) and [magro](https://github.com/yoshoku/magro)
+Install [TorchVision](https://github.com/ankane/torchvision) and [Magro](https://github.com/yoshoku/magro)
 
 ```sh
 gem install torchvision magro
