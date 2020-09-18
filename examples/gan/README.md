@@ -14,6 +14,7 @@ gem install torchvision magro
 
 - [GAN](#gan)
 - [Deep Convolutional GAN](#deep-convolutional-gan)
+- [Wasserstein GAN](#wasserstein-gan)
 
 ### GAN
 
@@ -30,3 +31,11 @@ ruby dcgan.rb
 ```
 
 [Code](dcgan.rb), [Original Code](https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/dcgan/dcgan.py), [Paper](https://arxiv.org/abs/1511.06434)
+
+### Wasserstein GAN
+
+```sh
+ruby wgan.rb
+```
+
+[Code](wgan.rb), [Original Code](https://github.com/eriklindernoren/PyTorch-GAN/blob/master/implementations/wgan/wgan.py), [Paper](https://arxiv.org/abs/1701.07875)
