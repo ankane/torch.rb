@@ -1,4 +1,4 @@
-## 0.3.6 (unreleased)
+## 0.3.6 (2020-09-17)
 
 - Added `inplace` option for leaky ReLU
 - Fixed error with methods that return a tensor list (`chunk`, `split`, and `unbind`)
