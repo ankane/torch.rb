@@ -1,3 +1,7 @@
+## 0.3.7 (unreleased)
+
+- Fixed error with buffers on GPU
+
 ## 0.3.6 (2020-09-17)
 
 - Added `inplace` option for leaky ReLU
