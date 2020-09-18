@@ -111,6 +111,11 @@ optimizer_d = Torch::Optim::Adam.new(discriminator.parameters, lr: 0.0002, betas
 
 Tensor = cuda ? Torch::CUDA::FloatTensor : Torch::FloatTensor
 
+def norm_ip(img, min, max)
+  img.clamp!(min, max)
+  img.add!(-min).div!(max - min + 1e-5)
+end
+
 200.times do |epoch|
   dataloader.each_with_index do |(imgs, _), i|
     # Adversarial ground truths
@@ -156,8 +161,10 @@ Tensor = cuda ? Torch::CUDA::FloatTensor : Torch::FloatTensor
 
     batches_done = epoch * dataloader.size + i
     if batches_done % 25 == 0
-      # normalize
-      ndarr = gen_imgs.data[0].mul(255).add!(0.5).clamp!(0, 255).permute([1, 2, 0]).numo
+      # normalize and save image
+      img = gen_imgs.data[0]
+      img = norm_ip(img.clone, img.min.to_f, img.max.to_f)
+      ndarr = img.mul(255).add!(0.5).clamp!(0, 255).permute([1, 2, 0]).numo
       Magro::IO.imsave("images/#{batches_done}.png", ndarr)
     end
   end
