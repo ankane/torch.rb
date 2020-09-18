@@ -483,6 +483,7 @@ module Torch
           end
 
           scale_factor_len = input.dim - 2
+          scale_factor_list = [nil] * scale_factor_len
           # default value of recompute_scale_factor is False
           if !scale_factor.nil? && (recompute_scale_factor == false || recompute_scale_factor.nil?)
             if scale_factor.is_a?(Array)
@@ -498,14 +499,44 @@ module Torch
 
           closed_over_args = [input, size, scale_factor, recompute_scale_factor]
           output_size = _interp_output_size(closed_over_args)
-          if input.dim == 3 and mode == "nearest"
+          if input.dim == 3 && mode == "nearest"
             NN.upsample_nearest1d(input, output_size, sfl[0])
-          elsif input.dim == 4 and mode == "nearest"
+          elsif input.dim == 4 && mode == "nearest"
             NN.upsample_nearest2d(input, output_size, sfl[0], sfl[1])
-          elsif input.dim == 5 and mode == "nearest"
+          elsif input.dim == 5 && mode == "nearest"
             NN.upsample_nearest3d(input, output_size, sfl[0], sfl[1], sfl[2])
+          elsif input.dim == 3 && mode == "area"
+            adaptive_avg_pool1d(input, output_size)
+          elsif input.dim == 4 && mode == "area"
+            adaptive_avg_pool2d(input, output_size)
+          elsif input.dim == 5 && mode == "area"
+            adaptive_avg_pool3d(input, output_size)
+          elsif input.dim == 3 && mode == "linear"
+            # assert align_corners is not None
+            NN.upsample_linear1d(input, output_size, align_corners, sfl[0])
+          elsif input.dim == 3 && mode == "bilinear"
+            raise ArgumentError, "Got 3D input, but bilinear mode needs 4D input"
+          elsif input.dim == 3 && mode == "trilinear"
+            raise ArgumentError, "Got 3D input, but trilinear mode needs 5D input"
+          elsif input.dim == 4 && mode == "linear"
+            raise ArgumentError, "Got 4D input, but linear mode needs 3D input"
+          elsif input.dim == 4 && mode == "bilinear"
+            # assert align_corners is not None
+            NN.upsample_bilinear2d(input, output_size, align_corners, sfl[0], sfl[1])
+          elsif input.dim == 4 && mode == "trilinear"
+            raise ArgumentError, "Got 4D input, but trilinear mode needs 5D input"
+          elsif input.dim == 5 && mode == "linear"
+            raise ArgumentError, "Got 5D input, but linear mode needs 3D input"
+          elsif input.dim == 5 && mode == "bilinear"
+            raise ArgumentError, "Got 5D input, but bilinear mode needs 4D input"
+          elsif input.dim == 5 && mode == "trilinear"
+            # assert align_corners is not None
+            NN.upsample_trilinear3d(input, output_size, align_corners, sfl[0], sfl[1], sfl[2])
+          elsif input.dim == 4 && mode == "bicubic"
+            # assert align_corners is not None
+            NN.upsample_bicubic2d(input, output_size, align_corners, sfl[0], sfl[1])
           else
-            raise NotImplementedYet
+            raise ArgumentError, "Input Error: Only 3D, 4D and 5D input Tensors supported (got #{input.dim}D) for the modes: nearest | linear | bilinear | bicubic | trilinear (got #{mode})"
           end
         end
 
@@ -546,7 +577,7 @@ module Torch
             if size.is_a?(Array)
               return size
             else
-              return [size]*dim
+              return [size] * dim
             end
           end
 
@@ -554,7 +585,7 @@ module Torch
           if scale_factor.is_a?(Array)
             scale_factors = scale_factor
           else
-            scale_factors = [scale_factor]*dim
+            scale_factors = [scale_factor] * dim
           end
 
           dim.times.map { |i| (input.size(i + 2) * scale_factors[i]).floor }
