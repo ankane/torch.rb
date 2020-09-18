@@ -128,11 +128,11 @@ dataloader = Torch::Utils::Data::DataLoader.new(
 optimizer_g = Torch::Optim::Adam.new(generator.parameters, lr: 0.0002, betas: [0.5, 0.999])
 optimizer_d = Torch::Optim::Adam.new(discriminator.parameters, lr: 0.0002, betas: [0.5, 0.999])
 
+Tensor = cuda ? Torch::CUDA::FloatTensor : Torch::FloatTensor
+
 # ----------
 #  Training
 # ----------
-
-Tensor = cuda ? Torch::CUDA::FloatTensor : Torch::FloatTensor
 
 def norm_ip(img, min, max)
   img.clamp!(min, max)
@@ -146,7 +146,7 @@ end
     fake = Tensor.new(imgs.size(0), 1).fill!(0.0)
 
     # Configure input
-    real_imgs = Tensor.new(imgs)
+    real_imgs = imgs.type(Tensor)
 
     # -----------------
     #  Train Generator

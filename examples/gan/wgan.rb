@@ -121,7 +121,7 @@ gen_imgs = nil
   dataloader.each_with_index do |(imgs, _), i|
 
     # Configure input
-    real_imgs = Tensor.new(imgs)
+    real_imgs = imgs.type(Tensor)
 
     # ---------------------
     #  Train Discriminator
