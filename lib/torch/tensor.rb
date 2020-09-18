@@ -48,6 +48,11 @@ module Torch
     end
 
     def to(device = nil, dtype: nil, non_blocking: false, copy: false)
+      if device.is_a?(Symbol) && !dtype
+        dtype = device
+        device = nil
+      end
+
       device ||= self.device
       device = Device.new(device) if device.is_a?(String)
 
