@@ -174,6 +174,9 @@ require "torch/nn/smooth_l1_loss"
 require "torch/nn/soft_margin_loss"
 require "torch/nn/triplet_margin_loss"
 
+# nn vision
+require "torch/nn/upsample"
+
 # nn other
 require "torch/nn/functional"
 require "torch/nn/init"
