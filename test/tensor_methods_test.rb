@@ -212,4 +212,18 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [[[0, 1, 2], [3, 4, 5], [6, 7, 8]]], Torch.unbind(x, 1).map(&:to_a)
     assert_equal [[[0], [3], [6]], [[1], [4], [7]], [[2], [5], [8]]], Torch.unbind(x, 2).map(&:to_a)
   end
+
+  def test_permute
+    x = Torch.tensor([[1, 2, 3]])
+    assert_equal [[1], [2], [3]], x.permute([1, 0]).to_a
+    assert_equal [[1], [2], [3]], x.permute(1, 0).to_a
+  end
+
+  def test_permute_bad
+    error = assert_raises(ArgumentError) do
+      Torch.tensor([[1, 2, 3]]).permute(1, 0.0)
+    end
+    # PyTorch returns pos 2, but pos 1 might be more intuitive
+    assert_equal "argument 'dims' must be array of ints, but found element of type Float at pos 2", error.message
+  end
 end

@@ -16,6 +16,18 @@ module Torch
           args.pop
         end
 
+        # TODO check candidates individually to see if they match
+        if candidates.all? { |c| c.args.first && c.args.first[:type] == "int[]" }
+          int_args = []
+          while args.first.is_a?(Integer)
+            int_args << args.shift
+          end
+          if int_args.any?
+            raise ArgumentError, "argument '#{candidates.first.args.first[:name]}' must be array of ints, but found element of type #{args.first.class.name} at pos #{int_args.size + 1}" if args.any?
+            args.unshift(int_args)
+          end
+        end
+
         # TODO account for args passed as options here
         if args.size < @min_args || args.size > @max_args
           expected = String.new(@min_args.to_s)
