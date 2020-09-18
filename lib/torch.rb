@@ -199,6 +199,17 @@ module Torch
     end
   end
 
+  # legacy
+  # but may make it easier to port tutorials
+  module Autograd
+    class Variable
+      def self.new(x)
+        raise ArgumentError, "Variable data has to be a tensor, but got #{x.class.name}" unless x.is_a?(Tensor)
+        x
+      end
+    end
+  end
+
   # keys: https://pytorch.org/docs/stable/tensor_attributes.html#torch.torch.dtype
   # values: https://github.com/pytorch/pytorch/blob/master/c10/core/ScalarType.h
   DTYPE_TO_ENUM = {

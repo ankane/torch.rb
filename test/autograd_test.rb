@@ -64,4 +64,16 @@ class AutogradTest < Minitest::Test
     x.grad = Torch.tensor([1, 1, 1])
     assert_equal [1, 1, 1], x.grad.to_a
   end
+
+  def test_variable
+    x = Torch.tensor([1, 2, 3])
+    assert x.eql?(Torch::Autograd::Variable.new(x))
+  end
+
+  def test_variable_invalid
+    error = assert_raises(ArgumentError) do
+      Torch::Autograd::Variable.new(Object.new)
+    end
+    assert_equal "Variable data has to be a tensor, but got Object", error.message
+  end
 end
