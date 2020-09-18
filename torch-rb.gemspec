@@ -23,5 +23,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "minitest", ">= 5"
   spec.add_development_dependency "numo-narray"
+
+  # for examples
   spec.add_development_dependency "torchvision", ">= 0.1.1"
+  spec.add_development_dependency "magro"
 end
