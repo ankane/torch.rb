@@ -1,6 +1,7 @@
 ## 0.3.7 (unreleased)
 
 - Added `Upsample`
+- Added support for passing tensor class to `type` method
 - Fixed error with buffers on GPU
 
 ## 0.3.6 (2020-09-17)

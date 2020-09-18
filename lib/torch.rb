@@ -227,6 +227,8 @@ module Torch
   }
   ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
 
+  TENSOR_TYPE_CLASSES = []
+
   def self._make_tensor_class(dtype, cuda = false)
     cls = Class.new
     device = cuda ? "cuda" : "cpu"
@@ -239,6 +241,7 @@ module Torch
         Torch.empty(*args, dtype: dtype, device: device)
       end
     end
+    TENSOR_TYPE_CLASSES << cls
     cls
   end
 

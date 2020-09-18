@@ -124,9 +124,14 @@ module Torch
     end
 
     def type(dtype)
-      enum = DTYPE_TO_ENUM[dtype]
-      raise Error, "Unknown type: #{dtype}" unless enum
-      _type(enum)
+      if dtype.is_a?(Class)
+        raise Error, "Invalid type: #{dtype}" unless TENSOR_TYPE_CLASSES.include?(dtype)
+        dtype.new(self)
+      else
+        enum = DTYPE_TO_ENUM[dtype]
+        raise Error, "Invalid type: #{dtype}" unless enum
+        _type(enum)
+      end
     end
 
     def reshape(*size)

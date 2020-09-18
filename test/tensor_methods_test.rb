@@ -82,14 +82,25 @@ class TensorMethodsTest < Minitest::Test
   end
 
   def test_type
-    x = Torch.ones([1, 2, 3])
+    x = Torch.tensor([1, 2, 3])
     assert_equal :float64, x.type(:float64).dtype
     assert_equal :float64, x.double.dtype
     assert_equal :int32, x.int.dtype
-    assert_equal :float32, x.dtype
-    # TODO
-    # assert_equal :float32, x.type(Torch::FloatTensor).dtype
-    # assert_equal :float64, x.type(Torch::DoubleTensor).dtype
+    assert_equal :int64, x.dtype
+  end
+
+  def test_type_class
+    x = Torch.tensor([1, 2, 3])
+    assert_equal :int64, x.dtype
+    assert_equal :float32, x.type(Torch::FloatTensor).dtype
+    assert_equal :int64, x.dtype
+  end
+
+  def test_type_class_invalid
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([1, 2, 3]).type(Object)
+    end
+    assert_equal "Invalid type: Object", error.message
   end
 
   def test_getter
