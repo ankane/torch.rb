@@ -9,6 +9,8 @@
 /vendor
 *.lock
 *.bundle
+/examples/gan/data
+/examples/gan/images
 /examples/mnist/data
 ml-100k*
 /ext/torch/*_functions.cpp
