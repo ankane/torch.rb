@@ -14,7 +14,7 @@ module Torch
       end
 
       def forward(input)
-        F.interpolate(input, @size, @scale_factor, @mode, @align_corners)
+        F.interpolate(input, size: @size, scale_factor: @scale_factor, mode: @mode, align_corners: @align_corners)
       end
 
       def extra_inspect

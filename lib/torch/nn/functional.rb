@@ -469,6 +469,43 @@ module Torch
           Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction)
         end
 
+        # vision
+
+        def interpolate(input, size: nil, scale_factor: nil, mode: "nearest", align_corners: nil, recompute_scale_factor: nil)
+          if ["nearest", "area"].include?(mode)
+            unless align_corners.nil?
+              raise ArgumentError, "align_corners option can only be set with the interpolating modes: linear | bilinear | bicubic | trilinear"
+            end
+          else
+            if align_corners.nil?
+              align_corners = false
+            end
+          end
+
+          scale_factor_len = input.dim - 2
+          # default value of recompute_scale_factor is False
+          if !scale_factor.nil? && (recompute_scale_factor == false || recompute_scale_factor.nil?)
+            if scale_factor.is_a?(Array)
+              _scale_factor_repeated = scale_factor
+            else
+              _scale_factor_repeated = [scale_factor] * scale_factor_len
+            end
+            scale_factor_list = _scale_factor_repeated
+          end
+
+          # Give this variable a short name because it has to be repeated multiple times below.
+          sfl = scale_factor_list
+
+          # TODO: rewrite _interp_output_size as inner function when TS supports closures, or just inline it.
+          closed_over_args = [input, size, scale_factor, recompute_scale_factor]
+          output_size = _interp_output_size(closed_over_args)
+          if input.dim == 3 and mode == "nearest"
+            NN.upsample_nearest1d(input, output_size, sfl[0])
+          else
+            raise NotImplementedYet
+          end
+        end
+
         private
 
         def softmax_dim(ndim)
@@ -483,6 +520,41 @@ module Torch
           else
             out_size.zip(defaults.last(out_size.length)).map { |v, d| v || d }
           end
+        end
+
+        def _interp_output_size(closed_over_args)
+          input, size, scale_factor, recompute_scale_factor = closed_over_args
+          dim = input.dim - 2
+          if size.nil? && scale_factor.nil?
+            raise ArgumentError, "either size or scale_factor should be defined"
+          end
+          if !size.nil? && !scale_factor.nil?
+            raise ArgumentError, "only one of size or scale_factor should be defined"
+          end
+          if !scale_factor.nil?
+            if scale_factor.is_a?(Array)
+              if scale_factor.length != dim
+                raise ArgumentError, "scale_factor shape must match input shape. Input is #{dim}D, scale_factor size is #{scale_factor.length}"
+              end
+            end
+          end
+
+          if !size.nil?
+            if size.is_a?(Array)
+              return size
+            else
+              return [size]*dim
+            end
+          end
+
+          raise "Failed assertion" if scale_factor.nil?
+          if scale_factor.is_a?(Array)
+            scale_factors = scale_factor
+          else
+            scale_factors = [scale_factor]*dim
+          end
+
+          dim.times.map { |i| (input.size(i + 2) * scale_factors[i]).floor }
         end
       end
     end
