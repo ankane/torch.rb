@@ -23,7 +23,7 @@ class Generator < Torch::NN::Module
       if normalize
         layers << Torch::NN::BatchNorm1d.new(out_feat, eps: 0.8)
       end
-      layers << Torch::NN::LeakyReLU.new(negative_slope: 0.2, inplace: true)
+      layers << Torch::NN::LeakyReLU.new(0.2, inplace: true)
       layers
     end
 
@@ -50,9 +50,9 @@ class Discriminator < Torch::NN::Module
 
     @model = Torch::NN::Sequential.new(
       Torch::NN::Linear.new(img_shape.inject(:*), 512),
-      Torch::NN::LeakyReLU.new(negative_slope: 0.2, inplace: true),
+      Torch::NN::LeakyReLU.new(0.2, inplace: true),
       Torch::NN::Linear.new(512, 256),
-      Torch::NN::LeakyReLU.new(negative_slope: 0.2, inplace: true),
+      Torch::NN::LeakyReLU.new(0.2, inplace: true),
       Torch::NN::Linear.new(256, 1),
       Torch::NN::Sigmoid.new,
     )

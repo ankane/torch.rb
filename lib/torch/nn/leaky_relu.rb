@@ -1,7 +1,7 @@
 module Torch
   module NN
     class LeakyReLU < Module
-      def initialize(negative_slope: 1e-2, inplace: false)
+      pos def initialize(negative_slope: 1e-2, inplace: false)
         super()
         @negative_slope = negative_slope
         @inplace = inplace

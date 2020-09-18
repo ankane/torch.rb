@@ -300,6 +300,25 @@ module Torch
       def dict
         instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
       end
+
+      # magic to make positional arguments work
+      # TODO support methods that already have positional arguments
+      def self.pos(name)
+        ref = "_#{name}"
+        params = instance_method(name).parameters
+        keys = params.select { |v| v[0] == :key }.map { |v| v[1] }
+
+        alias_method ref, name
+        define_method(name) do |*args, **kwargs|
+          if args.any?
+            raise ArgumentError, "wrong number of arguments (given #{args.size}, expected 0..#{keys.size})" if args.size > keys.size
+            args.zip(keys) do |v, k|
+              kwargs[k] = v
+            end
+          end
+          send(ref, **kwargs)
+        end
+      end
     end
   end
 end
