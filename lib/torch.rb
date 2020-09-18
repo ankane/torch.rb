@@ -205,6 +205,7 @@ module Torch
     class Variable
       def self.new(x)
         raise ArgumentError, "Variable data has to be a tensor, but got #{x.class.name}" unless x.is_a?(Tensor)
+        warn "[torch] The Variable API is deprecated. Use tensors with requires_grad: true instead."
         x
       end
     end

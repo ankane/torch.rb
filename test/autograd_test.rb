@@ -67,7 +67,11 @@ class AutogradTest < Minitest::Test
 
   def test_variable
     x = Torch.tensor([1, 2, 3])
-    assert x.eql?(Torch::Autograd::Variable.new(x))
+    v = nil
+    assert_output(nil, /deprecated/) do
+      v = Torch::Autograd::Variable.new(x)
+    end
+    assert x.eql?(v)
   end
 
   def test_variable_invalid
