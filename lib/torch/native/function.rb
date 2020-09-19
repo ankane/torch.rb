@@ -1,7 +1,7 @@
 module Torch
   module Native
     class Function
-      attr_reader :function, :tensor_options, :cpp_name
+      attr_reader :function, :tensor_options
 
       def initialize(function)
         @function = function
@@ -10,7 +10,6 @@ module Torch
         @tensor_options_str = ", *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None)"
         @tensor_options = @function["func"].include?(@tensor_options_str)
         @out = out_size > 0 && base_name[-1] != "_"
-        @cpp_name ||= ("_" + name.downcase.sub(".", "_")).to_sym
       end
 
       def func
@@ -183,6 +182,10 @@ module Torch
             name
           end
         end
+      end
+
+      def cpp_name
+        @cpp_name ||= "_" + name.downcase.sub(".", "_")
       end
 
       def base_name
