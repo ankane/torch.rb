@@ -150,6 +150,7 @@ module Torch
       end
 
       def arg_defaults
+        # TODO find out why can't use select here
         @arg_defaults ||= args.map { |a| [a[:name], a[:default]] }.to_h
       end
 
