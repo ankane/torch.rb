@@ -6,9 +6,9 @@ module Torch
       def initialize(function)
         @function = function
 
-        tensor_options_str = ", *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None)"
-        @tensor_options = @function["func"].include?(tensor_options_str)
-        @function["func"].sub!(tensor_options_str, ")")
+        # note: don't modify function in-place
+        @tensor_options_str = ", *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None)"
+        @tensor_options = @function["func"].include?(@tensor_options_str)
       end
 
       def func
@@ -31,7 +31,7 @@ module Torch
         @args ||= begin
           args = []
           pos = true
-          args_str = func.split("(", 2).last.split(") ->").first
+          args_str = func.sub(@tensor_options_str, ")").split("(", 2).last.split(") ->").first
           args_str.split(", ").each do |a|
             if a == "*"
               pos = false

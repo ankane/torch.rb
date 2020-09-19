@@ -226,4 +226,9 @@ class TensorMethodsTest < Minitest::Test
     # PyTorch returns pos 2, but pos 1 might be more intuitive
     assert_equal "argument 'dims' must be array of ints, but found element of type Float at pos 2", error.message
   end
+
+  def test_new_full
+    x = Torch.tensor([[1, 2, 3]])
+    assert_equal [[0, 0], [0, 0]], x.new_full([2, 2], 0).to_a
+  end
 end
