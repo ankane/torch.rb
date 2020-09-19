@@ -150,7 +150,7 @@ module Torch
       end
 
       def arg_defaults
-        @arg_defaults ||= args.select { |a| a[:has_default] }.map { |a| [a[:name], a[:default]] }.to_h
+        @arg_defaults ||= args.map { |a| [a[:name], a[:default]] }.to_h
       end
 
       def out_size
