@@ -6,18 +6,14 @@ module Torch
         @name = @functions.first.ruby_name
         @min_args = @functions.map { |f| f.args.count { |a| a[:pos] && !a[:has_default] } }.min
         @max_args = @functions.map { |f| f.args.count { |a| a[:pos] } }.max
+        @int_array_first = @functions.all? { |c| c.args.first && c.args.first[:type] == "int[]" }
       end
 
       def parse(args, options)
         candidates = @functions.dup
 
-        # remove nil
-        while args.any? && args.last.nil?
-          args.pop
-        end
-
         # TODO check candidates individually to see if they match
-        if candidates.all? { |c| c.args.first && c.args.first[:type] == "int[]" }
+        if @int_array_first
           int_args = []
           while args.first.is_a?(Integer)
             int_args << args.shift
@@ -38,15 +34,11 @@ module Torch
         candidates.reject! { |f| args.size > f.args.size }
 
         # exclude functions missing required options
-        candidates.reject! do |func|
-          # TODO make more generic
-          func.out? && !options[:out]
-        end
+        candidates.reject!(&:out?) unless options[:out]
 
         # handle out with multiple
         # there should only be one match, so safe to modify all
-        out_func = candidates.find { |f| f.out? }
-        if out_func && out_func.out_size > 1 && options[:out]
+        if options[:out] && (out_func = candidates.find { |f| f.out? }) && out_func.out_size > 1
           out_args = out_func.args.last(2).map { |a| a[:name] }
           out_args.zip(options.delete(:out)).each do |k, v|
             options[k.to_sym] = v
