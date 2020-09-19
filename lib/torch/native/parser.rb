@@ -103,7 +103,7 @@ module Torch
           raise Error, "This should never happen. Please report a bug with #{@name}."
         end
 
-        args = func.args.map { |a| final_values[a[:name]] }
+        args = func.arg_names.map { |k| final_values[k] }
         args << TensorOptions.new.dtype(6) if func.tensor_options
         {
           name: func.cpp_name,
