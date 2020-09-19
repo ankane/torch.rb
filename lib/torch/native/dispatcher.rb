@@ -32,12 +32,24 @@ module Torch
             defined = instance_method ? context.method_defined?(name) : context.respond_to?(name)
             next if defined && name != "clone"
 
+            # skip parser when possible for performance
             if funcs.size == 1 && funcs.first.args.size == 0
-              # skip parser for performance
+              # functions with no arguments
               if instance_method
                 context.send(:alias_method, name, funcs.first.cpp_name)
               else
                 context.singleton_class.send(:alias_method, name, funcs.first.cpp_name)
+              end
+            elsif funcs.size == 2 && funcs.map { |f| f.arg_types.values }.sort == [["Scalar"], ["Tensor"]]
+              # functions that take a tensor or scalar
+              scalar_name, tensor_name = funcs.sort_by { |f| f.arg_types.values }.map(&:cpp_name)
+              context.send(def_method, name) do |other|
+                case other
+                when Tensor
+                  send(tensor_name, other)
+                else
+                  send(scalar_name, other)
+                end
               end
             else
               parser = Parser.new(funcs)
