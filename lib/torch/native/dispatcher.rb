@@ -22,18 +22,23 @@ module Torch
         end
 
         def bind_functions(context, def_method, functions)
+          instance_method = def_method == :define_method
           functions.group_by(&:ruby_name).sort_by { |g, _| g }.each do |name, funcs|
-            if def_method == :define_method
+            if instance_method
               funcs.map! { |f| Function.new(f.function) }
               funcs.each { |f| f.args.reject! { |a| a[:name] == :self } }
             end
 
-            defined = def_method == :define_method ? context.method_defined?(name) : context.respond_to?(name)
+            defined = instance_method ? context.method_defined?(name) : context.respond_to?(name)
             next if defined && name != "clone"
 
             if funcs.size == 1 && funcs.first.args.size == 0
-              # for performance!!
-              context.send(:alias_method, name, funcs.first.cpp_name)
+              # skip parser for performance
+              if instance_method
+                context.send(:alias_method, name, funcs.first.cpp_name)
+              else
+                context.singleton_class.send(:alias_method, name, funcs.first.cpp_name)
+              end
             else
               parser = Parser.new(funcs)
 
