@@ -64,7 +64,7 @@ module Torch
             values[k] = v
           end
           func.arg_defaults.each do |k, v|
-            values[k] = v if values[k].nil?
+            values[k] = v unless values.key?(k)
           end
           func.int_array_lengths.each do |k, len|
             values[k] = [values[k]] * len if values[k].is_a?(Integer)
