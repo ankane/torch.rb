@@ -78,6 +78,10 @@ module Torch
         end
       end
 
+      def arg_types
+        @arg_types ||= args.map { |a| [a[:name], a[:type].split("(").first] }.to_h
+      end
+
       def out_size
         @out_size ||= func.split("->").last.count("!")
       end

@@ -69,18 +69,27 @@ module Torch
         candidates.select! do |func|
           good = true
 
-          values = args.zip(func.args).map { |a, fa| [fa[:name], a] }.to_h
-          values.merge!(options.map { |k, v| [k.to_s, v] }.to_h)
+          # set values
+          # TODO use array instead of hash?
+          values = {}
+          args.each_with_index do |a, i|
+            values[func.args[i][:name]] = a
+          end
+          options.each do |k, v|
+            # TODO use symbols to avoid allocation
+            values[k.to_s] = v
+          end
           func.args.each do |fa|
             values[fa[:name]] = fa[:default] if values[fa[:name]].nil?
           end
 
-          arg_types = func.args.map { |a| [a[:name], a[:type]] }.to_h
+          arg_types = func.arg_types
 
           values.each_key do |k|
             v = values[k]
-            t = arg_types[k].split("(").first
+            t = arg_types[k]
 
+            # TODO only create checker once
             good =
               case t
               when "Tensor"
