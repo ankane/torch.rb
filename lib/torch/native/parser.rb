@@ -48,19 +48,10 @@ module Torch
           candidates.reject!(&:out?)
         end
 
-        # exclude functions where options don't match
-        options.each do |k, v|
-          candidates.select! do |func|
-            func.args.any? { |a| a[:name] == k }
-          end
-          # TODO show all bad keywords at once like Ruby?
-          return {error: "unknown keyword: #{k}"} if candidates.empty?
-        end
-
         final_values = nil
 
         # check args
-        candidates.select! do |func|
+        while (func = candidates.shift)
           good = true
 
           # set values
@@ -82,9 +73,18 @@ module Torch
           arg_checkers = func.arg_checkers
 
           values.each_key do |k|
-            good = arg_checkers[k].call(values[k])
-            if !good
-              if candidates.size == 1
+            unless arg_checkers.key?(k)
+              good = false
+              if candidates.empty?
+                # TODO show all bad keywords at once like Ruby?
+                return {error: "unknown keyword: #{k}"}
+              end
+              break
+            end
+
+            unless arg_checkers[k].call(values[k])
+              good = false
+              if candidates.empty?
                 t = func.arg_types[k]
                 k = :input if k == :self
                 return {error: "#{@name}(): argument '#{k}' must be #{t}"}
@@ -95,16 +95,14 @@ module Torch
 
           if good
             final_values = values
+            break
           end
-
-          good
         end
 
-        if candidates.size != 1
+        unless final_values
           raise Error, "This should never happen. Please report a bug with #{@name}."
         end
 
-        func = candidates.first
         args = func.args.map { |a| final_values[a[:name]] }
         args << TensorOptions.new.dtype(6) if func.tensor_options
         {
