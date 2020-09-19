@@ -141,8 +141,16 @@ module Torch
         end
       end
 
+      def arg_names
+        @arg_names ||= args.map { |a| a[:name] }
+      end
+
       def arg_types
         @arg_types ||= args.map { |a| [a[:name], a[:type].split("(").first] }.to_h
+      end
+
+      def arg_defaults
+        @arg_defaults ||= args.select { |a| a[:has_default] }.map { |a| [a[:name], a[:default]] }.to_h
       end
 
       def out_size

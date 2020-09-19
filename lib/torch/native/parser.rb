@@ -58,13 +58,13 @@ module Torch
           # TODO use array instead of hash?
           values = {}
           args.each_with_index do |a, i|
-            values[func.args[i][:name]] = a
+            values[func.arg_names[i]] = a
           end
           options.each do |k, v|
             values[k] = v
           end
-          func.args.each do |fa|
-            values[fa[:name]] = fa[:default] if values[fa[:name]].nil?
+          func.arg_defaults.each do |k, v|
+            values[k] = v if values[k].nil?
           end
           func.int_array_lengths.each do |k, len|
             values[k] = [values[k]] * len if values[k].is_a?(Integer)
