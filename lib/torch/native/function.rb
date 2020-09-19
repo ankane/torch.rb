@@ -9,6 +9,7 @@ module Torch
         # note: don't modify function in-place
         @tensor_options_str = ", *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None)"
         @tensor_options = @function["func"].include?(@tensor_options_str)
+        @out = out_size > 0 && base_name[-1] != "_"
       end
 
       def func
@@ -167,7 +168,7 @@ module Torch
       end
 
       def out?
-        out_size > 0 && base_name[-1] != "_"
+        @out
       end
 
       def ruby_name
