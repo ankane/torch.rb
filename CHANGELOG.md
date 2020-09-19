@@ -2,6 +2,7 @@
 
 - Added `Upsample`
 - Added support for passing tensor class to `type` method
+- Improved performance
 - Fixed error with buffers on GPU
 - Fixed error with `new_full`
 - Fixed issue with `numo` method and non-contiguous tensors
