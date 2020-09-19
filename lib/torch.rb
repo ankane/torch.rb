@@ -261,7 +261,7 @@ module Torch
     cls.define_singleton_method("new") do |*args|
       if args.size == 1 && args.first.is_a?(Tensor)
         args.first.send(dtype).to(device)
-      elsif args.size == 1 && args.first.is_a?(ByteStorage)
+      elsif args.size == 1 && args.first.is_a?(ByteStorage) && dtype == :uint8
         bytes = args.first.bytes
         Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
