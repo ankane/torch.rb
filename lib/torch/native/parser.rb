@@ -33,17 +33,19 @@ module Torch
 
         candidates.reject! { |f| args.size > f.args.size }
 
-        # exclude functions missing required options
-        candidates.reject!(&:out?) unless options[:out]
-
         # handle out with multiple
         # there should only be one match, so safe to modify all
-        if options[:out] && (out_func = candidates.find { |f| f.out? }) && out_func.out_size > 1
-          out_args = out_func.args.last(2).map { |a| a[:name] }
-          out_args.zip(options.delete(:out)).each do |k, v|
-            options[k.to_sym] = v
+        if options[:out]
+          if (out_func = candidates.find { |f| f.out? }) && out_func.out_size > 1
+            out_args = out_func.args.last(2).map { |a| a[:name] }
+            out_args.zip(options.delete(:out)).each do |k, v|
+              options[k.to_sym] = v
+            end
+            candidates = [out_func]
           end
-          candidates = [out_func]
+        else
+          # exclude functions missing required options
+          candidates.reject!(&:out?)
         end
 
         # exclude functions where options don't match
@@ -55,7 +57,7 @@ module Torch
           return {error: "unknown keyword: #{k}"} if candidates.empty?
         end
 
-        final_values = {}
+        final_values = nil
 
         # check args
         candidates.select! do |func|
