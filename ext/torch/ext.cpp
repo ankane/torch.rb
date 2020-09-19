@@ -423,6 +423,12 @@ void Init_ext()
         auto data_ptr = (const char *) tensor.data_ptr();
         return std::string(data_ptr, tensor.numel() * tensor.element_size());
       })
+    // for TorchVision
+    .define_method(
+      "_data_ptr",
+      *[](Tensor& self) {
+        return reinterpret_cast<uintptr_t>(self.data_ptr());
+      })
     // TODO figure out a better way to do this
     .define_method(
       "_flat_data",
