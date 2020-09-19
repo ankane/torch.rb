@@ -4,6 +4,7 @@
 - Added support for passing tensor class to `type` method
 - Fixed error with buffers on GPU
 - Fixed error with `new_full`
+- Fixed issue with `numo` method and non-contiguous tensors
 
 ## 0.3.6 (2020-09-17)
 

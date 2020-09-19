@@ -420,6 +420,8 @@ void Init_ext()
           tensor = tensor.to(device);
         }
 
+        tensor = tensor.contiguous();
+
         auto data_ptr = (const char *) tensor.data_ptr();
         return std::string(data_ptr, tensor.numel() * tensor.element_size());
       })

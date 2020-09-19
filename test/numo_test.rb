@@ -54,4 +54,10 @@ class NumoTest < Minitest::Test
     # TODO should be
     # assert_equal [2, 2, 2, 2, 2], b.to_a
   end
+
+  def test_permute
+    x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
+    assert_equal [[1, 4], [2, 5], [3, 6]], x.permute(1, 0).to_a
+    assert_equal [[1, 4], [2, 5], [3, 6]], x.permute(1, 0).numo.to_a
+  end
 end
