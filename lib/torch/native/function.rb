@@ -78,6 +78,69 @@ module Torch
         end
       end
 
+      def arg_checkers
+        @arg_checkers ||= begin
+          checkers = {}
+          arg_types.each do |k, t|
+            checker =
+              case t
+              when "Tensor"
+                ->(v) { v.is_a?(Tensor) }
+              when "Tensor?"
+                ->(v) { v.nil? || v.is_a?(Tensor) }
+              when "Tensor[]", "Tensor?[]"
+                ->(v) { v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) } }
+              when "int"
+                if k == "reduction"
+                  ->(v) { v.is_a?(String) }
+                else
+                  ->(v) { v.is_a?(Integer) }
+                end
+              when "int?"
+                ->(v) { v.is_a?(Integer) || v.nil? }
+              when "float?"
+                ->(v) { v.is_a?(Numeric) || v.nil? }
+              when "bool?"
+                ->(v) { v == true || v == false || v.nil? }
+              when "float"
+                ->(v) { v.is_a?(Numeric) }
+              when /int\[.*\]/
+                ->(v) { v.is_a?(Array) && v.all? { |v2| v2.is_a?(Integer) } }
+              when "Scalar"
+                ->(v) { v.is_a?(Numeric) }
+              when "Scalar?"
+                ->(v) { v.is_a?(Numeric) || v.nil? }
+              when "ScalarType"
+                ->(v) { false } # not supported yet
+              when "ScalarType?"
+                ->(v) { v.nil? }
+              when "bool"
+                ->(v) { v == true || v == false }
+              when "str"
+                ->(v) { v.is_a?(String) }
+              else
+                raise Error, "Unknown argument type: #{t}. Please report a bug with #{@name}."
+              end
+            checkers[k] = checker
+          end
+          checkers
+        end
+      end
+
+      def int_array_lengths
+        @int_array_lengths ||= begin
+          ret = {}
+          arg_types.each do |k, t|
+            if t.match?(/\Aint\[.+\]\z/)
+              size = t[4..-2]
+              raise Error, "Unknown size: #{size}. Please report a bug with #{@name}." unless size =~ /\A\d+\z/
+              ret[k] = size.to_i
+            end
+          end
+          ret
+        end
+      end
+
       def arg_types
         @arg_types ||= args.map { |a| [a[:name], a[:type].split("(").first] }.to_h
       end

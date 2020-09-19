@@ -82,62 +82,17 @@ module Torch
           func.args.each do |fa|
             values[fa[:name]] = fa[:default] if values[fa[:name]].nil?
           end
+          func.int_array_lengths.each do |k, len|
+            values[k] = [values[k]] * len if values[k].is_a?(Integer)
+          end
 
-          arg_types = func.arg_types
+          arg_checkers = func.arg_checkers
 
           values.each_key do |k|
-            v = values[k]
-            t = arg_types[k]
-
-            # TODO only create checker once
-            good =
-              case t
-              when "Tensor"
-                v.is_a?(Tensor)
-              when "Tensor?"
-                v.nil? || v.is_a?(Tensor)
-              when "Tensor[]", "Tensor?[]"
-                v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) }
-              when "int"
-                if k == "reduction"
-                  v.is_a?(String)
-                else
-                  v.is_a?(Integer)
-                end
-              when "int?"
-                v.is_a?(Integer) || v.nil?
-              when "float?"
-                v.is_a?(Numeric) || v.nil?
-              when "bool?"
-                v == true || v == false || v.nil?
-              when "float"
-                v.is_a?(Numeric)
-              when /int\[.*\]/
-                if v.is_a?(Integer)
-                  size = t[4..-2]
-                  raise Error, "Unknown size: #{size}. Please report a bug with #{@name}." unless size =~ /\A\d+\z/
-                  v = [v] * size.to_i
-                  values[k] = v
-                end
-                v.is_a?(Array) && v.all? { |v2| v2.is_a?(Integer) }
-              when "Scalar"
-                v.is_a?(Numeric)
-              when "Scalar?"
-                v.is_a?(Numeric) || v.nil?
-              when "ScalarType"
-                false # not supported yet
-              when "ScalarType?"
-                v.nil?
-              when "bool"
-                v == true || v == false
-              when "str"
-                v.is_a?(String)
-              else
-                raise Error, "Unknown argument type: #{arg_types[k]}. Please report a bug with #{@name}."
-              end
-
+            good = arg_checkers[k].call(values[k])
             if !good
               if candidates.size == 1
+                t = func.arg_types[k]
                 k = "input" if k == "self"
                 return {error: "#{@name}(): argument '#{k}' must be #{t}"}
               end
