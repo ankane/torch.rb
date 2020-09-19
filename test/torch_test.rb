@@ -71,4 +71,9 @@ class TorchTest < Minitest::Test
     end
     assert_equal "Dimension out of range (expected to be in range of [-2, 1], but got 2)", error.message
   end
+
+  def test_byte_storage
+    s = Torch::ByteStorage.from_buffer("\x01\x02\x03")
+    assert_equal [1, 2, 3], Torch::ByteTensor.new(s).to_a
+  end
 end

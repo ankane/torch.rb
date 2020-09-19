@@ -211,6 +211,20 @@ module Torch
     end
   end
 
+  # TODO move to C++
+  class ByteStorage
+    # private
+    attr_reader :bytes
+
+    def initialize(bytes)
+      @bytes = bytes
+    end
+
+    def self.from_buffer(bytes)
+      new(bytes)
+    end
+  end
+
   # keys: https://pytorch.org/docs/stable/tensor_attributes.html#torch.torch.dtype
   # values: https://github.com/pytorch/pytorch/blob/master/c10/core/ScalarType.h
   DTYPE_TO_ENUM = {
@@ -247,6 +261,9 @@ module Torch
     cls.define_singleton_method("new") do |*args|
       if args.size == 1 && args.first.is_a?(Tensor)
         args.first.send(dtype).to(device)
+      elsif args.size == 1 && args.first.is_a?(ByteStorage)
+        bytes = args.first.bytes
+        Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
         Torch.tensor(args.first, dtype: dtype, device: device)
       else
