@@ -8,9 +8,6 @@ module Torch
     alias_method :ndim, :dim
     alias_method :ndimension, :dim
 
-    # improve performance (avoid dispatch)
-    alias_method :contiguous, :_contiguous
-
     def self.new(*args)
       FloatTensor.new(*args)
     end

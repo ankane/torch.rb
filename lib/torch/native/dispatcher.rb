@@ -31,12 +31,17 @@ module Torch
             defined = def_method == :define_method ? context.method_defined?(name) : context.respond_to?(name)
             next if defined && name != "clone"
 
-            parser = Parser.new(funcs)
+            if funcs.size == 1 && funcs.first.args.size == 0
+              # for performance!!
+              context.send(:alias_method, name, funcs.first.cpp_name)
+            else
+              parser = Parser.new(funcs)
 
-            context.send(def_method, name) do |*args, **options|
-              result = parser.parse(args, options)
-              raise ArgumentError, result[:error] if result[:error]
-              send(result[:name], *result[:args])
+              context.send(def_method, name) do |*args, **options|
+                result = parser.parse(args, options)
+                raise ArgumentError, result[:error] if result[:error]
+                send(result[:name], *result[:args])
+              end
             end
           end
         end
