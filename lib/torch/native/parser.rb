@@ -39,7 +39,7 @@ module Torch
           if (out_func = candidates.find { |f| f.out? }) && out_func.out_size > 1
             out_args = out_func.args.last(2).map { |a| a[:name] }
             out_args.zip(options.delete(:out)).each do |k, v|
-              options[k.to_sym] = v
+              options[k] = v
             end
             candidates = [out_func]
           end
@@ -51,7 +51,7 @@ module Torch
         # exclude functions where options don't match
         options.each do |k, v|
           candidates.select! do |func|
-            func.args.any? { |a| a[:name] == k.to_s }
+            func.args.any? { |a| a[:name] == k }
           end
           # TODO show all bad keywords at once like Ruby?
           return {error: "unknown keyword: #{k}"} if candidates.empty?
@@ -70,8 +70,7 @@ module Torch
             values[func.args[i][:name]] = a
           end
           options.each do |k, v|
-            # TODO use symbols to avoid allocation
-            values[k.to_s] = v
+            values[k] = v
           end
           func.args.each do |fa|
             values[fa[:name]] = fa[:default] if values[fa[:name]].nil?
@@ -87,7 +86,7 @@ module Torch
             if !good
               if candidates.size == 1
                 t = func.arg_types[k]
-                k = "input" if k == "self"
+                k = :input if k == :self
                 return {error: "#{@name}(): argument '#{k}' must be #{t}"}
               end
               break

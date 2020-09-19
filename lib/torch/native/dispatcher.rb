@@ -25,7 +25,7 @@ module Torch
           functions.group_by(&:ruby_name).sort_by { |g, _| g }.each do |name, funcs|
             if def_method == :define_method
               funcs.map! { |f| Function.new(f.function) }
-              funcs.each { |f| f.args.reject! { |a| a[:name] == "self" } }
+              funcs.each { |f| f.args.reject! { |a| a[:name] == :self } }
             end
 
             defined = def_method == :define_method ? context.method_defined?(name) : context.respond_to?(name)

@@ -81,7 +81,7 @@ void add_%{type}_functions(Module m) {
           cpp_defs = []
           functions.sort_by(&:cpp_name).each do |func|
             fargs = func.args.dup #.select { |a| a[:type] != "Generator?" }
-            fargs << {name: "options", type: "TensorOptions"} if func.tensor_options
+            fargs << {name: :options, type: "TensorOptions"} if func.tensor_options
 
             cpp_args = []
             fargs.each do |a|
@@ -123,14 +123,14 @@ void add_%{type}_functions(Module m) {
                   a[:type]
                 end
 
-              t = "MyReduction" if a[:name] == "reduction" && t == "int64_t"
+              t = "MyReduction" if a[:name] == :reduction && t == "int64_t"
               cpp_args << [t, a[:name]].join(" ").sub("& ", "&")
             end
 
             dispatch = func.out? ? "#{func.base_name}_out" : func.base_name
             args = fargs.map { |a| a[:name] }
             args.unshift(*args.pop(func.out_size)) if func.out?
-            args.delete("self") if def_method == :define_method
+            args.delete(:self) if def_method == :define_method
 
             prefix = def_method == :define_method ? "self." : "torch::"
 

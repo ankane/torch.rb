@@ -72,7 +72,7 @@ module Torch
             next if t == "Generator?"
             next if t == "MemoryFormat"
             next if t == "MemoryFormat?"
-            args << {name: k, type: t, default: d, pos: pos, has_default: has_default}
+            args << {name: k.to_sym, type: t, default: d, pos: pos, has_default: has_default}
           end
           args
         end
@@ -91,7 +91,7 @@ module Torch
               when "Tensor[]", "Tensor?[]"
                 ->(v) { v.is_a?(Array) && v.all? { |v2| v2.is_a?(Tensor) } }
               when "int"
-                if k == "reduction"
+                if k == :reduction
                   ->(v) { v.is_a?(String) }
                 else
                   ->(v) { v.is_a?(Integer) }
