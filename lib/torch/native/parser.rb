@@ -9,6 +9,7 @@ module Torch
         @int_array_first = @functions.all? { |c| c.args.first && c.args.first[:type] == "int[]" }
       end
 
+      # TODO improve performance
       def parse(args, options)
         candidates = @functions.dup
 
