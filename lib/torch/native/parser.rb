@@ -10,6 +10,7 @@ module Torch
       end
 
       # TODO improve performance
+      # possibly move to C++ (see python_arg_parser.cpp)
       def parse(args, options)
         candidates = @functions.dup
 
