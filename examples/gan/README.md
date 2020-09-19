@@ -4,10 +4,10 @@ Ported from [PyTorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
 ## Requirements
 
-Install [TorchVision](https://github.com/ankane/torchvision) and [Magro](https://github.com/yoshoku/magro)
+Install [TorchVision](https://github.com/ankane/torchvision)
 
 ```sh
-gem install torchvision magro
+gem install torchvision
 ```
 
 ## Implementations
