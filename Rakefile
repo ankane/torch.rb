@@ -42,4 +42,13 @@ namespace :benchmark do
     p Benchmark.realtime { t = Torch.from_numo(x) }
     p Benchmark.realtime { t.numo }
   end
+
+  desc "Benchmark dispatcher"
+  task :dispatcher do
+    require "benchmark"
+    require "torch-rb"
+
+    x = Torch.tensor([1, 2, 3])
+    p Benchmark.realtime { 100000.times { x.contiguous } }
+  end
 end
