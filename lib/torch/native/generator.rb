@@ -72,13 +72,15 @@ void add_%{type}_functions(Module m);
 #include <rice/Module.hpp>
 #include "templates.hpp"
 
+%{functions}
+
 void add_%{type}_functions(Module m) {
-  m
-  %{functions};
+  %{add_functions}
 }
         TEMPLATE
 
           cpp_defs = []
+          add_defs = []
           functions.sort_by(&:cpp_name).each do |func|
             fargs = func.args.dup #.select { |a| a[:type] != "Generator?" }
             fargs << {name: :options, type: "TensorOptions"} if func.tensor_options
@@ -142,19 +144,22 @@ void add_%{type}_functions(Module m) {
 
             body = "#{prefix}#{dispatch}(#{args.join(", ")})"
 
-            if func.ret_size > 1 || func.ret_array?
+            if func.cpp_name == "_fill_diagonal_"
+              body = "to_ruby<torch::Tensor>(#{body})"
+            elsif !func.ret_void?
               body = "wrap(#{body})"
             end
 
-            cpp_defs << ".#{def_method}(
-    \"#{func.cpp_name}\",
-    *[](#{cpp_args.join(", ")}) {
-      return #{body};
-    })"
+            cpp_defs << "// #{func.func}
+static #{func.ret_void? ? "void" : "Object"} #{type}#{func.cpp_name}(#{cpp_args.join(", ")}) {
+  return #{body};
+}"
+
+            add_defs << "m.#{def_method}(\"#{func.cpp_name}\", #{type}#{func.cpp_name});"
           end
 
           hpp_contents = hpp_template % {type: type}
-          cpp_contents = cpp_template % {type: type, functions: cpp_defs.join("\n  ")}
+          cpp_contents = cpp_template % {type: type, functions: cpp_defs.join("\n\n"), add_functions: add_defs.join("\n  ")}
 
           path = File.expand_path("../../../ext/torch", __dir__)
           File.write("#{path}/#{type}_functions.hpp", hpp_contents)

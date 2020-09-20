@@ -167,6 +167,10 @@ module Torch
         @ret_array ||= func.split("->").last.include?('[]')
       end
 
+      def ret_void?
+        func.split("->").last.strip == "()"
+      end
+
       def out?
         @out
       end

@@ -242,6 +242,13 @@ torch::optional<Scalar> from_ruby<torch::optional<Scalar>>(Object x)
   }
 }
 
+Object wrap(bool x);
+Object wrap(int64_t x);
+Object wrap(double x);
+Object wrap(torch::Tensor x);
+Object wrap(torch::Scalar x);
+Object wrap(torch::ScalarType x);
+Object wrap(torch::QScheme x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);
