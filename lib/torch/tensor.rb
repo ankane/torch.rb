@@ -79,10 +79,6 @@ module Torch
       end
     end
 
-    def shape
-      dim.times.map { |i| size(i) }
-    end
-
     # mirror Python len()
     def length
       size(0)

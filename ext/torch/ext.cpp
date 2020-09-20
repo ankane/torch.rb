@@ -342,6 +342,16 @@ void Init_ext()
     .define_method("numel", &torch::Tensor::numel)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
+    // in C++ for performance
+    .define_method(
+      "shape",
+      *[](Tensor& self) {
+        Array a;
+        for (auto &size : self.sizes()) {
+          a.push(size);
+        }
+        return a;
+      })
     .define_method(
       "_index",
       *[](Tensor& self, Array indices) {
