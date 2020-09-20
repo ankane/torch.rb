@@ -119,8 +119,14 @@ void add_%{type}_functions(Module m) {
                   "std::string"
                 when "TensorOptions"
                   "const torch::TensorOptions &"
-                else
+                when "Layout?"
+                  "torch::optional<Layout>"
+                when "Device?"
+                  "torch::optional<Device>"
+                when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage"
                   a[:type]
+                else
+                  raise "Unknown type: #{a[:type]}"
                 end
 
               t = "MyReduction" if a[:name] == :reduction && t == "int64_t"
