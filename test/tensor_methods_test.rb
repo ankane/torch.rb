@@ -138,6 +138,14 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [2], x[index].to_a
   end
 
+  def test_getter_large_integer
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(RangeError) do
+      x[2**64]
+    end
+    assert_equal "bignum too big to convert into `long long'", error.message
+  end
+
   def test_setter_numeric
     x = Torch.tensor([1, 2, 3])
     x[1] = 9
