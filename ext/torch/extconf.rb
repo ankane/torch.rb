@@ -17,6 +17,9 @@ if have_library("omp") || have_library("gomp")
 end
 
 if apple_clang
+  # silence rice warnings
+  $CXXFLAGS += " -Wno-deprecated-declarations"
+
   # silence ruby/intern.h warning
   $CXXFLAGS += " -Wno-deprecated-register"
 

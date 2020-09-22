@@ -189,7 +189,7 @@ module Torch
     # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def [](*indexes)
-      _index(tensor_indexes(indexes))
+      _index(indexes)
     end
 
     # based on python_variable_indexing.cpp and
@@ -197,7 +197,7 @@ module Torch
     def []=(*indexes, value)
       raise ArgumentError, "Tensor does not support deleting items" if value.nil?
       value = Torch.tensor(value, dtype: dtype) unless value.is_a?(Tensor)
-      _index_put_custom(tensor_indexes(indexes), value)
+      _index_put_custom(indexes, value)
     end
 
     # native functions that need manually defined
@@ -226,33 +226,6 @@ module Torch
     def clamp!(min, max)
       _clamp_min_(min)
       _clamp_max_(max)
-    end
-
-    private
-
-    def tensor_indexes(indexes)
-      indexes.map do |index|
-        case index
-        when Integer
-          TensorIndex.integer(index)
-        when Range
-          finish = index.end || -1
-          if finish == -1 && !index.exclude_end?
-            finish = nil
-          else
-            finish += 1 unless index.exclude_end?
-          end
-          TensorIndex.slice(index.begin, finish)
-        when Tensor
-          TensorIndex.tensor(index)
-        when nil
-          TensorIndex.none
-        when true, false
-          TensorIndex.boolean(index)
-        else
-          raise Error, "Unsupported index type: #{index.class.name}"
-        end
-      end
     end
   end
 end
