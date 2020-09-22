@@ -36,25 +36,19 @@ std::vector<TensorIndex> index_vector(Array a) {
   indices.reserve(a.size());
 
   for (size_t i = 0; i < a.size(); i++) {
-    VALUE obj = Object(a[i]).value();
-    if (RB_INTEGER_TYPE_P(obj)) {
+    Object obj = Object(a[i]);
+    if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(TensorIndex(from_ruby<int64_t>(obj)));
-    } else if (NIL_P(obj)) {
-      indices.push_back(TensorIndex(torch::indexing::None));
-    } else if (obj == Qtrue || obj == Qfalse) {
-      indices.push_back(TensorIndex(RTEST(obj)));
-    } else if (rb_obj_is_instance_of(obj, rb_cTensor)) {
-      indices.push_back(TensorIndex(from_ruby<Tensor>(obj)));
-    } else if (rb_obj_is_kind_of(obj, rb_cRange)) {
-      torch::optional<int64_t> start_index = NUM2LL(rb_funcall(obj, rb_intern("begin"), 0));
+    } else if (obj.is_instance_of(rb_cRange)) {
+      torch::optional<int64_t> start_index = from_ruby<int64_t>(obj.call("begin"));
       torch::optional<int64_t> stop_index = -1;
 
-      VALUE end = rb_funcall(obj, rb_intern("end"), 0);
-      if (!NIL_P(end)) {
-        stop_index = NUM2LL(end);
+      Object end = obj.call("end");
+      if (!end.is_nil()) {
+        stop_index = from_ruby<int64_t>(end);
       }
 
-      VALUE exclude_end = rb_funcall(obj, rb_intern("exclude_end?"), 0);
+      Object exclude_end = obj.call("exclude_end?");
       if (!exclude_end) {
         if (stop_index.value() == -1) {
           stop_index = torch::nullopt;
@@ -64,6 +58,12 @@ std::vector<TensorIndex> index_vector(Array a) {
       }
 
       indices.push_back(TensorIndex(torch::indexing::Slice(start_index, stop_index)));
+    } else if (obj.is_instance_of(rb_cTensor)) {
+      indices.push_back(TensorIndex(from_ruby<Tensor>(obj)));
+    } else if (obj.is_nil()) {
+      indices.push_back(TensorIndex(torch::indexing::None));
+    } else if (obj == True || obj == False) {
+      indices.push_back(TensorIndex(from_ruby<bool>(obj)));
     } else {
       rb_raise(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
