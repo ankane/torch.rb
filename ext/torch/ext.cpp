@@ -232,7 +232,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_empty",
-      *[](IntArrayRef size, const torch::TensorOptions &options) {
+      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::empty(size, options);
       })
     .define_singleton_method(
@@ -242,7 +242,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_full",
-      *[](IntArrayRef size, Scalar fill_value, const torch::TensorOptions& options) {
+      *[](std::vector<int64_t> size, Scalar fill_value, const torch::TensorOptions& options) {
         return torch::full(size, fill_value, options);
       })
     .define_singleton_method(
@@ -257,22 +257,22 @@ void Init_ext()
       })
     .define_singleton_method(
       "_ones",
-      *[](IntArrayRef size, const torch::TensorOptions &options) {
+      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::ones(size, options);
       })
     .define_singleton_method(
       "_rand",
-      *[](IntArrayRef size, const torch::TensorOptions &options) {
+      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::rand(size, options);
       })
     .define_singleton_method(
       "_randint",
-      *[](int64_t low, int64_t high, IntArrayRef size, const torch::TensorOptions &options) {
+      *[](int64_t low, int64_t high, std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::randint(low, high, size, options);
       })
     .define_singleton_method(
       "_randn",
-      *[](IntArrayRef size, const torch::TensorOptions &options) {
+      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::randn(size, options);
       })
     .define_singleton_method(
@@ -282,7 +282,7 @@ void Init_ext()
       })
     .define_singleton_method(
       "_zeros",
-      *[](IntArrayRef size, const torch::TensorOptions &options) {
+      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
         return torch::zeros(size, options);
       })
     // begin operations
@@ -303,13 +303,13 @@ void Init_ext()
       })
     .define_singleton_method(
       "_from_blob",
-      *[](String s, IntArrayRef size, const torch::TensorOptions &options) {
+      *[](String s, std::vector<int64_t> size, const torch::TensorOptions &options) {
         void *data = const_cast<char *>(s.c_str());
         return torch::from_blob(data, size, options);
       })
     .define_singleton_method(
       "_tensor",
-      *[](Array a, IntArrayRef size, const torch::TensorOptions &options) {
+      *[](Array a, std::vector<int64_t> size, const torch::TensorOptions &options) {
         auto dtype = options.dtype();
         torch::Tensor t;
         if (dtype == torch::kBool) {

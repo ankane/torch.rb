@@ -96,11 +96,9 @@ void add_%{type}_functions(Module m) {
                   "OptionalTensor"
                 when "ScalarType?"
                   "torch::optional<ScalarType>"
-                when "Tensor[]"
-                  "TensorList"
-                when "Tensor?[]"
+                when "Tensor[]", "Tensor?[]"
                   # TODO make optional
-                  "TensorList"
+                  "std::vector<Tensor>"
                 when "int"
                   "int64_t"
                 when "int?"
@@ -114,7 +112,7 @@ void add_%{type}_functions(Module m) {
                 when "float"
                   "double"
                 when /\Aint\[/
-                  "IntArrayRef"
+                  "std::vector<int64_t>"
                 when /Tensor\(\S!?\)/
                   "Tensor &"
                 when "str"
@@ -151,7 +149,8 @@ void add_%{type}_functions(Module m) {
             end
 
             cpp_defs << "// #{func.func}
-static #{func.ret_void? ? "void" : "Object"} #{type}#{func.cpp_name}(#{cpp_args.join(", ")}) {
+static #{func.ret_void? ? "void" : "Object"} #{type}#{func.cpp_name}(#{cpp_args.join(", ")})
+{
   return #{body};
 }"
 
