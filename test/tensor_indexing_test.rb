@@ -34,7 +34,7 @@ class TensorIndexingTest < Minitest::Test
     error = assert_raises(RangeError) do
       x[2**64]
     end
-    assert_equal "bignum too big to convert into `long long'", error.message
+    assert_match "bignum too big to convert into", error.message
   end
 
   def test_setter_numeric
