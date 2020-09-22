@@ -32,11 +32,14 @@ void handle_error(torch::Error const & ex)
 Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
+  Object obj;
+
   std::vector<TensorIndex> indices;
   indices.reserve(a.size());
 
   for (size_t i = 0; i < a.size(); i++) {
-    Object obj = Object(a[i]);
+    obj = a[i];
+
     if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(TensorIndex(from_ruby<int64_t>(obj)));
     } else if (obj.is_instance_of(rb_cRange)) {
@@ -65,7 +68,7 @@ std::vector<TensorIndex> index_vector(Array a) {
     } else if (obj == True || obj == False) {
       indices.push_back(TensorIndex(from_ruby<bool>(obj)));
     } else {
-      rb_raise(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
+      throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
   }
   return indices;
