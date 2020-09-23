@@ -41,7 +41,7 @@ std::vector<TensorIndex> index_vector(Array a) {
     obj = a[i];
 
     if (obj.is_instance_of(rb_cInteger)) {
-      indices.push_back(TensorIndex(from_ruby<int64_t>(obj)));
+      indices.push_back(from_ruby<int64_t>(obj));
     } else if (obj.is_instance_of(rb_cRange)) {
       torch::optional<int64_t> start_index = from_ruby<int64_t>(obj.call("begin"));
       torch::optional<int64_t> stop_index = -1;
@@ -60,13 +60,13 @@ std::vector<TensorIndex> index_vector(Array a) {
         }
       }
 
-      indices.push_back(TensorIndex(torch::indexing::Slice(start_index, stop_index)));
+      indices.push_back(torch::indexing::Slice(start_index, stop_index));
     } else if (obj.is_instance_of(rb_cTensor)) {
-      indices.push_back(TensorIndex(from_ruby<Tensor>(obj)));
+      indices.push_back(from_ruby<Tensor>(obj));
     } else if (obj.is_nil()) {
-      indices.push_back(TensorIndex(torch::indexing::None));
+      indices.push_back(torch::indexing::None);
     } else if (obj == True || obj == False) {
-      indices.push_back(TensorIndex(from_ruby<bool>(obj)));
+      indices.push_back(from_ruby<bool>(obj));
     } else {
       throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
