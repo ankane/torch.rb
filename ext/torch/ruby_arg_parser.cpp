@@ -459,12 +459,11 @@ static ssize_t find_param(FunctionSignature& signature, VALUE name) {
 
 [[noreturn]]
 static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num_pos_args) {
-  VALUE key, value;
+  VALUE key;
 
   VALUE keys = rb_funcall(kwargs, rb_intern("keys"), 0);
   if (RARRAY_LEN(keys) > 0) {
     key = rb_ary_entry(keys, 0);
-    value = rb_hash_aref(kwargs, key);
 
     if (!THPUtils_checkSymbol(key)) {
       throw Exception(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
