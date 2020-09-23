@@ -29,11 +29,47 @@ void handle_error(torch::Error const & ex)
   throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
 }
 
+Class rb_cTensor;
+
 std::vector<TensorIndex> index_vector(Array a) {
-  auto indices = std::vector<TensorIndex>();
+  Object obj;
+
+  std::vector<TensorIndex> indices;
   indices.reserve(a.size());
+
   for (size_t i = 0; i < a.size(); i++) {
-    indices.push_back(from_ruby<TensorIndex>(a[i]));
+    obj = a[i];
+
+    if (obj.is_instance_of(rb_cInteger)) {
+      indices.push_back(TensorIndex(from_ruby<int64_t>(obj)));
+    } else if (obj.is_instance_of(rb_cRange)) {
+      torch::optional<int64_t> start_index = from_ruby<int64_t>(obj.call("begin"));
+      torch::optional<int64_t> stop_index = -1;
+
+      Object end = obj.call("end");
+      if (!end.is_nil()) {
+        stop_index = from_ruby<int64_t>(end);
+      }
+
+      Object exclude_end = obj.call("exclude_end?");
+      if (!exclude_end) {
+        if (stop_index.value() == -1) {
+          stop_index = torch::nullopt;
+        } else {
+          stop_index = stop_index.value() + 1;
+        }
+      }
+
+      indices.push_back(TensorIndex(torch::indexing::Slice(start_index, stop_index)));
+    } else if (obj.is_instance_of(rb_cTensor)) {
+      indices.push_back(TensorIndex(from_ruby<Tensor>(obj)));
+    } else if (obj.is_nil()) {
+      indices.push_back(TensorIndex(torch::indexing::None));
+    } else if (obj == True || obj == False) {
+      indices.push_back(TensorIndex(from_ruby<bool>(obj)));
+    } else {
+      throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
+    }
   }
   return indices;
 }
@@ -45,7 +81,7 @@ void Init_ext()
   rb_mTorch.add_handler<torch::Error>(handle_error);
   add_torch_functions(rb_mTorch);
 
-  Class rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor");
+  rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor");
   rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
 
@@ -67,13 +103,6 @@ void Init_ext()
         auto generator = at::detail::getDefaultCPUGenerator();
         return generator.seed();
       });
-
-  Class rb_cTensorIndex = define_class_under<TensorIndex>(rb_mTorch, "TensorIndex")
-    .define_singleton_method("boolean", *[](bool value) { return TensorIndex(value); })
-    .define_singleton_method("integer", *[](int64_t value) { return TensorIndex(value); })
-    .define_singleton_method("tensor", *[](torch::Tensor& value) { return TensorIndex(value); })
-    .define_singleton_method("slice", *[](torch::optional<int64_t> start_index, torch::optional<int64_t> stop_index) { return TensorIndex(torch::indexing::Slice(start_index, stop_index)); })
-    .define_singleton_method("none", *[]() { return TensorIndex(torch::indexing::None); });
 
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")

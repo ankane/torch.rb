@@ -23,6 +23,14 @@ class TensorIndexingTest < Minitest::Test
     end
   end
 
+  def test_unsupported_type
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x[Object.new]
+    end
+    assert_equal "Unsupported index type: Object", error.message
+  end
+
   def test_getter_tensor
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
