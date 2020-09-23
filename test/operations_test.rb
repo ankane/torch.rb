@@ -83,12 +83,21 @@ class OperationsTest < Minitest::Test
     assert_equal [4, 3, 2], indices.to_a
   end
 
-  def test_add_bad
+  def test_add_too_many_arguments
     x = Torch.tensor([1, 2])
     error = assert_raises(ArgumentError) do
       Torch.add(x, 1, 1, 1)
     end
     assert_equal "add() takes 2 positional arguments but 4 were given", error.message
+  end
+
+  def test_add_wrong_arguments
+    x = Torch.tensor([1, 2])
+    y = Torch.tensor([3, 4])
+    error = assert_raises(ArgumentError) do
+      x.add!(1, y)
+    end
+    assert_equal "No matching signatures", error.message
   end
 
   def test_assignment
