@@ -76,21 +76,9 @@ class TensorIndexingTest < Minitest::Test
     assert_equal [1, 9, 3], x.to_a
   end
 
-  def test_assignment
-    x = Torch.tensor([1, 2, 3])
-    x[1] = 0
-    assert_equal [1, 0, 3], x.to_a
-  end
-
-  def test_assignment_range_index
+  def test_setter_range_index
     x = Torch.tensor([1, 2, 3])
     x[0..1] = 0
     assert_equal [0, 0, 3], x.to_a
-  end
-
-  def test_assignment_tensor_index
-    x = Torch.tensor([1, 2, 3])
-    x[Torch.tensor([false, true, false])] = 0
-    assert_equal [1, 0, 3], x.to_a
   end
 end
