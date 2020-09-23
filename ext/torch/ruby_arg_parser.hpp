@@ -129,7 +129,7 @@ struct RubyArgs {
       if (FIXNUM_P(obj)) {
         res[idx] = from_ruby<int64_t>(obj);
       } else {
-        throw Exception(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+        rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
             signature.name.c_str(), signature.params[i].name.c_str(),
             signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
       }
@@ -254,7 +254,7 @@ struct RubyArgs {
     Check_Type(arg, T_ARRAY);
     auto size = RARRAY_LEN(arg);
     if (size != N) {
-      throw Exception(rb_eArgError, "expected array of %d elements but got %d", N, (int)size);
+      rb_raise(rb_eArgError, "expected array of %d elements but got %d", N, (int)size);
     }
     for (int idx = 0; idx < size; idx++) {
       VALUE obj = rb_ary_entry(arg, idx);
@@ -311,7 +311,7 @@ struct RubyArgParser {
       print_error(self, args, kwargs, parsed_args);
 
       // TODO better message
-      throw Exception(rb_eArgError, "No matching signatures");
+      rb_raise(rb_eArgError, "No matching signatures");
     }
 
     void print_error(VALUE self, VALUE args, VALUE kwargs, std::vector<VALUE>& parsed_args) {

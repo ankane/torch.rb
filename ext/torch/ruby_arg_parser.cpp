@@ -107,7 +107,7 @@ bool is_tensor_list(VALUE obj, int argnum, bool throw_error) {
     VALUE iobj = rb_ary_entry(obj, idx);
     if (!THPVariable_Check(iobj)) {
       if (throw_error) {
-        throw Exception(rb_eArgError, "expected Tensor as element %d in argument %d, but got %s",
+        rb_raise(rb_eArgError, "expected Tensor as element %d in argument %d, but got %s",
             static_cast<int>(idx), argnum, rb_obj_classname(obj));
       }
       return false;
@@ -413,10 +413,10 @@ static void extra_args(const FunctionSignature& signature, ssize_t nargs) {
   const long min_args = signature.min_args;
   const long nargs_ = nargs;
   if (min_args != max_pos_args) {
-    throw Exception(rb_eArgError, "%s() takes from %ld to %ld positional arguments but %ld were given",
+    rb_raise(rb_eArgError, "%s() takes from %ld to %ld positional arguments but %ld were given",
         signature.name.c_str(), min_args, max_pos_args, nargs_);
   }
-  throw Exception(rb_eArgError, "%s() takes %ld positional argument%s but %ld %s given",
+  rb_raise(rb_eArgError, "%s() takes %ld positional argument%s but %ld %s given",
       signature.name.c_str(),
       max_pos_args, max_pos_args == 1 ? "" : "s",
       nargs_, nargs == 1 ? "was" : "were");
@@ -438,7 +438,7 @@ static void missing_args(const FunctionSignature& signature, int idx) {
     }
   }
 
-  throw Exception(rb_eArgError, "%s() missing %d required positional argument%s: %s",
+  rb_raise(rb_eArgError, "%s() missing %d required positional argument%s: %s",
       signature.name.c_str(),
       num_missing,
       num_missing == 1 ? "s" : "",
@@ -466,23 +466,23 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
     key = rb_ary_entry(keys, 0);
 
     if (!THPUtils_checkSymbol(key)) {
-      throw Exception(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
+      rb_raise(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
     }
 
     auto param_idx = find_param(signature, key);
     if (param_idx < 0) {
-      throw Exception(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
+      rb_raise(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
           signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
     }
 
     if (param_idx < num_pos_args) {
-      throw Exception(rb_eArgError, "%s() got multiple values for argument '%s'",
+      rb_raise(rb_eArgError, "%s() got multiple values for argument '%s'",
           signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
     }
   }
 
   // this should never be hit
-  throw Exception(rb_eArgError, "invalid keyword arguments");
+  rb_raise(rb_eArgError, "invalid keyword arguments");
 }
 
 // TODO use Qundef
@@ -563,12 +563,12 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, std::vector<
     } else if (raise_exception) {
       if (is_kwd) {
         // foo(): argument 'other' must be str, not int
-        throw Exception(rb_eArgError, "%s(): argument '%s' must be %s, not %s",
+        rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, not %s",
             name.c_str(), param.name.c_str(), param.type_name().c_str(),
             rb_obj_classname(obj));
       } else {
         // foo(): argument 'other' (position 2) must be str, not int
-        throw Exception(rb_eArgError, "%s(): argument '%s' (position %ld) must be %s, not %s",
+        rb_raise(rb_eArgError, "%s(): argument '%s' (position %ld) must be %s, not %s",
             name.c_str(), param.name.c_str(), static_cast<long>(arg_pos + 1),
             param.type_name().c_str(), rb_obj_classname(obj));
       }
