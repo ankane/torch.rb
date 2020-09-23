@@ -69,8 +69,8 @@ end
 
 # generate C++ functions
 puts "Generating C++ functions..."
-require_relative "../../lib/torch/native/generator"
-Torch::Native::Generator.generate_cpp_functions
+require_relative "../../codegen/generate_functions"
+generate_functions
 
 # create makefile
 create_makefile("torch/ext")

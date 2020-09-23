@@ -1,6 +1,14 @@
 require_relative "test_helper"
 
 class OperationsTest < Minitest::Test
+  def test_out
+    x = Torch.tensor([1.0, 2, -3])
+    assert_equal [1, 2, 3], Torch.abs(x).to_a
+    out = Torch.empty(3)
+    Torch.abs(x, out: out)
+    assert_equal [1, 2, 3], out.to_a
+  end
+
   def test_abs
     x = Torch.tensor([-1.0])
     assert_equal [1], Torch.abs(x).to_a
@@ -12,32 +20,29 @@ class OperationsTest < Minitest::Test
     error = assert_raises(ArgumentError) do
       Torch.abs
     end
-    assert_equal "wrong number of arguments (given 0, expected 1)", error.message
-    # assert_equal "abs() missing 1 required positional arguments: \"input\"", error.message
+    assert_equal "abs() missing 1 required positional arguments: \"input\"", error.message
 
     error = assert_raises(ArgumentError) do
       Torch.abs(1, 2)
     end
-    assert_equal "wrong number of arguments (given 2, expected 1)", error.message
-    # assert_equal "abs() takes 1 positional argument but 2 were given", error.message
+    assert_equal "abs() takes 1 positional argument but 2 were given", error.message
 
     error = assert_raises(ArgumentError) do
       x = Torch.tensor([1])
       Torch.abs(x, bad: 2)
     end
-    # assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
-    assert_equal "unknown keyword: bad", error.message
+    assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
 
     error = assert_raises(ArgumentError) do
       Torch.abs(1)
     end
-    assert_equal "abs(): argument 'input' must be Tensor", error.message
+    assert_equal "abs(): argument 'input' (position 1) must be Tensor, not Integer", error.message
 
     error = assert_raises(ArgumentError) do
       x = Torch.tensor([1])
       Torch.abs(x, out: 2)
     end
-    assert_equal "abs(): argument 'out' must be Tensor", error.message
+    assert_equal "abs(): argument 'out' must be Tensor, not Integer", error.message
   end
 
   def test_add
@@ -53,7 +58,7 @@ class OperationsTest < Minitest::Test
   def test_add_alpha
     x = Torch.tensor([1, 2, 3])
     y = Torch.tensor([10, 20, 30])
-    x.add!(2, y)
+    x.add!(y, alpha: 2)
     assert_equal [21, 42, 63], x.to_a
   end
 
@@ -79,9 +84,11 @@ class OperationsTest < Minitest::Test
   end
 
   def test_add_bad
-    skip
     x = Torch.tensor([1, 2])
-    Torch.add(x, 1, 1, 1)
+    error = assert_raises(ArgumentError) do
+      Torch.add(x, 1, 1, 1)
+    end
+    assert_equal "add() takes 2 positional arguments but 4 were given", error.message
   end
 
   def test_assignment

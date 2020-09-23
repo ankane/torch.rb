@@ -8,6 +8,7 @@
 #include <rice/Hash.hpp>
 
 #include "templates.hpp"
+#include "ruby_arg_parser.hpp"
 
 // generated with:
 // rake generate:functions
@@ -84,6 +85,7 @@ void Init_ext()
   rb_cTensor = define_class_under<torch::Tensor>(rb_mTorch, "Tensor");
   rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
+  THPVariableClass = rb_cTensor.value();
 
   Module rb_mNN = define_module_under(rb_mTorch, "NN");
   rb_mNN.add_handler<torch::Error>(handle_error);

@@ -7,11 +7,6 @@ require "net/http"
 require "set"
 require "tmpdir"
 
-# native functions
-require "torch/native/generator"
-require "torch/native/parser"
-require "torch/native/dispatcher"
-
 # modules
 require "torch/inspector"
 require "torch/tensor"

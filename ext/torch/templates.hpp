@@ -13,8 +13,29 @@ using torch::Device;
 using torch::Scalar;
 using torch::ScalarType;
 using torch::Tensor;
+using torch::QScheme;
+using torch::Generator;
+using torch::TensorOptions;
+using torch::Layout;
+using torch::MemoryFormat;
 using torch::IntArrayRef;
 using torch::TensorList;
+using torch::Storage;
+
+#define HANDLE_TH_ERRORS                                             \
+  try {
+
+#define END_HANDLE_TH_ERRORS                                         \
+  } catch (const torch::Error& ex) {                                 \
+    rb_raise(rb_eRuntimeError, "%s", ex.what_without_backtrace());   \
+  } catch (const Rice::Exception& ex) {                              \
+    rb_raise(ex.class_of(), "%s", ex.what());                        \
+  } catch (const std::exception& ex) {                               \
+    rb_raise(rb_eRuntimeError, "%s", ex.what());                     \
+  }
+
+#define RETURN_NIL                                                   \
+  return Qnil;
 
 template<>
 inline
@@ -106,48 +127,21 @@ NonlinearityType from_ruby<NonlinearityType>(Object x)
   return NonlinearityType(x);
 }
 
-class MyReduction {
-  Object value;
-  public:
-    MyReduction(Object o) {
-      value = o;
-    }
-    operator int64_t() {
-      if (value.is_nil()) {
-        return torch::Reduction::None;
-      }
-
-      std::string s = String(value).str();
-      if (s == "mean") {
-        return torch::Reduction::Mean;
-      } else if (s == "sum") {
-        return torch::Reduction::Sum;
-      } else if (s == "none") {
-        return torch::Reduction::None;
-      } else {
-        throw std::runtime_error("Unsupported reduction: " + s);
-      }
-    }
-};
-
-template<>
-inline
-MyReduction from_ruby<MyReduction>(Object x)
-{
-  return MyReduction(x);
-}
-
 class OptionalTensor {
-  Object value;
+  torch::Tensor value;
   public:
     OptionalTensor(Object o) {
+      if (o.is_nil()) {
+        value = {};
+      } else {
+        value = from_ruby<torch::Tensor>(o);
+      }
+    }
+    OptionalTensor(torch::Tensor o) {
       value = o;
     }
-    operator torch::Tensor() {
-      if (value.is_nil()) {
-        return {};
-      }
-      return from_ruby<torch::Tensor>(value);
+    operator torch::Tensor() const {
+      return value;
     }
 };
 
@@ -237,4 +231,4 @@ Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tenso
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_t> x);
 Object wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x);
-Object wrap(std::vector<torch::Tensor> x);
+Object wrap(torch::TensorList x);

@@ -53,11 +53,11 @@ module Torch
             bias_correction2 = 1 - beta2 ** state[:step]
 
             if group[:weight_decay] != 0
-              grad.add!(group[:weight_decay], p.data)
+              grad.add!(p.data, alpha: group[:weight_decay])
             end
 
             # Decay the first and second moment running average coefficient
-            exp_avg.mul!(beta1).add!(1 - beta1, grad)
+            exp_avg.mul!(beta1).add!(grad, alpha: 1 - beta1)
             exp_avg_sq.mul!(beta2).addcmul!(1 - beta2, grad, grad)
             if amsgrad
               # Maintains the maximum of all 2nd moment running avg. till now

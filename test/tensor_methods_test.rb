@@ -165,7 +165,7 @@ class TensorMethodsTest < Minitest::Test
       Torch.tensor([[1, 2, 3]]).permute(1, 0.0)
     end
     # PyTorch returns pos 2, but pos 1 might be more intuitive
-    assert_equal "argument 'dims' must be array of ints, but found element of type Float at pos 2", error.message
+    assert_equal "permute(): argument 'dims' must be array of ints, but found element of type Float at pos 2", error.message
   end
 
   def test_new_full

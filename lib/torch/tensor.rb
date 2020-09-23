@@ -8,6 +8,18 @@ module Torch
     alias_method :ndim, :dim
     alias_method :ndimension, :dim
 
+    # use alias_method for performance
+    alias_method :+, :add
+    alias_method :-, :sub
+    alias_method :*, :mul
+    alias_method :/, :div
+    alias_method :%, :remainder
+    alias_method :**, :pow
+    alias_method :-@, :neg
+    alias_method :&, :logical_and
+    alias_method :|, :logical_or
+    alias_method :^, :logical_xor
+
     def self.new(*args)
       FloatTensor.new(*args)
     end
@@ -73,7 +85,7 @@ module Torch
 
     def size(dim = nil)
       if dim
-        _size_int(dim)
+        _size(dim)
       else
         shape
       end
@@ -130,57 +142,6 @@ module Torch
       end
     end
 
-    def reshape(*size)
-      # Python doesn't check if size == 1, just ignores later arguments
-      size = size.first if size.size == 1 && size.first.is_a?(Array)
-      _reshape(size)
-    end
-
-    def view(*size)
-      size = size.first if size.size == 1 && size.first.is_a?(Array)
-      _view(size)
-    end
-
-    def +(other)
-      add(other)
-    end
-
-    def -(other)
-      sub(other)
-    end
-
-    def *(other)
-      mul(other)
-    end
-
-    def /(other)
-      div(other)
-    end
-
-    def %(other)
-      remainder(other)
-    end
-
-    def **(other)
-      pow(other)
-    end
-
-    def -@
-      neg
-    end
-
-    def &(other)
-      logical_and(other)
-    end
-
-    def |(other)
-      logical_or(other)
-    end
-
-    def ^(other)
-      logical_xor(other)
-    end
-
     # TODO better compare?
     def <=>(other)
       item <=> other
@@ -200,32 +161,10 @@ module Torch
       _index_put_custom(indexes, value)
     end
 
-    # native functions that need manually defined
-
-    # value and other are swapped for some methods
-    def add!(value = 1, other)
-      if other.is_a?(Numeric)
-        _add__scalar(other, value)
-      else
-        _add__tensor(other, value)
-      end
-    end
-
     # parser can't handle overlap, so need to handle manually
     def random!(*args)
-      case args.size
-      when 1
-        _random__to(*args)
-      when 2
-        _random__from(*args)
-      else
-        _random_(*args)
-      end
-    end
-
-    def clamp!(min, max)
-      _clamp_min_(min)
-      _clamp_max_(max)
+      return _random!(0, *args) if args.size == 1
+      _random!(*args)
     end
   end
 end

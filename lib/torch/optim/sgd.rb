@@ -32,7 +32,7 @@ module Torch
             next unless p.grad
             d_p = p.grad.data
             if weight_decay != 0
-              d_p.add!(weight_decay, p.data)
+              d_p.add!(p.data, alpha: weight_decay)
             end
             if momentum != 0
               param_state = @state[p]
@@ -40,7 +40,7 @@ module Torch
                 buf = param_state[:momentum_buffer] = Torch.clone(d_p).detach
               else
                 buf = param_state[:momentum_buffer]
-                buf.mul!(momentum).add!(1 - dampening, d_p)
+                buf.mul!(momentum).add!(d_p, alpha: 1 - dampening)
               end
               if nesterov
                 d_p = d_p.add(momentum, buf)
@@ -49,7 +49,7 @@ module Torch
               end
             end
 
-            p.data.add!(-group[:lr], d_p)
+            p.data.add!(d_p, alpha: -group[:lr])
           end
         end
 

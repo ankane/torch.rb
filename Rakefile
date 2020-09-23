@@ -25,8 +25,8 @@ Rake::Task["build"].enhance [:remove_ext]
 namespace :generate do
   desc "Generate C++ functions"
   task :functions do
-    require_relative "lib/torch/native/generator"
-    Torch::Native::Generator.generate_cpp_functions
+    require_relative "codegen/generate_functions"
+    generate_functions
   end
 end
 

@@ -46,7 +46,7 @@ module Torch
             end
 
             # Update biased first moment estimate.
-            exp_avg.mul!(beta1).add!(1 - beta1, grad)
+            exp_avg.mul!(beta1).add!(grad, alpha: 1 - beta1)
             # Update the exponentially weighted infinity norm.
             norm_buf = Torch.cat([
                 exp_inf.mul!(beta2).unsqueeze(0),

@@ -43,7 +43,7 @@ module Torch
             p.data.mul!(1 - group[:lambd] * state[:eta])
 
             # update parameter
-            p.data.add!(-state[:eta], grad)
+            p.data.add!(grad, alpha: -state[:eta])
 
             # averaging
             if state[:mu] != 1

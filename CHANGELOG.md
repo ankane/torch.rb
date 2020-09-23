@@ -1,5 +1,6 @@
 ## 0.4.0 (unreleased)
 
+- Improved performance of Torch methods
 - Improved performance of tensor indexing
 
 ## 0.3.7 (2020-09-22)
