@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
 
   # for examples
   spec.add_development_dependency "torchvision", ">= 0.1.1"
+  spec.add_development_dependency "magro"
 end
