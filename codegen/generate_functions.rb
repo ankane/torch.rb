@@ -331,7 +331,7 @@ def generate_function_params(function, params, remove_self)
       when "ScalarType"
         "scalartype"
       when "str"
-        "toString"
+        "string"
       when "Generator"
         "generator"
       when "MemoryFormat"
