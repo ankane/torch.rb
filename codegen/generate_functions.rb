@@ -78,6 +78,8 @@ def write_body(type, method_defs, attach_defs)
     #include "templates.hpp"
     #include "ruby_arg_parser.hpp"
 
+    #include "torch/csrc/utils/cuda_lazy_init.h"
+
     %{method_defs}
     void add_%{type}_functions(Module m) {
       %{attach_defs}
@@ -158,7 +160,7 @@ def add_dispatches(functions, def_method)
 end
 
 def add_dispatch(function, def_method)
-  if function["out"]
+  if function["out"] && function["out"] != function["base"]
     base_code = generate_dispatch(function["base"], def_method)
     out_code = generate_dispatch(function["out"], def_method)
     out_index = function["out"].out_index
@@ -278,7 +280,7 @@ def generate_tensor_options(opt_params)
     code += "\n      .#{c}"
   end
 
-  "#{code};"
+  "#{code};\n  torch::utils::maybe_initialize_cuda(options);"
 end
 
 def generate_function_code(function, cpp_name, params, opt_index, remove_self)

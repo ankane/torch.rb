@@ -149,7 +149,7 @@ struct RubyArgs {
 
   bool toBool(int i) {
     if (NIL_P(args[i])) return signature.params[i].default_bool;
-    return from_ruby<bool>(args[i]);
+    return RTEST(args[i]);
   }
 
   int64_t toInt64(int i) {
@@ -220,10 +220,6 @@ struct RubyArgs {
   c10::optional<bool> toBoolOptional(int i) {
     if (NIL_P(args[i])) return c10::nullopt;
     return toBool(i);
-  }
-
-  torch::TensorOptions toTensorOptions(int i) {
-    return from_ruby<torch::TensorOptions>(args[i]);
   }
 
   OptionalTensor optionalTensor(int i) {

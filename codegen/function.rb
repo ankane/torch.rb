@@ -81,6 +81,19 @@ class Function
         list_size: list_size
       }
     end
+
+    if (params.map { |v| v[:name] } & ["dtype", "device", "layout", "pin_memory"]).size == 4
+      params << {
+        name: "requires_grad",
+        type: "bool",
+        default: "False",
+        keyword_only: true,
+        optional: true,
+        modifier: nil,
+        list_size: nil
+      }
+    end
+
     params
   end
 
