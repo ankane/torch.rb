@@ -14,25 +14,11 @@ module Torch
           _normal!(tensor, mean, std)
         end
 
-        def constant!(tensor, val)
-          _constant!(tensor, val)
-        end
-
-        def ones!(tensor)
-          _ones!(tensor)
-        end
-
-        def zeros!(tensor)
-          _zeros!(tensor)
-        end
-
-        def eye!(tensor)
-          _eye!(tensor)
-        end
-
-        def dirac!(tensor)
-          _dirac!(tensor)
-        end
+        alias_method :constant!, :_constant!
+        alias_method :ones!, :_ones!
+        alias_method :zeros!, :_zeros!
+        alias_method :eye!, :_eye!
+        alias_method :dirac!, :_dirac!
 
         def xavier_uniform!(tensor, gain: 1.0)
           _xavier_uniform!(tensor, gain)
