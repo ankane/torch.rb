@@ -363,7 +363,9 @@ def generate_function_params(function, params, remove_self)
 end
 
 def generate_dispatch_code(function, def_method, params, opt_index, remove_self)
-  prefix = remove_self ? "self." : "at::"
+  # torch::empty sets requires_grad by at::empty doesn't
+  # https://github.com/pytorch/pytorch/issues/36455
+  prefix = remove_self ? "self." : (opt_index ? "torch::" : "at::")
   dispatch = function.out? ? "#{function.base_name}_out" : function.base_name
 
   params = params.map { |v| v[:name] }
