@@ -1,6 +1,6 @@
 // adapted from PyTorch - python_arg_parser.cpp
 
-#include "ruby_arg_parser.hpp"
+#include "ruby_arg_parser.h"
 
 VALUE THPVariableClass = Qnil;
 

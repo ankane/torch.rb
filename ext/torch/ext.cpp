@@ -7,14 +7,14 @@
 #include <rice/Constructor.hpp>
 #include <rice/Hash.hpp>
 
-#include "templates.hpp"
-#include "utils.hpp"
+#include "templates.h"
+#include "utils.h"
 
 // generated with:
 // rake generate:functions
-#include "torch_functions.hpp"
-#include "tensor_functions.hpp"
-#include "nn_functions.hpp"
+#include "torch_functions.h"
+#include "tensor_functions.h"
+#include "nn_functions.h"
 
 using namespace Rice;
 using torch::indexing::TensorIndex;

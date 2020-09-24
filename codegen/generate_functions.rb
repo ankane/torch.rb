@@ -65,7 +65,7 @@ def write_header(type)
   EOS
 
   contents = template % {type: type}
-  write_file("#{type}_functions.hpp", contents)
+  write_file("#{type}_functions.h", contents)
 end
 
 def write_body(type, method_defs, attach_defs)
@@ -76,9 +76,9 @@ def write_body(type, method_defs, attach_defs)
     #include <torch/torch.h>
     #include <rice/Module.hpp>
 
-    #include "ruby_arg_parser.hpp"
-    #include "templates.hpp"
-    #include "wrap_outputs.hpp"
+    #include "ruby_arg_parser.h"
+    #include "templates.h"
+    #include "wrap_outputs.h"
 
     #include "torch/csrc/utils/cuda_lazy_init.h"
 

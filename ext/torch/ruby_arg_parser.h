@@ -5,8 +5,8 @@
 #include <torch/torch.h>
 #include <rice/Exception.hpp>
 
-#include "templates.hpp"
-#include "utils.hpp"
+#include "templates.h"
+#include "utils.h"
 
 enum class ParameterType {
   TENSOR, SCALAR, INT64, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
