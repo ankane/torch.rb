@@ -11,6 +11,7 @@ class TensorCreationTest < Minitest::Test
   def test_empty
     assert_equal [2, 3], Torch.empty(2, 3).shape
     assert_equal :float32, Torch.empty(2, 3).dtype
+    assert Torch.empty(2, 3, requires_grad: true).requires_grad?
   end
 
   def test_empty_like

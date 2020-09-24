@@ -378,6 +378,10 @@ module Torch
       _arange(start, finish, step, tensor_options(**options))
     end
 
+    def empty(*size, **options)
+      _empty(tensor_size(size), tensor_options(**options))
+    end
+
     def eye(n, m = nil, **options)
       _eye(n, m || n, tensor_options(**options))
     end
@@ -456,6 +460,10 @@ module Torch
 
     def ones_like(input, **options)
       ones(input.size, **like_options(input, options))
+    end
+
+    def empty_like(input, **options)
+      empty(input.size, **like_options(input, options))
     end
 
     def full_like(input, fill_value, **options)
