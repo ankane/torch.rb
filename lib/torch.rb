@@ -378,10 +378,6 @@ module Torch
       _arange(start, finish, step, tensor_options(**options))
     end
 
-    def empty(*size, **options)
-      _empty(tensor_size(size), tensor_options(**options))
-    end
-
     def eye(n, m = nil, **options)
       _eye(n, m || n, tensor_options(**options))
     end

@@ -177,8 +177,35 @@ struct RubyArgs {
       auto scalartype = signature.params[i].default_scalartype;
       return (scalartype == at::ScalarType::Undefined) ? at::typeMetaToScalarType(at::get_default_dtype()) : scalartype;
     }
-    // TODO convert symbol to scalar type
-    return from_ruby<ScalarType>(args[i]);
+
+    static std::unordered_map<VALUE, ScalarType> dtype_map = {
+      {ID2SYM(rb_intern("uint8")), ScalarType::Byte},
+      {ID2SYM(rb_intern("int8")), ScalarType::Char},
+      {ID2SYM(rb_intern("short")), ScalarType::Short},
+      {ID2SYM(rb_intern("int16")), ScalarType::Short},
+      {ID2SYM(rb_intern("int")), ScalarType::Int},
+      {ID2SYM(rb_intern("int32")), ScalarType::Int},
+      {ID2SYM(rb_intern("long")), ScalarType::Long},
+      {ID2SYM(rb_intern("int64")), ScalarType::Long},
+      {ID2SYM(rb_intern("float")), ScalarType::Float},
+      {ID2SYM(rb_intern("float32")), ScalarType::Float},
+      {ID2SYM(rb_intern("double")), ScalarType::Double},
+      {ID2SYM(rb_intern("float64")), ScalarType::Double},
+      {ID2SYM(rb_intern("complex_half")), ScalarType::ComplexHalf},
+      {ID2SYM(rb_intern("complex_float")), ScalarType::ComplexFloat},
+      {ID2SYM(rb_intern("complex_double")), ScalarType::ComplexDouble},
+      {ID2SYM(rb_intern("bool")), ScalarType::Bool},
+      {ID2SYM(rb_intern("qint8")), ScalarType::QInt8},
+      {ID2SYM(rb_intern("quint8")), ScalarType::QUInt8},
+      {ID2SYM(rb_intern("qint32")), ScalarType::QInt32},
+      {ID2SYM(rb_intern("bfloat16")), ScalarType::BFloat16},
+    };
+
+    auto it = dtype_map.find(args[i]);
+    if (it == dtype_map.end()) {
+      rb_raise(rb_eArgError, "invalid dtype: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    }
+    return it->second;
   }
 
   c10::optional<ScalarType> scalartypeOptional(int i) {
@@ -231,7 +258,16 @@ struct RubyArgs {
 
   c10::optional<at::Layout> layoutOptional(int i) {
     if (NIL_P(args[i])) return c10::nullopt;
-    throw std::runtime_error("layout not supported yet");
+
+    static std::unordered_map<VALUE, Layout> layout_map = {
+      {ID2SYM(rb_intern("strided")), Layout::Strided},
+    };
+
+    auto it = layout_map.find(args[i]);
+    if (it == layout_map.end()) {
+      rb_raise(rb_eArgError, "invalid layout: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    }
+    return it->second;
   }
 
   at::Device device(int i) {

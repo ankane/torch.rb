@@ -262,11 +262,6 @@ void Init_ext()
         return torch::arange(start, end, step, options);
       })
     .define_singleton_method(
-      "_empty",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::empty(size, options);
-      })
-    .define_singleton_method(
       "_eye",
       *[](int64_t m, int64_t n, const torch::TensorOptions &options) {
         return torch::eye(m, n, options);

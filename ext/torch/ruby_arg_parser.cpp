@@ -152,14 +152,15 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
       }
       return false;
     }
-    // case ParameterType::DIMNAME: return THPUtils_checkDimname(obj);
-    // case ParameterType::DIMNAME_LIST: {
-    //   if (THPUtils_checkDimnameList(obj)) {
-    //     return true;
-    //   }
-    //   // if a size is specified (e.g. DimnameList[1]) we also allow passing a single Dimname
-    //   return size == 1 && THPUtils_checkDimname(obj);
-    // }
+    case ParameterType::DIMNAME: return false; // return THPUtils_checkDimname(obj);
+    case ParameterType::DIMNAME_LIST: {
+      return false;
+      // if (THPUtils_checkDimnameList(obj)) {
+      //   return true;
+      // }
+      // // if a size is specified (e.g. DimnameList[1]) we also allow passing a single Dimname
+      // return size == 1 && THPUtils_checkDimname(obj);
+    }
     case ParameterType::TENSOR_LIST: {
       return is_tensor_list(obj, argnum, true /* throw_error */);
     }
@@ -171,16 +172,15 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
       return size > 0 && FIXNUM_P(obj);
     }
     case ParameterType::FLOAT_LIST: return (RB_TYPE_P(obj, T_ARRAY));
-    // case ParameterType::GENERATOR: return THPGenerator_Check(obj);
+    case ParameterType::GENERATOR: return false; // return THPGenerator_Check(obj);
     case ParameterType::BOOL: return obj == Qtrue || obj == Qfalse;
-    // case ParameterType::STORAGE: return isStorage(obj);
+    case ParameterType::STORAGE: return false; // return isStorage(obj);
     // case ParameterType::PYOBJECT: return true;
-    // case ParameterType::SCALARTYPE: return THPDtype_Check(obj) || THPPythonScalarType_Check(obj);
-    // case ParameterType::LAYOUT: return THPLayout_Check(obj);
-    // case ParameterType::MEMORY_FORMAT: return THPMemoryFormat_Check(obj);
-    // case ParameterType::QSCHEME: return THPQScheme_Check(obj);
-    // case ParameterType::DEVICE:
-    //   return FIXNUM_P(obj) || SYMBOL_P(obj) || THPDevice_Check(obj);
+    case ParameterType::SCALARTYPE: return SYMBOL_P(obj);
+    case ParameterType::LAYOUT: return SYMBOL_P(obj);
+    case ParameterType::MEMORY_FORMAT: return false; // return THPMemoryFormat_Check(obj);
+    case ParameterType::QSCHEME: return false; // return THPQScheme_Check(obj);
+    case ParameterType::DEVICE: return RB_TYPE_P(obj, T_STRING); // TODO check device
     case ParameterType::STRING: return RB_TYPE_P(obj, T_STRING);
     default: throw std::runtime_error("unknown parameter type");
   }
