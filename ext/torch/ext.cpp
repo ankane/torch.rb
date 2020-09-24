@@ -255,67 +255,6 @@ void Init_ext()
       *[] {
         return torch::get_parallel_info();
       })
-    // begin tensor creation
-    .define_singleton_method(
-      "_arange",
-      *[](Scalar start, Scalar end, Scalar step, const torch::TensorOptions &options) {
-        return torch::arange(start, end, step, options);
-      })
-    .define_singleton_method(
-      "_empty",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::empty(size, options);
-      })
-    .define_singleton_method(
-      "_eye",
-      *[](int64_t m, int64_t n, const torch::TensorOptions &options) {
-        return torch::eye(m, n, options);
-      })
-    .define_singleton_method(
-      "_full",
-      *[](std::vector<int64_t> size, Scalar fill_value, const torch::TensorOptions& options) {
-        return torch::full(size, fill_value, options);
-      })
-    .define_singleton_method(
-      "_linspace",
-      *[](Scalar start, Scalar end, int64_t steps, const torch::TensorOptions& options) {
-        return torch::linspace(start, end, steps, options);
-      })
-    .define_singleton_method(
-      "_logspace",
-      *[](Scalar start, Scalar end, int64_t steps, double base, const torch::TensorOptions& options) {
-        return torch::logspace(start, end, steps, base, options);
-      })
-    .define_singleton_method(
-      "_ones",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::ones(size, options);
-      })
-    .define_singleton_method(
-      "_rand",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::rand(size, options);
-      })
-    .define_singleton_method(
-      "_randint",
-      *[](int64_t low, int64_t high, std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::randint(low, high, size, options);
-      })
-    .define_singleton_method(
-      "_randn",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::randn(size, options);
-      })
-    .define_singleton_method(
-      "_randperm",
-      *[](int64_t n, const torch::TensorOptions &options) {
-        return torch::randperm(n, options);
-      })
-    .define_singleton_method(
-      "_zeros",
-      *[](std::vector<int64_t> size, const torch::TensorOptions &options) {
-        return torch::zeros(size, options);
-      })
     // begin operations
     .define_singleton_method(
       "_save",

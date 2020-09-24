@@ -369,63 +369,6 @@ module Torch
 
     # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
 
-    def arange(start, finish = nil, step = 1, **options)
-      # ruby doesn't support start = 0, finish, step = 1, ...
-      if finish.nil?
-        finish = start
-        start = 0
-      end
-      _arange(start, finish, step, tensor_options(**options))
-    end
-
-    def empty(*size, **options)
-      _empty(tensor_size(size), tensor_options(**options))
-    end
-
-    def eye(n, m = nil, **options)
-      _eye(n, m || n, tensor_options(**options))
-    end
-
-    def full(size, fill_value, **options)
-      _full(size, fill_value, tensor_options(**options))
-    end
-
-    def linspace(start, finish, steps = 100, **options)
-      _linspace(start, finish, steps, tensor_options(**options))
-    end
-
-    def logspace(start, finish, steps = 100, base = 10.0, **options)
-      _logspace(start, finish, steps, base, tensor_options(**options))
-    end
-
-    def ones(*size, **options)
-      _ones(tensor_size(size), tensor_options(**options))
-    end
-
-    def rand(*size, **options)
-      _rand(tensor_size(size), tensor_options(**options))
-    end
-
-    def randint(low = 0, high, size, **options)
-      _randint(low, high, size, tensor_options(**options))
-    end
-
-     def randn(*size, **options)
-      _randn(tensor_size(size), tensor_options(**options))
-    end
-
-    def randperm(n, **options)
-      # dtype hack in Python
-      # https://github.com/pytorch/pytorch/blob/v1.6.0/tools/autograd/gen_python_functions.py#L1307-L1311
-      options[:dtype] ||= :int64
-
-      _randperm(n, tensor_options(**options))
-    end
-
-    def zeros(*size, **options)
-      _zeros(tensor_size(size), tensor_options(**options))
-    end
-
     def tensor(data, **options)
       if options[:dtype].nil? && defined?(Numo::NArray) && data.is_a?(Numo::NArray)
         numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h

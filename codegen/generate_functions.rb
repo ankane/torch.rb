@@ -201,7 +201,7 @@ end
 
 def sort_functions(functions)
   # TODO
-  functions
+  functions.sort_by { |f| f["out"] ? 1 : 0 }
 end
 
 def generate_dispatch(function, def_method)
@@ -225,7 +225,7 @@ def generate_dispatch(function, def_method)
   function_code = generate_function_code(function, cpp_name, params, opt_index, remove_self)
 
   out_var = generate_out_var(function.out_index, function.retvals.size) if function.out? && function.retvals.size > 1 && function.retvals.all? { |v| v[:type] == "Tensor" }
-  tensor_options = generate_tensor_options(opt_params) if opt_params.any?
+  tensor_options = generate_tensor_options(function, opt_params) if opt_params.any?
 
   "// #{function.func}#{tensor_options}#{out_var}
   auto dispatch_#{cpp_name} = [](#{cpp_params.join(", ")}) -> #{retval} {
@@ -259,7 +259,7 @@ def split_opt_params(params)
   end
 end
 
-def generate_tensor_options(opt_params)
+def generate_tensor_options(function, opt_params)
   code = "\n  const auto options = TensorOptions()"
   order = ["dtype", "device", "layout", "requires_grad", "pin_memory"]
   opt_params.sort_by { |v| order.index(v[:name]) }.each do |opt|
@@ -268,7 +268,11 @@ def generate_tensor_options(opt_params)
     c =
       case opt[:name]
       when "dtype"
-        "dtype(_r.scalartype(#{i}))"
+        if function.base_name == "arange"
+          "dtype(_r.scalartypeOptional(#{i}))"
+        else
+          "dtype(_r.scalartype(#{i}))"
+        end
       when "device"
         "device(_r.device(#{i}))"
       when "layout"
