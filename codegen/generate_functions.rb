@@ -75,8 +75,10 @@ def write_body(type, method_defs, attach_defs)
 
     #include <torch/torch.h>
     #include <rice/Module.hpp>
-    #include "templates.hpp"
+
     #include "ruby_arg_parser.hpp"
+    #include "templates.hpp"
+    #include "wrap_outputs.hpp"
 
     #include "torch/csrc/utils/cuda_lazy_init.h"
 
