@@ -8,7 +8,7 @@
 #include <rice/Hash.hpp>
 
 #include "templates.hpp"
-#include "ruby_arg_parser.hpp"
+#include "utils.hpp"
 
 // generated with:
 // rake generate:functions

@@ -4,9 +4,9 @@
 
 #include <torch/torch.h>
 #include <rice/Exception.hpp>
-#include "templates.hpp"
 
-extern VALUE THPVariableClass;
+#include "templates.hpp"
+#include "utils.hpp"
 
 enum class ParameterType {
   TENSOR, SCALAR, INT64, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
@@ -61,43 +61,6 @@ struct FunctionSignature {
   bool deprecated;
   bool disable_torch_function;
 };
-
-// keep THP prefix for now to make it easier to compare code
-
-inline VALUE THPUtils_internSymbol(const std::string& str) {
-  return Symbol(str);
-}
-
-inline std::string THPUtils_unpackSymbol(VALUE obj) {
-  Check_Type(obj, T_SYMBOL);
-  obj = rb_funcall(obj, rb_intern("to_s"), 0);
-  return std::string(RSTRING_PTR(obj), RSTRING_LEN(obj));
-}
-
-inline std::string THPUtils_unpackString(VALUE obj) {
-  Check_Type(obj, T_STRING);
-  return std::string(RSTRING_PTR(obj), RSTRING_LEN(obj));
-}
-
-inline bool THPUtils_checkSymbol(VALUE obj) {
-  return SYMBOL_P(obj);
-}
-
-inline bool THPUtils_checkIndex(VALUE obj) {
-  return FIXNUM_P(obj);
-}
-
-inline bool THPUtils_checkScalar(VALUE obj) {
-  return FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj) || RB_TYPE_P(obj, T_COMPLEX);
-}
-
-inline bool THPVariable_Check(VALUE obj) {
-  return rb_obj_is_kind_of(obj, THPVariableClass);
-}
-
-inline bool THPVariable_CheckExact(VALUE obj) {
-  return rb_obj_is_instance_of(obj, THPVariableClass);
-}
 
 struct RubyArgs {
   RubyArgs(const FunctionSignature& signature, std::vector<VALUE> &args)
