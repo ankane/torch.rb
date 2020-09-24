@@ -60,7 +60,7 @@ class Function
 
       optional = false
       if type.include?("?")
-        optional = true
+        optional = true unless ["dtype", "device", "layout", "pin_memory"].include?(name)
         type = type.delete("?")
       end
 
@@ -88,7 +88,7 @@ class Function
         type: "bool",
         default: "False",
         keyword_only: true,
-        optional: true,
+        optional: false,
         modifier: nil,
         list_size: nil
       }
