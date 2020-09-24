@@ -458,10 +458,6 @@ module Torch
       ones(input.size, **like_options(input, options))
     end
 
-    def empty_like(input, **options)
-      empty(input.size, **like_options(input, options))
-    end
-
     def full_like(input, fill_value, **options)
       full(input.size, fill_value, **like_options(input, options))
     end
