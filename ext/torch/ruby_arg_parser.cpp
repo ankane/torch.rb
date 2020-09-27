@@ -485,8 +485,7 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
   rb_raise(rb_eArgError, "invalid keyword arguments");
 }
 
-// TODO use Qundef
-VALUE missing = Qnil;
+VALUE missing = Qundef;
 
 bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, std::vector<VALUE> &dst,  // NOLINT
                               bool raise_exception) {

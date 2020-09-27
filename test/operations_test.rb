@@ -28,7 +28,6 @@ class OperationsTest < Minitest::Test
     assert_equal "abs() takes 1 positional argument but 2 were given", error.message
 
     error = assert_raises(ArgumentError) do
-      x = Torch.tensor([1])
       Torch.abs(x, bad: 2)
     end
     assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
@@ -39,10 +38,14 @@ class OperationsTest < Minitest::Test
     assert_equal "abs(): argument 'input' (position 1) must be Tensor, not Integer", error.message
 
     error = assert_raises(ArgumentError) do
-      x = Torch.tensor([1])
       Torch.abs(x, out: 2)
     end
     assert_equal "abs(): argument 'out' must be Tensor, not Integer", error.message
+
+    error = assert_raises(ArgumentError) do
+      Torch.abs(nil)
+    end
+    assert_equal "abs(): argument 'input' (position 1) must be Tensor, not NilClass", error.message
   end
 
   def test_add
