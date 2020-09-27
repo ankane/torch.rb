@@ -4,6 +4,7 @@ class TensorIndexingTest < Minitest::Test
   def test_getter
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [0, 1, 2], x[0].to_a
+    assert_kind_of Torch::Tensor, x[0]
     assert_equal 5, x[1, 2].item
     assert_equal [0, 1], x[0, 0..1].to_a
     assert_equal [[[0, 1, 2], [3, 4, 5]]], x[true].to_a
