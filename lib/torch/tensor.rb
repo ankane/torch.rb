@@ -91,6 +91,14 @@ module Torch
       end
     end
 
+    def stride(dim = nil)
+      if dim
+        _stride(dim)
+      else
+        _strides
+      end
+    end
+
     # mirror Python len()
     def length
       size(0)

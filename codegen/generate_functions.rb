@@ -111,7 +111,7 @@ def generate_attach_def(name, type, def_method)
       name
     end
 
-  ruby_name = "_#{ruby_name}" if ["size", "random!"].include?(ruby_name)
+  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!"].include?(ruby_name)
 
   "rb_#{def_method}(m, \"#{ruby_name}\", #{type}_#{name}, -1);"
 end

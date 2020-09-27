@@ -323,6 +323,15 @@ void Init_ext()
         return a;
       })
     .define_method(
+      "_strides",
+      *[](Tensor& self) {
+        Array a;
+        for (auto &stride : self.strides()) {
+          a.push(stride);
+        }
+        return a;
+      })
+    .define_method(
       "_index",
       *[](Tensor& self, Array indices) {
         auto vec = index_vector(indices);

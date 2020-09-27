@@ -82,6 +82,9 @@ class TensorAttributesTest < Minitest::Test
     assert_equal [2, 3], x.size
     assert_equal 2, x.size(0)
     assert_equal 3, x.size(1)
+    assert_equal [3, 1], x.stride
+    assert_equal 3, x.stride(0)
+    assert_equal 1, x.stride(1)
     assert_equal :float32, x.dtype
     assert_equal :strided, x.layout
     assert_equal "cpu", x.device
