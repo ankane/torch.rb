@@ -1,53 +1,6 @@
 require_relative "test_helper"
 
 class OperationsTest < Minitest::Test
-  def test_out
-    x = Torch.tensor([1.0, 2, -3])
-    assert_equal [1, 2, 3], Torch.abs(x).to_a
-    out = Torch.empty(3)
-    Torch.abs(x, out: out)
-    assert_equal [1, 2, 3], out.to_a
-  end
-
-  def test_abs
-    x = Torch.tensor([-1.0])
-    assert_equal [1], Torch.abs(x).to_a
-
-    out = Torch.empty(1, dtype: :float32)
-    Torch.abs(x, out: out)
-    assert_equal [1], out.to_a
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs
-    end
-    assert_equal "abs() missing 1 required positional arguments: \"input\"", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(1, 2)
-    end
-    assert_equal "abs() takes 1 positional argument but 2 were given", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(x, bad: 2)
-    end
-    assert_equal "abs() got an unexpected keyword argument 'bad'", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(1)
-    end
-    assert_equal "abs(): argument 'input' (position 1) must be Tensor, not Integer", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(x, out: 2)
-    end
-    assert_equal "abs(): argument 'out' must be Tensor, not Integer", error.message
-
-    error = assert_raises(ArgumentError) do
-      Torch.abs(nil)
-    end
-    assert_equal "abs(): argument 'input' (position 1) must be Tensor, not NilClass", error.message
-  end
-
   def test_add
     x = Torch.ones(2)
     assert_equal [2, 2], (x + x).to_a
