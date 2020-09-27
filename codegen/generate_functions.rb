@@ -229,7 +229,7 @@ def generate_dispatch(function, def_method)
 
   "// #{function.func}#{tensor_options}#{out_var}
   auto dispatch_#{cpp_name} = [](#{cpp_params.join(", ")}) -> #{retval} {
-    // TODO release GVL
+    // in future, release GVL
     #{dispatch_code}
   };
   #{function_code}"
