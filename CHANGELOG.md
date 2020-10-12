@@ -1,3 +1,7 @@
+## 0.4.1 (unreleased)
+
+- Fixed error with Ruby < 2.7
+
 ## 0.4.0 (2020-09-27)
 
 - Improved performance of methods

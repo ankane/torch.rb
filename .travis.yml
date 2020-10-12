@@ -1,6 +1,12 @@
-dist: bionic
 language: ruby
-rvm: 2.7
+jobs:
+  include:
+    - rvm: 2.7
+      dist: focal
+    - rvm: 2.6
+      dist: bionic
+    - rvm: 2.5
+      dist: xenial
 before_install:
   - export LIBTORCH_VERSION=1.6.0
   - ./test/ci/install_libtorch.sh
