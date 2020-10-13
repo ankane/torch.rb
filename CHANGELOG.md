@@ -1,6 +1,6 @@
-## 0.4.1 (unreleased)
+## 0.4.1 (2020-10-12)
 
-- Fixed error with Ruby < 2.7
+- Fixed installation error with Ruby < 2.7
 
 ## 0.4.0 (2020-09-27)
 
