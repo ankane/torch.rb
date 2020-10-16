@@ -46,14 +46,14 @@ module Torch
             state[:step] += 1
 
             if group[:weight_decay] != 0
-              grad = grad.add(group[:weight_decay], p.data)
+              grad = grad.add(p.data, alpha: group[:weight_decay])
             end
 
             square_avg.mul!(alpha).addcmul!(1 - alpha, grad, grad)
 
             if group[:centered]
               grad_avg = state[:grad_avg]
-              grad_avg.mul!(alpha).add!(1 - alpha, grad)
+              grad_avg.mul!(alpha).add!(grad, alpha: 1 - alpha)
               avg = square_avg.addcmul(-1, grad_avg, grad_avg).sqrt!.add!(group[:eps])
             else
               avg = square_avg.sqrt.add!(group[:eps])
@@ -62,7 +62,7 @@ module Torch
             if group[:momentum] > 0
               buf = state[:momentum_buffer]
               buf.mul!(group[:momentum]).addcdiv!(grad, avg)
-              p.data.add!(-group[:lr], buf)
+              p.data.add!(buf, alpha: -group[:lr])
             else
               p.data.addcdiv!(-group[:lr], grad, avg)
             end

@@ -36,7 +36,7 @@ module Torch
             state[:step] += 1
 
             if group[:weight_decay] != 0
-              grad = grad.add(group[:weight_decay], p.data)
+              grad = grad.add(p.data, alpha: group[:weight_decay])
             end
 
             # decay term

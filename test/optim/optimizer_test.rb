@@ -22,11 +22,12 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_asgd
-    assert_works Torch::Optim::ASGD
+    assert_works Torch::Optim::ASGD, weight_decay: 0.1
   end
 
   def test_rmsprop
     assert_works Torch::Optim::RMSprop
+    assert_works Torch::Optim::RMSprop, weight_decay: 0.1
   end
 
   def test_rprop
