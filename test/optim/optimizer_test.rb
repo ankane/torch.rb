@@ -34,14 +34,14 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_sgd
-    assert_works Torch::Optim::SGD
+    assert_works Torch::Optim::SGD, momentum: 0.8, nesterov: true
   end
 
   private
 
-  def assert_works(cls)
+  def assert_works(cls, **options)
     net = TestNet.new
-    optimizer = cls.new(net.parameters, lr: 0.01)
+    optimizer = cls.new(net.parameters, lr: 0.01, **options)
     input = Torch.randn(1, 1, 32, 32)
     target = Torch.randn(10)
     target = target.view(1, -1)

@@ -1,3 +1,7 @@
+## 0.4.2 (unreleased)
+
+- Fixed error with `momentum` and `nesterov` options for SGD
+
 ## 0.4.1 (2020-10-12)
 
 - Fixed installation error with Ruby < 2.7

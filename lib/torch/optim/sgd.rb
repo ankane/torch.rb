@@ -36,14 +36,14 @@ module Torch
             end
             if momentum != 0
               param_state = @state[p]
-              if !param_state.key(:momentum_buffer)
+              if !param_state.key?(:momentum_buffer)
                 buf = param_state[:momentum_buffer] = Torch.clone(d_p).detach
               else
                 buf = param_state[:momentum_buffer]
                 buf.mul!(momentum).add!(d_p, alpha: 1 - dampening)
               end
               if nesterov
-                d_p = d_p.add(momentum, buf)
+                d_p = d_p.add(buf, alpha: momentum)
               else
                 d_p = buf
               end
