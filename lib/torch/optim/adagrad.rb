@@ -49,7 +49,7 @@ module Torch
               if p.grad.data.sparse?
                 raise Error, "weight_decay option is not compatible with sparse gradients"
               end
-              grad = grad.add(group[:weight_decay], p.data)
+              grad = grad.add(p.data, alpha: group[:weight_decay])
             end
 
             clr = group[:lr] / (1 + (state[:step] - 1) * group[:lr_decay])

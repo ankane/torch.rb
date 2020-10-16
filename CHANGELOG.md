@@ -1,6 +1,6 @@
 ## 0.4.2 (unreleased)
 
-- Fixed error with `momentum` and `nesterov` options for SGD
+- Fixed errors with optimizer options
 
 ## 0.4.1 (2020-10-12)
 

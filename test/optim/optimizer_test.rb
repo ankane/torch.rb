@@ -2,11 +2,11 @@ require_relative "../test_helper"
 
 class OptimizerTest < Minitest::Test
   def test_adadelta
-    assert_works Torch::Optim::Adadelta
+    assert_works Torch::Optim::Adadelta, weight_decay: 0.1
   end
 
   def test_adagrad
-    assert_works Torch::Optim::Adagrad
+    assert_works Torch::Optim::Adagrad, weight_decay: 0.1
   end
 
   def test_adam
@@ -14,7 +14,7 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_adamax
-    assert_works Torch::Optim::Adamax
+    assert_works Torch::Optim::Adamax, weight_decay: 0.1
   end
 
   def test_adamw
