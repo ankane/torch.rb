@@ -20,6 +20,7 @@ class OptimizerTest < Minitest::Test
 
   def test_adamw
     assert_works Torch::Optim::AdamW
+    assert_works Torch::Optim::AdamW, amsgrad: true
   end
 
   def test_asgd
