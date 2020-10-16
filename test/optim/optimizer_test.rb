@@ -10,7 +10,8 @@ class OptimizerTest < Minitest::Test
   end
 
   def test_adam
-    assert_works Torch::Optim::Adam
+    assert_works Torch::Optim::Adam, weight_decay: 0.1
+    assert_works Torch::Optim::Adam, amsgrad: true
   end
 
   def test_adamax
