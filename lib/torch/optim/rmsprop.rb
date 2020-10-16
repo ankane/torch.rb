@@ -54,14 +54,14 @@ module Torch
             if group[:centered]
               grad_avg = state[:grad_avg]
               grad_avg.mul!(alpha).add!(grad, alpha: 1 - alpha)
-              avg = square_avg.addcmul(-1, grad_avg, grad_avg).sqrt!.add!(group[:eps])
+              avg = square_avg.addcmul(grad_avg, grad_avg, value: -1).sqrt!.add!(group[:eps])
             else
               avg = square_avg.sqrt.add!(group[:eps])
             end
 
             if group[:momentum] > 0
               buf = state[:momentum_buffer]
-              buf.mul!(group[:momentum]).addcdiv!(grad, avg)
+              buf.mul!(group[:momentum]).addcdiv!(1, grad, avg)
               p.data.add!(buf, alpha: -group[:lr])
             else
               p.data.addcdiv!(-group[:lr], grad, avg)

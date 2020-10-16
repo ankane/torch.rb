@@ -27,7 +27,7 @@ class OptimizerTest < Minitest::Test
 
   def test_rmsprop
     assert_works Torch::Optim::RMSprop
-    assert_works Torch::Optim::RMSprop, weight_decay: 0.1
+    assert_works Torch::Optim::RMSprop, weight_decay: 0.1, centered: true, momentum: 0.1
   end
 
   def test_rprop
