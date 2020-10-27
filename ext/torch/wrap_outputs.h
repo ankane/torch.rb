@@ -90,3 +90,10 @@ inline Object wrap(torch::TensorList x) {
   }
   return Object(a);
 }
+
+inline Object wrap(std::tuple<double, double> x) {
+  Array a;
+  a.push(to_ruby<double>(std::get<0>(x)));
+  a.push(to_ruby<double>(std::get<1>(x)));
+  return Object(a);
+}

@@ -8,7 +8,7 @@ jobs:
     - rvm: 2.5
       dist: xenial
 before_install:
-  - export LIBTORCH_VERSION=1.6.0
+  - export LIBTORCH_VERSION=1.7.0
   - ./test/ci/install_libtorch.sh
 cache:
   bundler: true

@@ -372,7 +372,7 @@ void Init_ext()
     .define_method(
       "grad=",
       *[](Tensor& self, torch::Tensor& grad) {
-        self.grad() = grad;
+        self.mutable_grad() = grad;
       })
     .define_method(
       "_dtype",
@@ -609,7 +609,7 @@ void Init_ext()
     .define_method(
       "grad=",
       *[](Parameter& self, torch::Tensor& grad) {
-        self.grad() = grad;
+        self.mutable_grad() = grad;
       });
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
