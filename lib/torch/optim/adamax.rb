@@ -57,7 +57,7 @@ module Torch
             bias_correction = 1 - beta1 ** state[:step]
             clr = group[:lr] / bias_correction
 
-            p.data.addcdiv!(-clr, exp_avg, exp_inf)
+            p.data.addcdiv!(exp_avg, exp_inf, value: -clr)
           end
         end
 

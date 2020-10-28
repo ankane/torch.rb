@@ -349,16 +349,6 @@ void Init_ext()
         return self.is_contiguous();
       })
     .define_method(
-      "addcmul!",
-      *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
-        return self.addcmul_(tensor1, tensor2, value);
-      })
-    .define_method(
-      "addcdiv!",
-      *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
-        return self.addcdiv_(tensor1, tensor2, value);
-      })
-    .define_method(
       "_requires_grad!",
       *[](Tensor& self, bool requires_grad) {
         return self.set_requires_grad(requires_grad);
