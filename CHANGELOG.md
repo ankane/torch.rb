@@ -1,4 +1,4 @@
-## 0.4.2 (unreleased)
+## 0.4.2 (2020-10-27)
 
 - Fixed errors with optimizer options
 
