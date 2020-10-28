@@ -261,6 +261,8 @@ module Torch
         Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
         Torch.tensor(args.first, dtype: dtype, device: device)
+      elsif args.size == 0
+        Torch.empty(0, dtype: dtype, device: device)
       else
         Torch.empty(*args, dtype: dtype, device: device)
       end

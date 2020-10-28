@@ -6,6 +6,16 @@ class TensorClassesTest < Minitest::Test
     assert_equal :float32, x.dtype
   end
 
+  def test_tensor_empty
+    x = Torch::FloatTensor.new
+    assert_equal [0], x.size
+  end
+
+  def test_tensor_multiple
+    x = Torch::FloatTensor.new(1, 2)
+    assert_equal [1, 2], x.shape
+  end
+
   def test_float_tensor
     x = Torch::FloatTensor.new([1, 2])
     assert_equal :float32, x.dtype

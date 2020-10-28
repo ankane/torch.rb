@@ -1,3 +1,7 @@
+## 0.5.1 (unreleased)
+
+- Fixed error with tensor classes and no arguments
+
 ## 0.5.0 (2020-10-28)
 
 - Updated LibTorch to 1.7.0
