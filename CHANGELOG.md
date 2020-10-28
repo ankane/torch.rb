@@ -1,6 +1,7 @@
 ## 0.5.0 (unreleased)
 
 - Updated LibTorch to 1.7.0
+- Removed deprecated overload for `addcmul!` and `addcdiv!`
 
 ## 0.4.2 (2020-10-27)
 

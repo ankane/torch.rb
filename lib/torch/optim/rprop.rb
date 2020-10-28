@@ -52,7 +52,7 @@ module Torch
             grad[sign.eq(etaminus)] = 0
 
             # update parameters
-            p.data.addcmul!(-1, grad.sign, step_size)
+            p.data.addcmul!(grad.sign, step_size, value: -1)
 
             state[:prev].copy!(grad)
           end
