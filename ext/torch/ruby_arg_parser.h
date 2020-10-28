@@ -91,7 +91,7 @@ struct RubyArgs {
   inline c10::optional<int64_t> toInt64Optional(int i);
   inline c10::optional<bool> toBoolOptional(int i);
   inline c10::optional<double> toDoubleOptional(int i);
-  // inline c10::OptionalArray<double> doublelistOptional(int i);
+  inline c10::OptionalArray<double> doublelistOptional(int i);
   // inline at::Layout layout(int i);
   // inline at::Layout layoutWithDefault(int i, at::Layout default_layout);
   inline c10::optional<at::Layout> layoutOptional(int i);
@@ -105,7 +105,7 @@ struct RubyArgs {
   inline c10::optional<at::MemoryFormat> memoryformatOptional(int i);
   // inline at::QScheme toQScheme(int i);
   inline std::string string(int i);
-  // inline c10::optional<std::string> stringOptional(int i);
+  inline c10::optional<std::string> stringOptional(int i);
   // inline PyObject* pyobject(int i);
   inline int64_t toInt64(int i);
   // inline int64_t toInt64WithDefault(int i, int64_t default_int);
@@ -249,6 +249,25 @@ inline c10::optional<double> RubyArgs::toDoubleOptional(int i) {
   return toDouble(i);
 }
 
+inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
+  if (NIL_P(args[i])) return {};
+
+  VALUE arg = args[i];
+  auto size = RARRAY_LEN(arg);
+  std::vector<double> res(size);
+  for (idx = 0; idx < size; idx++) {
+    VALUE obj = rb_ary_entry(arg, idx);
+    if (FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj)) {
+      res[idx] = from_ruby<double>(obj);
+    } else {
+      rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+          signature.name.c_str(), signature.params[i].name.c_str(),
+          signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
+    }
+  }
+  return res;
+}
+
 inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
 
@@ -282,6 +301,11 @@ inline c10::optional<at::MemoryFormat> RubyArgs::memoryformatOptional(int i) {
 }
 
 inline std::string RubyArgs::string(int i) {
+  return from_ruby<std::string>(args[i]);
+}
+
+inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
+  if (!args[i]) return c10::nullopt;
   return from_ruby<std::string>(args[i]);
 }
 

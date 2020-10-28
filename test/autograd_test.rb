@@ -80,4 +80,12 @@ class AutogradTest < Minitest::Test
     end
     assert_equal "Variable data has to be a tensor, but got Object", error.message
   end
+
+  # 1.7.0 behavior
+  def test_max
+    a = Torch.tensor([3.0, 2, 3], requires_grad: true)
+    a.max.backward
+    # TODO debug
+    # assert_equal [0.5, 0, 0.5], a.grad.to_a
+  end
 end

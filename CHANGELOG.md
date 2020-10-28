@@ -1,3 +1,7 @@
+## 0.5.0 (unreleased)
+
+- Updated LibTorch to 1.7.0
+
 ## 0.4.2 (2020-10-27)
 
 - Fixed errors with optimizer options

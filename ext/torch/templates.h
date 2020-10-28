@@ -19,6 +19,7 @@ using torch::TensorOptions;
 using torch::Layout;
 using torch::MemoryFormat;
 using torch::IntArrayRef;
+using torch::ArrayRef;
 using torch::TensorList;
 using torch::Storage;
 
