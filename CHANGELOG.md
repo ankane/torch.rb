@@ -1,4 +1,4 @@
-## 0.5.2 (unreleased)
+## 0.5.2 (2020-10-29)
 
 - Fixed `undefined symbol` error with CUDA
 
