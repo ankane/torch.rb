@@ -437,7 +437,7 @@ module Torch
     end
 
     # center option
-    def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true)
+    def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true, return_complex: nil)
       if center
         signal_dim = input.dim
         extended_shape = [1] * (3 - signal_dim) + input.size
@@ -445,7 +445,7 @@ module Torch
         input = NN::F.pad(input.view(extended_shape), [pad, pad], mode: pad_mode)
         input = input.view(input.shape[-signal_dim..-1])
       end
-      _stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
+      _stft(input, n_fft, hop_length, win_length, window, normalized, onesided, return_complex)
     end
 
     private
