@@ -1,3 +1,7 @@
+## 0.5.2 (unreleased)
+
+- Fixed `undefined symbol` error with CUDA
+
 ## 0.5.1 (2020-10-28)
 
 - Fixed error with tensor classes and no arguments
