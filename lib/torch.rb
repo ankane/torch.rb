@@ -436,6 +436,7 @@ module Torch
       zeros(input.size, **like_options(input, options))
     end
 
+    # center option
     def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true)
       if center
         signal_dim = input.dim
@@ -445,11 +446,6 @@ module Torch
         input = input.view(input.shape[-signal_dim..-1])
       end
       _stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
-    end
-
-    def clamp(tensor, min, max)
-      tensor = _clamp_min(tensor, min)
-      _clamp_max(tensor, max)
     end
 
     private

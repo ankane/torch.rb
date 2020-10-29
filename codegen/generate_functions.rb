@@ -112,7 +112,7 @@ def generate_attach_def(name, type, def_method)
       name
     end
 
-  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!"].include?(ruby_name)
+  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "

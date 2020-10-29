@@ -1,6 +1,7 @@
 ## 0.5.1 (unreleased)
 
 - Fixed error with tensor classes and no arguments
+- Fixed error with `stft` and `clamp` methods
 
 ## 0.5.0 (2020-10-28)
 
