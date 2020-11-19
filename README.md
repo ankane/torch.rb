@@ -8,7 +8,7 @@ Check out:
 - [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
 
-[![Build Status](https://travis-ci.org/ankane/torch.rb.svg?branch=master)](https://travis-ci.org/ankane/torch.rb)
+[![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
 
 ## Installation
 

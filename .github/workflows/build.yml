@@ -1,0 +1,38 @@
+name: build
+on: [push, pull_request]
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - ruby: 2.7
+          os: ubuntu-20.04
+          libtorch: 1.7.0
+        - ruby: 2.6
+          os: ubuntu-18.04
+          libtorch: 1.7.0
+        - ruby: 2.5
+          os: ubuntu-16.04
+          libtorch: 1.7.0
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+    - uses: actions/cache@v2
+      with:
+        path: libtorch
+        key: libtorch-${{ matrix.libtorch }}
+      id: cache-libtorch
+    - name: Download LibTorch
+      if: steps.cache-libtorch.outputs.cache-hit != 'true'
+      run: |
+        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-${{ matrix.libtorch }}%2Bcpu.zip
+        unzip -q libtorch.zip
+    # use absolute path since rake compile changes working directory
+    - run: bundle exec rake compile -- --with-torch-dir="$(pwd)/libtorch"
+    - run: bundle exec rake test
