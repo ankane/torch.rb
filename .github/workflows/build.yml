@@ -10,13 +10,12 @@ jobs:
         include:
         - ruby: 2.7
           os: ubuntu-20.04
-          libtorch: 1.7.0
         - ruby: 2.6
           os: ubuntu-18.04
-          libtorch: 1.7.0
         - ruby: 2.5
           os: ubuntu-16.04
-          libtorch: 1.7.0
+    env:
+      LIBTORCH_VERSION: 1.7.0
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
@@ -26,12 +25,12 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: libtorch
-        key: libtorch-${{ matrix.libtorch }}
+        key: libtorch-${{ env.LIBTORCH_VERSION }}
       id: cache-libtorch
     - name: Download LibTorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
-        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-${{ matrix.libtorch }}%2Bcpu.zip
+        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
         unzip -q libtorch.zip
     # use absolute path since rake compile changes working directory
     - run: bundle exec rake compile -- --with-torch-dir="$(pwd)/libtorch"
