@@ -24,14 +24,14 @@ jobs:
         bundler-cache: true
     - uses: actions/cache@v2
       with:
-        path: libtorch
+        path: ~/libtorch
         key: libtorch-${{ env.LIBTORCH_VERSION }}
       id: cache-libtorch
     - name: Download LibTorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
+        cd ~
         wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
         unzip -q libtorch.zip
-    # use absolute path since rake compile changes working directory
-    - run: bundle exec rake compile -- --with-torch-dir="$(pwd)/libtorch"
+    - run: bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
     - run: bundle exec rake test
