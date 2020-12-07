@@ -57,9 +57,9 @@ module Torch
             if grad.sparse?
               raise NotImplementedYet
             else
-              state[:sum].addcmul!(1, grad, grad)
+              state[:sum].addcmul!(grad, grad, value: 1)
               std = state[:sum].sqrt.add!(group[:eps])
-              p.data.addcdiv!(-clr, grad, std)
+              p.data.addcdiv!(grad, std, value: -clr)
             end
           end
         end

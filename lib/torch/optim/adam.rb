@@ -58,7 +58,7 @@ module Torch
 
             # Decay the first and second moment running average coefficient
             exp_avg.mul!(beta1).add!(grad, alpha: 1 - beta1)
-            exp_avg_sq.mul!(beta2).addcmul!(1 - beta2, grad, grad)
+            exp_avg_sq.mul!(beta2).addcmul!(grad, grad, value: 1 - beta2)
             if amsgrad
               # Maintains the maximum of all 2nd moment running avg. till now
               Torch.max(max_exp_avg_sq, exp_avg_sq, out: max_exp_avg_sq)
@@ -70,7 +70,7 @@ module Torch
 
             step_size = group[:lr] / bias_correction1
 
-            p.data.addcdiv!(-step_size, exp_avg, denom)
+            p.data.addcdiv!(exp_avg, denom, value: -step_size)
           end
         end
 

@@ -328,6 +328,8 @@ def generate_function_params(function, params, remove_self)
         "tensorlist"
       when /\Aint\[/
         "intlist"
+      when "float[]"
+        "doublelist"
       when "Scalar"
         "scalar"
       when "bool"
@@ -419,6 +421,8 @@ def generate_dispatch_params(function, params)
         "double"
       when /\Aint\[/
         "IntArrayRef"
+      when "float[]"
+        "ArrayRef<double>"
       when "str"
         "std::string"
       when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
@@ -466,7 +470,9 @@ def generate_dispatch_retval(function)
   when ["Tensor", "Tensor", "Tensor", "Tensor", "Tensor"]
     "std::tuple<Tensor,Tensor,Tensor,Tensor,Tensor>"
   when ["Tensor", "Tensor", "float", "int"]
-    "std::tuple<Tensor,Tensor,float,int>"
+    "std::tuple<Tensor,Tensor,double,int>"
+  when ["float", "float"]
+    "std::tuple<double,double>"
   else
     raise "Unknown retvals: #{types}"
   end
@@ -539,6 +545,8 @@ def signature_type(param)
       "std::string"
     when "Scalar", "Dimname", "bool", "ScalarType", "Layout", "Device", "Generator", "MemoryFormat", "Storage"
       param[:type]
+    when "float[]"
+      "ArrayRef<double>"
     else
       raise "Unknown type: #{param[:type]}"
     end

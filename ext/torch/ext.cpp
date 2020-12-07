@@ -349,16 +349,6 @@ void Init_ext()
         return self.is_contiguous();
       })
     .define_method(
-      "addcmul!",
-      *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
-        return self.addcmul_(tensor1, tensor2, value);
-      })
-    .define_method(
-      "addcdiv!",
-      *[](Tensor& self, Scalar value, const Tensor & tensor1, const Tensor & tensor2) {
-        return self.addcdiv_(tensor1, tensor2, value);
-      })
-    .define_method(
       "_requires_grad!",
       *[](Tensor& self, bool requires_grad) {
         return self.set_requires_grad(requires_grad);
@@ -372,7 +362,7 @@ void Init_ext()
     .define_method(
       "grad=",
       *[](Tensor& self, torch::Tensor& grad) {
-        self.grad() = grad;
+        self.mutable_grad() = grad;
       })
     .define_method(
       "_dtype",
@@ -609,7 +599,7 @@ void Init_ext()
     .define_method(
       "grad=",
       *[](Parameter& self, torch::Tensor& grad) {
-        self.grad() = grad;
+        self.mutable_grad() = grad;
       });
 
   Class rb_cDevice = define_class_under<torch::Device>(rb_mTorch, "Device")
