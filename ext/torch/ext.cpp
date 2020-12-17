@@ -16,8 +16,6 @@
 #include "tensor_functions.h"
 #include "nn_functions.h"
 
-//#include "cuda_functions.h"
-
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
