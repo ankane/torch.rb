@@ -174,5 +174,10 @@ module Torch
       return _random!(0, *args) if args.size == 1
       _random!(*args)
     end
+
+    # center option
+    def stft(*args)
+      Torch.stft(*args)
+    end
   end
 end

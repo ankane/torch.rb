@@ -1,4 +1,13 @@
-## 0.5.0 (unreleased)
+## 0.5.2 (2020-10-29)
+
+- Fixed `undefined symbol` error with CUDA
+
+## 0.5.1 (2020-10-28)
+
+- Fixed error with tensor classes and no arguments
+- Fixed error with `stft` and `clamp` methods
+
+## 0.5.0 (2020-10-28)
 
 - Updated LibTorch to 1.7.0
 - Removed deprecated overload for `addcmul!` and `addcdiv!`

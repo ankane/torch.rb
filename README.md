@@ -8,7 +8,7 @@ Check out:
 - [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
 
-[![Build Status](https://travis-ci.org/ankane/torch.rb.svg?branch=master)](https://travis-ci.org/ankane/torch.rb)
+[![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
 
 ## Installation
 
@@ -416,7 +416,7 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
-0.5.0+ | 1.7.0
+0.5.0+ | 1.7.0-1.7.1
 0.3.0+ | 1.6.0
 0.2.0-0.2.7 | 1.5.0-1.5.1
 0.1.8 | 1.4.0

@@ -261,6 +261,8 @@ module Torch
         Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
         Torch.tensor(args.first, dtype: dtype, device: device)
+      elsif args.size == 0
+        Torch.empty(0, dtype: dtype, device: device)
       else
         Torch.empty(*args, dtype: dtype, device: device)
       end
@@ -434,7 +436,8 @@ module Torch
       zeros(input.size, **like_options(input, options))
     end
 
-    def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true)
+    # center option
+    def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true, return_complex: nil)
       if center
         signal_dim = input.dim
         extended_shape = [1] * (3 - signal_dim) + input.size
@@ -442,12 +445,7 @@ module Torch
         input = NN::F.pad(input.view(extended_shape), [pad, pad], mode: pad_mode)
         input = input.view(input.shape[-signal_dim..-1])
       end
-      _stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
-    end
-
-    def clamp(tensor, min, max)
-      tensor = _clamp_min(tensor, min)
-      _clamp_max(tensor, max)
+      _stft(input, n_fft, hop_length, win_length, window, normalized, onesided, return_complex)
     end
 
     private
