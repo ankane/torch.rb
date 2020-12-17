@@ -16,6 +16,8 @@
 #include "tensor_functions.h"
 #include "nn_functions.h"
 
+//#include "cuda_functions.h"
+
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
@@ -618,5 +620,7 @@ void Init_ext()
   Module rb_mCUDA = define_module_under(rb_mTorch, "CUDA")
     .add_handler<torch::Error>(handle_error)
     .define_singleton_method("available?", &torch::cuda::is_available)
-    .define_singleton_method("device_count", &torch::cuda::device_count);
+    .define_singleton_method("device_count", &torch::cuda::device_count)
+    .define_singleton_method("manual_seed", &torch::cuda::manual_seed)
+    .define_singleton_method("manual_seed_all", &torch::cuda::manual_seed_all);
 }
