@@ -134,7 +134,7 @@ module Torch
                 param.copy!(input_param)
               end
             else
-              raise Error, "Unknown parameter: #{k1}"
+              raise Error, "Unknown parameter `#{k2}` in module `#{k1}`"
             end
           else
             raise Error, "Unknown module: #{k1}"
