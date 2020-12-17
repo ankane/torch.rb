@@ -46,7 +46,7 @@ class CUDATest < Minitest::Test
       end
     else
       error = assert_raises do
-        Torch.random 1, device: 'cuda:0'
+        Torch.rand 1, device: 'cuda:0'
       end
       
       assert_equal "PyTorch is not linked with support for cuda devices", error.message
