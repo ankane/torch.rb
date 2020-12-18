@@ -30,13 +30,13 @@ class CUDATest < Minitest::Test
   def test_random_seed
     if Torch::CUDA.available?
       Torch::CUDA.manual_seed_all 42
-      
+
       comparables = Torch::CUDA.device_count.times.map do |i|
         x, y = 2.times.map { Torch.rand(100, device: "cuda:#{i}").to_a }
         assert x != y
         [x, y]
       end
-      
+
       Torch::CUDA.manual_seed_all 42
       Torch::CUDA.device_count.times.map do |i|
         x, y = 2.times.map { Torch.rand(100, device: "cuda:#{i}").to_a }
@@ -48,7 +48,7 @@ class CUDATest < Minitest::Test
       error = assert_raises do
         Torch.rand 1, device: 'cuda:0'
       end
-      
+
       assert_equal "PyTorch is not linked with support for cuda devices", error.message
     end
   end
