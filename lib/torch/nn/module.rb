@@ -146,7 +146,6 @@ module Torch
               param.copy!(input_param)
             end
           else
-            p mod, param.class, mod.named_parameters.keys, mod.named_buffers.keys
             raise Error, "Unknown parameter `#{param_name}` in module `#{mods.join '.'}`"
           end
         end
