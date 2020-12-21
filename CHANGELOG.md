@@ -1,3 +1,7 @@
+## 0.5.3 (unreleased)
+
+- Added `manual_seed` and `manual_seed_all` for CUDA
+
 ## 0.5.2 (2020-10-29)
 
 - Fixed `undefined symbol` error with CUDA
