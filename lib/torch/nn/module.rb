@@ -113,31 +113,41 @@ module Torch
         forward(*input, **kwargs)
       end
 
-      def state_dict(destination: nil)
+      def state_dict(destination: nil, prefix: "")
         destination ||= {}
-        named_parameters.each do |k, v|
-          destination[k] = v
+        save_to_state_dict(destination, prefix: prefix)
+        
+        named_children.each do |name, mod|
+          next unless mod
+
+          mod.state_dict(destination: destination, prefix: prefix + name + '.')
         end
         destination
       end
-
+         
       # TODO add strict option
       # TODO match PyTorch behavior
       def load_state_dict(state_dict)
         state_dict.each do |k, input_param|
-          k1, k2 = k.split(".", 2)
-          mod = named_modules[k1]
-          if mod.is_a?(Module)
-            param = mod.named_parameters[k2]
-            if param.is_a?(Parameter)
-              Torch.no_grad do
-                param.copy!(input_param)
-              end
-            else
-              raise Error, "Unknown parameter `#{k2}` in module `#{k1}`"
+          *mods, param_name = k.split(".")
+
+          mods_ok = []
+          mod = mods.inject(self) do |mod, name|
+            child = mod.named_modules[name]
+            raise Error, "Unknown module `#{[mods_ok + name].join '.'}`" unless child.is_a?(Module)
+
+            mods_ok << name
+            child
+          end
+          
+          param = mod.named_parameters[param_name] || mod.named_buffers[param_name]
+          if param.is_a?(Parameter) || param.is_a?(Tensor)
+            Torch.no_grad do
+              param.copy!(input_param)
             end
           else
-            raise Error, "Unknown module: #{k1}"
+            p mod, param.class, mod.named_parameters.keys, mod.named_buffers.keys
+            raise Error, "Unknown parameter `#{param_name}` in module `#{mods.join '.'}`"
           end
         end
 
@@ -299,6 +309,15 @@ module Torch
       # so we can skip call to inspect
       def dict
         instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
+      end
+      
+      def save_to_state_dict(destination, prefix: "")
+        named_parameters(prefix: prefix, recurse: false).each do |k, v|
+          destination[k] = v
+        end
+        named_buffers.each do |k, v|
+          destination[prefix + k] = v
+        end
       end
     end
   end
