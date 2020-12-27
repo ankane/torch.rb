@@ -96,7 +96,7 @@ class ModuleTest < Minitest::Test
   def test_load_state_dict_missing_keys
     skip "Not working yet"
 
-    net = TestNet.new
+    net = Torch::NN::Linear.new(10, 2)
     error = assert_raises(Torch::Error) do
       net.load_state_dict({})
     end
@@ -106,7 +106,7 @@ class ModuleTest < Minitest::Test
   def test_load_state_dict_unexpected_keys
     skip "Not working yet"
 
-    net = TestNet.new
+    net = Torch::NN::Linear.new(10, 2)
     state_dict = net.state_dict
     state_dict["bad_key"] = 1
     error = assert_raises(Torch::Error) do
