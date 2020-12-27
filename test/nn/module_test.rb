@@ -77,6 +77,7 @@ class ModuleTest < Minitest::Test
     net.load_state_dict(net.state_dict)
   end
 
+  # TODO change error to unexpected keys
   def test_load_state_dict_unknown_parameter
     net = TestNet.new
     error = assert_raises(Torch::Error) do
@@ -85,6 +86,7 @@ class ModuleTest < Minitest::Test
     assert_equal "Unknown parameter `bad_parameter` in module `conv1`", error.message
   end
 
+  # TODO change error to unexpected keys
   def test_load_state_dict_unknown_module
     net = TestNet.new
     error = assert_raises(Torch::Error) do
