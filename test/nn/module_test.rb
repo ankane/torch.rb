@@ -108,7 +108,19 @@ class ModuleTest < Minitest::Test
     error = assert_raises(Torch::Error) do
       net.load_state_dict({})
     end
-    assert_equal "Missing keys: weight, bias", error.message
+    assert_equal "Missing key(s) in state_dict: weight, bias", error.message
+  end
+
+  def test_load_state_dict_unexpected_keys
+    skip "Not working yet"
+
+    net = TestNet.new
+    state_dict = net.state_dict
+    state_dict["bad_key"] = 1
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict(state_dict)
+    end
+    assert_equal "Unexpected key(s) in state_dict: bad_key", error.message
   end
 
   def test_load_state_dict_parameters
