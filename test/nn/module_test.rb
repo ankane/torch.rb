@@ -47,27 +47,12 @@ class ModuleTest < Minitest::Test
     net = TestNet.new
     assert_equal 10, net.state_dict.size
 
-    # puts "Model's state_dict:"
-    # net.state_dict.each do |k, v|
-    #   puts "#{k}\t#{v.size}"
-    # end
-
     tmpfile = Tempfile.new
     Torch.save(net.state_dict, tmpfile.path)
 
     net = TestNet.new
     net.load_state_dict(Torch.load(tmpfile.path))
     net.eval
-
-    # optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.001, momentum: 0.9)
-
-    # puts "Optimizer's state_dict:"
-    # optimizer.state_dict.each do |k, v|
-    #   puts "#{k}\t#{v}"
-    # end
-
-    # tmpfile2 = Tempfile.new
-    # Torch.save(optimizer.state_dict, tmpfile2.path)
   end
 
   def test_inspect
@@ -83,6 +68,13 @@ class ModuleTest < Minitest::Test
     assert_equal :float16, mod.running_mean.dtype
     assert_equal :float16, mod.named_buffers["running_mean"].dtype
     assert_equal :float16, mod.instance_variable_get(:@running_mean).dtype
+  end
+
+  def test_load_state_dict
+    skip "Not working yet"
+
+    net = Torch::NN::Linear.new(10, 2)
+    net.load_state_dict(net.state_dict)
   end
 
   def test_load_state_dict_unknown_parameter
@@ -121,13 +113,6 @@ class ModuleTest < Minitest::Test
       net.load_state_dict(state_dict)
     end
     assert_equal "Unexpected key(s) in state_dict: bad_key", error.message
-  end
-
-  def test_load_state_dict_parameters
-    skip "Not working yet"
-
-    net = Torch::NN::Linear.new(10, 2)
-    net.load_state_dict(net.state_dict)
   end
 
   private
