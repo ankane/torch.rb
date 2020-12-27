@@ -77,24 +77,6 @@ class ModuleTest < Minitest::Test
     net.load_state_dict(net.state_dict)
   end
 
-  # TODO change error to unexpected keys
-  def test_load_state_dict_unknown_parameter
-    net = TestNet.new
-    error = assert_raises(Torch::Error) do
-      net.load_state_dict({"conv1.bad_parameter" => 1})
-    end
-    assert_equal "Unknown parameter `bad_parameter` in module `conv1`", error.message
-  end
-
-  # TODO change error to unexpected keys
-  def test_load_state_dict_unknown_module
-    net = TestNet.new
-    error = assert_raises(Torch::Error) do
-      net.load_state_dict({"bad_module.bad_parameter" => 1})
-    end
-    assert_equal "Unknown module: bad_module", error.message
-  end
-
   def test_load_state_dict_missing_keys
     skip "Not working yet"
 
@@ -115,6 +97,18 @@ class ModuleTest < Minitest::Test
       net.load_state_dict(state_dict)
     end
     assert_equal "Unexpected key(s) in state_dict: bad_key", error.message
+  end
+
+  def test_load_state_dict_unexpected_keys_unknown_module
+    skip "Not working yet"
+
+    net = Torch::NN::Linear.new(10, 2)
+    state_dict = net.state_dict
+    state_dict["bad_module.bad_key"] = 1
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict(state_dict)
+    end
+    assert_equal "Unexpected key(s) in state_dict: bad_module.bad_key", error.message
   end
 
   private
