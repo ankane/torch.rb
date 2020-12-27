@@ -101,6 +101,23 @@ class ModuleTest < Minitest::Test
     assert_equal "Unknown module: bad_module", error.message
   end
 
+  def test_load_state_dict_missing_keys
+    skip "Not working yet"
+
+    net = TestNet.new
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict({})
+    end
+    assert_equal "Missing keys: weight, bias", error.message
+  end
+
+  def test_load_state_dict_parameters
+    skip "Not working yet"
+
+    net = Torch::NN::Linear.new(10, 2)
+    net.load_state_dict(net.state_dict)
+  end
+
   private
 
   def net
