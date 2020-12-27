@@ -85,6 +85,22 @@ class ModuleTest < Minitest::Test
     assert_equal :float16, mod.instance_variable_get(:@running_mean).dtype
   end
 
+  def test_load_state_dict_unknown_parameter
+    net = TestNet.new
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict({"conv1.bad_parameter" => 1})
+    end
+    assert_equal "Unknown parameter `bad_parameter` in module `conv1`", error.message
+  end
+
+  def test_load_state_dict_unknown_module
+    net = TestNet.new
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict({"bad_module.bad_parameter" => 1})
+    end
+    assert_equal "Unknown module: bad_module", error.message
+  end
+
   private
 
   def net
