@@ -2,6 +2,7 @@
 
 - Added `manual_seed` and `manual_seed_all` for CUDA
 - Improved saving and loading models
+- Fixed error with tensor indexing with beginless ranges in Ruby 3.0
 
 ## 0.5.2 (2020-10-29)
 

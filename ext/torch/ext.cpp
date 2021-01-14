@@ -44,8 +44,13 @@ std::vector<TensorIndex> index_vector(Array a) {
     if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(from_ruby<int64_t>(obj));
     } else if (obj.is_instance_of(rb_cRange)) {
-      torch::optional<int64_t> start_index = from_ruby<int64_t>(obj.call("begin"));
-      torch::optional<int64_t> stop_index = -1;
+      torch::optional<int64_t> start_index = torch::nullopt;
+      torch::optional<int64_t> stop_index = torch::nullopt;
+
+      Object begin = obj.call("begin");
+      if (!begin.is_nil()) {
+        start_index = from_ruby<int64_t>(begin);
+      }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
@@ -53,12 +58,14 @@ std::vector<TensorIndex> index_vector(Array a) {
       }
 
       Object exclude_end = obj.call("exclude_end?");
-      if (!exclude_end) {
+      if (stop_index.has_value() && !exclude_end) {
         if (stop_index.value() == -1) {
           stop_index = torch::nullopt;
         } else {
           stop_index = stop_index.value() + 1;
         }
+      } else if (!stop_index.has_value() && exclude_end) {
+        stop_index = -1;
       }
 
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
