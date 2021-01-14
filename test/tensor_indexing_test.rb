@@ -21,11 +21,11 @@ class TensorIndexingTest < Minitest::Test
 
     x = Torch.tensor([[0, 1, 2], [3, 4, 5]])
     assert_equal [1, 2], x[0, eval("1..")].to_a
-    assert_equal [1], x[0, eval("(1...)")].to_a
+    assert_equal [1, 2], x[0, eval("(1...)")].to_a
     assert_equal [2], x[0, eval("-1..")].to_a
-    assert_equal [], x[0, eval("(-1...)")].to_a
+    assert_equal [2], x[0, eval("(-1...)")].to_a
     assert_equal [1, 2], x[0, eval("-2..")].to_a
-    assert_equal [1], x[0, eval("(-2...)")].to_a
+    assert_equal [1, 2], x[0, eval("(-2...)")].to_a
   end
 
   def test_getter_beginless

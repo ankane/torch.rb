@@ -64,8 +64,6 @@ std::vector<TensorIndex> index_vector(Array a) {
         } else {
           stop_index = stop_index.value() + 1;
         }
-      } else if (!stop_index.has_value() && exclude_end) {
-        stop_index = -1;
       }
 
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
