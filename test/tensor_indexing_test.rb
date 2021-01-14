@@ -39,14 +39,6 @@ class TensorIndexingTest < Minitest::Test
     assert_equal [0], x[eval("...-2")].to_a
   end
 
-  def test_unsupported_type
-    x = Torch.tensor([1, 2, 3])
-    error = assert_raises(ArgumentError) do
-      x[Object.new]
-    end
-    assert_equal "Unsupported index type: Object", error.message
-  end
-
   def test_getter_tensor
     x = Torch.tensor([1, 2, 3])
     index = Torch.tensor([false, true, false])
@@ -59,6 +51,14 @@ class TensorIndexingTest < Minitest::Test
       x[2**64]
     end
     assert_match "bignum too big to convert into", error.message
+  end
+
+  def test_getter_unsupported_type
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x[Object.new]
+    end
+    assert_equal "Unsupported index type: Object", error.message
   end
 
   def test_setter_numeric
@@ -96,5 +96,13 @@ class TensorIndexingTest < Minitest::Test
     x = Torch.tensor([1, 2, 3])
     x[0..1] = 0
     assert_equal [0, 0, 3], x.to_a
+  end
+
+  def test_setter_unsupported_type
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x[Object.new] = 1
+    end
+    assert_equal "Unsupported index type: Object", error.message
   end
 end
