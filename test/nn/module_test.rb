@@ -53,6 +53,22 @@ class ModuleTest < Minitest::Test
     net = TestNet.new
     net.load_state_dict(Torch.load(tmpfile.path))
     net.eval
+
+    expected_keys = %w(conv1.weight conv1.bias conv2.weight conv2.bias fc1.weight fc1.bias fc2.weight fc2.bias fc3.weight fc3.bias)
+    assert_equal expected_keys, net.state_dict.keys
+  end
+
+  def test_state_dict_buffers
+    net = SimpleResidualBlock.new
+    expected_keys = %w(seq.0.weight seq.1.weight seq.1.bias seq.1.running_mean seq.1.running_var seq.1.num_batches_tracked seq.3.weight seq.4.weight seq.4.bias seq.4.running_mean seq.4.running_var seq.4.num_batches_tracked seq.6.weight seq.7.weight seq.7.bias seq.7.running_mean seq.7.running_var seq.7.num_batches_tracked)
+    assert_equal expected_keys, net.state_dict.keys
+
+    tmpfile = Tempfile.new
+    Torch.save(net.state_dict, tmpfile.path)
+
+    net = SimpleResidualBlock.new
+    net.load_state_dict Torch.load(tmpfile.path)
+    net.eval
   end
 
   def test_inspect
@@ -71,15 +87,11 @@ class ModuleTest < Minitest::Test
   end
 
   def test_load_state_dict
-    skip "Not working yet"
-
     net = Torch::NN::Linear.new(10, 2)
     net.load_state_dict(net.state_dict)
   end
 
   def test_load_state_dict_missing_keys
-    skip "Not working yet"
-
     net = Torch::NN::Linear.new(10, 2)
     error = assert_raises(Torch::Error) do
       net.load_state_dict({})
@@ -88,8 +100,6 @@ class ModuleTest < Minitest::Test
   end
 
   def test_load_state_dict_unexpected_keys
-    skip "Not working yet"
-
     net = Torch::NN::Linear.new(10, 2)
     state_dict = net.state_dict
     state_dict["bad_key"] = 1
@@ -100,8 +110,6 @@ class ModuleTest < Minitest::Test
   end
 
   def test_load_state_dict_unexpected_keys_unknown_module
-    skip "Not working yet"
-
     net = Torch::NN::Linear.new(10, 2)
     state_dict = net.state_dict
     state_dict["bad_module.bad_key"] = 1
