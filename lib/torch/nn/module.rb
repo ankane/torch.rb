@@ -116,41 +116,50 @@ module Torch
       def state_dict(destination: nil, prefix: "")
         destination ||= {}
         save_to_state_dict(destination, prefix: prefix)
-        
+
         named_children.each do |name, mod|
           next unless mod
-
-          mod.state_dict(destination: destination, prefix: prefix + name + '.')
+          mod.state_dict(destination: destination, prefix: prefix + name + ".")
         end
         destination
       end
-         
-      # TODO add strict option
-      # TODO match PyTorch behavior
-      def load_state_dict(state_dict)
-        state_dict.each do |k, input_param|
-          *mods, param_name = k.split(".")
 
-          mods_ok = []
-          mod = mods.inject(self) do |mod, name|
-            child = mod.named_modules[name]
-            raise Error, "Unknown module `#{[mods_ok + name].join '.'}`" unless child.is_a?(Module)
+      def load_state_dict(state_dict, strict: true)
+        # TODO support strict: false
+        raise "strict: false not implemented yet" unless strict
 
-            mods_ok << name
-            child
-          end
-          
-          param = mod.named_parameters[param_name] || mod.named_buffers[param_name]
-          if param.is_a?(Parameter) || param.is_a?(Tensor)
-            Torch.no_grad do
-              param.copy!(input_param)
-            end
-          else
-            raise Error, "Unknown parameter `#{param_name}` in module `#{mods.join '.'}`"
+        missing_keys = []
+        unexpected_keys = []
+        error_msgs = []
+
+        # TODO handle metadata
+
+        _load = lambda do |mod, prefix = ""|
+          # TODO handle metadata
+          local_metadata = {}
+          mod.send(:load_from_state_dict, state_dict, prefix, local_metadata, true, missing_keys, unexpected_keys, error_msgs)
+          mod.named_children.each do |name, child|
+            _load.call(child, prefix + name + ".") unless child.nil?
           end
         end
 
-        # TODO return missing keys and unexpected keys
+        _load.call(self)
+
+        if strict
+          if unexpected_keys.any?
+            error_msgs << "Unexpected key(s) in state_dict: #{unexpected_keys.join(", ")}"
+          end
+
+          if missing_keys.any?
+            error_msgs << "Missing key(s) in state_dict: #{missing_keys.join(", ")}"
+          end
+        end
+
+        if error_msgs.any?
+          # just show first error
+          raise Error, error_msgs[0]
+        end
+
         nil
       end
 
@@ -309,10 +318,63 @@ module Torch
       def dict
         instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
       end
-      
+
+      def load_from_state_dict(state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs)
+        # TODO add hooks
+
+        # TODO handle non-persistent buffers
+        persistent_buffers = named_buffers
+        local_name_params = named_parameters(recurse: false).merge(persistent_buffers)
+        local_state = local_name_params.select { |_, v| !v.nil? }
+
+        local_state.each do |name, param|
+          key = prefix + name
+          if state_dict.key?(key)
+            input_param = state_dict[key]
+
+            # Backward compatibility: loading 1-dim tensor from 0.3.* to version 0.4+
+            if param.shape.length == 0 && input_param.shape.length == 1
+              input_param = input_param[0]
+            end
+
+            if input_param.shape != param.shape
+              # local shape should match the one in checkpoint
+              error_msgs << "size mismatch for #{key}: copying a param with shape #{input_param.shape} from checkpoint, " +
+                            "the shape in current model is #{param.shape}."
+              next
+            end
+
+            begin
+              Torch.no_grad do
+                param.copy!(input_param)
+              end
+            rescue => e
+              error_msgs << "While copying the parameter named #{key.inspect}, " +
+                            "whose dimensions in the model are #{param.size} and " +
+                            "whose dimensions in the checkpoint are #{input_param.size}, " +
+                            "an exception occurred: #{e.inspect}"
+            end
+          elsif strict
+            missing_keys << key
+          end
+        end
+
+        if strict
+          state_dict.each_key do |key|
+            if key.start_with?(prefix)
+              input_name = key[prefix.length..-1]
+              input_name = input_name.split(".", 2)[0]
+              if !named_children.key?(input_name) && !local_state.key?(input_name)
+                unexpected_keys << key
+              end
+            end
+          end
+        end
+      end
+
       def save_to_state_dict(destination, prefix: "")
-        named_parameters(prefix: prefix, recurse: false).each do |k, v|
-          destination[k] = v
+        named_parameters(recurse: false).each do |k, v|
+          destination[prefix + k] = v
         end
         named_buffers.each do |k, v|
           destination[prefix + k] = v

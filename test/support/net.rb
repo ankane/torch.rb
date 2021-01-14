@@ -33,7 +33,7 @@ class SimpleResidualBlock < Torch::NN::Module
     super
 
     @relu = Torch::NN::ReLU.new
-   
+
     @seq = Torch::NN::Sequential.new(
       Torch::NN::Conv2d.new(64, 128, 3, padding: 1, bias: false),
       Torch::NN::BatchNorm2d.new(128),

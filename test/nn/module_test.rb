@@ -47,11 +47,6 @@ class ModuleTest < Minitest::Test
     net = TestNet.new
     assert_equal 10, net.state_dict.size
 
-    # puts "Model's state_dict:"
-    # net.state_dict.each do |k, v|
-    #   puts "#{k}\t#{v.size}"
-    # end
-
     tmpfile = Tempfile.new
     Torch.save(net.state_dict, tmpfile.path)
 
@@ -59,15 +54,21 @@ class ModuleTest < Minitest::Test
     net.load_state_dict(Torch.load(tmpfile.path))
     net.eval
 
-    # optimizer = Torch::Optim::SGD.new(net.parameters, lr: 0.001, momentum: 0.9)
+    expected_keys = %w(conv1.weight conv1.bias conv2.weight conv2.bias fc1.weight fc1.bias fc2.weight fc2.bias fc3.weight fc3.bias)
+    assert_equal expected_keys, net.state_dict.keys
+  end
 
-    # puts "Optimizer's state_dict:"
-    # optimizer.state_dict.each do |k, v|
-    #   puts "#{k}\t#{v}"
-    # end
+  def test_state_dict_buffers
+    net = SimpleResidualBlock.new
+    expected_keys = %w(seq.0.weight seq.1.weight seq.1.bias seq.1.running_mean seq.1.running_var seq.1.num_batches_tracked seq.3.weight seq.4.weight seq.4.bias seq.4.running_mean seq.4.running_var seq.4.num_batches_tracked seq.6.weight seq.7.weight seq.7.bias seq.7.running_mean seq.7.running_var seq.7.num_batches_tracked)
+    assert_equal expected_keys, net.state_dict.keys
 
-    # tmpfile2 = Tempfile.new
-    # Torch.save(optimizer.state_dict, tmpfile2.path)
+    tmpfile = Tempfile.new
+    Torch.save(net.state_dict, tmpfile.path)
+
+    net = SimpleResidualBlock.new
+    net.load_state_dict Torch.load(tmpfile.path)
+    net.eval
   end
 
   def test_state_dict_with_buffers
@@ -96,6 +97,39 @@ class ModuleTest < Minitest::Test
     assert_equal :float16, mod.running_mean.dtype
     assert_equal :float16, mod.named_buffers["running_mean"].dtype
     assert_equal :float16, mod.instance_variable_get(:@running_mean).dtype
+  end
+
+  def test_load_state_dict
+    net = Torch::NN::Linear.new(10, 2)
+    net.load_state_dict(net.state_dict)
+  end
+
+  def test_load_state_dict_missing_keys
+    net = Torch::NN::Linear.new(10, 2)
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict({})
+    end
+    assert_equal "Missing key(s) in state_dict: weight, bias", error.message
+  end
+
+  def test_load_state_dict_unexpected_keys
+    net = Torch::NN::Linear.new(10, 2)
+    state_dict = net.state_dict
+    state_dict["bad_key"] = 1
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict(state_dict)
+    end
+    assert_equal "Unexpected key(s) in state_dict: bad_key", error.message
+  end
+
+  def test_load_state_dict_unexpected_keys_unknown_module
+    net = Torch::NN::Linear.new(10, 2)
+    state_dict = net.state_dict
+    state_dict["bad_module.bad_key"] = 1
+    error = assert_raises(Torch::Error) do
+      net.load_state_dict(state_dict)
+    end
+    assert_equal "Unexpected key(s) in state_dict: bad_module.bad_key", error.message
   end
 
   private
