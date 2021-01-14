@@ -319,6 +319,13 @@ net.load_state_dict(Torch.load("net.pth"))
 net.eval
 ```
 
+When saving a model in Python to load in Ruby, convert parameters to tensors (due to outstanding bugs in LibTorch)
+
+```python
+state_dict = {k: v.data if isinstance(v, torch.nn.Parameter) else v for k, v in state_dict.items()}
+torch.save(state_dict, "net.pth")
+```
+
 ### Tensor Creation
 
 Here’s a list of functions to create tensors (descriptions from the [C++ docs](https://pytorch.org/cppdocs/notes/tensor_creation.html)):
