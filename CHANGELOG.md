@@ -1,4 +1,4 @@
-## 0.5.3 (unreleased)
+## 0.5.3 (2021-01-14)
 
 - Added `manual_seed` and `manual_seed_all` for CUDA
 - Improved saving and loading models
