@@ -9,14 +9,19 @@ class TensorIndexingTest < Minitest::Test
     assert_equal [0, 1], x[0, 0..1].to_a
     assert_equal [[[0, 1, 2], [3, 4, 5]]], x[true].to_a
     assert_equal [[[0, 1, 2], [3, 4, 5]]], x[nil].to_a
-    assert_equal [1, 2], x[0, 1..-1].to_a
-    assert_equal [1], x[0, 1...-1].to_a
-    assert_equal [0, 1], x[0, 0...-1].to_a
-    assert_equal [[0, 1, 2]], x[0...-1].to_a
     assert_equal [], x[false].to_a
+    assert_equal [[0, 1, 2]], x[0...-1].to_a
   end
 
-  def test_getter_endless
+  def test_getter_range
+    x = Torch.tensor([0, 1, 2])
+    assert_equal [1, 2], x[1..-1].to_a
+    assert_equal [1], x[1...-1].to_a
+    assert_equal [0, 1, 2], x[0..-1].to_a
+    assert_equal [0, 1], x[0...-1].to_a
+  end
+
+  def test_getter_endless_range
     skip if RUBY_VERSION.to_f < 2.6
 
     x = Torch.tensor([0, 1, 2])
@@ -28,7 +33,7 @@ class TensorIndexingTest < Minitest::Test
     assert_equal [1, 2], x[eval("(-2...)")].to_a
   end
 
-  def test_getter_beginless
+  def test_getter_beginless_range
     skip if RUBY_VERSION.to_f < 2.7
 
     x = Torch.tensor([0, 1, 2])
