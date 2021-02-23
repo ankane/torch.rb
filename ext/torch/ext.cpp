@@ -25,11 +25,6 @@ class Parameter: public torch::autograd::Variable {
     Parameter(Tensor&& t) : torch::autograd::Variable(t) { }
 };
 
-void handle_error(torch::Error const & ex)
-{
-  throw Exception(rb_eRuntimeError, ex.what_without_backtrace());
-}
-
 Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
@@ -80,7 +75,7 @@ std::vector<TensorIndex> index_vector(Array a) {
   return indices;
 }
 
-void init_ivalue(Rice::Class& c);
+void init_ivalue(Rice::Module& m);
 
 extern "C"
 void Init_ext()
@@ -113,12 +108,7 @@ void Init_ext()
         return generator.seed();
       });
 
-  // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
-  Class rb_cIValue = define_class_under<torch::IValue>(rb_mTorch, "IValue")
-    .add_handler<torch::Error>(handle_error)
-    .define_constructor(Constructor<torch::IValue>());
-
-  init_ivalue(rb_cIValue);
+  init_ivalue(rb_mTorch);
 
   rb_mTorch.define_singleton_method(
       "grad_enabled?",

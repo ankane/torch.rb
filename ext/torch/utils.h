@@ -1,13 +1,20 @@
 #pragma once
 
+#include <rice/Exception.hpp>
 #include <rice/Symbol.hpp>
+
+// TODO find better place
+inline void handle_error(torch::Error const & ex)
+{
+  throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
+}
 
 // keep THP prefix for now to make it easier to compare code
 
 extern VALUE THPVariableClass;
 
 inline VALUE THPUtils_internSymbol(const std::string& str) {
-  return Symbol(str);
+  return Rice::Symbol(str);
 }
 
 inline std::string THPUtils_unpackSymbol(VALUE obj) {
