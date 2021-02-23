@@ -245,7 +245,7 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "layout",
-      *[](torch::TensorOptions& self, std::string layout) {
+      *[](torch::TensorOptions& self, const std::string& layout) {
         torch::Layout l;
         if (layout == "strided") {
           l = torch::kStrided;
@@ -259,7 +259,7 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "device",
-      *[](torch::TensorOptions& self, std::string device) {
+      *[](torch::TensorOptions& self, const std::string& device) {
         torch::Device d(device);
         return self.device(d);
       })
