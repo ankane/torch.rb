@@ -61,7 +61,7 @@ def write_header(type)
 
     #pragma once
 
-    void add_%{type}_functions(Module m);
+    void add_%{type}_functions(Rice::Module& m);
   EOS
 
   contents = template % {type: type}
@@ -81,7 +81,7 @@ def write_body(type, method_defs, attach_defs)
     #include "wrap_outputs.h"
 
     %{method_defs}
-    void add_%{type}_functions(Module m) {
+    void add_%{type}_functions(Rice::Module& m) {
       %{attach_defs}
     }
   EOS

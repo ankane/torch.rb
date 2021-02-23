@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <sstream>
+
 #include <torch/torch.h>
 #include <rice/Exception.hpp>
 
