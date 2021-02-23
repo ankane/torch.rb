@@ -75,7 +75,9 @@ std::vector<TensorIndex> index_vector(Array a) {
   return indices;
 }
 
+void init_cuda(Rice::Module& m);
 void init_ivalue(Rice::Module& m);
+void init_random(Rice::Module& m);
 
 extern "C"
 void Init_ext()
@@ -93,22 +95,9 @@ void Init_ext()
   rb_mNN.add_handler<torch::Error>(handle_error);
   add_nn_functions(rb_mNN);
 
-  Module rb_mRandom = define_module_under(rb_mTorch, "Random")
-    .add_handler<torch::Error>(handle_error)
-    .define_singleton_method(
-      "initial_seed",
-      *[]() {
-        return at::detail::getDefaultCPUGenerator().current_seed();
-      })
-    .define_singleton_method(
-      "seed",
-      *[]() {
-        // TODO set for CUDA when available
-        auto generator = at::detail::getDefaultCPUGenerator();
-        return generator.seed();
-      });
-
+  init_cuda(rb_mTorch);
   init_ivalue(rb_mTorch);
+  init_random(rb_mTorch);
 
   rb_mTorch.define_singleton_method(
       "grad_enabled?",
@@ -495,11 +484,4 @@ void Init_ext()
         s << self.type();
         return s.str();
       });
-
-  Module rb_mCUDA = define_module_under(rb_mTorch, "CUDA")
-    .add_handler<torch::Error>(handle_error)
-    .define_singleton_method("available?", &torch::cuda::is_available)
-    .define_singleton_method("device_count", &torch::cuda::device_count)
-    .define_singleton_method("manual_seed", &torch::cuda::manual_seed)
-    .define_singleton_method("manual_seed_all", &torch::cuda::manual_seed_all);
 }
