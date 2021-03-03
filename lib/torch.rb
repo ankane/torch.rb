@@ -253,7 +253,7 @@ module Torch
   def self._make_tensor_class(dtype, cuda = false)
     cls = Class.new
     device = cuda ? "cuda" : "cpu"
-    cls.define_singleton_function("new") do |*args|
+    cls.define_singleton_method("new") do |*args|
       if args.size == 1 && args.first.is_a?(Tensor)
         args.first.send(dtype).to(device)
       elsif args.size == 1 && args.first.is_a?(ByteStorage) && dtype == :uint8
