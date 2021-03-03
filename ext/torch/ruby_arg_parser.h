@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include <torch/torch.h>
-#include <rice/Exception.hpp>
+#include <rice/rice.hpp>
 
 #include "templates.h"
 #include "utils.h"

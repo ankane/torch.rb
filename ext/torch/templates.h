@@ -4,8 +4,7 @@
 #undef isfinite
 #endif
 
-#include <rice/Array.hpp>
-#include <rice/Object.hpp>
+#include <rice/rice.hpp>
 
 using namespace Rice;
 

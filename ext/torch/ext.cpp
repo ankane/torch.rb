@@ -1,4 +1,4 @@
-#include <rice/Module.hpp>
+#include <rice/rice.hpp>
 
 void init_nn(Rice::Module& m);
 void init_tensor(Rice::Module& m);

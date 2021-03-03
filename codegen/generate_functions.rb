@@ -74,7 +74,7 @@ def write_body(type, method_defs, attach_defs)
     // do not edit by hand
 
     #include <torch/torch.h>
-    #include <rice/Module.hpp>
+    #include <rice/rice.hpp>
 
     #include "ruby_arg_parser.h"
     #include "templates.h"

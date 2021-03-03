@@ -1,7 +1,6 @@
 #include <torch/torch.h>
 
-#include <rice/Constructor.hpp>
-#include <rice/Module.hpp>
+#include <rice/rice.hpp>
 
 #include "utils.h"
 
@@ -13,7 +12,7 @@ void init_device(Rice::Module& m) {
     .define_method("index?", &torch::Device::has_index)
     .define_method(
       "type",
-      *[](torch::Device& self) {
+      [](torch::Device& self) {
         std::stringstream s;
         s << self.type();
         return s.str();

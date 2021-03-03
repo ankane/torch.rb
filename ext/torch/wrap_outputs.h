@@ -1,7 +1,7 @@
 #pragma once
 
 #include <torch/torch.h>
-#include <rice/Object.hpp>
+#include <rice/rice.hpp>
 
 inline Object wrap(bool x) {
   return to_ruby<bool>(x);
