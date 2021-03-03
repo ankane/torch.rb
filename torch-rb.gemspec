@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.license       = "BSD-3-Clause"
 
   spec.author        = "Andrew Kane"
-  spec.email         = "andrew@chartkick.com"
+  spec.email         = "andrew@ankane.org"
 
   spec.files         = Dir["*.{md,txt}", "{codegen,ext,lib}/**/*"]
   spec.require_path  = "lib"
@@ -17,13 +17,4 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.4"
 
   spec.add_dependency "rice", ">= 2.2"
-
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "minitest", ">= 5"
-  spec.add_development_dependency "numo-narray"
-
-  # for examples
-  spec.add_development_dependency "torchvision", ">= 0.1.1"
 end
