@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.require_path  = "lib"
   spec.extensions    = ["ext/torch/extconf.rb"]
 
-  spec.required_ruby_version = ">= 2.4"
+  spec.required_ruby_version = ">= 2.6"
 
   spec.add_dependency "rice", ">= 2.2"
 end
