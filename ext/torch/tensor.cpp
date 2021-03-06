@@ -4,6 +4,7 @@
 #include <rice/Module.hpp>
 
 #include "tensor_functions.h"
+#include "ruby_arg_parser.h"
 #include "templates.h"
 #include "utils.h"
 
@@ -18,7 +19,7 @@ std::vector<TensorIndex> index_vector(Array a) {
   std::vector<TensorIndex> indices;
   indices.reserve(a.size());
 
-  for (size_t i = 0; i < a.size(); i++) {
+  for (long i = 0; i < a.size(); i++) {
     obj = a[i];
 
     if (obj.is_instance_of(rb_cInteger)) {
@@ -60,11 +61,36 @@ std::vector<TensorIndex> index_vector(Array a) {
   return indices;
 }
 
+// hack (removes inputs argument)
+// https://github.com/pytorch/pytorch/commit/2e5bfa9824f549be69a28e4705a72b4cf8a4c519
+// TODO add support for inputs argument
+// _backward
+static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
+{
+  HANDLE_TH_ERRORS
+  Tensor& self = from_ruby<Tensor&>(self_);
+  static RubyArgParser parser({
+    "_backward(Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False)"
+  });
+  std::vector<VALUE> parsed_args(4);
+  auto _r = parser.parse(self_, argc, argv, parsed_args);
+  // _backward(Tensor self, Tensor[] inputs, Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False) -> ()
+  auto dispatch__backward = [](const Tensor & self, TensorList inputs, const OptionalTensor & gradient, c10::optional<bool> retain_graph, bool create_graph) -> void {
+    // in future, release GVL
+    self._backward(inputs, gradient, retain_graph, create_graph);
+  };
+  dispatch__backward(self, {}, _r.optionalTensor(0), _r.toBoolOptional(1), _r.toBool(2));
+  RETURN_NIL
+  END_HANDLE_TH_ERRORS
+}
+
 void init_tensor(Rice::Module& m) {
   rb_cTensor = Rice::define_class_under<torch::Tensor>(m, "Tensor");
   rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
   THPVariableClass = rb_cTensor.value();
+
+  rb_define_method(rb_cTensor, "backward", (VALUE (*)(...)) tensor__backward, -1);
 
   rb_cTensor
     .define_method("cuda?", &torch::Tensor::is_cuda)
@@ -74,6 +100,16 @@ void init_tensor(Rice::Module& m) {
     .define_method("numel", &torch::Tensor::numel)
     .define_method("element_size", &torch::Tensor::element_size)
     .define_method("requires_grad", &torch::Tensor::requires_grad)
+    .define_method(
+      "_size",
+      *[](Tensor& self, int64_t dim) {
+        return self.size(dim);
+      })
+    .define_method(
+      "_stride",
+      *[](Tensor& self, int64_t dim) {
+        return self.stride(dim);
+      })
     // in C++ for performance
     .define_method(
       "shape",

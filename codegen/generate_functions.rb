@@ -24,6 +24,7 @@ def skip_functions(functions)
     f.base_name.include?("_backward") ||
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
+    f.base_name == "record_stream" ||
     # in ext.cpp
     f.base_name == "index" ||
     f.base_name == "index_put_" ||

@@ -44,7 +44,7 @@ std::vector<int64_t> from_ruby<std::vector<int64_t>>(Object x)
 {
   Array a = Array(x);
   std::vector<int64_t> vec(a.size());
-  for (size_t i = 0; i < a.size(); i++) {
+  for (long i = 0; i < a.size(); i++) {
     vec[i] = from_ruby<int64_t>(a[i]);
   }
   return vec;
@@ -56,7 +56,7 @@ std::vector<Tensor> from_ruby<std::vector<Tensor>>(Object x)
 {
   Array a = Array(x);
   std::vector<Tensor> vec(a.size());
-  for (size_t i = 0; i < a.size(); i++) {
+  for (long i = 0; i < a.size(); i++) {
     vec[i] = from_ruby<Tensor>(a[i]);
   }
   return vec;
