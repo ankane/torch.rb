@@ -96,7 +96,7 @@ void init_nn(Rice::Module& m) {
       "grad",
       [](Parameter& self) {
         auto grad = self.grad();
-        return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
+        return grad.defined() ? Rice::detail::To_Ruby<torch::Tensor>::convert(grad) : Nil;
       })
     .define_method(
       "grad=",

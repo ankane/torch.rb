@@ -118,7 +118,7 @@ void init_tensor(Rice::Module& m) {
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
+        return grad.defined() ? Rice::detail::To_Ruby<torch::Tensor>::convert(grad) : Nil;
       })
     .define_method(
       "grad=",
@@ -197,7 +197,7 @@ void init_tensor(Rice::Module& m) {
           }
         } else if (dtype == torch::kChar) {
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(to_ruby<int>(view[i].item().to<int8_t>()));
+            a.push(Rice::detail::To_Ruby<int>::convert(view[i].item().to<int8_t>()));
           }
         } else if (dtype == torch::kShort) {
           for (int i = 0; i < tensor.numel(); i++) {
