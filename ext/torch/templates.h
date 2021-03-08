@@ -151,7 +151,7 @@ class OptionalTensor {
       if (o.is_nil()) {
         value = {};
       } else {
-        value = from_ruby<torch::Tensor>(o);
+        value = Rice::detail::From_Ruby<torch::Tensor>::convert(o.value());
       }
     }
     OptionalTensor(torch::Tensor o) {
