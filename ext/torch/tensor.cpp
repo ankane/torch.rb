@@ -21,19 +21,19 @@ std::vector<TensorIndex> index_vector(Array a) {
     obj = a[i];
 
     if (obj.is_instance_of(rb_cInteger)) {
-      indices.push_back(from_ruby<int64_t>(obj));
+      indices.push_back(Rice::detail::From_Ruby<int64_t>::convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
       torch::optional<int64_t> start_index = torch::nullopt;
       torch::optional<int64_t> stop_index = torch::nullopt;
 
       Object begin = obj.call("begin");
       if (!begin.is_nil()) {
-        start_index = from_ruby<int64_t>(begin);
+        start_index = Rice::detail::From_Ruby<int64_t>::convert(begin.value());
       }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
-        stop_index = from_ruby<int64_t>(end);
+        stop_index = Rice::detail::From_Ruby<int64_t>::convert(end.value());
       }
 
       Object exclude_end = obj.call("exclude_end?");
@@ -47,11 +47,11 @@ std::vector<TensorIndex> index_vector(Array a) {
 
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
     } else if (obj.is_instance_of(rb_cTensor)) {
-      indices.push_back(from_ruby<Tensor>(obj));
+      indices.push_back(Rice::detail::From_Ruby<Tensor>::convert(obj.value()));
     } else if (obj.is_nil()) {
       indices.push_back(torch::indexing::None);
     } else if (obj == True || obj == False) {
-      indices.push_back(from_ruby<bool>(obj));
+      indices.push_back(Rice::detail::From_Ruby<bool>::convert(obj.value()));
     } else {
       throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
@@ -118,7 +118,7 @@ void init_tensor(Rice::Module& m) {
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Rice::detail::To_Ruby<torch::Tensor>::convert(grad) : Nil;
+        return grad.defined() ? Rice::detail::To_Ruby<torch::Tensor>::convert(grad) : Qnil;
       })
     .define_method(
       "grad=",
@@ -235,7 +235,7 @@ void init_tensor(Rice::Module& m) {
       });
 
   Rice::define_class_under<torch::TensorOptions>(m, "TensorOptions")
-    .add_handler<torch::Error>(handle_error)
+    // .add_handler<torch::Error>(handle_error)
     .define_constructor(Rice::Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",

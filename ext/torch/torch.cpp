@@ -65,13 +65,13 @@ void init_torch(Rice::Module& m) {
         if (dtype == torch::kBool) {
           std::vector<uint8_t> vec;
           for (size_t i = 0; i < a.size(); i++) {
-            vec.push_back(from_ruby<bool>(a[i]));
+            vec.push_back(Rice::detail::From_Ruby<bool>::convert(a[i].value()));
           }
           t = torch::tensor(vec, options);
         } else {
           std::vector<float> vec;
           for (size_t i = 0; i < a.size(); i++) {
-            vec.push_back(from_ruby<float>(a[i]));
+            vec.push_back(Rice::detail::From_Ruby<float>::convert(a[i].value()));
           }
           // hack for requires_grad error
           if (options.requires_grad()) {
