@@ -7,7 +7,7 @@
 void init_ivalue(Rice::Module& m) {
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
   Rice::define_class_under<torch::IValue>(m, "IValue")
-    .add_handler<torch::Error>(handle_error)
+    // .add_handler<torch::Error>(handle_error)
     .define_constructor(Rice::Constructor<torch::IValue>())
     .define_method("bool?", &torch::IValue::isBool)
     .define_method("bool_list?", &torch::IValue::isBoolList)
@@ -89,7 +89,7 @@ void init_ivalue(Rice::Module& m) {
       [](Rice::Array obj) {
         c10::impl::GenericList list(c10::AnyType::get());
         for (auto entry : obj) {
-          list.push_back(Rice::detail::From_Ruby<torch::IValue>::convert(entry));
+          list.push_back(Rice::detail::From_Ruby<torch::IValue>::convert(entry.value()));
         }
         return torch::IValue(list);
       })
