@@ -46,7 +46,7 @@ namespace Rice::detail
     {
       Array a = Array(x);
       std::vector<int64_t> vec(a.size());
-      for (size_t i = 0; i < a.size(); i++) {
+      for (long i = 0; i < a.size(); i++) {
         vec[i] = Rice::detail::From_Ruby<int64_t>::convert(a[i].value());
       }
       return vec;
@@ -60,7 +60,7 @@ namespace Rice::detail
     {
       Array a = Array(x);
       std::vector<Tensor> vec(a.size());
-      for (size_t i = 0; i < a.size(); i++) {
+      for (long i = 0; i < a.size(); i++) {
         vec[i] = Rice::detail::From_Ruby<Tensor>::convert(a[i].value());
       }
       return vec;

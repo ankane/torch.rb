@@ -2,7 +2,7 @@ require "mkmf-rice"
 
 abort "Missing stdc++" unless have_library("stdc++")
 
-$CXXFLAGS += " -std=c++17"
+$CXXFLAGS += " -std=c++17 -Wall"
 
 # change to 0 for Linux pre-cxx11 ABI version
 $CXXFLAGS += " -D_GLIBCXX_USE_CXX11_ABI=1"
@@ -14,23 +14,6 @@ if have_library("omp") || have_library("gomp")
   $CXXFLAGS += " -DAT_PARALLEL_OPENMP=1"
   $CXXFLAGS += " -Xclang" if apple_clang
   $CXXFLAGS += " -fopenmp"
-end
-
-if apple_clang
-  # silence rice warnings
-  $CXXFLAGS += " -Wno-deprecated-declarations"
-
-  # silence ruby/intern.h warning
-  $CXXFLAGS += " -Wno-deprecated-register"
-
-  # silence torch warnings
-  $CXXFLAGS += " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
-else
-  # silence rice warnings
-  $CXXFLAGS += " -Wno-noexcept-type"
-
-  # silence torch warnings
-  $CXXFLAGS += " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
 
 inc, lib = dir_config("torch")
