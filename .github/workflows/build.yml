@@ -9,11 +9,7 @@ jobs:
       matrix:
         include:
         - ruby: 3.0
-          os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
-        - ruby: 2.6
-          os: ubuntu-16.04
+          os: macos-latest
     env:
       LIBTORCH_VERSION: 1.7.1
     steps:
@@ -26,12 +22,12 @@ jobs:
       with:
         path: ~/libtorch
         key: libtorch-${{ env.LIBTORCH_VERSION }}
-      id: cache-libtorch
+      id: cache-libtorch-2
     - name: Download LibTorch
       if: steps.cache-libtorch.outputs.cache-hit != 'true'
       run: |
         cd ~
-        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
+        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-macos-$LIBTORCH_VERSION.zip
         unzip -q libtorch.zip
     - run: bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
     - run: bundle exec rake test
