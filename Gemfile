@@ -10,4 +10,4 @@ gem "numo-narray"
 # for examples
 gem "torchvision", ">= 0.1.1"
 
-gem "rice", github: "cfis/rice", branch: "dev"
+gem "rice", github: "jasonroelofs/rice"
