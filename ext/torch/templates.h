@@ -40,10 +40,9 @@ using torch::Storage;
 namespace Rice::detail
 {
   template<>
-  inline
   struct From_Ruby<std::vector<int64_t>>
   {
-    static std::vector<int64_t> convert(VALUE x)
+    inline std::vector<int64_t> convert(VALUE x)
     {
       Array a = Array(x);
       std::vector<int64_t> vec(a.size());
@@ -55,10 +54,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<std::vector<Tensor>>
   {
-    static std::vector<Tensor> convert(VALUE x)
+    inline std::vector<Tensor> convert(VALUE x)
     {
       Array a = Array(x);
       std::vector<Tensor> vec(a.size());
@@ -90,10 +88,9 @@ class FanModeType {
 namespace Rice::detail
 {
   template<>
-  inline
   struct From_Ruby<FanModeType>
   {
-    static FanModeType convert(VALUE x)
+    inline FanModeType convert(VALUE x)
     {
       return FanModeType(x);
     }
@@ -138,10 +135,9 @@ class NonlinearityType {
 namespace Rice::detail
 {
   template<>
-  inline
   struct From_Ruby<NonlinearityType>
   {
-    static NonlinearityType convert(VALUE x)
+    inline NonlinearityType convert(VALUE x)
     {
       return NonlinearityType(x);
     }
@@ -169,20 +165,18 @@ class OptionalTensor {
 namespace Rice::detail
 {
   template<>
-  inline
   struct From_Ruby<OptionalTensor>
   {
-    static OptionalTensor convert(VALUE x)
+    inline OptionalTensor convert(VALUE x)
     {
       return OptionalTensor(x);
     }
   };
 
   template<>
-  inline
   struct From_Ruby<Scalar>
   {
-    static Scalar convert(VALUE x)
+    inline Scalar convert(VALUE x)
     {
       if (FIXNUM_P(x)) {
         return torch::Scalar(Rice::detail::From_Ruby<int64_t>::convert(x));
@@ -193,10 +187,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<torch::optional<torch::ScalarType>>
   {
-    static torch::optional<torch::ScalarType> convert(VALUE x)
+    inline torch::optional<torch::ScalarType> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;
@@ -207,10 +200,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<torch::optional<int64_t>>
   {
-    static torch::optional<int64_t> convert(VALUE x)
+    inline torch::optional<int64_t> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;
@@ -221,10 +213,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<torch::optional<double>>
   {
-    static torch::optional<double> convert(VALUE x)
+    inline torch::optional<double> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;
@@ -235,10 +226,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<torch::optional<bool>>
   {
-    static torch::optional<bool> convert(VALUE x)
+    inline torch::optional<bool> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;
@@ -249,10 +239,9 @@ namespace Rice::detail
   };
 
   template<>
-  inline
   struct From_Ruby<torch::optional<Scalar>>
   {
-    static torch::optional<Scalar> convert(VALUE x)
+    inline torch::optional<Scalar> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;
