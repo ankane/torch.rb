@@ -40,6 +40,7 @@ using torch::Storage;
 namespace Rice::detail
 {
   template<>
+  inline
   struct From_Ruby<std::vector<int64_t>>
   {
     static std::vector<int64_t> convert(VALUE x)
@@ -54,6 +55,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<std::vector<Tensor>>
   {
     static std::vector<Tensor> convert(VALUE x)
@@ -88,6 +90,7 @@ class FanModeType {
 namespace Rice::detail
 {
   template<>
+  inline
   struct From_Ruby<FanModeType>
   {
     static FanModeType convert(VALUE x)
@@ -135,6 +138,7 @@ class NonlinearityType {
 namespace Rice::detail
 {
   template<>
+  inline
   struct From_Ruby<NonlinearityType>
   {
     static NonlinearityType convert(VALUE x)
@@ -165,6 +169,7 @@ class OptionalTensor {
 namespace Rice::detail
 {
   template<>
+  inline
   struct From_Ruby<OptionalTensor>
   {
     static OptionalTensor convert(VALUE x)
@@ -174,6 +179,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<Scalar>
   {
     static Scalar convert(VALUE x)
@@ -187,6 +193,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<torch::optional<torch::ScalarType>>
   {
     static torch::optional<torch::ScalarType> convert(VALUE x)
@@ -200,6 +207,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<torch::optional<int64_t>>
   {
     static torch::optional<int64_t> convert(VALUE x)
@@ -213,6 +221,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<torch::optional<double>>
   {
     static torch::optional<double> convert(VALUE x)
@@ -226,6 +235,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<torch::optional<bool>>
   {
     static torch::optional<bool> convert(VALUE x)
@@ -239,6 +249,7 @@ namespace Rice::detail
   };
 
   template<>
+  inline
   struct From_Ruby<torch::optional<Scalar>>
   {
     static torch::optional<Scalar> convert(VALUE x)

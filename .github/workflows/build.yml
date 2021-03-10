@@ -10,10 +10,6 @@ jobs:
         include:
         - ruby: 3.0
           os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
-        - ruby: 2.6
-          os: ubuntu-16.04
     env:
       LIBTORCH_VERSION: 1.7.1
     steps:
