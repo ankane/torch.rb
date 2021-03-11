@@ -54,7 +54,8 @@ void init_ivalue(Rice::Module& m) {
         auto list = self.toListRef();
         Rice::Array obj;
         for (auto& elem : list) {
-          obj.push(Rice::detail::To_Ruby<torch::IValue>::convert(torch::IValue{elem}));
+          auto v = torch::IValue{elem};
+          obj.push(Rice::Object(Rice::detail::To_Ruby<torch::IValue>::convert(v, true)));
         }
         return obj;
       })
@@ -74,7 +75,9 @@ void init_ivalue(Rice::Module& m) {
         auto dict = self.toGenericDict();
         Rice::Hash obj;
         for (auto& pair : dict) {
-          obj[Rice::detail::To_Ruby<torch::IValue>::convert(torch::IValue{pair.key()})] = Rice::detail::To_Ruby<torch::IValue>::convert(torch::IValue{pair.value()});
+          auto k = torch::IValue{pair.key()};
+          auto v = torch::IValue{pair.value()};
+          obj[Rice::Object(Rice::detail::To_Ruby<torch::IValue>::convert(k, true))] = Rice::Object(Rice::detail::To_Ruby<torch::IValue>::convert(v, true));
         }
         return obj;
       })
