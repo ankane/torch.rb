@@ -32,68 +32,75 @@ inline VALUE wrap(torch::QScheme x) {
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  return a;
+  return rb_ary_new3(
+    2,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)
+  );
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true)));
-  return a;
+  return rb_ary_new3(
+    3,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true)
+  );
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<3>(x), true)));
-  return a;
+  return rb_ary_new3(
+    4,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<3>(x), true)
+  );
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<3>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<4>(x), true)));
-  return a;
+  return rb_ary_new3(
+    5,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<3>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<4>(x), true)
+  );
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_t> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<int64_t>::convert(std::get<3>(x))));
-  return a;
+  return rb_ary_new3(
+    4,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<2>(x), true),
+    Rice::detail::To_Ruby<int64_t>::convert(std::get<3>(x))
+  );
 }
 
 inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true)));
-  a.push(Object(Rice::detail::To_Ruby<double>::convert(std::get<2>(x))));
-  a.push(Object(Rice::detail::To_Ruby<int64_t>::convert(std::get<3>(x))));
-  return a;
+  return rb_ary_new3(
+    4,
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<0>(x), true),
+    Rice::detail::To_Ruby<torch::Tensor>::convert(std::get<1>(x), true),
+    Rice::detail::To_Ruby<double>::convert(std::get<2>(x)),
+    Rice::detail::To_Ruby<int64_t>::convert(std::get<3>(x))
+  );
 }
 
 inline VALUE wrap(torch::TensorList x) {
-  Array a;
+  auto a = rb_ary_new2(x.size());
   for (auto& t : x) {
-    a.push(Object(Rice::detail::To_Ruby<torch::Tensor>::convert(t, true)));
+    rb_ary_push(a, Rice::detail::To_Ruby<torch::Tensor>::convert(t, true));
   }
   return a;
 }
 
 inline VALUE wrap(std::tuple<double, double> x) {
-  Array a;
-  a.push(Object(Rice::detail::To_Ruby<double>::convert(std::get<0>(x))));
-  a.push(Object(Rice::detail::To_Ruby<double>::convert(std::get<1>(x))));
-  return a;
+  return rb_ary_new3(
+    2,
+    Rice::detail::To_Ruby<double>::convert(std::get<0>(x)),
+    Rice::detail::To_Ruby<double>::convert(std::get<1>(x))
+  );
 }
