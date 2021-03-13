@@ -410,7 +410,7 @@ Here are a few full examples:
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Sequence models and word embeddings](examples/nlp)
 - [Generative adversarial networks](examples/gan)
-- [Transfer Learning](examples/transfer-learning)
+- [Transfer learning](examples/transfer-learning)
 
 ## LibTorch Installation
 
