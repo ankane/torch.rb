@@ -286,6 +286,12 @@ module Torch
           named_buffers[name]
         elsif named_modules.key?(name)
           named_modules[name]
+        elsif method.end_with?("=") && named_modules.key?(method[0..-2])
+          if instance_variable_defined?("@#{method[0..-2]}")
+            instance_variable_set("@#{method[0..-2]}", *args)
+          else
+            raise NotImplementedYet
+          end
         else
           super
         end
