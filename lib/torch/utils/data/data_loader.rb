@@ -60,7 +60,7 @@ module Torch
           when Array
             batch.transpose.map { |v| default_convert(v) }
           else
-            raise NotImplementedYet
+            batch
           end
         end
 
