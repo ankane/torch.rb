@@ -133,7 +133,7 @@ def generate_method_def(name, functions, type, def_method)
       static RubyArgParser parser({
         #{signatures.map(&:inspect).join(",\n    ")}
       });
-      std::vector<VALUE> parsed_args(#{max_args});
+      ParsedArgs<#{max_args}> parsed_args;
       auto _r = parser.parse(self_, argc, argv, parsed_args);
       #{add_dispatches(functions, def_method)}
       END_HANDLE_TH_ERRORS

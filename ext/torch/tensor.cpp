@@ -72,7 +72,7 @@ static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
   static RubyArgParser parser({
     "_backward(Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False)"
   });
-  std::vector<VALUE> parsed_args(4);
+  ParsedArgs<4> parsed_args;
   auto _r = parser.parse(self_, argc, argv, parsed_args);
   // _backward(Tensor self, Tensor[] inputs, Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False) -> ()
   auto dispatch__backward = [](const Tensor & self, TensorList inputs, const OptionalTensor & gradient, c10::optional<bool> retain_graph, bool create_graph) -> void {
