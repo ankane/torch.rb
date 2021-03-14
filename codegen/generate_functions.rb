@@ -124,6 +124,7 @@ def generate_method_def(name, functions, type, def_method)
   functions = group_overloads(functions, type)
   signatures = functions.map { |f| f["signature"] }
   max_args = signatures.map { |s| s.count(",") - s.count("*") }.max + 1
+  dispatches = add_dispatches(functions, def_method)
 
   template = <<~EOS
     // #{name}
@@ -134,8 +135,8 @@ def generate_method_def(name, functions, type, def_method)
         #{signatures.map(&:inspect).join(",\n    ")}
       });
       ParsedArgs<#{max_args}> parsed_args;
-      auto _r = parser.parse(self_, argc, argv, parsed_args);
-      #{add_dispatches(functions, def_method)}
+      #{dispatches.include?("_r.") ? "auto _r = " : ""}parser.parse(self_, argc, argv, parsed_args);
+      #{dispatches}
       END_HANDLE_TH_ERRORS
     }
   EOS
