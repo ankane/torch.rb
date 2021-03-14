@@ -11,7 +11,6 @@ apple_clang = RbConfig::CONFIG["CC_VERSION_MESSAGE"] =~ /apple clang/i
 
 # check omp first
 if have_library("omp") || have_library("gomp")
-  $CXXFLAGS += " -DAT_PARALLEL_OPENMP=1"
   $CXXFLAGS += " -Xclang" if apple_clang
   $CXXFLAGS += " -fopenmp"
 end
