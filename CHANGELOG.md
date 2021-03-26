@@ -1,4 +1,4 @@
-## 0.6.0 (unreleased)
+## 0.6.0 (2021-03-25)
 
 - Updated LibTorch to 1.8.0
 - Fixed tensor indexing with endless ranges that exclude end
