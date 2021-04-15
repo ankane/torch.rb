@@ -1,3 +1,7 @@
+## 0.6.1 (unreleased)
+
+- Added support for complex numbers
+
 ## 0.6.0 (2021-03-25)
 
 - Updated LibTorch to 1.8.0

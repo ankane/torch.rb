@@ -238,8 +238,11 @@ module Torch
     double: 7,
     float64: 7,
     complex_half: 8,
+    complex32: 8,
     complex_float: 9,
+    complex64: 9,
     complex_double: 10,
+    complex128: 10,
     bool: 11,
     qint8: 12,
     quint8: 13,
@@ -394,6 +397,8 @@ module Torch
           options[:dtype] = :int64
         elsif data.all? { |v| v == true || v == false }
           options[:dtype] = :bool
+        elsif data.any? { |v| v.is_a?(Complex) }
+          options[:dtype] = :complex64
         end
       end
 

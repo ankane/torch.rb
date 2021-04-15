@@ -68,6 +68,15 @@ void init_torch(Rice::Module& m) {
             vec.push_back(from_ruby<bool>(a[i]));
           }
           t = torch::tensor(vec, options);
+        } else if (dtype == torch::kComplexFloat || dtype == torch::kComplexDouble) {
+          // TODO use template
+          std::vector<c10::complex<double>> vec;
+          Object obj;
+          for (long i = 0; i < a.size(); i++) {
+            obj = a[i];
+            vec.push_back(c10::complex<double>(from_ruby<double>(obj.call("real")), from_ruby<double>(obj.call("imag"))));
+          }
+          t = torch::tensor(vec, options);
         } else {
           std::vector<float> vec;
           for (long i = 0; i < a.size(); i++) {

@@ -16,6 +16,15 @@ class TensorAttributesTest < Minitest::Test
     end
   end
 
+  def test_dtype_complex
+    # TODO support complex32
+    %i(complex64 complex128).each do |dtype|
+      x = Torch.tensor([1i, 2+3i], dtype: dtype)
+      assert_equal dtype, x.dtype
+      assert_equal [1i, 2+3i], x.to_a
+    end
+  end
+
   def test_dtype_bool
     x = Torch.tensor([false, true, false])
     assert_equal :bool, x.dtype
@@ -25,6 +34,7 @@ class TensorAttributesTest < Minitest::Test
   def test_dtype_default
     assert_equal :int64, Torch.tensor([1]).dtype
     assert_equal :float32, Torch.tensor([1.0]).dtype
+    assert_equal :complex64, Torch.tensor([1i]).dtype
   end
 
   def test_dtype_numo

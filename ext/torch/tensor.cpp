@@ -11,6 +11,20 @@
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
+template<>
+inline
+Object to_ruby<c10::complex<float>>(c10::complex<float> const & x)
+{
+  return Object(rb_dbl_complex_new(x.real(), x.imag()));
+}
+
+template<>
+inline
+Object to_ruby<c10::complex<double>>(c10::complex<double> const & x)
+{
+  return Object(rb_dbl_complex_new(x.real(), x.imag()));
+}
+
 Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
@@ -259,6 +273,14 @@ void init_tensor(Rice::Module& m) {
         } else if (dtype == torch::kBool) {
           for (int i = 0; i < tensor.numel(); i++) {
             a.push(view[i].item().to<bool>() ? True : False);
+          }
+        } else if (dtype == torch::kComplexFloat) {
+          for (int i = 0; i < tensor.numel(); i++) {
+            a.push(view[i].item().to<c10::complex<float>>());
+          }
+        } else if (dtype == torch::kComplexDouble) {
+          for (int i = 0; i < tensor.numel(); i++) {
+            a.push(view[i].item().to<c10::complex<double>>());
           }
         } else {
           throw std::runtime_error("Unsupported type");

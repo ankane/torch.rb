@@ -96,8 +96,11 @@ module Torch
             ret = "%.#{PRINT_OPTS[:precision]}f" % value
           end
         elsif @complex_dtype
-          p = PRINT_OPTS[:precision]
-          raise NotImplementedYet
+          # TODO use float formatter for each part
+          precision = PRINT_OPTS[:precision]
+          imag = value.imag
+          sign = imag >= 0 ? "+" : "-"
+          ret = "%.#{precision}f#{sign}%.#{precision}fi" % [value.real, value.imag.abs]
         else
           ret = value.to_s
         end
