@@ -47,7 +47,7 @@ namespace Rice::detail
       Array a = Array(x);
       std::vector<int64_t> vec(a.size());
       for (size_t i = 0; i < a.size(); i++) {
-        vec[i] = Rice::detail::From_Ruby<int64_t>::convert(a[i].value());
+        vec[i] = Rice::detail::From_Ruby<int64_t>().convert(a[i].value());
       }
       return vec;
     }
@@ -61,7 +61,7 @@ namespace Rice::detail
       Array a = Array(x);
       std::vector<Tensor> vec(a.size());
       for (size_t i = 0; i < a.size(); i++) {
-        vec[i] = Rice::detail::From_Ruby<Tensor>::convert(a[i].value());
+        vec[i] = Rice::detail::From_Ruby<Tensor>().convert(a[i].value());
       }
       return vec;
     }
@@ -151,7 +151,7 @@ class OptionalTensor {
       if (o.is_nil()) {
         value = {};
       } else {
-        value = Rice::detail::From_Ruby<torch::Tensor>::convert(o.value());
+        value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
       }
     }
     OptionalTensor(torch::Tensor o) {
@@ -179,9 +179,9 @@ namespace Rice::detail
     static Scalar convert(VALUE x)
     {
       if (FIXNUM_P(x)) {
-        return torch::Scalar(Rice::detail::From_Ruby<int64_t>::convert(x));
+        return torch::Scalar(Rice::detail::From_Ruby<int64_t>().convert(x));
       } else {
-        return torch::Scalar(Rice::detail::From_Ruby<double>::convert(x));
+        return torch::Scalar(Rice::detail::From_Ruby<double>().convert(x));
       }
     }
   };
@@ -194,7 +194,7 @@ namespace Rice::detail
       if (NIL_P(x)) {
         return torch::nullopt;
       } else {
-        return torch::optional<torch::ScalarType>{Rice::detail::From_Ruby<torch::ScalarType>::convert(x)};
+        return torch::optional<torch::ScalarType>{Rice::detail::From_Ruby<torch::ScalarType>().convert(x)};
       }
     }
   };
@@ -207,7 +207,7 @@ namespace Rice::detail
       if (NIL_P(x)) {
         return torch::nullopt;
       } else {
-        return torch::optional<int64_t>{Rice::detail::From_Ruby<int64_t>::convert(x)};
+        return torch::optional<int64_t>{Rice::detail::From_Ruby<int64_t>().convert(x)};
       }
     }
   };
@@ -220,7 +220,7 @@ namespace Rice::detail
       if (NIL_P(x)) {
         return torch::nullopt;
       } else {
-        return torch::optional<double>{Rice::detail::From_Ruby<double>::convert(x)};
+        return torch::optional<double>{Rice::detail::From_Ruby<double>().convert(x)};
       }
     }
   };
@@ -233,7 +233,7 @@ namespace Rice::detail
       if (NIL_P(x)) {
         return torch::nullopt;
       } else {
-        return torch::optional<bool>{Rice::detail::From_Ruby<bool>::convert(x)};
+        return torch::optional<bool>{Rice::detail::From_Ruby<bool>().convert(x)};
       }
     }
   };
@@ -246,7 +246,7 @@ namespace Rice::detail
       if (NIL_P(x)) {
         return torch::nullopt;
       } else {
-        return torch::optional<Scalar>{Rice::detail::From_Ruby<Scalar>::convert(x)};
+        return torch::optional<Scalar>{Rice::detail::From_Ruby<Scalar>().convert(x)};
       }
     }
   };

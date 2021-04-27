@@ -36,19 +36,19 @@ std::vector<TensorIndex> index_vector(Array a) {
     obj = a[i];
 
     if (obj.is_instance_of(rb_cInteger)) {
-      indices.push_back(Rice::detail::From_Ruby<int64_t>::convert(obj.value()));
+      indices.push_back(Rice::detail::From_Ruby<int64_t>().convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
       torch::optional<int64_t> start_index = torch::nullopt;
       torch::optional<int64_t> stop_index = torch::nullopt;
 
       Object begin = obj.call("begin");
       if (!begin.is_nil()) {
-        start_index = Rice::detail::From_Ruby<int64_t>::convert(begin.value());
+        start_index = Rice::detail::From_Ruby<int64_t>().convert(begin.value());
       }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
-        stop_index = Rice::detail::From_Ruby<int64_t>::convert(end.value());
+        stop_index = Rice::detail::From_Ruby<int64_t>().convert(end.value());
       }
 
       Object exclude_end = obj.call("exclude_end?");
@@ -62,11 +62,11 @@ std::vector<TensorIndex> index_vector(Array a) {
 
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
     } else if (obj.is_instance_of(rb_cTensor)) {
-      indices.push_back(Rice::detail::From_Ruby<Tensor>::convert(obj.value()));
+      indices.push_back(Rice::detail::From_Ruby<Tensor>().convert(obj.value()));
     } else if (obj.is_nil()) {
       indices.push_back(torch::indexing::None);
     } else if (obj == True || obj == False) {
-      indices.push_back(Rice::detail::From_Ruby<bool>::convert(obj.value()));
+      indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
       throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
@@ -168,7 +168,7 @@ void init_tensor(Rice::Module& m) {
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>::convert(grad, true)) : Nil;
+        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad, true)) : Nil;
       })
     .define_method(
       "grad=",
@@ -247,7 +247,7 @@ void init_tensor(Rice::Module& m) {
           }
         } else if (dtype == torch::kChar) {
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(Object(Rice::detail::To_Ruby<int>::convert(view[i].item().to<int8_t>())));
+            a.push(Object(Rice::detail::To_Ruby<int>().convert(view[i].item().to<int8_t>())));
           }
         } else if (dtype == torch::kShort) {
           for (int i = 0; i < tensor.numel(); i++) {

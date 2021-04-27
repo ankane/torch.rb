@@ -65,7 +65,7 @@ void init_torch(Rice::Module& m) {
         if (dtype == torch::kBool) {
           std::vector<uint8_t> vec;
           for (long i = 0; i < a.size(); i++) {
-            vec.push_back(Rice::detail::From_Ruby<bool>::convert(a[i].value()));
+            vec.push_back(Rice::detail::From_Ruby<bool>().convert(a[i].value()));
           }
           t = torch::tensor(vec, options);
         } else if (dtype == torch::kComplexFloat || dtype == torch::kComplexDouble) {
@@ -80,7 +80,7 @@ void init_torch(Rice::Module& m) {
         } else {
           std::vector<float> vec;
           for (long i = 0; i < a.size(); i++) {
-            vec.push_back(Rice::detail::From_Ruby<float>::convert(a[i].value()));
+            vec.push_back(Rice::detail::From_Ruby<float>().convert(a[i].value()));
           }
           // hack for requires_grad error
           if (options.requires_grad()) {

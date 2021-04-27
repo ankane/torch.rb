@@ -119,7 +119,7 @@ def generate_attach_def(name, type, def_method)
 end
 
 def generate_method_def(name, functions, type, def_method)
-  assign_self = type == "tensor" ? "\n  Tensor& self = Rice::detail::From_Ruby<Tensor&>::convert(self_);" : ""
+  assign_self = type == "tensor" ? "\n  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);" : ""
 
   functions = group_overloads(functions, type)
   signatures = functions.map { |f| f["signature"] }

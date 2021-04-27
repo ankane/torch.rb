@@ -137,7 +137,7 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
         return true;
       }
       if (THPVariable_Check(obj)) {
-        auto var = Rice::detail::From_Ruby<torch::Tensor>::convert(obj);
+        auto var = Rice::detail::From_Ruby<torch::Tensor>().convert(obj);
         return !var.requires_grad() && var.dim() == 0;
       }
       return false;
@@ -147,7 +147,7 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
         return true;
       }
       if (THPVariable_Check(obj)) {
-        auto var = Rice::detail::From_Ruby<torch::Tensor>::convert(obj);
+        auto var = Rice::detail::From_Ruby<torch::Tensor>().convert(obj);
         return at::isIntegralType(var.scalar_type(), /*includeBool=*/false) && !var.requires_grad() && var.dim() == 0;
       }
       return false;
