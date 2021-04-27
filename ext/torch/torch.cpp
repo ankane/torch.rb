@@ -64,13 +64,22 @@ void init_torch(Rice::Module& m) {
         torch::Tensor t;
         if (dtype == torch::kBool) {
           std::vector<uint8_t> vec;
-          for (size_t i = 0; i < a.size(); i++) {
+          for (long i = 0; i < a.size(); i++) {
             vec.push_back(Rice::detail::From_Ruby<bool>::convert(a[i].value()));
+          }
+          t = torch::tensor(vec, options);
+        } else if (dtype == torch::kComplexFloat || dtype == torch::kComplexDouble) {
+          // TODO use template
+          std::vector<c10::complex<double>> vec;
+          Object obj;
+          for (long i = 0; i < a.size(); i++) {
+            obj = a[i];
+            vec.push_back(c10::complex<double>(from_ruby<double>(obj.call("real")), from_ruby<double>(obj.call("imag"))));
           }
           t = torch::tensor(vec, options);
         } else {
           std::vector<float> vec;
-          for (size_t i = 0; i < a.size(); i++) {
+          for (long i = 0; i < a.size(); i++) {
             vec.push_back(Rice::detail::From_Ruby<float>::convert(a[i].value()));
           }
           // hack for requires_grad error

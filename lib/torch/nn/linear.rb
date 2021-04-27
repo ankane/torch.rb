@@ -1,6 +1,8 @@
 module Torch
   module NN
     class Linear < Module
+      attr_reader :in_features, :out_features
+
       def initialize(in_features, out_features, bias: true)
         super()
         @in_features = in_features

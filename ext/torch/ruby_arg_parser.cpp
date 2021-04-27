@@ -487,7 +487,7 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
 
 VALUE missing = Qundef;
 
-bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, std::vector<VALUE> &dst,  // NOLINT
+bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],  // NOLINT
                               bool raise_exception) {
   auto nargs = NIL_P(args) ? 0 : RARRAY_LEN(args);
   ssize_t remaining_kwargs = NIL_P(kwargs) ? 0 :  RHASH_SIZE(kwargs);

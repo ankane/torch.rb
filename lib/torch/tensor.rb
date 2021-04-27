@@ -135,6 +135,10 @@ module Torch
       Torch.ones_like(Torch.empty(*size), **options)
     end
 
+    def requires_grad=(requires_grad)
+      _requires_grad!(requires_grad)
+    end
+
     def requires_grad!(requires_grad = true)
       _requires_grad!(requires_grad)
     end

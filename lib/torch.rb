@@ -238,8 +238,11 @@ module Torch
     double: 7,
     float64: 7,
     complex_half: 8,
+    complex32: 8,
     complex_float: 9,
+    complex64: 9,
     complex_double: 10,
+    complex128: 10,
     bool: 11,
     qint8: 12,
     quint8: 13,
@@ -337,25 +340,24 @@ module Torch
       }
     end
 
-    def no_grad
-      previous_value = grad_enabled?
-      begin
-        _set_grad_enabled(false)
-        yield
-      ensure
-        _set_grad_enabled(previous_value)
-      end
+    def no_grad(&block)
+      grad_enabled(false, &block)
     end
 
-    def enable_grad
+    def enable_grad(&block)
+      grad_enabled(true, &block)
+    end
+
+    def grad_enabled(value)
       previous_value = grad_enabled?
       begin
-        _set_grad_enabled(true)
+        _set_grad_enabled(value)
         yield
       ensure
         _set_grad_enabled(previous_value)
       end
     end
+    alias_method :set_grad_enabled, :grad_enabled
 
     def device(str)
       Device.new(str)
@@ -395,6 +397,8 @@ module Torch
           options[:dtype] = :int64
         elsif data.all? { |v| v == true || v == false }
           options[:dtype] = :bool
+        elsif data.any? { |v| v.is_a?(Complex) }
+          options[:dtype] = :complex64
         end
       end
 

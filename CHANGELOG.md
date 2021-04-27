@@ -1,6 +1,12 @@
-## 0.5.4 (unreleased)
+## 0.6.1 (unreleased)
 
+- Added support for complex numbers
+
+## 0.6.0 (2021-03-25)
+
+- Updated LibTorch to 1.8.0
 - Fixed tensor indexing with endless ranges that exclude end
+- Removed support for Ruby 2.5
 
 ## 0.5.3 (2021-01-14)
 

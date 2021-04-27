@@ -24,6 +24,7 @@ def skip_functions(functions)
     f.base_name.include?("_backward") ||
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
+    f.base_name == "record_stream" ||
     # in ext.cpp
     f.base_name == "index" ||
     f.base_name == "index_put_" ||
@@ -123,6 +124,7 @@ def generate_method_def(name, functions, type, def_method)
   functions = group_overloads(functions, type)
   signatures = functions.map { |f| f["signature"] }
   max_args = signatures.map { |s| s.count(",") - s.count("*") }.max + 1
+  dispatches = add_dispatches(functions, def_method)
 
   template = <<~EOS
     // #{name}
@@ -132,9 +134,9 @@ def generate_method_def(name, functions, type, def_method)
       static RubyArgParser parser({
         #{signatures.map(&:inspect).join(",\n    ")}
       });
-      std::vector<VALUE> parsed_args(#{max_args});
-      auto _r = parser.parse(self_, argc, argv, parsed_args);
-      #{add_dispatches(functions, def_method)}
+      ParsedArgs<#{max_args}> parsed_args;
+      #{dispatches.include?("_r.") ? "auto _r = " : ""}parser.parse(self_, argc, argv, parsed_args);
+      #{dispatches}
       END_HANDLE_TH_ERRORS
     }
   EOS

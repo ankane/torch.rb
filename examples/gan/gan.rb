@@ -5,7 +5,6 @@
 
 require "torch"
 require "torchvision"
-require "magro"
 
 Dir.mkdir("images") unless Dir.exist?("images")
 
@@ -78,16 +77,6 @@ if cuda
   adversarial_loss.cuda
 end
 
-class Resize
-  def initialize(size)
-    @size = size
-  end
-
-  def call(img)
-    Torch.from_numo(Magro::Transform.resize(img.numo, height: @size, width: @size))
-  end
-end
-
 # Configure data loader
 dataloader = Torch::Utils::Data::DataLoader.new(
   TorchVision::Datasets::MNIST.new(
@@ -95,7 +84,7 @@ dataloader = Torch::Utils::Data::DataLoader.new(
     train: true,
     download: true,
     transform: TorchVision::Transforms::Compose.new(
-      [Resize.new(28), TorchVision::Transforms::ToTensor.new, TorchVision::Transforms::Normalize.new([0.5], [0.5])]
+      [TorchVision::Transforms::Resize.new(28), TorchVision::Transforms::ToTensor.new, TorchVision::Transforms::Normalize.new([0.5], [0.5])]
     )
   ),
   batch_size: 64,
@@ -111,11 +100,6 @@ Tensor = cuda ? Torch::CUDA::FloatTensor : Torch::FloatTensor
 # ----------
 #  Training
 # ----------
-
-def norm_ip(img, min, max)
-  img.clamp!(min, max)
-  img.add!(-min).div!(max - min + 1e-5)
-end
 
 200.times do |epoch|
   dataloader.each_with_index do |(imgs, _), i|
@@ -162,11 +146,7 @@ end
 
     batches_done = epoch * dataloader.size + i
     if batches_done % 25 == 0
-      # normalize and save image
-      img = gen_imgs.data[0]
-      img = norm_ip(img.clone, img.min.to_f, img.max.to_f)
-      ndarr = img.mul(255).add!(0.5).clamp!(0, 255).permute(1, 2, 0).numo
-      Magro::IO.imsave("images/#{batches_done}.png", ndarr)
+      TorchVision::Utils.save_image(gen_imgs.data[0...25], "images/%d.png" % batches_done, nrow: 5, normalize: true)
     end
   end
 end

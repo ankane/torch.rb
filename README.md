@@ -410,6 +410,7 @@ Here are a few full examples:
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Sequence models and word embeddings](examples/nlp)
 - [Generative adversarial networks](examples/gan)
+- [Transfer learning](examples/transfer-learning)
 
 ## LibTorch Installation
 
@@ -423,8 +424,9 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
-0.5.0+ | 1.7.0-1.7.1
-0.3.0+ | 1.6.0
+0.6.0+ | 1.8.0+
+0.5.0-0.5.3 | 1.7.0-1.7.1
+0.3.0-0.4.2 | 1.6.0
 0.2.0-0.2.7 | 1.5.0-1.5.1
 0.1.8 | 1.4.0
 0.1.0-0.1.7 | 1.3.1
