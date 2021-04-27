@@ -91,8 +91,8 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
 
 inline VALUE wrap(torch::TensorList x) {
   auto a = rb_ary_new2(x.size());
-  for (auto& t : x) {
-    // rb_ary_push(a, Rice::detail::To_Ruby<torch::Tensor>().convert(t));
+  for (auto t : x) {
+    rb_ary_push(a, Rice::detail::To_Ruby<torch::Tensor>().convert(t));
   }
   return a;
 }

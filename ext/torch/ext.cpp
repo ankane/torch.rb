@@ -3,7 +3,7 @@
 #include <rice/rice.hpp>
 
 void init_nn(Rice::Module& m);
-void init_tensor(Rice::Module& m, Rice::Class& rb_cTensor, Rice::Class& rb_cTensorOptions);
+void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions);
 void init_torch(Rice::Module& m);
 
 void init_cuda(Rice::Module& m);
