@@ -104,8 +104,7 @@ static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
   END_HANDLE_TH_ERRORS
 }
 
-void init_tensor(Rice::Module& m) {
-  rb_cTensor = Rice::define_class_under<torch::Tensor>(m, "Tensor");
+void init_tensor(Rice::Module& m, Rice::Class& rb_cTensor, Rice::Class& rb_cTensorOptions) {
   rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
   THPVariableClass = rb_cTensor.value();
@@ -299,9 +298,8 @@ void init_tensor(Rice::Module& m) {
         return self.to(device, (torch::ScalarType) dtype, non_blocking, copy);
       });
 
-  Rice::define_class_under<torch::TensorOptions>(m, "TensorOptions")
+  rb_cTensorOptions
     // .add_handler<torch::Error>(handle_error)
-    .define_constructor(Rice::Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",
       [](torch::TensorOptions& self, int dtype) {

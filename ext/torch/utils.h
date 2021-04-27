@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 // TODO find better place
 inline void handle_error(torch::Error const & ex)

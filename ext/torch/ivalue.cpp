@@ -4,11 +4,10 @@
 
 #include "utils.h"
 
-void init_ivalue(Rice::Module& m) {
+void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
   // https://pytorch.org/cppdocs/api/structc10_1_1_i_value.html
-  Rice::define_class_under<torch::IValue>(m, "IValue")
+  rb_cIValue
     // .add_handler<torch::Error>(handle_error)
-    .define_constructor(Rice::Constructor<torch::IValue>())
     .define_method("bool?", &torch::IValue::isBool)
     .define_method("bool_list?", &torch::IValue::isBoolList)
     .define_method("capsule?", &torch::IValue::isCapsule)
