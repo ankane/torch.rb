@@ -12,7 +12,7 @@ using torch::indexing::TensorIndex;
 
 namespace Rice::detail
 {
-  template<>
+  template<typename T>
   struct Type<c10::complex<T>>
   {
     static bool verify()
@@ -21,7 +21,7 @@ namespace Rice::detail
     }
   };
 
-  template<>
+  template<typename T>
   struct To_Ruby<c10::complex<T>>
   {
     VALUE convert(c10::complex<T> const& x)
@@ -88,7 +88,7 @@ std::vector<TensorIndex> index_vector(Array a) {
 static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
 {
   HANDLE_TH_ERRORS
-  Tensor& self = from_ruby<Tensor&>(self_);
+  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);
   static RubyArgParser parser({
     "_backward(Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False)"
   });
@@ -175,7 +175,7 @@ void init_tensor(Rice::Module& m) {
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad, true)) : Nil;
+        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
       })
     .define_method(
       "grad=",

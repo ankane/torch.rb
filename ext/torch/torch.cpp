@@ -74,7 +74,7 @@ void init_torch(Rice::Module& m) {
           Object obj;
           for (long i = 0; i < a.size(); i++) {
             obj = a[i];
-            vec.push_back(c10::complex<double>(from_ruby<double>(obj.call("real")), from_ruby<double>(obj.call("imag"))));
+            vec.push_back(c10::complex<double>(Rice::detail::From_Ruby<double>().convert(obj.call("real").value()), Rice::detail::From_Ruby<double>().convert(obj.call("imag").value())));
           }
           t = torch::tensor(vec, options);
         } else {
