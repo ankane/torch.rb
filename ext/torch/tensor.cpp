@@ -10,18 +10,25 @@
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
-template<>
-inline
-Object to_ruby<c10::complex<float>>(c10::complex<float> const & x)
+namespace Rice::detail
 {
-  return Object(rb_dbl_complex_new(x.real(), x.imag()));
-}
+  template<>
+  struct Type<c10::complex<T>>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
 
-template<>
-inline
-Object to_ruby<c10::complex<double>>(c10::complex<double> const & x)
-{
-  return Object(rb_dbl_complex_new(x.real(), x.imag()));
+  template<>
+  struct To_Ruby<c10::complex<T>>
+  {
+    VALUE convert(c10::complex<T> const& x)
+    {
+      return rb_dbl_complex_new(x.real(), x.imag());
+    }
+  };
 }
 
 Class rb_cTensor;
