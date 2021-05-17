@@ -9,4 +9,3 @@ gem "numo-narray"
 
 # for examples
 gem "torchvision", ">= 0.2", require: false
-gem "rice", github: "jasonroelofs/rice"

@@ -1,3 +1,7 @@
+## 0.7.0 (unreleased)
+
+- Added support for Rice 4
+
 ## 0.6.1 (unreleased)
 
 - Added support for complex numbers
