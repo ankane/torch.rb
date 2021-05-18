@@ -220,7 +220,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method(
       "_data_str",
       [](Tensor& self) {
-        Tensor tensor = self;
+        auto tensor = self;
 
         // move to CPU to get data
         if (tensor.device().type() != torch::kCPU) {
@@ -245,7 +245,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method(
       "_flat_data",
       [](Tensor& self) {
-        Tensor tensor = self;
+        auto tensor = self;
 
         // move to CPU to get data
         if (tensor.device().type() != torch::kCPU) {
