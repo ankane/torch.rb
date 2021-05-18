@@ -31,6 +31,17 @@ namespace Rice::detail
   };
 }
 
+template<typename T>
+Array flat_data(Tensor& tensor) {
+  Tensor view = tensor.reshape({tensor.numel()});
+
+  Array a;
+  for (int i = 0; i < tensor.numel(); i++) {
+    a.push(view[i].item().to<T>());
+  }
+  return a;
+}
+
 Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
@@ -242,56 +253,30 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
           tensor = tensor.to(device);
         }
 
-        Array a;
         auto dtype = tensor.dtype();
-
-        Tensor view = tensor.reshape({tensor.numel()});
-
-        // TODO DRY if someone knows C++
         if (dtype == torch::kByte) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<uint8_t>());
-          }
+          return flat_data<uint8_t>(tensor);
         } else if (dtype == torch::kChar) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<int8_t>());
-          }
+          return flat_data<int8_t>(tensor);
         } else if (dtype == torch::kShort) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<int16_t>());
-          }
+          return flat_data<int16_t>(tensor);
         } else if (dtype == torch::kInt) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<int32_t>());
-          }
+          return flat_data<int32_t>(tensor);
         } else if (dtype == torch::kLong) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<int64_t>());
-          }
+          return flat_data<int64_t>(tensor);
         } else if (dtype == torch::kFloat) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<float>());
-          }
+          return flat_data<float>(tensor);
         } else if (dtype == torch::kDouble) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<double>());
-          }
+          return flat_data<double>(tensor);
         } else if (dtype == torch::kBool) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<bool>());
-          }
+          return flat_data<bool>(tensor);
         } else if (dtype == torch::kComplexFloat) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<c10::complex<float>>());
-          }
+          return flat_data<c10::complex<float>>(tensor);
         } else if (dtype == torch::kComplexDouble) {
-          for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<c10::complex<double>>());
-          }
+          return flat_data<c10::complex<double>>(tensor);
         } else {
           throw std::runtime_error("Unsupported type");
         }
-        return a;
       })
     .define_method(
       "_to",
