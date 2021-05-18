@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include <torch/torch.h>
-#include <rice/Exception.hpp>
+#include <rice/rice.hpp>
 
 #include "templates.h"
 #include "utils.h"
@@ -121,7 +121,7 @@ struct RubyArgs {
 };
 
 inline at::Tensor RubyArgs::tensor(int i) {
-  return from_ruby<torch::Tensor>(args[i]);
+  return Rice::detail::From_Ruby<torch::Tensor>().convert(args[i]);
 }
 
 inline OptionalTensor RubyArgs::optionalTensor(int i) {
@@ -131,12 +131,12 @@ inline OptionalTensor RubyArgs::optionalTensor(int i) {
 
 inline at::Scalar RubyArgs::scalar(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_scalar;
-  return from_ruby<torch::Scalar>(args[i]);
+  return Rice::detail::From_Ruby<torch::Scalar>().convert(args[i]);
 }
 
 inline std::vector<at::Tensor> RubyArgs::tensorlist(int i) {
   if (NIL_P(args[i])) return std::vector<at::Tensor>();
-  return from_ruby<std::vector<Tensor>>(args[i]);
+  return Rice::detail::From_Ruby<std::vector<Tensor>>().convert(args[i]);
 }
 
 template<int N>
@@ -151,7 +151,7 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
   }
   for (int idx = 0; idx < size; idx++) {
     VALUE obj = rb_ary_entry(arg, idx);
-    res[idx] = from_ruby<Tensor>(obj);
+    res[idx] = Rice::detail::From_Ruby<Tensor>().convert(obj);
   }
   return res;
 }
@@ -170,7 +170,7 @@ inline std::vector<int64_t> RubyArgs::intlist(int i) {
   for (idx = 0; idx < size; idx++) {
     VALUE obj = rb_ary_entry(arg, idx);
     if (FIXNUM_P(obj)) {
-      res[idx] = from_ruby<int64_t>(obj);
+      res[idx] = Rice::detail::From_Ruby<int64_t>().convert(obj);
     } else {
       rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
@@ -265,7 +265,7 @@ inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
   for (idx = 0; idx < size; idx++) {
     VALUE obj = rb_ary_entry(arg, idx);
     if (FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj)) {
-      res[idx] = from_ruby<double>(obj);
+      res[idx] = Rice::detail::From_Ruby<double>().convert(obj);
     } else {
       rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
@@ -308,22 +308,22 @@ inline c10::optional<at::MemoryFormat> RubyArgs::memoryformatOptional(int i) {
 }
 
 inline std::string RubyArgs::string(int i) {
-  return from_ruby<std::string>(args[i]);
+  return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 
 inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
   if (!args[i]) return c10::nullopt;
-  return from_ruby<std::string>(args[i]);
+  return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 
 inline int64_t RubyArgs::toInt64(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_int;
-  return from_ruby<int64_t>(args[i]);
+  return Rice::detail::From_Ruby<int64_t>().convert(args[i]);
 }
 
 inline double RubyArgs::toDouble(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_double;
-  return from_ruby<double>(args[i]);
+  return Rice::detail::From_Ruby<double>().convert(args[i]);
 }
 
 inline bool RubyArgs::toBool(int i) {

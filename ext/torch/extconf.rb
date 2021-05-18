@@ -1,8 +1,6 @@
 require "mkmf-rice"
 
-abort "Missing stdc++" unless have_library("stdc++")
-
-$CXXFLAGS += " -std=c++14"
+$CXXFLAGS += " -std=c++17"
 
 # change to 0 for Linux pre-cxx11 ABI version
 $CXXFLAGS += " -D_GLIBCXX_USE_CXX11_ABI=1"

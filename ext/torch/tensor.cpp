@@ -1,7 +1,6 @@
 #include <torch/torch.h>
 
-#include <rice/Constructor.hpp>
-#include <rice/Module.hpp>
+#include <rice/rice.hpp>
 
 #include "tensor_functions.h"
 #include "ruby_arg_parser.h"
@@ -11,18 +10,25 @@
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
-template<>
-inline
-Object to_ruby<c10::complex<float>>(c10::complex<float> const & x)
+namespace Rice::detail
 {
-  return Object(rb_dbl_complex_new(x.real(), x.imag()));
-}
+  template<typename T>
+  struct Type<c10::complex<T>>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
 
-template<>
-inline
-Object to_ruby<c10::complex<double>>(c10::complex<double> const & x)
-{
-  return Object(rb_dbl_complex_new(x.real(), x.imag()));
+  template<typename T>
+  struct To_Ruby<c10::complex<T>>
+  {
+    VALUE convert(c10::complex<T> const& x)
+    {
+      return rb_dbl_complex_new(x.real(), x.imag());
+    }
+  };
 }
 
 Class rb_cTensor;
@@ -37,19 +43,19 @@ std::vector<TensorIndex> index_vector(Array a) {
     obj = a[i];
 
     if (obj.is_instance_of(rb_cInteger)) {
-      indices.push_back(from_ruby<int64_t>(obj));
+      indices.push_back(Rice::detail::From_Ruby<int64_t>().convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
       torch::optional<int64_t> start_index = torch::nullopt;
       torch::optional<int64_t> stop_index = torch::nullopt;
 
       Object begin = obj.call("begin");
       if (!begin.is_nil()) {
-        start_index = from_ruby<int64_t>(begin);
+        start_index = Rice::detail::From_Ruby<int64_t>().convert(begin.value());
       }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
-        stop_index = from_ruby<int64_t>(end);
+        stop_index = Rice::detail::From_Ruby<int64_t>().convert(end.value());
       }
 
       Object exclude_end = obj.call("exclude_end?");
@@ -63,11 +69,11 @@ std::vector<TensorIndex> index_vector(Array a) {
 
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
     } else if (obj.is_instance_of(rb_cTensor)) {
-      indices.push_back(from_ruby<Tensor>(obj));
+      indices.push_back(Rice::detail::From_Ruby<Tensor>().convert(obj.value()));
     } else if (obj.is_nil()) {
       indices.push_back(torch::indexing::None);
     } else if (obj == True || obj == False) {
-      indices.push_back(from_ruby<bool>(obj));
+      indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
       throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
@@ -82,7 +88,7 @@ std::vector<TensorIndex> index_vector(Array a) {
 static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
 {
   HANDLE_TH_ERRORS
-  Tensor& self = from_ruby<Tensor&>(self_);
+  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);
   static RubyArgParser parser({
     "_backward(Tensor? gradient=None, bool? retain_graph=None, bool create_graph=False)"
   });
@@ -98,8 +104,8 @@ static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
   END_HANDLE_TH_ERRORS
 }
 
-void init_tensor(Rice::Module& m) {
-  rb_cTensor = Rice::define_class_under<torch::Tensor>(m, "Tensor");
+void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions) {
+  rb_cTensor = c;
   rb_cTensor.add_handler<torch::Error>(handle_error);
   add_tensor_functions(rb_cTensor);
   THPVariableClass = rb_cTensor.value();
@@ -127,7 +133,7 @@ void init_tensor(Rice::Module& m) {
     // in C++ for performance
     .define_method(
       "shape",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         Array a;
         for (auto &size : self.sizes()) {
           a.push(size);
@@ -136,7 +142,7 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "_strides",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         Array a;
         for (auto &stride : self.strides()) {
           a.push(stride);
@@ -145,64 +151,64 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "_index",
-      *[](Tensor& self, Array indices) {
+      [](Tensor& self, Array indices) {
         auto vec = index_vector(indices);
         return self.index(vec);
       })
     .define_method(
       "_index_put_custom",
-      *[](Tensor& self, Array indices, torch::Tensor& value) {
+      [](Tensor& self, Array indices, torch::Tensor& value) {
         auto vec = index_vector(indices);
         return self.index_put_(vec, value);
       })
     .define_method(
       "contiguous?",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         return self.is_contiguous();
       })
     .define_method(
       "_requires_grad!",
-      *[](Tensor& self, bool requires_grad) {
+      [](Tensor& self, bool requires_grad) {
         return self.set_requires_grad(requires_grad);
       })
     .define_method(
       "grad",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? to_ruby<torch::Tensor>(grad) : Nil;
+        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
       })
     .define_method(
       "grad=",
-      *[](Tensor& self, torch::Tensor& grad) {
+      [](Tensor& self, torch::Tensor& grad) {
         self.mutable_grad() = grad;
       })
     .define_method(
       "_dtype",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         return (int) at::typeMetaToScalarType(self.dtype());
       })
     .define_method(
       "_type",
-      *[](Tensor& self, int dtype) {
+      [](Tensor& self, int dtype) {
         return self.toType((torch::ScalarType) dtype);
       })
     .define_method(
       "_layout",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         std::stringstream s;
         s << self.layout();
         return s.str();
       })
     .define_method(
       "device",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         std::stringstream s;
         s << self.device();
         return s.str();
       })
     .define_method(
       "_data_str",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         Tensor tensor = self;
 
         // move to CPU to get data
@@ -221,13 +227,13 @@ void init_tensor(Rice::Module& m) {
     // for TorchVision
     .define_method(
       "_data_ptr",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         return reinterpret_cast<uintptr_t>(self.data_ptr());
       })
     // TODO figure out a better way to do this
     .define_method(
       "_flat_data",
-      *[](Tensor& self) {
+      [](Tensor& self) {
         Tensor tensor = self;
 
         // move to CPU to get data
@@ -248,7 +254,7 @@ void init_tensor(Rice::Module& m) {
           }
         } else if (dtype == torch::kChar) {
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(to_ruby<int>(view[i].item().to<int8_t>()));
+            a.push(Object(Rice::detail::To_Ruby<int>().convert(view[i].item().to<int8_t>())));
           }
         } else if (dtype == torch::kShort) {
           for (int i = 0; i < tensor.numel(); i++) {
@@ -289,21 +295,20 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "_to",
-      *[](Tensor& self, torch::Device device, int dtype, bool non_blocking, bool copy) {
+      [](Tensor& self, torch::Device device, int dtype, bool non_blocking, bool copy) {
         return self.to(device, (torch::ScalarType) dtype, non_blocking, copy);
       });
 
-  Rice::define_class_under<torch::TensorOptions>(m, "TensorOptions")
+  rb_cTensorOptions
     .add_handler<torch::Error>(handle_error)
-    .define_constructor(Rice::Constructor<torch::TensorOptions>())
     .define_method(
       "dtype",
-      *[](torch::TensorOptions& self, int dtype) {
+      [](torch::TensorOptions& self, int dtype) {
         return self.dtype((torch::ScalarType) dtype);
       })
     .define_method(
       "layout",
-      *[](torch::TensorOptions& self, const std::string& layout) {
+      [](torch::TensorOptions& self, const std::string& layout) {
         torch::Layout l;
         if (layout == "strided") {
           l = torch::kStrided;
@@ -317,13 +322,13 @@ void init_tensor(Rice::Module& m) {
       })
     .define_method(
       "device",
-      *[](torch::TensorOptions& self, const std::string& device) {
+      [](torch::TensorOptions& self, const std::string& device) {
         torch::Device d(device);
         return self.device(d);
       })
     .define_method(
       "requires_grad",
-      *[](torch::TensorOptions& self, bool requires_grad) {
+      [](torch::TensorOptions& self, bool requires_grad) {
         return self.requires_grad(requires_grad);
       });
 }

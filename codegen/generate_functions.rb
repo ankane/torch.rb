@@ -75,7 +75,7 @@ def write_body(type, method_defs, attach_defs)
     // do not edit by hand
 
     #include <torch/torch.h>
-    #include <rice/Module.hpp>
+    #include <rice/rice.hpp>
 
     #include "ruby_arg_parser.h"
     #include "templates.h"
@@ -119,7 +119,7 @@ def generate_attach_def(name, type, def_method)
 end
 
 def generate_method_def(name, functions, type, def_method)
-  assign_self = type == "tensor" ? "\n  Tensor& self = from_ruby<Tensor&>(self_);" : ""
+  assign_self = type == "tensor" ? "\n  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);" : ""
 
   functions = group_overloads(functions, type)
   signatures = functions.map { |f| f["signature"] }

@@ -4,8 +4,7 @@
 #undef isfinite
 #endif
 
-#include <rice/Array.hpp>
-#include <rice/Object.hpp>
+#include <rice/rice.hpp>
 
 using namespace Rice;
 
@@ -38,28 +37,35 @@ using torch::Storage;
 #define RETURN_NIL                                                   \
   return Qnil;
 
-template<>
-inline
-std::vector<int64_t> from_ruby<std::vector<int64_t>>(Object x)
+namespace Rice::detail
 {
-  Array a = Array(x);
-  std::vector<int64_t> vec(a.size());
-  for (long i = 0; i < a.size(); i++) {
-    vec[i] = from_ruby<int64_t>(a[i]);
-  }
-  return vec;
-}
+  template<>
+  struct From_Ruby<std::vector<int64_t>>
+  {
+    static std::vector<int64_t> convert(VALUE x)
+    {
+      Array a = Array(x);
+      std::vector<int64_t> vec(a.size());
+      for (long i = 0; i < a.size(); i++) {
+        vec[i] = Rice::detail::From_Ruby<int64_t>().convert(a[i].value());
+      }
+      return vec;
+    }
+  };
 
-template<>
-inline
-std::vector<Tensor> from_ruby<std::vector<Tensor>>(Object x)
-{
-  Array a = Array(x);
-  std::vector<Tensor> vec(a.size());
-  for (long i = 0; i < a.size(); i++) {
-    vec[i] = from_ruby<Tensor>(a[i]);
-  }
-  return vec;
+  template<>
+  struct From_Ruby<std::vector<Tensor>>
+  {
+    static std::vector<Tensor> convert(VALUE x)
+    {
+      Array a = Array(x);
+      std::vector<Tensor> vec(a.size());
+      for (long i = 0; i < a.size(); i++) {
+        vec[i] = Rice::detail::From_Ruby<Tensor>().convert(a[i].value());
+      }
+      return vec;
+    }
+  };
 }
 
 class FanModeType {
@@ -79,11 +85,25 @@ class FanModeType {
     }
 };
 
-template<>
-inline
-FanModeType from_ruby<FanModeType>(Object x)
+namespace Rice::detail
 {
-  return FanModeType(x);
+  template<>
+  struct Type<FanModeType>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
+
+  template<>
+  struct From_Ruby<FanModeType>
+  {
+    static FanModeType convert(VALUE x)
+    {
+      return FanModeType(x);
+    }
+  };
 }
 
 class NonlinearityType {
@@ -121,11 +141,25 @@ class NonlinearityType {
     }
 };
 
-template<>
-inline
-NonlinearityType from_ruby<NonlinearityType>(Object x)
+namespace Rice::detail
 {
-  return NonlinearityType(x);
+  template<>
+  struct Type<NonlinearityType>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
+
+  template<>
+  struct From_Ruby<NonlinearityType>
+  {
+    static NonlinearityType convert(VALUE x)
+    {
+      return NonlinearityType(x);
+    }
+  };
 }
 
 class OptionalTensor {
@@ -135,7 +169,7 @@ class OptionalTensor {
       if (o.is_nil()) {
         value = {};
       } else {
-        value = from_ruby<torch::Tensor>(o);
+        value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
       }
     }
     OptionalTensor(torch::Tensor o) {
@@ -146,75 +180,67 @@ class OptionalTensor {
     }
 };
 
-template<>
-inline
-Scalar from_ruby<Scalar>(Object x)
+namespace Rice::detail
 {
-  if (x.rb_type() == T_FIXNUM) {
-    return torch::Scalar(from_ruby<int64_t>(x));
-  } else {
-    return torch::Scalar(from_ruby<double>(x));
-  }
-}
+  template<>
+  struct Type<OptionalTensor>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
 
-template<>
-inline
-OptionalTensor from_ruby<OptionalTensor>(Object x)
-{
-  return OptionalTensor(x);
-}
+  template<>
+  struct From_Ruby<OptionalTensor>
+  {
+    static OptionalTensor convert(VALUE x)
+    {
+      return OptionalTensor(x);
+    }
+  };
 
-template<>
-inline
-torch::optional<torch::ScalarType> from_ruby<torch::optional<torch::ScalarType>>(Object x)
-{
-  if (x.is_nil()) {
-    return torch::nullopt;
-  } else {
-    return torch::optional<torch::ScalarType>{from_ruby<torch::ScalarType>(x)};
-  }
-}
+  template<>
+  struct Type<Scalar>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
 
-template<>
-inline
-torch::optional<int64_t> from_ruby<torch::optional<int64_t>>(Object x)
-{
-  if (x.is_nil()) {
-    return torch::nullopt;
-  } else {
-    return torch::optional<int64_t>{from_ruby<int64_t>(x)};
-  }
-}
+  template<>
+  struct From_Ruby<Scalar>
+  {
+    static Scalar convert(VALUE x)
+    {
+      if (FIXNUM_P(x)) {
+        return torch::Scalar(From_Ruby<int64_t>().convert(x));
+      } else {
+        return torch::Scalar(From_Ruby<double>().convert(x));
+      }
+    }
+  };
 
-template<>
-inline
-torch::optional<double> from_ruby<torch::optional<double>>(Object x)
-{
-  if (x.is_nil()) {
-    return torch::nullopt;
-  } else {
-    return torch::optional<double>{from_ruby<double>(x)};
-  }
-}
+  template<typename T>
+  struct Type<torch::optional<T>>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
 
-template<>
-inline
-torch::optional<bool> from_ruby<torch::optional<bool>>(Object x)
-{
-  if (x.is_nil()) {
-    return torch::nullopt;
-  } else {
-    return torch::optional<bool>{from_ruby<bool>(x)};
-  }
-}
-
-template<>
-inline
-torch::optional<Scalar> from_ruby<torch::optional<Scalar>>(Object x)
-{
-  if (x.is_nil()) {
-    return torch::nullopt;
-  } else {
-    return torch::optional<Scalar>{from_ruby<Scalar>(x)};
-  }
+  template<typename T>
+  struct From_Ruby<torch::optional<T>>
+  {
+    static torch::optional<T> convert(VALUE x)
+    {
+      if (NIL_P(x)) {
+        return torch::nullopt;
+      } else {
+        return torch::optional<T>{From_Ruby<T>().convert(x)};
+      }
+    }
+  };
 }

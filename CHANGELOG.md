@@ -1,5 +1,6 @@
-## 0.6.1 (unreleased)
+## 0.7.0 (unreleased)
 
+- Updated to Rice 4
 - Added support for complex numbers
 
 ## 0.6.0 (2021-03-25)
