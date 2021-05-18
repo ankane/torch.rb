@@ -254,7 +254,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
           }
         } else if (dtype == torch::kChar) {
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(Object(Rice::detail::To_Ruby<int>().convert(view[i].item().to<int8_t>())));
+            a.push(view[i].item().to<int8_t>());
           }
         } else if (dtype == torch::kShort) {
           for (int i = 0; i < tensor.numel(); i++) {
@@ -278,7 +278,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
           }
         } else if (dtype == torch::kBool) {
           for (int i = 0; i < tensor.numel(); i++) {
-            a.push(view[i].item().to<bool>() ? True : False);
+            a.push(view[i].item().to<bool>());
           }
         } else if (dtype == torch::kComplexFloat) {
           for (int i = 0; i < tensor.numel(); i++) {
