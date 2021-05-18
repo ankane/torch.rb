@@ -27,12 +27,12 @@ void init_torch(Rice::Module& m) {
     // config
     .define_singleton_function(
       "show_config",
-      *[] {
+      [] {
         return torch::show_config();
       })
     .define_singleton_function(
       "parallel_info",
-      *[] {
+      [] {
         return torch::get_parallel_info();
       })
     // begin operations

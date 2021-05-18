@@ -37,37 +37,6 @@ using torch::Storage;
 #define RETURN_NIL                                                   \
   return Qnil;
 
-namespace Rice::detail
-{
-  template<>
-  struct From_Ruby<std::vector<int64_t>>
-  {
-    static std::vector<int64_t> convert(VALUE x)
-    {
-      Array a = Array(x);
-      std::vector<int64_t> vec(a.size());
-      for (long i = 0; i < a.size(); i++) {
-        vec[i] = Rice::detail::From_Ruby<int64_t>().convert(a[i].value());
-      }
-      return vec;
-    }
-  };
-
-  template<>
-  struct From_Ruby<std::vector<Tensor>>
-  {
-    static std::vector<Tensor> convert(VALUE x)
-    {
-      Array a = Array(x);
-      std::vector<Tensor> vec(a.size());
-      for (long i = 0; i < a.size(); i++) {
-        vec[i] = Rice::detail::From_Ruby<Tensor>().convert(a[i].value());
-      }
-      return vec;
-    }
-  };
-}
-
 class FanModeType {
   std::string s;
   public:
@@ -97,9 +66,10 @@ namespace Rice::detail
   };
 
   template<>
-  struct From_Ruby<FanModeType>
+  class From_Ruby<FanModeType>
   {
-    static FanModeType convert(VALUE x)
+  public:
+    FanModeType convert(VALUE x)
     {
       return FanModeType(x);
     }
@@ -153,9 +123,10 @@ namespace Rice::detail
   };
 
   template<>
-  struct From_Ruby<NonlinearityType>
+  class From_Ruby<NonlinearityType>
   {
-    static NonlinearityType convert(VALUE x)
+  public:
+    NonlinearityType convert(VALUE x)
     {
       return NonlinearityType(x);
     }
@@ -192,9 +163,10 @@ namespace Rice::detail
   };
 
   template<>
-  struct From_Ruby<OptionalTensor>
+  class From_Ruby<OptionalTensor>
   {
-    static OptionalTensor convert(VALUE x)
+  public:
+    OptionalTensor convert(VALUE x)
     {
       return OptionalTensor(x);
     }
@@ -210,9 +182,10 @@ namespace Rice::detail
   };
 
   template<>
-  struct From_Ruby<Scalar>
+  class From_Ruby<Scalar>
   {
-    static Scalar convert(VALUE x)
+  public:
+    Scalar convert(VALUE x)
     {
       if (FIXNUM_P(x)) {
         return torch::Scalar(From_Ruby<int64_t>().convert(x));
@@ -232,9 +205,10 @@ namespace Rice::detail
   };
 
   template<typename T>
-  struct From_Ruby<torch::optional<T>>
+  class From_Ruby<torch::optional<T>>
   {
-    static torch::optional<T> convert(VALUE x)
+  public:
+    torch::optional<T> convert(VALUE x)
     {
       if (NIL_P(x)) {
         return torch::nullopt;

@@ -22,8 +22,9 @@ namespace Rice::detail
   };
 
   template<typename T>
-  struct To_Ruby<c10::complex<T>>
+  class To_Ruby<c10::complex<T>>
   {
+  public:
     VALUE convert(c10::complex<T> const& x)
     {
       return rb_dbl_complex_new(x.real(), x.imag());
@@ -133,12 +134,12 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method("requires_grad", &torch::Tensor::requires_grad)
     .define_method(
       "_size",
-      *[](Tensor& self, int64_t dim) {
+      [](Tensor& self, int64_t dim) {
         return self.size(dim);
       })
     .define_method(
       "_stride",
-      *[](Tensor& self, int64_t dim) {
+      [](Tensor& self, int64_t dim) {
         return self.stride(dim);
       })
     // in C++ for performance
