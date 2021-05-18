@@ -22,6 +22,9 @@ using torch::ArrayRef;
 using torch::TensorList;
 using torch::Storage;
 
+using torch::nn::init::FanModeType;
+using torch::nn::init::NonlinearityType;
+
 #define HANDLE_TH_ERRORS                                             \
   try {
 
@@ -37,20 +40,21 @@ using torch::Storage;
 #define RETURN_NIL                                                   \
   return Qnil;
 
-class FanModeType {
-  std::string s;
+class OptionalTensor {
+  torch::Tensor value;
   public:
-    FanModeType(Object o) {
-      s = String(o).str();
-    }
-    operator torch::nn::init::FanModeType() {
-      if (s == "fan_in") {
-        return torch::kFanIn;
-      } else if (s == "fan_out") {
-        return torch::kFanOut;
+    OptionalTensor(Object o) {
+      if (o.is_nil()) {
+        value = {};
       } else {
-        throw std::runtime_error("Unsupported nonlinearity type: " + s);
+        value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
       }
+    }
+    OptionalTensor(torch::Tensor o) {
+      value = o;
+    }
+    operator torch::Tensor() const {
+      return value;
     }
 };
 
@@ -71,18 +75,33 @@ namespace Rice::detail
   public:
     FanModeType convert(VALUE x)
     {
-      return FanModeType(x);
+      auto s = String(x).str();
+      if (s == "fan_in") {
+        return torch::kFanIn;
+      } else if (s == "fan_out") {
+        return torch::kFanOut;
+      } else {
+        throw std::runtime_error("Unsupported nonlinearity type: " + s);
+      }
     }
   };
-}
 
-class NonlinearityType {
-  std::string s;
-  public:
-    NonlinearityType(Object o) {
-      s = String(o).str();
+  template<>
+  struct Type<NonlinearityType>
+  {
+    static bool verify()
+    {
+      return true;
     }
-    operator torch::nn::init::NonlinearityType() {
+  };
+
+  template<>
+  class From_Ruby<NonlinearityType>
+  {
+  public:
+    NonlinearityType convert(VALUE x)
+    {
+      auto s = String(x).str();
       if (s == "linear") {
         return torch::kLinear;
       } else if (s == "conv1d") {
@@ -109,50 +128,8 @@ class NonlinearityType {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
     }
-};
-
-namespace Rice::detail
-{
-  template<>
-  struct Type<NonlinearityType>
-  {
-    static bool verify()
-    {
-      return true;
-    }
   };
 
-  template<>
-  class From_Ruby<NonlinearityType>
-  {
-  public:
-    NonlinearityType convert(VALUE x)
-    {
-      return NonlinearityType(x);
-    }
-  };
-}
-
-class OptionalTensor {
-  torch::Tensor value;
-  public:
-    OptionalTensor(Object o) {
-      if (o.is_nil()) {
-        value = {};
-      } else {
-        value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
-      }
-    }
-    OptionalTensor(torch::Tensor o) {
-      value = o;
-    }
-    operator torch::Tensor() const {
-      return value;
-    }
-};
-
-namespace Rice::detail
-{
   template<>
   struct Type<OptionalTensor>
   {

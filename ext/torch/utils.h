@@ -4,8 +4,7 @@
 #include <rice/stl.hpp>
 
 // TODO find better place
-inline void handle_error(torch::Error const & ex)
-{
+inline void handle_error(torch::Error const & ex) {
   throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
 }
 
