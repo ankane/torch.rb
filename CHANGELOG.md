@@ -1,4 +1,4 @@
-## 0.7.0 (unreleased)
+## 0.7.0 (2021-05-23)
 
 - Updated to Rice 4
 - Added support for complex numbers
