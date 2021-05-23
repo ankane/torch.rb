@@ -1,6 +1,6 @@
 require "mkmf-rice"
 
-$CXXFLAGS += " -std=c++17"
+$CXXFLAGS += " -std=c++17 $(optflags)"
 
 # change to 0 for Linux pre-cxx11 ABI version
 $CXXFLAGS += " -D_GLIBCXX_USE_CXX11_ABI=1"
