@@ -325,6 +325,8 @@ def generate_function_params(function, params, remove_self)
         "tensor"
       when "Tensor[]"
         "tensorlist"
+      when "Scalar[]"
+        "scalarlist"
       when /\Aint\[/
         "intlist"
       when "float[]"
@@ -414,6 +416,8 @@ def generate_dispatch_params(function, params)
         end
       when "Tensor[]"
         "TensorList"
+      when "Scalar[]"
+        "ScalarList"
       when "int"
         "int64_t"
       when "float"
@@ -532,6 +536,8 @@ def signature_type(param)
       "Tensor"
     when /\Tensor\[\d*\]\z/
       "TensorList"
+    when "Scalar[]"
+      "ScalarList"
     when /\ADimname\[\d*\]\z/
       "DirnameList"
     when /\Aint\[\d*\]\z/

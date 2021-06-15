@@ -77,6 +77,8 @@ class Function
         default = "torch.int64"
       end
 
+      default = nil if definition["cpp_no_default_args"].to_a.include?(name)
+
       params << {
         name: name,
         type: type,

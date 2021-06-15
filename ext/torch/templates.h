@@ -21,6 +21,7 @@ using torch::IntArrayRef;
 using torch::ArrayRef;
 using torch::TensorList;
 using torch::Storage;
+using ScalarList = ArrayRef<Scalar>;
 
 using torch::nn::init::FanModeType;
 using torch::nn::init::NonlinearityType;

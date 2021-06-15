@@ -23,7 +23,7 @@ class CUDATest < Minitest::Test
       end
       # TODO see why this differs from PyTorch
       # Torch not compiled with CUDA enabled
-      assert_equal "PyTorch is not linked with support for cuda devices", error.message
+      assert_includes "PyTorch is not linked with support for cuda devices", error.message
     end
   end
 
@@ -49,7 +49,7 @@ class CUDATest < Minitest::Test
         Torch.rand 1, device: 'cuda:0'
       end
 
-      assert_equal "PyTorch is not linked with support for cuda devices", error.message
+      assert_match "Could not run 'aten::empty.memory_format' with arguments from the 'CUDA' backend", error.message
     end
   end
 end

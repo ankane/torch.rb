@@ -78,6 +78,7 @@ struct RubyArgs {
   inline OptionalTensor optionalTensor(int i);
   inline at::Scalar scalar(int i);
   // inline at::Scalar scalarWithDefault(int i, at::Scalar default_scalar);
+  inline std::vector<at::Scalar> scalarlist(int i);
   inline std::vector<at::Tensor> tensorlist(int i);
   template<int N>
   inline std::array<at::Tensor, N> tensorlist_n(int i);
@@ -132,6 +133,11 @@ inline OptionalTensor RubyArgs::optionalTensor(int i) {
 inline at::Scalar RubyArgs::scalar(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_scalar;
   return Rice::detail::From_Ruby<torch::Scalar>().convert(args[i]);
+}
+
+inline std::vector<at::Scalar> RubyArgs::scalarlist(int i) {
+  if (NIL_P(args[i])) return std::vector<at::Scalar>();
+  return Rice::detail::From_Ruby<std::vector<at::Scalar>>().convert(args[i]);
 }
 
 inline std::vector<at::Tensor> RubyArgs::tensorlist(int i) {
@@ -312,7 +318,7 @@ inline std::string RubyArgs::string(int i) {
 }
 
 inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
-  if (!args[i]) return c10::nullopt;
+  if (NIL_P(args[i])) return c10::nullopt;
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 

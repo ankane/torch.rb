@@ -1,3 +1,7 @@
+## 0.8.0 (unreleased)
+
+- Updated LibTorch to 1.9.0
+
 ## 0.7.0 (2021-05-23)
 
 - Updated to Rice 4
