@@ -1,4 +1,4 @@
-## 0.8.0 (unreleased)
+## 0.8.0 (2021-06-15)
 
 - Updated LibTorch to 1.9.0
 
