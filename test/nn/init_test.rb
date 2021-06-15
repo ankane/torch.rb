@@ -63,6 +63,7 @@ class InitTest < Minitest::Test
 
   def test_orthogonal
     w = Torch.empty(3, 5)
+    # warning in torch::nn::init::orthogonal_
     Torch::NN::Init.orthogonal!(w)
   end
 
