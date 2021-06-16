@@ -460,15 +460,6 @@ Move a neural network to a GPU
 net.cuda
 ```
 
-## rbenv
-
-This library uses [Rice](https://github.com/jasonroelofs/rice) to interface with LibTorch. Rice and earlier versions of rbenv don’t play nicely together. If you encounter an error during installation, upgrade ruby-build and reinstall your Ruby version.
-
-```sh
-brew upgrade ruby-build
-rbenv install [version]
-```
-
 ## History
 
 View the [changelog](https://github.com/ankane/torch.rb/blob/master/CHANGELOG.md)
