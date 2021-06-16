@@ -124,9 +124,7 @@ def generate_attach_def(name, type, def_method)
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
 
-  full_name = type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
-
-  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name}, -1);"
+  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name(name, type)}, -1);"
 end
 
 def generate_method_def(name, functions, type, def_method)
@@ -137,11 +135,9 @@ def generate_method_def(name, functions, type, def_method)
   max_args = signatures.map { |s| s.count(",") - s.count("*") }.max + 1
   dispatches = add_dispatches(functions, def_method)
 
-  full_name = type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
-
   template = <<~EOS
     // #{name}
-    static VALUE #{full_name}(int argc, VALUE* argv, VALUE self_)
+    static VALUE #{full_name(name, type)}(int argc, VALUE* argv, VALUE self_)
     {
       HANDLE_TH_ERRORS#{assign_self}
       static RubyArgParser parser({
@@ -572,4 +568,8 @@ def signature_type(param)
   type += "[#{param[:list_size]}]" if param[:list_size]
   type += "?" if param[:optional]
   type
+end
+
+def full_name(name, type)
+  type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
 end
