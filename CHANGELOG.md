@@ -1,5 +1,6 @@
 ## 0.8.1 (unreleased)
 
+- Added `Backends` module
 - Added `FFT` module
 - Added `Linalg` module
 - Added `Special` module

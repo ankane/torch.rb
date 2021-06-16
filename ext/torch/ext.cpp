@@ -9,6 +9,7 @@ void init_special(Rice::Module& m);
 void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions);
 void init_torch(Rice::Module& m);
 
+void init_backends(Rice::Module& m);
 void init_cuda(Rice::Module& m);
 void init_device(Rice::Module& m);
 void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
@@ -34,6 +35,7 @@ void Init_ext()
   init_linalg(m);
   init_special(m);
 
+  init_backends(m);
   init_cuda(m);
   init_device(m);
   init_ivalue(m, rb_cIValue);
