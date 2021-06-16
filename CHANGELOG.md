@@ -1,4 +1,4 @@
-## 0.8.1 (unreleased)
+## 0.8.1 (2021-06-15)
 
 - Added `Backends` module
 - Added `FFT` module
