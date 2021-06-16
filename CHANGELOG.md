@@ -1,6 +1,8 @@
 ## 0.8.1 (unreleased)
 
+- Added `FFT` module
 - Added `Linalg` module
+- Added `Special` module
 
 ## 0.8.0 (2021-06-15)
 

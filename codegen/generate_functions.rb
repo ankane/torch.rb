@@ -11,7 +11,9 @@ def generate_functions
   generate_files("torch", :define_singleton_method, functions[:torch])
   generate_files("tensor", :define_method, functions[:tensor])
   generate_files("nn", :define_singleton_method, functions[:nn])
+  generate_files("fft", :define_singleton_method, functions[:fft])
   generate_files("linalg", :define_singleton_method, functions[:linalg])
+  generate_files("special", :define_singleton_method, functions[:special])
 end
 
 def load_functions
@@ -40,16 +42,25 @@ end
 def group_functions(functions)
   nn_functions, other_functions = functions.partition { |f| f.python_module == "nn" }
   linalg_functions, other_functions = other_functions.partition { |f| f.python_module == "linalg" }
+  fft_functions, other_functions = other_functions.partition { |f| f.python_module == "fft" }
+  special_functions, other_functions = other_functions.partition { |f| f.python_module == "special" }
   unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
 
   if unexpected_functions.any?
     unexpected_modules = unexpected_functions.map(&:python_module).uniq
-    raise "Unexpected modules: #{unexpected_modules.join(", ")}" unless unexpected_modules.sort == ["fft", "special"]
+    raise "Unexpected modules: #{unexpected_modules.join(", ")}"
   end
 
-  {torch: torch_functions, tensor: tensor_functions, nn: nn_functions, linalg: linalg_functions}
+  {
+    torch: torch_functions,
+    tensor: tensor_functions,
+    nn: nn_functions,
+    linalg: linalg_functions,
+    fft: fft_functions,
+    special: special_functions
+  }
 end
 
 def generate_files(type, def_method, functions)
@@ -119,7 +130,9 @@ def generate_attach_def(name, type, def_method)
     end
 
   ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
+  ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
+  ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
@@ -571,5 +584,9 @@ def signature_type(param)
 end
 
 def full_name(name, type)
-  type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
+  if %w(fft linalg special).include?(type) && name.start_with?("#{type}_")
+    name
+  else
+    "#{type}_#{name}"
+  end
 end
