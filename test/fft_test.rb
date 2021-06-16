@@ -65,7 +65,8 @@ class FFTTest < Minitest::Test
   end
 
   def test_ihfft
-    # TODO
+    t = Torch.arange(5)
+    assert_elements_in_delta [2, -0.5-0.6882i, -0.5-0.1625i], Torch::FFT.ihfft(t).to_a
   end
 
   def test_fftfreq
