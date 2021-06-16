@@ -11,6 +11,7 @@ def generate_functions
   generate_files("torch", :define_singleton_method, functions[:torch])
   generate_files("tensor", :define_method, functions[:tensor])
   generate_files("nn", :define_singleton_method, functions[:nn])
+  generate_files("linalg", :define_singleton_method, functions[:linalg])
 end
 
 def load_functions
@@ -38,10 +39,17 @@ end
 
 def group_functions(functions)
   nn_functions, other_functions = functions.partition { |f| f.python_module == "nn" }
+  linalg_functions, other_functions = other_functions.partition { |f| f.python_module == "linalg" }
+  unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
 
-  {torch: torch_functions, tensor: tensor_functions, nn: nn_functions}
+  if unexpected_functions.any?
+    unexpected_modules = unexpected_functions.map(&:python_module).uniq
+    raise "Unexpected modules: #{unexpected_modules.join(", ")}" unless unexpected_modules.sort == ["fft", "special"]
+  end
+
+  {torch: torch_functions, tensor: tensor_functions, nn: nn_functions, linalg: linalg_functions}
 end
 
 def generate_files(type, def_method, functions)
@@ -111,11 +119,14 @@ def generate_attach_def(name, type, def_method)
     end
 
   ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
+  ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
 
-  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{type}_#{name}, -1);"
+  full_name = type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
+
+  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name}, -1);"
 end
 
 def generate_method_def(name, functions, type, def_method)
@@ -126,9 +137,11 @@ def generate_method_def(name, functions, type, def_method)
   max_args = signatures.map { |s| s.count(",") - s.count("*") }.max + 1
   dispatches = add_dispatches(functions, def_method)
 
+  full_name = type == "linalg" && name.start_with?("linalg_") ? name : "#{type}_#{name}"
+
   template = <<~EOS
     // #{name}
-    static VALUE #{type}_#{name}(int argc, VALUE* argv, VALUE self_)
+    static VALUE #{full_name}(int argc, VALUE* argv, VALUE self_)
     {
       HANDLE_TH_ERRORS#{assign_self}
       static RubyArgParser parser({

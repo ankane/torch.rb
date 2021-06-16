@@ -2,6 +2,7 @@
 
 #include <rice/rice.hpp>
 
+void init_linalg(Rice::Module& m);
 void init_nn(Rice::Module& m);
 void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions);
 void init_torch(Rice::Module& m);
@@ -27,6 +28,7 @@ void Init_ext()
   init_torch(m);
   init_tensor(m, rb_cTensor, rb_cTensorOptions);
   init_nn(m);
+  init_linalg(m);
 
   init_cuda(m);
   init_device(m);

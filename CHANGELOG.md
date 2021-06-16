@@ -1,3 +1,7 @@
+## 0.8.1 (unreleased)
+
+- Added `Linalg` module
+
 ## 0.8.0 (2021-06-15)
 
 - Updated LibTorch to 1.9.0
