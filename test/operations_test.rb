@@ -248,4 +248,19 @@ class OperationsTest < Minitest::Test
     x = Torch.tensor([[1, 2, 3]])
     assert_equal [[0, 0], [0, 0]], x.new_full([2, 2], 0).to_a
   end
+
+  def test_divide_rounding_mode_floor
+    a = Torch.tensor([-1.0, 0.0, 1.0])
+    b = Torch.tensor([0.0])
+    c = Torch.divide(a, b, rounding_mode: "floor").to_a
+    assert_equal -Float::INFINITY, c[0]
+    assert c[1].nan?
+    assert_equal Float::INFINITY, c[2]
+  end
+
+  def test_divide_rounding_mode_nil
+    a = Torch.full([2], 4.2)
+    b = Torch.full([2], 2)
+    assert_elements_in_delta [2.1, 2.1], Torch.divide(a, b, rounding_mode: nil).to_a
+  end
 end

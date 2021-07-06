@@ -1,7 +1,30 @@
-## 0.5.3 (unreleased)
+## 0.8.1 (2021-06-15)
+
+- Added `Backends` module
+- Added `FFT` module
+- Added `Linalg` module
+- Added `Special` module
+
+## 0.8.0 (2021-06-15)
+
+- Updated LibTorch to 1.9.0
+
+## 0.7.0 (2021-05-23)
+
+- Updated to Rice 4
+- Added support for complex numbers
+
+## 0.6.0 (2021-03-25)
+
+- Updated LibTorch to 1.8.0
+- Fixed tensor indexing with endless ranges that exclude end
+- Removed support for Ruby 2.5
+
+## 0.5.3 (2021-01-14)
 
 - Added `manual_seed` and `manual_seed_all` for CUDA
 - Improved saving and loading models
+- Fixed error with tensor indexing with beginless ranges
 
 ## 0.5.2 (2020-10-29)
 

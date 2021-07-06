@@ -1,3 +1,3 @@
 module Torch
-  VERSION = "0.5.2"
+  VERSION = "0.8.1"
 end

@@ -11,6 +11,9 @@ def generate_functions
   generate_files("torch", :define_singleton_method, functions[:torch])
   generate_files("tensor", :define_method, functions[:tensor])
   generate_files("nn", :define_singleton_method, functions[:nn])
+  generate_files("fft", :define_singleton_method, functions[:fft])
+  generate_files("linalg", :define_singleton_method, functions[:linalg])
+  generate_files("special", :define_singleton_method, functions[:special])
 end
 
 def load_functions
@@ -24,6 +27,7 @@ def skip_functions(functions)
     f.base_name.include?("_backward") ||
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
+    f.base_name == "record_stream" ||
     # in ext.cpp
     f.base_name == "index" ||
     f.base_name == "index_put_" ||
@@ -37,10 +41,26 @@ end
 
 def group_functions(functions)
   nn_functions, other_functions = functions.partition { |f| f.python_module == "nn" }
+  linalg_functions, other_functions = other_functions.partition { |f| f.python_module == "linalg" }
+  fft_functions, other_functions = other_functions.partition { |f| f.python_module == "fft" }
+  special_functions, other_functions = other_functions.partition { |f| f.python_module == "special" }
+  unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
 
-  {torch: torch_functions, tensor: tensor_functions, nn: nn_functions}
+  if unexpected_functions.any?
+    unexpected_modules = unexpected_functions.map(&:python_module).uniq
+    raise "Unexpected modules: #{unexpected_modules.join(", ")}"
+  end
+
+  {
+    torch: torch_functions,
+    tensor: tensor_functions,
+    nn: nn_functions,
+    linalg: linalg_functions,
+    fft: fft_functions,
+    special: special_functions
+  }
 end
 
 def generate_files(type, def_method, functions)
@@ -61,7 +81,7 @@ def write_header(type)
 
     #pragma once
 
-    void add_%{type}_functions(Module m);
+    void add_%{type}_functions(Rice::Module& m);
   EOS
 
   contents = template % {type: type}
@@ -74,14 +94,14 @@ def write_body(type, method_defs, attach_defs)
     // do not edit by hand
 
     #include <torch/torch.h>
-    #include <rice/Module.hpp>
+    #include <rice/rice.hpp>
 
     #include "ruby_arg_parser.h"
     #include "templates.h"
     #include "wrap_outputs.h"
 
     %{method_defs}
-    void add_%{type}_functions(Module m) {
+    void add_%{type}_functions(Rice::Module& m) {
       %{attach_defs}
     }
   EOS
@@ -110,31 +130,35 @@ def generate_attach_def(name, type, def_method)
     end
 
   ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
+  ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
+  ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
+  ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
 
-  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{type}_#{name}, -1);"
+  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name(name, type)}, -1);"
 end
 
 def generate_method_def(name, functions, type, def_method)
-  assign_self = type == "tensor" ? "\n  Tensor& self = from_ruby<Tensor&>(self_);" : ""
+  assign_self = type == "tensor" ? "\n  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);" : ""
 
   functions = group_overloads(functions, type)
   signatures = functions.map { |f| f["signature"] }
   max_args = signatures.map { |s| s.count(",") - s.count("*") }.max + 1
+  dispatches = add_dispatches(functions, def_method)
 
   template = <<~EOS
     // #{name}
-    static VALUE #{type}_#{name}(int argc, VALUE* argv, VALUE self_)
+    static VALUE #{full_name(name, type)}(int argc, VALUE* argv, VALUE self_)
     {
       HANDLE_TH_ERRORS#{assign_self}
       static RubyArgParser parser({
         #{signatures.map(&:inspect).join(",\n    ")}
       });
-      std::vector<VALUE> parsed_args(#{max_args});
-      auto _r = parser.parse(self_, argc, argv, parsed_args);
-      #{add_dispatches(functions, def_method)}
+      ParsedArgs<#{max_args}> parsed_args;
+      #{dispatches.include?("_r.") ? "auto _r = " : ""}parser.parse(self_, argc, argv, parsed_args);
+      #{dispatches}
       END_HANDLE_TH_ERRORS
     }
   EOS
@@ -323,6 +347,8 @@ def generate_function_params(function, params, remove_self)
         "tensor"
       when "Tensor[]"
         "tensorlist"
+      when "Scalar[]"
+        "scalarlist"
       when /\Aint\[/
         "intlist"
       when "float[]"
@@ -412,6 +438,8 @@ def generate_dispatch_params(function, params)
         end
       when "Tensor[]"
         "TensorList"
+      when "Scalar[]"
+        "ScalarList"
       when "int"
         "int64_t"
       when "float"
@@ -530,6 +558,8 @@ def signature_type(param)
       "Tensor"
     when /\Tensor\[\d*\]\z/
       "TensorList"
+    when "Scalar[]"
+      "ScalarList"
     when /\ADimname\[\d*\]\z/
       "DirnameList"
     when /\Aint\[\d*\]\z/
@@ -551,4 +581,12 @@ def signature_type(param)
   type += "[#{param[:list_size]}]" if param[:list_size]
   type += "?" if param[:optional]
   type
+end
+
+def full_name(name, type)
+  if %w(fft linalg special).include?(type) && name.start_with?("#{type}_")
+    name
+  else
+    "#{type}_#{name}"
+  end
 end

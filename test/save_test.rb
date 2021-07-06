@@ -10,9 +10,16 @@ class SaveTest < Minitest::Test
     assert_save false
   end
 
-  # TODO test out of range
   def test_integer
     assert_save 123
+  end
+
+  def test_integer_out_of_range
+    tmpfile = Tempfile.new
+    error = assert_raises(RangeError) do
+      Torch.save(2**64, tmpfile.path)
+    end
+    assert_match "bignum too big to convert into `long", error.message
   end
 
   def test_float

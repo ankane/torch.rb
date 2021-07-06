@@ -8,14 +8,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 2.7
+        - ruby: 3.0
           os: ubuntu-20.04
+        - ruby: 2.7
+          os: ubuntu-18.04
         - ruby: 2.6
           os: ubuntu-18.04
-        - ruby: 2.5
-          os: ubuntu-16.04
     env:
-      LIBTORCH_VERSION: 1.7.1
+      LIBTORCH_VERSION: 1.9.0
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
