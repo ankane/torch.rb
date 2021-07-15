@@ -26,18 +26,6 @@ gem 'torch-rb'
 
 It can take a few minutes to compile the extension.
 
-## Getting Started
-
-Deep learning is significantly faster with a GPU. If you don’t have an NVIDIA GPU, we recommend using a cloud service. [Paperspace](https://www.paperspace.com/) has a great free plan.
-
-We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to make it easy to get started. On Paperspace, create a notebook with a custom container. Under advanced options, set the container name to:
-
-```text
-ankane/ml-stack:torch-gpu
-```
-
-And leave the other fields in that section blank. Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
-
 ## API
 
 This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.html). There are a few changes to make it more Ruby-like:
@@ -414,7 +402,7 @@ Here are a few full examples:
 
 ## LibTorch Installation
 
-[Download LibTorch](https://pytorch.org/). For Linux, use the `cxx11 ABI` version. Then run:
+[Download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
 
 ```sh
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
@@ -444,9 +432,11 @@ Then install the gem (no need for `bundle config`).
 
 ## Performance
 
+Deep learning is significantly faster on a GPU.
+
 ### Linux
 
-Deep learning is significantly faster on a GPU. Install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
@@ -459,6 +449,18 @@ Move a neural network to a GPU
 ```ruby
 net.cuda
 ```
+
+### Other
+
+If you don’t have a GPU that supports CUDA, we recommend using a cloud service. [Paperspace](https://www.paperspace.com/) has a great free plan.
+
+We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to make it easy to get started. On Paperspace, create a notebook with a custom container. Under advanced options, set the container name to:
+
+```text
+ankane/ml-stack:torch-gpu
+```
+
+And leave the other fields in that section blank. Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
 
 ## History
 
