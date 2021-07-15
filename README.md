@@ -432,11 +432,7 @@ Then install the gem (no need for `bundle config`).
 
 ## Performance
 
-Deep learning is significantly faster on a GPU.
-
-### Linux
-
-Install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Deep learning is significantly faster on a GPU. On Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
@@ -450,11 +446,7 @@ Move a neural network to a GPU
 net.cuda
 ```
 
-### Other
-
-If you don’t have a GPU that supports CUDA, we recommend using a cloud service. [Paperspace](https://www.paperspace.com/) has a great free plan.
-
-We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to make it easy to get started. On Paperspace, create a notebook with a custom container. Under advanced options, set the container name to:
+If you don’t have a GPU that supports CUDA, we recommend using a cloud service. [Paperspace](https://www.paperspace.com/) has a great free plan. We’ve put together a [Docker image](https://github.com/ankane/ml-stack) to make it easy to get started. On Paperspace, create a notebook with a custom container. Under advanced options, set the container name to:
 
 ```text
 ankane/ml-stack:torch-gpu
