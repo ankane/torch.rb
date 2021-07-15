@@ -213,20 +213,10 @@ class MyNet < Torch::NN::Module
   def forward(x)
     x = Torch::NN::F.max_pool2d(Torch::NN::F.relu(@conv1.call(x)), [2, 2])
     x = Torch::NN::F.max_pool2d(Torch::NN::F.relu(@conv2.call(x)), 2)
-    x = x.view(-1, num_flat_features(x))
+    x = Torch.flatten(x, 1)
     x = Torch::NN::F.relu(@fc1.call(x))
     x = Torch::NN::F.relu(@fc2.call(x))
-    x = @fc3.call(x)
-    x
-  end
-
-  def num_flat_features(x)
-    size = x.size[1..-1]
-    num_features = 1
-    size.each do |s|
-      num_features *= s
-    end
-    num_features
+    @fc3.call(x)
   end
 end
 ```
