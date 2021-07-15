@@ -432,7 +432,7 @@ Then install the gem (no need for `bundle config`).
 
 ## Performance
 
-Deep learning is significantly faster on a GPU. On Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Deep learning is significantly faster on a GPU. With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
