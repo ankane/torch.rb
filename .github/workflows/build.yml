@@ -20,5 +20,4 @@ jobs:
         bundler-cache: true
     - run: brew update
     - run: brew install libomp libtorch
-    - run: bundle exec rake compile
-    - run: bundle exec rake test
+    - run: gem install torch-rb
