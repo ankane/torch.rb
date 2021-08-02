@@ -8,12 +8,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 3.0
-          os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
         - ruby: 2.6
-          os: ubuntu-18.04
+          os: macos-10.5
     env:
       LIBTORCH_VERSION: 1.9.0
     steps:
@@ -22,16 +18,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-    - uses: actions/cache@v2
-      with:
-        path: ~/libtorch
-        key: libtorch-${{ env.LIBTORCH_VERSION }}
-      id: cache-libtorch
-    - name: Download LibTorch
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        cd ~
-        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
-        unzip -q libtorch.zip
+    - run: brew update
+    - run: brew install libomp libtorch
     - run: bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
     - run: bundle exec rake test
