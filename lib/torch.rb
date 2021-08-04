@@ -39,6 +39,7 @@ require "torch/nn/utils"
 
 # nn containers
 require "torch/nn/module"
+require "torch/nn/module_list"
 require "torch/nn/sequential"
 
 # nn convolution layers
