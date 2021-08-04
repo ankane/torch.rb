@@ -2,7 +2,7 @@ module Torch
   module NN
     class TransformerDecoderLayer < Module
       def initialize(
-        d_model, n_head, 
+        d_model, n_head,
         dim_feedforward: 2048, dropout: 0.1, activation: :relu,
         layer_norm_eps: 1e-5, batch_first: false
       )
@@ -11,7 +11,7 @@ module Torch
 
         @self_attn = MultiheadAttention.new(d_model, n_head, dropout: dropout, batch_first: batch_first)
         @multihead_attn = MultiheadAttention.new(d_model, n_head, dropout: dropout, batch_first: batch_first)
-        
+
         @linear1 = Linear.new(d_model, dim_feedforward)
         @dropout = Dropout.new(p: dropout)
         @linear2 = Linear.new(dim_feedforward, d_model)
@@ -35,7 +35,7 @@ module Torch
         tmp = @multihead_attn.(tgt, memory, memory, attn_mask: memory_mask, key_padding_mask: memory_key_padding_mask).first
         out += @dropout2.(tmp)
         out = @norm2.(out)
-        
+
         tmp = @activation.(@linear1.(out))
         tmp = @linear2.(@dropout.(tmp))
         out += @dropout2.(tmp)

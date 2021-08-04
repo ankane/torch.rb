@@ -2,7 +2,7 @@ module Torch
   module NN
     class TransformerEncoderLayer < Module
       def initialize(
-        d_model, n_head, 
+        d_model, n_head,
         dim_feedforward: 2048, dropout: 0.1, activation: :relu,
         layer_norm_eps: 1e-5, batch_first: false
       )
@@ -27,11 +27,11 @@ module Torch
         tmp = @self_attn.(src, src, src, attn_mask: src_mask, key_padding_mask: src_key_padding_mask).first
         out = src + @dropout1.(tmp)
         out = @norm1.(out)
-        
+
         tmp = @activation.(@linear1.(out))
         tmp = @linear2.(@dropout.(tmp))
         out += @dropout2.(tmp)
-        
+
         @norm2.(out)
       end
 

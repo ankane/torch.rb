@@ -47,7 +47,7 @@ class FunctionalAttentionTest < Minitest::Test
       assert (a - b).abs.lt(1e-6).all
     end
   end
-  
+
   def test_self_attention_with_masks
     t = Torch.ones([T, B, E])
     Torch.manual_seed SEED
@@ -130,7 +130,7 @@ class FunctionalAttentionTest < Minitest::Test
 			 [0.3333, 0.3333, 0.3333, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000],
 			 [0.2500, 0.2500, 0.2500, 0.2500, 0.0000, 0.0000, 0.0000, 0.0000]]
     ])
-    
+
     assert_equal out.shape, expected_out.shape
     assert_equal weights.shape, expected_weights.shape
 

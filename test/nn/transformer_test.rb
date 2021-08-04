@@ -50,17 +50,17 @@ class TranformerTest < Minitest::Test
     assert_equal out.shape, expected_out.shape
     assert (expected_out - out).abs.lt(1e-6).all
   end
-  
+
   def test_transformer_decoder
     Torch.manual_seed SEED
     memory = Torch.randn([S, B, E])
     tgt = Torch.randn(T, B, E)
     layer = Torch::NN::TransformerDecoderLayer.new(E, NHEAD)
     decoder = Torch::NN::TransformerDecoder.new(layer, 4)
-    
+
     expected_keys = ['layers.0.self_attn.in_proj_weight', 'layers.0.self_attn.in_proj_bias', 'layers.0.self_attn.out_proj.weight', 'layers.0.self_attn.out_proj.bias', 'layers.0.multihead_attn.in_proj_weight', 'layers.0.multihead_attn.in_proj_bias', 'layers.0.multihead_attn.out_proj.weight', 'layers.0.multihead_attn.out_proj.bias', 'layers.0.linear1.weight', 'layers.0.linear1.bias', 'layers.0.linear2.weight', 'layers.0.linear2.bias', 'layers.0.norm1.weight', 'layers.0.norm1.bias', 'layers.0.norm2.weight', 'layers.0.norm2.bias', 'layers.0.norm3.weight', 'layers.0.norm3.bias', 'layers.1.self_attn.in_proj_weight', 'layers.1.self_attn.in_proj_bias', 'layers.1.self_attn.out_proj.weight', 'layers.1.self_attn.out_proj.bias', 'layers.1.multihead_attn.in_proj_weight', 'layers.1.multihead_attn.in_proj_bias', 'layers.1.multihead_attn.out_proj.weight', 'layers.1.multihead_attn.out_proj.bias', 'layers.1.linear1.weight', 'layers.1.linear1.bias', 'layers.1.linear2.weight', 'layers.1.linear2.bias', 'layers.1.norm1.weight', 'layers.1.norm1.bias', 'layers.1.norm2.weight', 'layers.1.norm2.bias', 'layers.1.norm3.weight', 'layers.1.norm3.bias', 'layers.2.self_attn.in_proj_weight', 'layers.2.self_attn.in_proj_bias', 'layers.2.self_attn.out_proj.weight', 'layers.2.self_attn.out_proj.bias', 'layers.2.multihead_attn.in_proj_weight', 'layers.2.multihead_attn.in_proj_bias', 'layers.2.multihead_attn.out_proj.weight', 'layers.2.multihead_attn.out_proj.bias', 'layers.2.linear1.weight', 'layers.2.linear1.bias', 'layers.2.linear2.weight', 'layers.2.linear2.bias', 'layers.2.norm1.weight', 'layers.2.norm1.bias', 'layers.2.norm2.weight', 'layers.2.norm2.bias', 'layers.2.norm3.weight', 'layers.2.norm3.bias', 'layers.3.self_attn.in_proj_weight', 'layers.3.self_attn.in_proj_bias', 'layers.3.self_attn.out_proj.weight', 'layers.3.self_attn.out_proj.bias', 'layers.3.multihead_attn.in_proj_weight', 'layers.3.multihead_attn.in_proj_bias', 'layers.3.multihead_attn.out_proj.weight', 'layers.3.multihead_attn.out_proj.bias', 'layers.3.linear1.weight', 'layers.3.linear1.bias', 'layers.3.linear2.weight', 'layers.3.linear2.bias', 'layers.3.norm1.weight', 'layers.3.norm1.bias', 'layers.3.norm2.weight', 'layers.3.norm2.bias', 'layers.3.norm3.weight', 'layers.3.norm3.bias']
     assert_equal Set.new(decoder.state_dict.keys), Set.new(expected_keys)
-    
+
     out = decoder.(tgt, memory).detach
 
     expected_out = Torch.tensor([
