@@ -99,7 +99,7 @@ module Torch
           end
 
           if use_separate_proj_weight
-            raise ArgumentError, "Key's sequence and batch dims #{key.shape[...2]} do not match value's #{value.shape[...2]}" unless key.shape[...2] == value.shape[...2]
+            raise ArgumentError, "Key's sequence and batch dims #{key.shape[0...2]} do not match value's #{value.shape[0...2]}" unless key.shape[0...2] == value.shape[0...2]
           else
             raise ArgumentError, "Key shape #{key.shape} does not match value shape #{value.shape}" unless key.shape == value.shape
           end
