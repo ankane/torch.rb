@@ -8,5 +8,5 @@ Available under the same license ([BSD-3-Clause](LICENSE-blitz-tutorial.txt))
 
 - [Tensors](tensors.md)
 - [A Gentle Introduction to Torch::Autograd](autograd.md)
-- [Neural Networks](neural_networks.md) [todo]
-- [Training a Classifier](classifier.md) [todo]
+- [Neural Networks](neural_networks.md)
+- [Training a Classifier](classifier.md)
