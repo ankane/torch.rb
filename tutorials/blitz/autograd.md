@@ -4,8 +4,7 @@
 
 ## Background
 
-Neural networks (NNs) are a collection of nested functions that are executed on some input data. These functions are defined by *parameters* (consisting of weights and biases), which in Torch.rb are stored in
-tensors.
+Neural networks (NNs) are a collection of nested functions that are executed on some input data. These functions are defined by *parameters* (consisting of weights and biases), which in Torch.rb are stored in tensors.
 
 Training a NN happens in two steps:
 
@@ -13,7 +12,7 @@ Training a NN happens in two steps:
 
 **Backward Propagation**: In backprop, the NN adjusts its parameters proportionate to the error in its guess. It does this by traversing backwards from the output, collecting the derivatives of the error with respect to the parameters of the functions (*gradients*), and optimizing the parameters using gradient descent. For a more detailed walkthrough of backprop, check out this [video from 3Blue1Brown](https://www.youtube.com/watch?v=tIeHLnjs5U8>).
 
-## Usage in PyTorch
+## Usage in Torch.rb
 
 Let’s take a look at a single training step. For this example, we load a pretrained ResNet18 model from `torchvision`. We create a random data tensor to represent a single image with 3 channels, and height & width of 64, and its corresponding `label` initialized to some random values.
 
