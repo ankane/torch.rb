@@ -1,20 +1,21 @@
 module Torch
   module NN
     class ModuleList < Module
+      include Enumerable
+
       def initialize(mods = nil)
         super()
 
-        return unless mods
-        self.extend(mods)
+        self.concat(mods) if mods
       end
 
       def length
         @modules.length
       end
+      alias_method :count, :length
+      alias_method :size, :length
 
-      alias :count :length
-
-      def extend(mods)
+      def concat(mods)
         raise ArgumentError, "Modules should respond to #each" unless mods.respond_to?(:each)
 
         mods.each { |m| append m }
@@ -23,15 +24,11 @@ module Torch
       end
 
       def each(&block)
-        @modules.values.each &block
-      end
-
-      def map(&block)
-        @modules.values.map &block
-      end
-
-      def inject(inj, &block)
-        @modules.values.inject(inj, &block)
+        if block_given?
+          @modules.values.each(&block)
+        else
+          to_enum(:each)
+        end
       end
 
       def append(mod)
@@ -40,16 +37,12 @@ module Torch
         self
       end
 
-      def [](*idx)
-        idx.map do |id|
-          if id.is_a?(Integer)
-            @modules[id.to_s]
-          elsif id.is_a?(Range)
-            id.each do |i|
-              @modules[i.to_s]
-            end
-          end
-        end.flatten
+      def [](idx)
+        if idx.is_a?(Range)
+          self.class.new(@modules.values[idx])
+        else
+          @modules[idx.to_s]
+        end
       end
     end
   end
