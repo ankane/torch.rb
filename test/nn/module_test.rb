@@ -71,19 +71,6 @@ class ModuleTest < Minitest::Test
     net.eval
   end
 
-  def test_state_dict_with_buffers
-    net = SimpleResidualBlock.new
-    expected_keys = %w[seq.0.weight seq.1.weight seq.1.bias seq.1.running_mean seq.1.running_var seq.1.num_batches_tracked seq.3.weight seq.4.weight seq.4.bias seq.4.running_mean seq.4.running_var seq.4.num_batches_tracked seq.6.weight seq.7.weight seq.7.bias seq.7.running_mean seq.7.running_var seq.7.num_batches_tracked]
-    assert_equal expected_keys, net.state_dict.keys
-
-    tmpfile = Tempfile.new
-    Torch.save net.state_dict, tmpfile.path
-
-    net = SimpleResidualBlock.new
-    net.load_state_dict Torch.load tmpfile.path
-    net.eval
-  end
-
   def test_inspect
     assert_match "(conv1): Conv2d(1, 6, kernel_size: [3, 3], stride: [1, 1])", net.inspect
   end
