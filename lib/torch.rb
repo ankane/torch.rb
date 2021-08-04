@@ -143,6 +143,10 @@ require "torch/nn/softmin"
 require "torch/nn/embedding"
 require "torch/nn/embedding_bag"
 
+# attention is all you need
+require "torch/nn/multihead_attention"
+require "torch/nn/transformer"
+
 # nn distance functions
 require "torch/nn/cosine_similarity"
 require "torch/nn/pairwise_distance"
@@ -174,6 +178,7 @@ require "torch/nn/upsample"
 
 # nn other
 require "torch/nn/functional"
+require "torch/nn/functional_attention"
 require "torch/nn/init"
 
 # utils
