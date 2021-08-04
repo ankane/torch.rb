@@ -39,6 +39,15 @@ class DataUtilsTest < Minitest::Test
     end
   end
 
+  def test_data_loader_each_no_block
+    x = Torch.tensor([[1, 2], [3, 4], [5, 6]])
+    y = Torch.tensor([5, 10, 15])
+    dataset = Torch::Utils::Data::TensorDataset.new(x, y)
+    loader = Torch::Utils::Data::DataLoader.new(dataset, batch_size: 2, shuffle: false)
+    assert_kind_of Enumerator, loader.each
+    assert_equal [5, 10], loader.each.next[1].to_a
+  end
+
   def test_tensor_dataset_bad
     x = Torch.tensor([[1, 2], [3, 4]])
     y = Torch.tensor([5])
