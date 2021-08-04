@@ -132,6 +132,7 @@ require "torch/nn/softshrink"
 require "torch/nn/softsign"
 require "torch/nn/tanh"
 require "torch/nn/tanhshrink"
+require "torch/nn/multihead_attention"
 
 # nn activations other
 require "torch/nn/log_softmax"
@@ -174,6 +175,7 @@ require "torch/nn/upsample"
 
 # nn other
 require "torch/nn/functional"
+require "torch/nn/functional_attention"
 require "torch/nn/init"
 
 # utils
