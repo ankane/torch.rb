@@ -26,6 +26,10 @@ gem 'torch-rb'
 
 It can take a few minutes to compile the extension.
 
+## Getting Started
+
+Check out the [Deep Learning with Torch.rb: A 60 Minute Blitz](tutorials/blitz/README.md) tutorial
+
 ## API
 
 This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.html). There are a few changes to make it more Ruby-like:

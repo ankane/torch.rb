@@ -9,33 +9,33 @@ module Torch
       def initialize(
         d_model: 512, nhead: 8,
         num_encoder_layers: 6, num_decoder_layers: 6,
-        dim_feedforward: 2048, dropout: 0.1, activation: :relu, 
+        dim_feedforward: 2048, dropout: 0.1, activation: :relu,
         custom_encoder: nil, custom_decoder: nil,
         layer_norm_eps: 1e-5, batch_first: false
       )
 
         super()
 
-        @encoder = 
+        @encoder =
           if custom_encoder
             custom_encoder
           else
             encoder_layer = TransformerEncoderLayer.new(
-              d_model, nhead, 
-              dim_feedforward: dim_feedforward, dropout: dropout, activation: activation, 
+              d_model, nhead,
+              dim_feedforward: dim_feedforward, dropout: dropout, activation: activation,
               layer_norm_eps: layer_norm_eps, batch_first: batch_first
             )
             encoder_norm = LayerNorm.new(d_model, eps: layer_norm_eps)
             TransformerEncoder.new(encoder_layer, num_encoder_layers, norm: encoder_norm)
           end
 
-        @decoder = 
+        @decoder =
           if custom_decoder
             custom_decoder
           else
             decoder_layer = TransformerDecoderLayer.new(
-              d_model, nhead, 
-              dim_feedforward: dim_feedforward, dropout: dropout, activation: activation, 
+              d_model, nhead,
+              dim_feedforward: dim_feedforward, dropout: dropout, activation: activation,
               layer_norm_eps: layer_norm_eps, batch_first: batch_first
             )
             decoder_norm = LayerNorm.new(d_model, eps: layer_norm_eps)
@@ -64,10 +64,10 @@ module Torch
         src_mask: nil, tgt_mask: nil, memory_mask: nil,
         src_key_padding_mask: nil, tgt_key_padding_mask: nil, memory_key_padding_mask: nil
       )
-        
+
         if (!batch_first? && src.size(1) != tgt.size(1)) ||
           (batch_first? && src.size(0) != tgt.size(0))
-          
+
           raise ArgumentError, "The batch number of src and tgt must be equal"
         end
 
@@ -77,7 +77,7 @@ module Torch
 
         memory = @encoder.(src, mask: src_mask, src_key_padding_mask: src_key_padding_mask)
         @decoder.(
-          tgt, memory, 
+          tgt, memory,
           tgt_mask: tgt_mask, memory_mask: memory_mask,
           tgt_key_padding_mask: tgt_key_padding_mask, memory_key_padding_mask: memory_key_padding_mask
         )

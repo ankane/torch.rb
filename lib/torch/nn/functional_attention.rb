@@ -17,13 +17,13 @@ module Torch
               else
                 b_q, b_kv = b.split_with_sizes([e, e * 2])
               end
-              
+
               return [linear(q, w_q, b_q), *linear(k, w_kv, b_kv).chunk(2, dim: -1)]
             end
           else
             w_q, w_k, w_v = w.chunk(3)
             if b.nil?
-              b_q = b_k = b_v = None
+              b_q = b_k = b_v = nil
             else
               b_q, b_k, b_v = b.chunk(3)
             end
@@ -41,8 +41,8 @@ module Torch
           e_q, e_k, e_v = q.size(-1), k.size(-1), v.size(-1)
 
           raise ArgumentError, "Expecting query weights shape of #{[e_q, e_q]}, but got #{w_q.shape}" unless w_q.shape == [e_q, e_q]
-          raise ArgumentError, "Expecting key weights shape of #{[e_k, e_k]}, but got #{w_k.shape}" unless w_q.shape == [e_k, e_k]
-          raise ArgumentError, "Expecting value weights shape of #{[e_v, e_v]}, but got #{w_v.shape}" unless w_q.shape == [e_v, e_v]
+          raise ArgumentError, "Expecting key weights shape of #{[e_k, e_k]}, but got #{w_k.shape}" unless w_k.shape == [e_k, e_k]
+          raise ArgumentError, "Expecting value weights shape of #{[e_v, e_v]}, but got #{w_v.shape}" unless w_v.shape == [e_v, e_v]
 
           raise ArgumentError, "Expecting query bias shape of #{[e_q]}, but got #{b_q.shape}" if b_q && b_q.shape != [e_q]
           raise ArgumentError, "Expecting key bias shape of #{[e_k]}, but got #{b_k.shape}" if b_k && b_k.shape != [e_k]
@@ -104,9 +104,8 @@ module Torch
             raise ArgumentError, "Key shape #{key.shape} does not match value shape #{value.shape}" unless key.shape == value.shape
           end
 
-          
           # compute in-projection
-          q, k, v = 
+          q, k, v =
             if use_separate_proj_weight
               raise ArgumentError, "use_separate_proj_weight is true but q_proj_weight is nil" unless q_proj_weight
               raise ArgumentError, "use_separate_proj_weight is true but k_proj_weight is nil" unless k_proj_weight
@@ -129,7 +128,7 @@ module Torch
               puts "[WARN] Byte tensor for attn_mask in Multihead Attention is deprecated. Use bool tensor instead."
               attn_mask = attn_mask.bool
             else
-              raise ArgumentError, "Only float, byte, and bool types are supported for attn_mask, not #{attn_mask.dtype}" unless attn_mask.floating_point? or attn_mask.dtype == :bool
+              raise ArgumentError, "Only float, byte, and bool types are supported for attn_mask, not #{attn_mask.dtype}" unless attn_mask.floating_point? || attn_mask.dtype == :bool
             end
 
             if attn_mask.dim == 2
@@ -173,8 +172,8 @@ module Torch
             k = k.contiguous.view(-1, bsz * num_heads, head_dim).transpose(0, 1)
           else
             raise ArgumentError, "Expecting static_k.size(0) of #{bsz * num_heads}, but got #{static_k.size(0)}" unless static_k.size(0) == bsz * num_heads
-            raise ArgumentError, "Expecting static_k.size(2) of #{bsz * num_heads}, but got #{static_k.size(2)}" unless static_k.size(2) == bsz * num_heads
-            
+            raise ArgumentError, "Expecting static_k.size(2) of #{head_dim}, but got #{static_k.size(2)}" unless static_k.size(2) == head_dim
+
             k = static_k
           end
 
@@ -182,8 +181,8 @@ module Torch
             v = v.contiguous.view(-1, bsz * num_heads, head_dim).transpose(0, 1)
           else
             raise ArgumentError, "Expecting static_v.size(0) of #{bsz * num_heads}, but got #{static_v.size(0)}" unless static_v.size(0) == bsz * num_heads
-            raise ArgumentError, "Expecting static_v.size(2) of #{bsz * num_heads}, but got #{static_v.size(2)}" unless static_v.size(2) == bsz * num_heads
-            
+            raise ArgumentError, "Expecting static_v.size(2) of #{head_dim}, but got #{static_v.size(2)}" unless static_v.size(2) == head_dim
+
             v = static_v
           end
 
