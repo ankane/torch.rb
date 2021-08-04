@@ -109,4 +109,15 @@ class TensorMethodsTest < Minitest::Test
     end
     assert_equal "Invalid type: Object", error.message
   end
+
+  def test_zip
+    x = Torch.tensor([1, 2, 3])
+    y = Torch.tensor([4, 5, 6])
+    expected = [
+      [Torch.tensor(1), Torch.tensor(4)],
+      [Torch.tensor(2), Torch.tensor(5)],
+      [Torch.tensor(3), Torch.tensor(6)]
+    ]
+    assert_equal expected.inspect, x.zip(y).inspect
+  end
 end
