@@ -18,7 +18,7 @@ module Torch
         @num_heads = num_heads
         @dropout = dropout
         @batch_first = batch_first
-        
+
         @head_dim = @embed_dim.div @num_heads
 
         raise ArgumentError, "embed_dim must be divisible by num_heads" unless @head_dim * @num_heads == @embed_dim
@@ -85,13 +85,13 @@ module Torch
           query, key, value = [query, key, value].map { |t| t.transpose(1, 0) }
         end
 
-        attn_output, attn_output_weights = 
+        attn_output, attn_output_weights =
           if @qkv_same_embed_dim
             F.multi_head_attention_forward(
               query, key, value,
-              @embed_dim, @num_heads, 
+              @embed_dim, @num_heads,
               @in_proj_weight, @in_proj_bias,
-              @bias_k, @bias_v, @ad_zero_attn,
+              @bias_k, @bias_v, @add_zero_attn,
               @dropout, @out_proj.weight, @out_proj.bias,
               training: @training,
               key_padding_mask: key_padding_mask,
@@ -101,16 +101,16 @@ module Torch
           else
             F.multi_head_attention_forward(
               query, key, value,
-              @embed_dim, @num_heads, 
+              @embed_dim, @num_heads,
               @in_proj_weight, @in_proj_bias,
-              @bias_k, @bias_v, @ad_zero_attn,
+              @bias_k, @bias_v, @add_zero_attn,
               @dropout, @out_proj.weight, @out_proj.bias,
               training: @training,
               key_padding_mask: key_padding_mask,
               need_weights: need_weights,
               attn_mask: attn_mask,
-              use_separate_proj_weight: true, 
-              q_proj_weight: q_proj_weight, k_proj_weight: @k_proj_weight, v_proj_weight: @v_proj_weight
+              use_separate_proj_weight: true,
+              q_proj_weight: @q_proj_weight, k_proj_weight: @k_proj_weight, v_proj_weight: @v_proj_weight
             )
           end
 
