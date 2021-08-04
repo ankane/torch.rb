@@ -230,3 +230,5 @@ optimizer.step # do the update
 ```
 
 Note: Observe how gradient buffers had to be manually set to zero using `optimizer.zero_grad`. This is because gradients are accumulated as explained in the [Backprop](#backprop) section.
+
+[Next: Training a Classifier](classifier.md)

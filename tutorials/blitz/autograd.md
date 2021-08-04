@@ -52,3 +52,5 @@ optim.step # gradient descent
 ```
 
 At this point, you have everything you need to train your neural network.
+
+[Next: Neural Networks](neural_networks.md)

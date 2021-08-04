@@ -258,3 +258,5 @@ n: Numo::SFloat#shape=[5]
 [1, 1, 1, 1, 1]
 t: tensor([1., 1., 1., 1., 1.])
 ```
+
+[Next: A Gentle Introduction to Torch::Autograd](autograd.md)
