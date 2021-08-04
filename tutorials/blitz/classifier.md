@@ -75,8 +75,7 @@ def imshow(img)
 end
 
 # get some random training images
-dataiter = trainloader.to_enum(:each)
-images, labels = dataiter.next
+images, labels = trainloader.first
 
 # show images
 imshow(TorchVision::Utils.make_grid(images))
@@ -194,8 +193,7 @@ We will check this by predicting the class label that the neural network outputs
 Okay, first step. Let us display an image from the test set to get familiar.
 
 ```ruby
-dataiter = testloader.to_enum(:each)
-images, labels = dataiter.next
+images, labels = testloader.first
 
 # print images
 imshow(TorchVision::Utils.make_grid(images))
