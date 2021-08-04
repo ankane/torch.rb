@@ -104,7 +104,6 @@ module Torch
             raise ArgumentError, "Key shape #{key.shape} does not match value shape #{value.shape}" unless key.shape == value.shape
           end
 
-
           # compute in-projection
           q, k, v =
             if use_separate_proj_weight
