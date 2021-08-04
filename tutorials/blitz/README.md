@@ -4,7 +4,7 @@ Ported from [Deep Learning with PyTorch: A 60 Minute Blitz](https://pytorch.org/
 
 Available under the same license ([BSD-3-Clause](LICENSE-blitz-tutorial.txt))
 
-## Sections
+## Topics
 
 - [Tensors](tensors.md)
 - [A Gentle Introduction to Torch::Autograd](autograd.md)
