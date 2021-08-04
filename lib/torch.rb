@@ -132,7 +132,6 @@ require "torch/nn/softshrink"
 require "torch/nn/softsign"
 require "torch/nn/tanh"
 require "torch/nn/tanhshrink"
-require "torch/nn/multihead_attention"
 
 # nn activations other
 require "torch/nn/log_softmax"
@@ -143,6 +142,10 @@ require "torch/nn/softmin"
 # nn sparse layers
 require "torch/nn/embedding"
 require "torch/nn/embedding_bag"
+
+# attention is all you need
+require "torch/nn/multihead_attention"
+require "torch/nn/transformer"
 
 # nn distance functions
 require "torch/nn/cosine_similarity"
