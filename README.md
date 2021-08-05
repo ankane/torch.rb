@@ -387,14 +387,13 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
 ## Tutorials
 
 - [Transfer learning](tutorials/transfer_learning/README.md)
+- [Sequence models](tutorials/nlp/sequence_models.md)
+- [Word embeddings](tutorials/nlp/word_embeddings.md)
 
 ## Examples
 
-Here are a few full examples:
-
 - [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
 - [Collaborative filtering with MovieLens](examples/movielens)
-- [Sequence models and word embeddings](examples/nlp)
 - [Generative adversarial networks](examples/gan)
 
 ## LibTorch Installation

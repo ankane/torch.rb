@@ -346,4 +346,5 @@ Why don’t I notice MASSIVE speedup compared to CPU? Because your network is re
 
 ## Where do I go next?
 
-- [More examples](/examples)
+- [More examples](/README.md#examples)
+- [More tutorials](/README.md#tutorials)
