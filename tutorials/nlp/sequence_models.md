@@ -87,7 +87,7 @@ tensor([[[-0.0187,  0.1713, -0.2944]],
 
 In this section, we will use an LSTM to get part of speech tags. We will not use Viterbi or Forward-Backward or anything like that, but as a (challenging) exercise to the reader, think about how Viterbi could be used after you have seen what is going on. In this example, we also refer
 to embeddings. If you are unfamiliar with embeddings, you can read up
-about them [here](https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html).
+about them [here](word_embeddings.md).
 
 The model is as follows: let our input sentence be
 :math:`w_1, \dots, w_M`, where :math:`w_i \in V`, our vocab. Also, let
