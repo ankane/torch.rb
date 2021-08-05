@@ -384,6 +384,10 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
 
+## Tutorials
+
+- [Transfer learning](tutorials/transfer_learning/README.md)
+
 ## Examples
 
 Here are a few full examples:
@@ -392,7 +396,6 @@ Here are a few full examples:
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Sequence models and word embeddings](examples/nlp)
 - [Generative adversarial networks](examples/gan)
-- [Transfer learning](examples/transfer-learning)
 
 ## LibTorch Installation
 
