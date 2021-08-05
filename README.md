@@ -28,7 +28,19 @@ It can take a few minutes to compile the extension.
 
 ## Getting Started
 
-Check out the [Deep Learning with Torch.rb: A 60 Minute Blitz](tutorials/blitz/README.md) tutorial
+A good place to start is [Deep Learning with Torch.rb: A 60 Minute Blitz](tutorials/blitz/README.md).
+
+## Tutorials
+
+- [Transfer learning](tutorials/transfer_learning/README.md)
+- [Sequence models](tutorials/nlp/sequence_models.md)
+- [Word embeddings](tutorials/nlp/word_embeddings.md)
+
+## Examples
+
+- [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
+- [Collaborative filtering with MovieLens](examples/movielens)
+- [Generative adversarial networks](examples/gan)
 
 ## API
 
@@ -40,7 +52,7 @@ This library follows the [PyTorch API](https://pytorch.org/docs/stable/torch.htm
 
 You can follow PyTorch tutorials and convert the code to Ruby in many cases. Feel free to open an issue if you run into problems.
 
-## Tutorial
+## Overview
 
 Some examples below are from [Deep Learning with PyTorch: A 60 Minutes Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
 
@@ -383,18 +395,6 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   ```ruby
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
-
-## Tutorials
-
-- [Transfer learning](tutorials/transfer_learning/README.md)
-- [Sequence models](tutorials/nlp/sequence_models.md)
-- [Word embeddings](tutorials/nlp/word_embeddings.md)
-
-## Examples
-
-- [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
-- [Collaborative filtering with MovieLens](examples/movielens)
-- [Generative adversarial networks](examples/gan)
 
 ## LibTorch Installation
 
