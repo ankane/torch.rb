@@ -24,7 +24,7 @@ require "torch"
 
 class MyNet < Torch::NN::Module
   def initialize
-    super
+    super()
     # 1 input image channel, 6 output channels, 5x5 square convolution
     # kernel
     @conv1 = Torch::NN::Conv2d.new(1, 6, 5)

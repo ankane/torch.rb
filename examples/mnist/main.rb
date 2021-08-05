@@ -7,7 +7,7 @@ require "torchvision"
 
 class MyNet < Torch::NN::Module
   def initialize
-    super
+    super()
     @conv1 = Torch::NN::Conv2d.new(1, 32, 3, stride: 1)
     @conv2 = Torch::NN::Conv2d.new(32, 64, 3, stride: 1)
     @dropout1 = Torch::NN::Dropout2d.new(p: 0.25)

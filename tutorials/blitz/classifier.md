@@ -96,7 +96,7 @@ Copy the neural network from the Neural Networks section before and modify it to
 ```ruby
 class MyNet < Torch::NN::Module
   def initialize
-    super
+    super()
     @conv1 = Torch::NN::Conv2d.new(3, 6, 5)
     @pool = Torch::NN::MaxPool2d.new(2, stride: 2)
     @conv2 = Torch::NN::Conv2d.new(6, 16, 5)
