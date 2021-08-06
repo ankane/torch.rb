@@ -9,24 +9,11 @@ Available under the same license ([BSD-3-Clause](LICENSE-nlp-tutorial.txt))
 At this point, we have seen various feed-forward networks. That is, there is no state maintained by the network at all. This might not be the behavior we want. Sequence models are central to NLP: they are models where there is some sort of dependence through time between your inputs. The classical example of a sequence model is the Hidden Markov Model for part-of-speech tagging. Another example is the conditional
 random field.
 
-A recurrent neural network is a network that maintains some kind of state. For example, its output could be used as part of the next input, so that information can propogate along as the network passes over the sequence. In the case of an LSTM, for each element in the sequence, there is a corresponding *hidden state* :math:`h_t`, which in principle can contain information from arbitrary points earlier in the sequence. We can use the hidden state to predict words in a language model, part-of-speech tags, and a myriad of other things.
+A recurrent neural network is a network that maintains some kind of state. For example, its output could be used as part of the next input, so that information can propogate along as the network passes over the sequence. In the case of an LSTM, for each element in the sequence, there is a corresponding *hidden state*, which in principle can contain information from arbitrary points earlier in the sequence. We can use the hidden state to predict words in a language model, part-of-speech tags, and a myriad of other things.
 
 ## LSTMs in Torch.rb
 
-Before getting to the example, note a few things. Torch.rb’s LSTM expects all of its inputs to be 3D tensors. The semantics of the axes of these tensors is important. The first axis is the sequence itself, the second indexes instances in the mini-batch, and the third indexes elements of the input. We haven’t discussed mini-batching, so let’s just ignore that and assume we will always have just 1 dimension on the second axis. If we want to run the sequence model over the sentence "The cow jumped", our input should look like
-
-```latex
-\begin{bmatrix}
-\overbrace{q_\text{The}}^\text{row vector} \\
-q_\text{cow} \\
-q_\text{jumped}
-\end{bmatrix}
-```
-
-Except remember there is an additional 2nd dimension with size 1.
-
-In addition, you could go through the sequence one at a time, in which
-case the 1st axis will have size 1 also.
+Before getting to the example, note a few things. Torch.rb’s LSTM expects all of its inputs to be 3D tensors. The semantics of the axes of these tensors is important. The first axis is the sequence itself, the second indexes instances in the mini-batch, and the third indexes elements of the input. We haven’t discussed mini-batching, so let’s just ignore that and assume we will always have just 1 dimension on the second axis.
 
 Let’s see a quick example.
 
@@ -85,30 +72,7 @@ tensor([[[-0.0187,  0.1713, -0.2944]],
 
 ## Example: An LSTM for Part-of-Speech Tagging
 
-In this section, we will use an LSTM to get part of speech tags. We will not use Viterbi or Forward-Backward or anything like that, but as a (challenging) exercise to the reader, think about how Viterbi could be used after you have seen what is going on. In this example, we also refer
-to embeddings. If you are unfamiliar with embeddings, you can read up
-about them [here](word_embeddings.md).
-
-The model is as follows: let our input sentence be
-:math:`w_1, \dots, w_M`, where :math:`w_i \in V`, our vocab. Also, let
-:math:`T` be our tag set, and :math:`y_i` the tag of word :math:`w_i`.
-Denote our prediction of the tag of word :math:`w_i` by
-:math:`\hat{y}_i`.
-
-This is a structure prediction, model, where our output is a sequence
-:math:`\hat{y}_1, \dots, \hat{y}_M`, where :math:`\hat{y}_i \in T`.
-
-To do the prediction, pass an LSTM over the sentence. Denote the hidden
-state at timestep :math:`i` as :math:`h_i`. Also, assign each tag a
-unique index (like how we had word\_to\_ix in the word embeddings
-section). Then our prediction rule for :math:`\hat{y}_i` is
-
-.. math::  \hat{y}_i = \text{argmax}_j \  (\log \text{Softmax}(Ah_i + b))_j
-
-That is, take the log softmax of the affine map of the hidden state,
-and the predicted tag is the tag that has the maximum value in this
-vector. Note this implies immediately that the dimensionality of the
-target space of :math:`A` is :math:`|T|`.
+In this section, we will use an LSTM to get part of speech tags. We will not use Viterbi or Forward-Backward or anything like that, but as a (challenging) exercise to the reader, think about how Viterbi could be used after you have seen what is going on. In this example, we also refer to embeddings. If you are unfamiliar with embeddings, you can read up about them [here](word_embeddings.md).
 
 Prepare data:
 
@@ -241,14 +205,3 @@ tensor([[-0.0462, -4.0106, -3.6096],
         [-0.0185, -4.7874, -4.6013],
         [-5.7881, -0.0186, -4.1778]])
 ```
-
-## Exercise: Augmenting the LSTM part-of-speech tagger with character-level features
-
-In the example above, each word had an embedding, which served as the inputs to our sequence model. Let’s augment the word embeddings with a representation derived from the characters of the word. We expect that this should help significantly, since character-level information like affixes have a large bearing on part-of-speech. For example, words with the affix *-ly* are almost always tagged as adverbs in English.
-
-To do this, let :math:`c_w` be the character-level representation of word :math:`w`. Let :math:`x_w` be the word embedding as before. Then the input to our sequence model is the concatenation of :math:`x_w` and :math:`c_w`. So if :math:`x_w` has dimension 5, and :math:`c_w` dimension 3, then our LSTM should accept an input of dimension 8.
-
-To get the character level representation, do an LSTM over the characters of a word, and let :math:`c_w` be the final hidden state of this LSTM. Hints:
-
-* There are going to be two LSTM’s in your new model. The original one that outputs POS tag scores, and the new one that outputs a character-level representation of each word.
-* To do a sequence model over characters, you will have to embed characters. The character embeddings will be the input to the character LSTM.
