@@ -75,8 +75,7 @@ def imshow(img)
 end
 
 # get some random training images
-dataiter = trainloader.to_enum(:each)
-images, labels = dataiter.next
+images, labels = trainloader.first
 
 # show images
 imshow(TorchVision::Utils.make_grid(images))
@@ -97,7 +96,7 @@ Copy the neural network from the Neural Networks section before and modify it to
 ```ruby
 class MyNet < Torch::NN::Module
   def initialize
-    super
+    super()
     @conv1 = Torch::NN::Conv2d.new(3, 6, 5)
     @pool = Torch::NN::MaxPool2d.new(2, stride: 2)
     @conv2 = Torch::NN::Conv2d.new(6, 16, 5)
@@ -194,8 +193,7 @@ We will check this by predicting the class label that the neural network outputs
 Okay, first step. Let us display an image from the test set to get familiar.
 
 ```ruby
-dataiter = testloader.to_enum(:each)
-images, labels = dataiter.next
+images, labels = testloader.first
 
 # print images
 imshow(TorchVision::Utils.make_grid(images))
@@ -348,4 +346,5 @@ Why don’t I notice MASSIVE speedup compared to CPU? Because your network is re
 
 ## Where do I go next?
 
-- [More examples](/examples)
+- [More examples](/README.md#examples)
+- [More tutorials](/README.md#tutorials)

@@ -3,6 +3,8 @@ module Torch
     class Module
       include Utils
 
+      attr_reader :training
+
       def initialize
         @training = true
         @parameters = {}

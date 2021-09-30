@@ -1,6 +1,6 @@
 class TestNet < Torch::NN::Module
   def initialize
-    super
+    super()
     @conv1 = Torch::NN::Conv2d.new(1, 6, 3)
     @conv2 = Torch::NN::Conv2d.new(6, 16, 3)
     @fc1 = Torch::NN::Linear.new(16 * 6 * 6, 120)
@@ -20,7 +20,7 @@ end
 
 class SimpleResidualBlock < Torch::NN::Module
   def initialize
-    super
+    super()
 
     @relu = Torch::NN::ReLU.new
 
