@@ -263,4 +263,12 @@ class OperationsTest < Minitest::Test
     b = Torch.full([2], 2)
     assert_elements_in_delta [2.1, 2.1], Torch.divide(a, b, rounding_mode: nil).to_a
   end
+
+  def test_left_shift
+    assert_equal [128], (Torch.tensor([64]) << 1).to_a
+  end
+
+  def test_right_shift
+    assert_equal [32], (Torch.tensor([64]) >> 1).to_a
+  end
 end

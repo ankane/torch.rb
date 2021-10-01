@@ -23,7 +23,7 @@ end
 
 def skip_functions(functions)
   functions.reject do |f|
-    f.base_name.start_with?("_") ||
+    (f.base_name.start_with?("_") && f.base_name != "__lshift__" && f.base_name != "__rshift__") ||
     f.base_name.include?("_backward") ||
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
@@ -133,6 +133,7 @@ def generate_attach_def(name, type, def_method)
   ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
   ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
+  ruby_name = name if name.start_with?("__")
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
