@@ -1,6 +1,7 @@
 ## 0.8.2 (unreleased)
 
 - Added transformers
+- Added left shift and right shift
 
 ## 0.8.1 (2021-06-15)
 
