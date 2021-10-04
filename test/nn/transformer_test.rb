@@ -107,4 +107,9 @@ class TranformerTest < Minitest::Test
     assert_equal out.shape, expected_out.shape
     assert (expected_out - out).abs.lt(1e-6).all
   end
+
+  def test_generate_square_subsequent_mask
+    transformer = Torch::NN::Transformer.new
+    assert_equal [[0, -Float::INFINITY], [0, 0]], transformer.generate_square_subsequent_mask(2).to_a
+  end
 end
