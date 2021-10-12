@@ -409,6 +409,8 @@ module Torch
             v.to_h { |k, v2| [dup_value(k, memo), dup_value(v2, memo)] }
           when Array
             v.map { |v2| dup_value(v2, memo) }
+          when Torch::NN::Module
+            v.deep_dup
           else
             v.dup
           end
