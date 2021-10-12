@@ -410,6 +410,7 @@ module Torch
           when Array
             v.map { |v2| dup_value(v2, memo) }
           when Torch::NN::Module
+            # ideally pass memo, but should be fine for now
             v.deep_dup
           else
             v.dup
