@@ -398,6 +398,8 @@ module Torch
         end
       end
 
+      # keep memo hash like Python deepcopy
+      # https://docs.python.org/3/library/copy.html
       def dup_value(v, memo)
         memo[v.object_id] ||= begin
           case v
