@@ -281,12 +281,8 @@ module Torch
       end
 
       def deep_dup
-        copy = dup
         memo = {}
-        instance_variables.each do |var|
-          copy.instance_variable_set(var, dup_value(instance_variable_get(var), memo))
-        end
-        copy
+        dup_value(self, memo)
       end
 
       def method_missing(method, *args, &block)
@@ -410,8 +406,11 @@ module Torch
           when Array
             v.map { |v2| dup_value(v2, memo) }
           when Torch::NN::Module
-            # ideally pass memo, but should be fine for now
-            v.deep_dup
+            copy = v.dup
+            v.instance_variables.each do |var|
+              copy.instance_variable_set(var, dup_value(v.instance_variable_get(var), memo))
+            end
+            copy
           else
             v.dup
           end
