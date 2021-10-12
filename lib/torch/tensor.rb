@@ -185,5 +185,11 @@ module Torch
     def stft(*args)
       Torch.stft(*args)
     end
+
+    def dup
+      Torch.no_grad do
+        clone
+      end
+    end
   end
 end

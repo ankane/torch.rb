@@ -405,10 +405,6 @@ module Torch
           case v
           when Method, UnboundMethod
             v
-          when Torch::NN::Parameter
-            Torch::NN::Parameter.new(v.clone)
-          when Torch::Tensor
-            v.clone
           when Hash
             v.to_h { |k, v2| [dup_value(k, memo), dup_value(v2, memo)] }
           when Array

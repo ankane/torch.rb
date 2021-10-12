@@ -9,6 +9,12 @@ module Torch
       def inspect
         "Parameter containing:\n#{super}"
       end
+
+      def dup
+        Torch.no_grad do
+          Parameter.new(clone, requires_grad: requires_grad)
+        end
+      end
     end
   end
 end
