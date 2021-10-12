@@ -280,6 +280,15 @@ module Torch
         end
       end
 
+      def deep_dup
+        copy = dup
+        memo = {}
+        instance_variables.each do |var|
+          copy.instance_variable_set(var, dup_value(instance_variable_get(var), memo))
+        end
+        copy
+      end
+
       def method_missing(method, *args, &block)
         name = method.to_s
         if named_parameters.key?(name)
@@ -386,6 +395,25 @@ module Torch
         end
         named_buffers.each do |k, v|
           destination[prefix + k] = v
+        end
+      end
+
+      def dup_value(v, memo)
+        memo[v.object_id] ||= begin
+          case v
+          when Method, UnboundMethod
+            v
+          when Torch::NN::Parameter
+            Torch::NN::Parameter.new(v.clone)
+          when Torch::Tensor
+            v.clone
+          when Hash
+            v.to_h { |k, v2| [dup_value(k, memo), dup_value(v2, memo)] }
+          when Array
+            v.map { |v2| dup_value(v2, memo) }
+          else
+            v.dup
+          end
         end
       end
     end

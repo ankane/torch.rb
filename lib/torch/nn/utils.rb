@@ -22,11 +22,7 @@ module Torch
       end
 
       def _clones(mod, n)
-        state = mod.state_dict
-        layers = n.times.map do |i|
-          mod.clone.tap { |l| l.load_state_dict(state) }
-        end
-        ModuleList.new(layers)
+        ModuleList.new(n.times.map { mod.deep_dup })
       end
 
       def _activation_fn(activation)
