@@ -125,6 +125,7 @@ class TensorMethodsTest < Minitest::Test
     x = Torch.tensor([1, 2, 3])
     y = x.dup
     x.add!(1)
+    assert_equal [2, 3, 4], x.to_a
     assert_equal [1, 2, 3], y.to_a
   end
 end
