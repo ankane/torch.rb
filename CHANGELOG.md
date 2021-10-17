@@ -1,4 +1,4 @@
-## 0.8.3 (unreleased)
+## 0.8.3 (2021-10-17)
 
 - Fixed `dup` method for tensors and parameters
 - Fixed issues with transformers
