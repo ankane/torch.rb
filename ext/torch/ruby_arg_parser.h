@@ -109,6 +109,9 @@ struct RubyArgs {
   // inline at::QScheme toQScheme(int i);
   inline std::string string(int i);
   inline c10::optional<std::string> stringOptional(int i);
+  inline c10::string_view stringView(int i);
+  // inline c10::string_view stringViewWithDefault(int i, const c10::string_view default_str);
+  inline c10::optional<c10::string_view> stringViewOptional(int i);
   // inline PyObject* pyobject(int i);
   inline int64_t toInt64(int i);
   // inline int64_t toInt64WithDefault(int i, int64_t default_int);
@@ -320,6 +323,17 @@ inline std::string RubyArgs::string(int i) {
 inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
+}
+
+inline c10::string_view RubyArgs::stringView(int i) {
+  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
+  return c10::string_view(str.data(), str.size());
+}
+
+inline c10::optional<c10::string_view> RubyArgs::stringViewOptional(int i) {
+  if (NIL_P(args[i])) return c10::nullopt;
+  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
+  return c10::string_view(str.data(), str.size());
 }
 
 inline int64_t RubyArgs::toInt64(int i) {

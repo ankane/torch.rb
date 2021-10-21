@@ -1,3 +1,7 @@
+## 0.9.0 (unreleased)
+
+- Updated LibTorch to 1.10.0
+
 ## 0.8.3 (2021-10-17)
 
 - Fixed `dup` method for tensors and parameters

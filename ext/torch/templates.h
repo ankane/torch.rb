@@ -46,7 +46,7 @@ class OptionalTensor {
   public:
     OptionalTensor(Object o) {
       if (o.is_nil()) {
-        value = {};
+        value = torch::Tensor();
       } else {
         value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
       }

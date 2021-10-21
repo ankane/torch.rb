@@ -125,13 +125,13 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
   rb_define_method(rb_cTensor, "backward", (VALUE (*)(...)) tensor__backward, -1);
 
   rb_cTensor
-    .define_method("cuda?", &torch::Tensor::is_cuda)
-    .define_method("sparse?", &torch::Tensor::is_sparse)
-    .define_method("quantized?", &torch::Tensor::is_quantized)
-    .define_method("dim", &torch::Tensor::dim)
-    .define_method("numel", &torch::Tensor::numel)
-    .define_method("element_size", &torch::Tensor::element_size)
-    .define_method("requires_grad", &torch::Tensor::requires_grad)
+    .define_method("cuda?", [](Tensor& self) { return self.is_cuda(); })
+    .define_method("sparse?", [](Tensor& self) { return self.is_sparse(); })
+    .define_method("quantized?", [](Tensor& self) { return self.is_quantized(); })
+    .define_method("dim", [](Tensor& self) { return self.dim(); })
+    .define_method("numel", [](Tensor& self) { return self.numel(); })
+    .define_method("element_size", [](Tensor& self) { return self.element_size(); })
+    .define_method("requires_grad", [](Tensor& self) { return self.requires_grad(); })
     .define_method(
       "_size",
       [](Tensor& self, int64_t dim) {

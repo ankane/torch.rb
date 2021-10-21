@@ -28,6 +28,9 @@ def skip_functions(functions)
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
     f.base_name == "record_stream" ||
+    f.base_name == "is_pinned" ||
+    f.base_name == "pin_memory" ||
+    f.base_name == "fused_moving_avg_obs_fake_quant" ||
     # in ext.cpp
     f.base_name == "index" ||
     f.base_name == "index_put_" ||
@@ -387,6 +390,8 @@ def generate_function_params(function, params, remove_self)
           end
         when "generator", "tensorlist", "intlist"
           func
+        when "string"
+          "stringViewOptional"
         else
           "#{func}Optional"
         end
@@ -450,7 +455,11 @@ def generate_dispatch_params(function, params)
       when "float[]"
         "ArrayRef<double>"
       when "str"
-        "std::string"
+        if param[:optional]
+          "c10::string_view"
+        else
+          "std::string"
+        end
       when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
         param[:type]
       else
