@@ -429,9 +429,7 @@ def generate_dispatch_params(function, params)
           if function.out?
             "const Tensor &"
           else
-            # TODO
-            # "const c10::optional<at::Tensor> &"
-            "const OptionalTensor &"
+            "const c10::optional<at::Tensor> &"
           end
         elsif param[:modifier]
           if param[:modifier].include?("!") && function.retvals.size > 1

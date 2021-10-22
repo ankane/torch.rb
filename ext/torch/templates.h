@@ -41,24 +41,6 @@ using torch::nn::init::NonlinearityType;
 #define RETURN_NIL                                                   \
   return Qnil;
 
-class OptionalTensor {
-  torch::Tensor value;
-  public:
-    OptionalTensor(Object o) {
-      if (o.is_nil()) {
-        value = torch::Tensor();
-      } else {
-        value = Rice::detail::From_Ruby<torch::Tensor>().convert(o.value());
-      }
-    }
-    OptionalTensor(torch::Tensor o) {
-      value = o;
-    }
-    operator torch::Tensor() const {
-      return value;
-    }
-};
-
 namespace Rice::detail
 {
   template<>
@@ -128,25 +110,6 @@ namespace Rice::detail
       } else {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
-    }
-  };
-
-  template<>
-  struct Type<OptionalTensor>
-  {
-    static bool verify()
-    {
-      return true;
-    }
-  };
-
-  template<>
-  class From_Ruby<OptionalTensor>
-  {
-  public:
-    OptionalTensor convert(VALUE x)
-    {
-      return OptionalTensor(x);
     }
   };
 
