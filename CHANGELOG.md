@@ -1,6 +1,7 @@
 ## 0.9.0 (unreleased)
 
 - Updated LibTorch to 1.10.0
+- Added `real` and `imag` methods to tensors
 
 ## 0.8.3 (2021-10-17)
 

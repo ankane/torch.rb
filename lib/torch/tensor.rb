@@ -191,5 +191,17 @@ module Torch
         clone
       end
     end
+
+    # not a method in native_functions.yaml
+    # attribute in Python rather than method
+    def imag
+      Torch.imag(self)
+    end
+
+    # not a method in native_functions.yaml
+    # attribute in Python rather than method
+    def real
+      Torch.real(self)
+    end
   end
 end
