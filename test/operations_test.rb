@@ -271,4 +271,8 @@ class OperationsTest < Minitest::Test
   def test_right_shift
     assert_equal [32], (Torch.tensor([64]) >> 1).to_a
   end
+
+  def test_all
+    assert_equal 1, Torch.all(Torch.tensor(42, dtype: :uint8), dim: 0).item
+  end
 end
