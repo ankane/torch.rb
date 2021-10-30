@@ -79,7 +79,7 @@ b = Torch.zeros(2, 3)
 
 Each tensor has four properties
 
-- `dtype` - the data type - `:uint8`, `:int8`, `:int16`, `:int32`, `:int64`, `:float32`, `float64`, or `:bool`
+- `dtype` - the data type - `:uint8`, `:int8`, `:int16`, `:int32`, `:int64`, `:float32`, `:float64`, or `:bool`
 - `layout` - `:strided` (dense) or `:sparse`
 - `device` - the compute device, like CPU or GPU
 - `requires_grad` - whether or not to record gradients
