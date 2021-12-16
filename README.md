@@ -79,7 +79,7 @@ b = Torch.zeros(2, 3)
 
 Each tensor has four properties
 
-- `dtype` - the data type - `:uint8`, `:int8`, `:int16`, `:int32`, `:int64`, `:float32`, `float64`, or `:bool`
+- `dtype` - the data type - `:uint8`, `:int8`, `:int16`, `:int32`, `:int64`, `:float32`, `:float64`, or `:bool`
 - `layout` - `:strided` (dense) or `:sparse`
 - `device` - the compute device, like CPU or GPU
 - `requires_grad` - whether or not to record gradients
@@ -408,7 +408,8 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
-0.8.0+ | 1.9.0+
+0.9.0+ | 1.10.0+
+0.8.0-0.8.3 | 1.9.0-1.9.1
 0.6.0-0.7.0 | 1.8.0-1.8.1
 0.5.0-0.5.3 | 1.7.0-1.7.1
 0.3.0-0.4.2 | 1.6.0

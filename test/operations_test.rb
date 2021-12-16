@@ -263,4 +263,34 @@ class OperationsTest < Minitest::Test
     b = Torch.full([2], 2)
     assert_elements_in_delta [2.1, 2.1], Torch.divide(a, b, rounding_mode: nil).to_a
   end
+
+  def test_left_shift
+    assert_equal [128], (Torch.tensor([64]) << 1).to_a
+  end
+
+  def test_right_shift
+    assert_equal [32], (Torch.tensor([64]) >> 1).to_a
+  end
+
+  def test_all
+    assert_equal 1, Torch.all(Torch.tensor(42, dtype: :uint8), dim: 0).item
+  end
+
+  def test_conj
+    x = Torch.tensor([1 + 2i])
+    y = x.conj
+    y.add!(2)
+    # matches behavior of PyTorch
+    # incorrect value in 1.10.0 release notes
+    assert_equal [3 + 2i], x.to_a
+  end
+
+  def test_conj_neg
+    x = Torch.tensor([1 + 2i])
+    y = x.conj
+    z = y.imag
+    assert z.neg?
+    z.add!(2)
+    assert_equal [1 - 0i], x.to_a
+  end
 end

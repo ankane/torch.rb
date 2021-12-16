@@ -83,20 +83,10 @@ module Torch
         )
       end
 
-      class << self
-        def generate_square_subsequent_mask(sz)
-          mask = Torch.triu(Torch.ones([sz, sz])).eq(1).transpose(0, 1)
-          mask.float.masked_fill!(mask.eq(0), -Float::INFINITY).masked_fill!(mask.eq(1), 0.0)
-        end
-
-        alias :square_subsequent_mask :generate_square_subsequent_mask
-      end
-
       def generate_square_subsequent_mask(sz)
-        self.class.square_subsequent_mask(sz)
+        mask = Torch.triu(Torch.ones([sz, sz])).eq(1).transpose(0, 1)
+        mask.float.masked_fill!(mask.eq(0), -Float::INFINITY).masked_fill!(mask.eq(1), 0.0)
       end
-
-      alias :square_subsequent_mask :generate_square_subsequent_mask
     end
   end
 end

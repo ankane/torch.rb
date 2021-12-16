@@ -19,6 +19,8 @@ module Torch
     alias_method :&, :logical_and
     alias_method :|, :logical_or
     alias_method :^, :logical_xor
+    alias_method :<<, :__lshift__
+    alias_method :>>, :__rshift__
 
     def self.new(*args)
       FloatTensor.new(*args)
@@ -182,6 +184,24 @@ module Torch
     # center option
     def stft(*args)
       Torch.stft(*args)
+    end
+
+    def dup
+      Torch.no_grad do
+        clone
+      end
+    end
+
+    # not a method in native_functions.yaml
+    # attribute in Python rather than method
+    def imag
+      Torch.imag(self)
+    end
+
+    # not a method in native_functions.yaml
+    # attribute in Python rather than method
+    def real
+      Torch.real(self)
     end
   end
 end

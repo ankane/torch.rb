@@ -35,7 +35,7 @@ module Torch
         tgt += @dropout2.(tgt2)
         tgt = @norm2.(tgt)
         tgt2 = @linear2.(@dropout.(@activation.(@linear1.(tgt))))
-        tgt += @dropout3.(tgt)
+        tgt += @dropout3.(tgt2)
         @norm3.(tgt)
       end
     end

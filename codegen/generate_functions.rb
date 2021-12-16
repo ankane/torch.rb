@@ -23,11 +23,14 @@ end
 
 def skip_functions(functions)
   functions.reject do |f|
-    f.base_name.start_with?("_") ||
+    (f.base_name.start_with?("_") && f.base_name != "__lshift__" && f.base_name != "__rshift__") ||
     f.base_name.include?("_backward") ||
     f.base_name.include?("_forward") ||
     f.base_name == "to" ||
     f.base_name == "record_stream" ||
+    f.base_name == "is_pinned" ||
+    f.base_name == "pin_memory" ||
+    f.base_name == "fused_moving_avg_obs_fake_quant" ||
     # in ext.cpp
     f.base_name == "index" ||
     f.base_name == "index_put_" ||
@@ -133,6 +136,7 @@ def generate_attach_def(name, type, def_method)
   ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
   ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
+  ruby_name = name if name.start_with?("__")
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
@@ -386,6 +390,8 @@ def generate_function_params(function, params, remove_self)
           end
         when "generator", "tensorlist", "intlist"
           func
+        when "string"
+          "stringViewOptional"
         else
           "#{func}Optional"
         end
@@ -423,9 +429,7 @@ def generate_dispatch_params(function, params)
           if function.out?
             "const Tensor &"
           else
-            # TODO
-            # "const c10::optional<at::Tensor> &"
-            "const OptionalTensor &"
+            "const c10::optional<at::Tensor> &"
           end
         elsif param[:modifier]
           if param[:modifier].include?("!") && function.retvals.size > 1
@@ -449,7 +453,11 @@ def generate_dispatch_params(function, params)
       when "float[]"
         "ArrayRef<double>"
       when "str"
-        "std::string"
+        if param[:optional]
+          "c10::string_view"
+        else
+          "std::string"
+        end
       when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
         param[:type]
       else
