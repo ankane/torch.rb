@@ -2,37 +2,13 @@ name: build
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - ruby: 3.1
-          os: ubuntu-20.04
-        - ruby: "3.0"
-          os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
-        - ruby: 2.6
-          os: ubuntu-18.04
-    env:
-      LIBTORCH_VERSION: 1.10.1
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby }}
+        ruby-version: 2.6
         bundler-cache: true
-    - uses: actions/cache@v2
-      with:
-        path: ~/libtorch
-        key: libtorch-${{ env.LIBTORCH_VERSION }}
-      id: cache-libtorch
-    - name: Download LibTorch
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        cd ~
-        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
-        unzip -q libtorch.zip
-    - run: bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
-    - run: bundle exec rake test
+    - run: brew update
+    - run: brew install libtorch
+    - run: gem install torch-rb
