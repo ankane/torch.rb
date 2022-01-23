@@ -21,7 +21,7 @@ brew install libtorch
 Add this line to your application’s Gemfile:
 
 ```ruby
-gem 'torch-rb'
+gem "torch-rb"
 ```
 
 It can take a few minutes to compile the extension.
