@@ -413,22 +413,27 @@ module Torch
 
     # --- begin like ---
 
+    undef_method :ones_like
     def ones_like(input, **options)
       ones(input.size, **like_options(input, options))
     end
 
+    undef_method :empty_like
     def empty_like(input, **options)
       empty(input.size, **like_options(input, options))
     end
 
+    undef_method :full_like
     def full_like(input, fill_value, **options)
       full(input.size, fill_value, **like_options(input, options))
     end
 
+    undef_method :rand_like
     def rand_like(input, **options)
       rand(input.size, **like_options(input, options))
     end
 
+    undef_method :randint_like
     def randint_like(input, low, high = nil, **options)
       # ruby doesn't support input, low = 0, high, ...
       if high.nil?
@@ -438,10 +443,12 @@ module Torch
       randint(low, high, input.size, **like_options(input, options))
     end
 
+    undef_method :randn_like
     def randn_like(input, **options)
       randn(input.size, **like_options(input, options))
     end
 
+    undef_method :zeros_like
     def zeros_like(input, **options)
       zeros(input.size, **like_options(input, options))
     end
