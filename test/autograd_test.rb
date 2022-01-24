@@ -30,7 +30,7 @@ class AutogradTest < Minitest::Test
     assert !a.requires_grad
     a.requires_grad!(true)
     assert a.requires_grad
-    b = (a * a).sum
+    _b = (a * a).sum
   end
 
   def test_no_grad

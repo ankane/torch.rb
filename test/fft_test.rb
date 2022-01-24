@@ -12,19 +12,19 @@ class FFTTest < Minitest::Test
   end
 
   def test_ifft2
-    x = Torch.rand(10, 10, dtype: :complex64)
+    _x = Torch.rand(10, 10, dtype: :complex64)
     # TODO fix
     # Torch::FFT.ifft2(x)
   end
 
   def test_fftn
-    x = Torch.rand(10, 10, dtype: :complex64)
+    _x = Torch.rand(10, 10, dtype: :complex64)
     # TODO fix
     # Torch::FFT.fftn(x)
   end
 
   def test_ifftn
-    x = Torch.rand(10, 10, dtype: :complex64)
+    _x = Torch.rand(10, 10, dtype: :complex64)
     # TODO fix
     # Torch::FFT.ifftn(x)
   end
@@ -42,7 +42,7 @@ class FFTTest < Minitest::Test
   end
 
   def test_rfft2
-    t = Torch.rand(10, 10)
+    _t = Torch.rand(10, 10)
     # TODO fix
     # rfft2 = Torch::FFT.rfft2(t)
     # assert_equal [6, 10], rfft2.size
@@ -78,7 +78,7 @@ class FFTTest < Minitest::Test
   end
 
   def test_fftshift
-    f = Torch::FFT.fftfreq(4)
+    _f = Torch::FFT.fftfreq(4)
     # TODO fix
     # assert_elements_in_delta [-0.5, -0.25,  0,  0.25], Torch::FFT.fftshift(f).to_a
   end
