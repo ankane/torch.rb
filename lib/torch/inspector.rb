@@ -247,7 +247,7 @@ module Torch
       # length includes spaces and comma between elements
       element_length = formatter.width + 2
       elements_per_line = [1, ((PRINT_OPTS[:linewidth] - indent) / element_length.to_f).floor.to_i].max
-      char_per_line = element_length * elements_per_line
+      _char_per_line = element_length * elements_per_line
 
       if summarize && slf.size(0) > 2 * PRINT_OPTS[:edgeitems]
         data = (
