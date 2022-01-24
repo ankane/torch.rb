@@ -106,7 +106,6 @@ module Torch
       size(0)
     end
 
-    undef_method :item
     def item
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
@@ -134,7 +133,15 @@ module Torch
       cls.from_string(_data_str).reshape(*shape)
     end
 
+    def new_ones(*size, **options)
+      Torch.ones_like(Torch.empty(*size), **options)
+    end
+
     def requires_grad=(requires_grad)
+      _requires_grad!(requires_grad)
+    end
+
+    def requires_grad!(requires_grad = true)
       _requires_grad!(requires_grad)
     end
 
