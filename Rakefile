@@ -6,6 +6,9 @@ task default: :test
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.pattern = "test/**/*_test.rb"
+  # fixing warnings with undef_method creates issues with:
+  # Ruby 3.0: terminate called after throwing an instance of 'std::bad_any_cast'
+  # Ruby 2.7: div expected rounding_mode to be one of None, 'trunc', or 'floor' but found '
   t.warning = false
 end
 
