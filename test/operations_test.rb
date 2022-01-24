@@ -253,7 +253,7 @@ class OperationsTest < Minitest::Test
     a = Torch.tensor([-1.0, 0.0, 1.0])
     b = Torch.tensor([0.0])
     c = Torch.divide(a, b, rounding_mode: "floor").to_a
-    assert_equal -Float::INFINITY, c[0]
+    assert_equal(-Float::INFINITY, c[0])
     assert c[1].nan?
     assert_equal Float::INFINITY, c[2]
   end

@@ -76,7 +76,7 @@ class TensorAttributesTest < Minitest::Test
     error = assert_raises do
       Torch.tensor([1, 2, 3], device: "bad")
     end
-    assert_match /Expected one of .+ device type at start of device string: bad/, error.message
+    assert_match(/Expected one of .+ device type at start of device string: bad/, error.message)
   end
 
   def test_requires_grad

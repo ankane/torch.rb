@@ -28,7 +28,7 @@ class TorchTest < Minitest::Test
     assert_equal [5, 3], x.size
 
     y = Torch.rand(5, 3)
-    x + y
+    _ = x + y
 
     Torch.add(x, y)
 
