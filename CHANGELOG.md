@@ -1,3 +1,7 @@
+## 0.9.1 (unreleased)
+
+- Fixed memory issue
+
 ## 0.9.0 (2021-10-23)
 
 - Updated LibTorch to 1.10.0

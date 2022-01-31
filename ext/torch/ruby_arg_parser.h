@@ -325,15 +325,15 @@ inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 
+// string_view does not own data
 inline c10::string_view RubyArgs::stringView(int i) {
-  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
-  return c10::string_view(str.data(), str.size());
+  return c10::string_view(RSTRING_PTR(args[i]), RSTRING_LEN(args[i]));
 }
 
+// string_view does not own data
 inline c10::optional<c10::string_view> RubyArgs::stringViewOptional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
-  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
-  return c10::string_view(str.data(), str.size());
+  return c10::string_view(RSTRING_PTR(args[i]), RSTRING_LEN(args[i]));
 }
 
 inline int64_t RubyArgs::toInt64(int i) {
