@@ -16,7 +16,7 @@ jobs:
         - ruby: 2.6
           os: ubuntu-18.04
     env:
-      LIBTORCH_VERSION: 1.10.1
+      LIBTORCH_VERSION: 1.10.2
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
