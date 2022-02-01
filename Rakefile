@@ -6,9 +6,6 @@ task default: :test
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.pattern = "test/**/*_test.rb"
-  # fixing warnings with undef_method creates issues with:
-  # Ruby 3.0: terminate called after throwing an instance of 'std::bad_any_cast'
-  t.warning = false
 end
 
 Rake::ExtensionTask.new("torch") do |ext|

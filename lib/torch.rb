@@ -411,41 +411,6 @@ module Torch
       _tensor(data, size, tensor_options(**options))
     end
 
-    # --- begin like ---
-
-    def ones_like(input, **options)
-      ones(input.size, **like_options(input, options))
-    end
-
-    def empty_like(input, **options)
-      empty(input.size, **like_options(input, options))
-    end
-
-    def full_like(input, fill_value, **options)
-      full(input.size, fill_value, **like_options(input, options))
-    end
-
-    def rand_like(input, **options)
-      rand(input.size, **like_options(input, options))
-    end
-
-    def randint_like(input, low, high = nil, **options)
-      # ruby doesn't support input, low = 0, high, ...
-      if high.nil?
-        high = low
-        low = 0
-      end
-      randint(low, high, input.size, **like_options(input, options))
-    end
-
-    def randn_like(input, **options)
-      randn(input.size, **like_options(input, options))
-    end
-
-    def zeros_like(input, **options)
-      zeros(input.size, **like_options(input, options))
-    end
-
     # center option
     def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true, return_complex: nil)
       if center

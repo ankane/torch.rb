@@ -1,5 +1,6 @@
 ## 0.9.1 (unreleased)
 
+- Moved `like` methods to C++
 - Fixed memory issue
 
 ## 0.9.0 (2021-10-23)

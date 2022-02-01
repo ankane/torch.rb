@@ -106,7 +106,7 @@ module Torch
       size(0)
     end
 
-    undef :item
+    remove_method :item
     def item
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
