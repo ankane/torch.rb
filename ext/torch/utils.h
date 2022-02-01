@@ -16,12 +16,6 @@ inline VALUE THPUtils_internSymbol(const std::string& str) {
   return Rice::Symbol(str);
 }
 
-inline std::string THPUtils_unpackSymbol(VALUE obj) {
-  Check_Type(obj, T_SYMBOL);
-  obj = rb_funcall(obj, rb_intern("to_s"), 0);
-  return std::string(RSTRING_PTR(obj), RSTRING_LEN(obj));
-}
-
 inline std::string THPUtils_unpackString(VALUE obj) {
   Check_Type(obj, T_STRING);
   return std::string(RSTRING_PTR(obj), RSTRING_LEN(obj));

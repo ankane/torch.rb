@@ -235,7 +235,7 @@ inline ScalarType RubyArgs::scalartype(int i) {
 
   auto it = dtype_map.find(args[i]);
   if (it == dtype_map.end()) {
-    rb_raise(rb_eArgError, "invalid dtype: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    rb_raise(rb_eArgError, "invalid dtype: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
 }
@@ -293,7 +293,7 @@ inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
 
   auto it = layout_map.find(args[i]);
   if (it == layout_map.end()) {
-    rb_raise(rb_eArgError, "invalid layout: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    rb_raise(rb_eArgError, "invalid layout: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
 }

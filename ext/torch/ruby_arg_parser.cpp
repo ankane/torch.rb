@@ -472,12 +472,12 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
     auto param_idx = find_param(signature, key);
     if (param_idx < 0) {
       rb_raise(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
-          signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
+          signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
 
     if (param_idx < num_pos_args) {
       rb_raise(rb_eArgError, "%s() got multiple values for argument '%s'",
-          signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
+          signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
   }
 
