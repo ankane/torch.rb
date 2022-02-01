@@ -377,8 +377,6 @@ module Torch
       to_ruby(_load(File.binread(f)))
     end
 
-    # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
-
     def tensor(data, **options)
       if options[:dtype].nil? && defined?(Numo::NArray) && data.is_a?(Numo::NArray)
         numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h
@@ -535,14 +533,6 @@ module Torch
       unless requires_grad.nil?
         options = options.requires_grad(requires_grad)
       end
-      options
-    end
-
-    def like_options(input, options)
-      options = options.dup
-      options[:dtype] ||= input.dtype
-      options[:layout] ||= input.layout
-      options[:device] ||= input.device
       options
     end
   end
