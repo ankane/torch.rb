@@ -169,12 +169,28 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       })
     .define_method(
       "grad=",
-      [](Tensor& self, Rice::Object grad) {
-        if (grad.is_nil()) {
+      [](Tensor& self, Rice::Object value) {
+        if (value.is_nil()) {
           self.mutable_grad().reset();
-        } else {
-          self.mutable_grad() = Rice::detail::From_Ruby<torch::Tensor>().convert(grad.value());
+          return;
         }
+
+        const auto& grad = Rice::detail::From_Ruby<torch::Tensor>().convert(value.value());
+
+        // TODO support sparse grad
+        if (!grad.options().type_equal(self.options())) {
+          rb_raise(rb_eArgError, "assigned grad has data of a different type");
+        }
+
+        if (self.is_cuda() && grad.get_device() != self.get_device()) {
+          rb_raise(rb_eArgError, "assigned grad has data of a different type");
+        }
+
+        if (!self.sizes().equals(grad.sizes())) {
+          rb_raise(rb_eArgError, "assigned grad has data of a different size");
+        }
+
+        self.mutable_grad() = grad;
       })
     .define_method(
       "_dtype",

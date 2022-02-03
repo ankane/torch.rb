@@ -76,6 +76,26 @@ class AutogradTest < Minitest::Test
     assert_nil x.grad
   end
 
+  def test_set_grad_different_size
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x.grad = Torch.tensor([1, 1])
+    end
+    assert_equal "assigned grad has data of a different size", error.message
+  end
+
+  def test_set_grad_different_device
+    # TODO
+  end
+
+  def test_set_grad_different_type
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x.grad = Torch.tensor([1, 1, 1], dtype: :int32)
+    end
+    assert_equal "assigned grad has data of a different type", error.message
+  end
+
   def test_variable
     x = Torch.tensor([1, 2, 3])
     v = nil
