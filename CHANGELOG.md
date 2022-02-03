@@ -1,6 +1,9 @@
 ## 0.9.2 (unreleased)
 
+- Added support for setting `nil` gradient
+- Added checks when setting gradient
 - Fixed precision with `Torch.tensor` method
+- Fixed memory issue when creating tensor for `ByteStorage`
 
 ## 0.9.1 (2022-02-02)
 
