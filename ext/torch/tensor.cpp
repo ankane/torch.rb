@@ -10,28 +10,6 @@
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
-namespace Rice::detail
-{
-  template<typename T>
-  struct Type<c10::complex<T>>
-  {
-    static bool verify()
-    {
-      return true;
-    }
-  };
-
-  template<typename T>
-  class To_Ruby<c10::complex<T>>
-  {
-  public:
-    VALUE convert(c10::complex<T> const& x)
-    {
-      return rb_dbl_complex_new(x.real(), x.imag());
-    }
-  };
-}
-
 template<typename T>
 Array flat_data(Tensor& tensor) {
   Tensor view = tensor.reshape({tensor.numel()});

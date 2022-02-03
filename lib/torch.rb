@@ -411,6 +411,9 @@ module Torch
         end
       end
 
+      # TOOD move to C++
+      data = data.map { |v| v ? 1 : 0 } if options[:dtype] == :bool
+
       _tensor(data, size, tensor_options(**options))
     end
 

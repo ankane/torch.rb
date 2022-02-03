@@ -43,6 +43,40 @@ using torch::nn::init::NonlinearityType;
 
 namespace Rice::detail
 {
+  template<typename T>
+  struct Type<c10::complex<T>>
+  {
+    static bool verify()
+    {
+      return true;
+    }
+  };
+
+  template<typename T>
+  class To_Ruby<c10::complex<T>>
+  {
+  public:
+    VALUE convert(c10::complex<T> const& x)
+    {
+      return rb_dbl_complex_new(x.real(), x.imag());
+    }
+  };
+
+  template<typename T>
+  class From_Ruby<c10::complex<T>>
+  {
+  public:
+    c10::complex<T> convert(VALUE x)
+    {
+      VALUE real = rb_funcall(x, rb_intern("real"), 0);
+      VALUE imag = rb_funcall(x, rb_intern("imag"), 0);
+      return c10::complex<T>(From_Ruby<T>().convert(real), From_Ruby<T>().convert(imag));
+    }
+  };
+}
+
+namespace Rice::detail
+{
   template<>
   struct Type<FanModeType>
   {

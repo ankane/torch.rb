@@ -1,3 +1,7 @@
+## 0.9.2 (unreleased)
+
+- Fixed precision with `Torch.tensor` method
+
 ## 0.9.1 (2022-02-02)
 
 - Moved `like` methods to C++
