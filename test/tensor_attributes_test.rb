@@ -51,11 +51,11 @@ class TensorAttributesTest < Minitest::Test
     assert_equal :int32, x.dtype
   end
 
+  # different message locally and on CI
   def test_dtype_bad
-    error = assert_raises(TypeError) do
+    assert_raises(TypeError) do
       Torch.tensor([true], dtype: :int64)
     end
-    assert_equal "no implicit conversion from boolean", error.message
   end
 
   # TODO improve error type and message
