@@ -1,4 +1,4 @@
-## 0.9.1 (unreleased)
+## 0.9.1 (2022-02-02)
 
 - Moved `like` methods to C++
 - Fixed memory issue
