@@ -154,4 +154,17 @@ class TensorAttributesTest < Minitest::Test
     assert Torch.floating_point?(Torch.empty(1))
     assert !Torch.floating_point?(Torch.empty(1, dtype: Torch.long))
   end
+
+  def test_inconsistent_dimensions
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([[1, 2], [3]])
+    end
+    assert_equal "Inconsistent dimensions", error.message
+  end
+
+  # TODO raise error
+  def test_inconsistent_dimensions_correct_size
+    x = Torch.tensor([[1, 2], [3], [4, 5, 6]])
+    assert_equal [[1, 2], [3, 4], [5, 6]], x.to_a
+  end
 end
