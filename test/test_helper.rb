@@ -18,4 +18,12 @@ class Minitest::Test
       end
     end
   end
+
+  def stress_gc
+    GC.stress = true
+    yield
+  ensure
+    GC.stress = false
+    GC.start
+  end
 end

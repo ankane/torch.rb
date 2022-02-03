@@ -73,7 +73,10 @@ class TorchTest < Minitest::Test
   end
 
   def test_byte_storage
-    s = Torch::ByteStorage.from_buffer("\x01\x02\x03")
-    assert_equal [1, 2, 3], Torch::ByteTensor.new(s).to_a
+    x = stress_gc do
+      s = Torch::ByteStorage.from_buffer("\x01\x02\x03")
+      Torch::ByteTensor.new(s)
+    end
+    assert_equal [1, 2, 3], x.to_a
   end
 end

@@ -267,7 +267,7 @@ module Torch
         args.first.send(dtype).to(device)
       elsif args.size == 1 && args.first.is_a?(ByteStorage) && dtype == :uint8
         bytes = args.first.bytes
-        Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
+        Torch._from_blob_ref(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
         Torch.tensor(args.first, dtype: dtype, device: device)
       elsif args.size == 0
@@ -320,12 +320,17 @@ module Torch
       raise Error, "Cannot convert #{ndarray.class.name} to tensor" unless dtype
       options = tensor_options(device: "cpu", dtype: dtype[0])
       # TODO pass pointer to array instead of creating string
-      str = ndarray.to_string
-      tensor = _from_blob(str, ndarray.shape, options)
+      _from_blob_ref(ndarray.to_string, ndarray.shape, options)
+    end
+
+    # private
+    # TODO use keepAlive in Rice (currently segfaults)
+    def _from_blob_ref(data, size, options)
+      tensor = _from_blob(data, size, options)
       # from_blob does not own the data, so we need to keep
       # a reference to it for duration of tensor
       # can remove when passing pointer directly
-      tensor.instance_variable_set("@_numo_str", str)
+      tensor.instance_variable_set("@_numo_data", data)
       tensor
     end
 

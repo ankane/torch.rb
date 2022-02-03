@@ -13,10 +13,7 @@ class NumoTest < Minitest::Test
 
   def test_from_numo
     input = Numo::DFloat.new(2, 3).seq
-    x = Torch.from_numo(input)
-
-    # garbage collect to ensure underlying data is safe
-    GC.start rescue nil
+    x = stress_gc { Torch.from_numo(input) }
 
     assert_equal [[0, 1, 2], [3, 4, 5]], x.to_a
     assert_equal :float64, x.dtype
