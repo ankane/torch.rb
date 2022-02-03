@@ -172,7 +172,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       [](Tensor& self, Rice::Object value) {
         if (value.is_nil()) {
           self.mutable_grad().reset();
-          return;
+          return value;
         }
 
         const auto& grad = Rice::detail::From_Ruby<torch::Tensor>().convert(value.value());
@@ -191,6 +191,8 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         }
 
         self.mutable_grad() = grad;
+
+        return value;
       })
     .define_method(
       "_dtype",
