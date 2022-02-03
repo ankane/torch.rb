@@ -51,6 +51,21 @@ class TensorAttributesTest < Minitest::Test
     assert_equal :int32, x.dtype
   end
 
+  def test_dtype_bad
+    error = assert_raises(TypeError) do
+      Torch.tensor([true], dtype: :int64)
+    end
+    assert_equal "no implicit conversion from boolean", error.message
+  end
+
+  # TODO improve error type and message
+  def test_dtype_bad_complex
+    error = assert_raises(NoMethodError) do
+      Torch.tensor([true], dtype: :complex64)
+    end
+    assert_match "undefined method `real' for true:TrueClass", error.message
+  end
+
   def test_layout
     # TODO support sparse
     %i(strided).each do |layout|
