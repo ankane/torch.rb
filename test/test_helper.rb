@@ -20,10 +20,13 @@ class Minitest::Test
   end
 
   def stress_gc
-    GC.stress = true
-    yield
-  ensure
-    GC.stress = false
-    GC.start
+    previous = GC.stress
+    begin
+      GC.stress = true
+      yield
+    ensure
+      GC.stress = previous
+      GC.start
+    end
   end
 end
