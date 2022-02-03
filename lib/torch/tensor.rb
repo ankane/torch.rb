@@ -8,6 +8,9 @@ module Torch
     alias_method :ndim, :dim
     alias_method :ndimension, :dim
 
+    # fix for issue w/ assignment methods
+    alias_method :grad=, :_set_grad
+
     # use alias_method for performance
     alias_method :+, :add
     alias_method :-, :sub

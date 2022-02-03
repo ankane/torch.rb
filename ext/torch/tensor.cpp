@@ -167,8 +167,10 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         auto grad = self.grad();
         return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
       })
+    // can't use grad=
+    // assignment methods fail with Ruby 3.0
     .define_method(
-      "grad=",
+      "_set_grad",
       [](Tensor& self, Rice::Object value) {
         if (value.is_nil()) {
           self.mutable_grad().reset();
