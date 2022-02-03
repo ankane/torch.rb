@@ -281,7 +281,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       })
     .define_method(
       "_to",
-      [](Tensor& self, torch::Device device, int dtype, bool non_blocking, bool copy) {
+      [](Tensor& self, torch::Device& device, int dtype, bool non_blocking, bool copy) {
         return self.to(device, (torch::ScalarType) dtype, non_blocking, copy);
       });
 
