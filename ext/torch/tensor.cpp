@@ -170,8 +170,8 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method(
       "grad=",
       [](Tensor& self, torch::Tensor& grad) {
-        self.mutable_grad() = grad.clone();
-      }, Rice::Arg("grad").keepAlive())
+        // self.mutable_grad() = grad.clone();
+      })
     .define_method(
       "_dtype",
       [](Tensor& self) {
