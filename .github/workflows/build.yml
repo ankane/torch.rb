@@ -7,14 +7,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 3.1
-          os: ubuntu-20.04
         - ruby: "3.0"
           os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
-        - ruby: 2.6
-          os: ubuntu-18.04
     env:
       LIBTORCH_VERSION: 1.10.2
     steps:
@@ -36,3 +30,6 @@ jobs:
         unzip -q libtorch.zip
     - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
     - run: bundle exec rake test
+      continue-on-error: true
+    - run: ls
+    - run: cat *
