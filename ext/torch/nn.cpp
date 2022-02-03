@@ -102,7 +102,7 @@ void init_nn(Rice::Module& m) {
       "grad=",
       [](Parameter& self, torch::Tensor& grad) {
         self.mutable_grad() = grad;
-      })
+      }, Rice::Arg("grad").keepAlive())
     .define_singleton_function(
       "_make_subclass",
       [](Tensor& rd, bool requires_grad) {

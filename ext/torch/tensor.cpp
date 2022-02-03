@@ -171,7 +171,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "grad=",
       [](Tensor& self, torch::Tensor& grad) {
         self.mutable_grad() = grad;
-      })
+      }, Rice::Arg("grad").keepAlive())
     .define_method(
       "_dtype",
       [](Tensor& self) {
