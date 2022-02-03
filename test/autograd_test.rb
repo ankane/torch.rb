@@ -61,7 +61,9 @@ class AutogradTest < Minitest::Test
 
   def test_set_grad
     x = Torch.tensor([1, 2, 3])
-    x.grad = Torch.tensor([1, 1, 1])
+    stress_gc do
+      x.grad = Torch.tensor([1, 1, 1])
+    end
     assert_equal [1, 1, 1], x.grad.to_a
   end
 
