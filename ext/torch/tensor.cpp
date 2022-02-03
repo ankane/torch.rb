@@ -183,7 +183,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         }
 
         if (self.is_cuda() && grad.get_device() != self.get_device()) {
-          rb_raise(rb_eArgError, "assigned grad has data of a different type");
+          rb_raise(rb_eArgError, "assigned grad has data located on a different device");
         }
 
         if (!self.sizes().equals(grad.sizes())) {
