@@ -70,6 +70,12 @@ class AutogradTest < Minitest::Test
     assert_equal [1, 1, 1], x.grad.to_a
   end
 
+  def test_set_grad_nil
+    x = Torch.tensor([1, 2, 3])
+    x.grad = nil
+    assert_nil x.grad
+  end
+
   def test_variable
     x = Torch.tensor([1, 2, 3])
     v = nil
