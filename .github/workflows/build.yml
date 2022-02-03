@@ -31,5 +31,4 @@ jobs:
     - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
     - run: bundle exec rake test
       continue-on-error: true
-    - run: ls
-    - run: cat *
+    - run: ls -la

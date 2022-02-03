@@ -8,6 +8,10 @@ require "numo/narray"
 require_relative "support/net"
 
 class Minitest::Test
+  def setup
+    puts "#{self.class.name}##{name}"
+  end
+
   def assert_elements_in_delta(expected, actual)
     assert_equal expected.size, actual.size
     expected.zip(actual) do |exp, act|
@@ -22,11 +26,13 @@ class Minitest::Test
   def stress_gc
     previous = GC.stress
     begin
+      puts "start stress"
       GC.stress = true
       yield
     ensure
       GC.stress = previous
       GC.start
+      puts "end stress"
     end
   end
 end
