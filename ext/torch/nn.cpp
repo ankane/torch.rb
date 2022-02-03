@@ -101,7 +101,7 @@ void init_nn(Rice::Module& m) {
     .define_method(
       "grad=",
       [](Parameter& self, torch::Tensor& grad) {
-        self.mutable_grad() = grad;
+        self.mutable_grad() = grad.clone();
       }, Rice::Arg("grad").keepAlive())
     .define_singleton_function(
       "_make_subclass",
