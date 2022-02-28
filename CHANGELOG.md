@@ -1,3 +1,7 @@
+## 0.9.3 (unreleased)
+
+- Added `ParameterList`
+
 ## 0.9.2 (2022-02-03)
 
 - Added support for setting `nil` gradient
