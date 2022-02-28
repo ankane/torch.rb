@@ -7,6 +7,7 @@ Check out:
 - [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks
 - [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
+- [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
 
 [![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
 
