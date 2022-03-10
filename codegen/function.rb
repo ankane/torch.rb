@@ -37,7 +37,7 @@ class Function
   private
 
   def parse_func
-    input, output = func.split(/\s*->\s*/)
+    input, _, output = func.rpartition(/\s+->\s+/)
     [generate_params(input), generate_retvals(output)]
   end
 
@@ -52,7 +52,7 @@ class Function
         next
       end
 
-      type, name = i.split(/\s+/)
+      type, _, name = i.rpartition(/\s+/)
 
       if name.include?("=")
         name, default = name.split("=", 2)

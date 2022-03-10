@@ -1,5 +1,6 @@
-## 0.9.3 (unreleased)
+## 0.10.0 (unreleased)
 
+- Updated LibTorch to 1.11.0
 - Added `ParameterList`
 
 ## 0.9.2 (2022-02-03)

@@ -14,6 +14,7 @@ def generate_functions
   generate_files("fft", :define_singleton_method, functions[:fft])
   generate_files("linalg", :define_singleton_method, functions[:linalg])
   generate_files("special", :define_singleton_method, functions[:special])
+  generate_files("sparse", :define_singleton_method, functions[:sparse])
 end
 
 def load_functions
@@ -47,6 +48,7 @@ def group_functions(functions)
   linalg_functions, other_functions = other_functions.partition { |f| f.python_module == "linalg" }
   fft_functions, other_functions = other_functions.partition { |f| f.python_module == "fft" }
   special_functions, other_functions = other_functions.partition { |f| f.python_module == "special" }
+  sparse_functions, other_functions = other_functions.partition { |f| f.python_module == "sparse" }
   unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
@@ -62,7 +64,8 @@ def group_functions(functions)
     nn: nn_functions,
     linalg: linalg_functions,
     fft: fft_functions,
-    special: special_functions
+    special: special_functions,
+    sparse: sparse_functions
   }
 end
 
@@ -136,6 +139,7 @@ def generate_attach_def(name, type, def_method)
   ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
   ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
+  ruby_name = ruby_name.sub(/\Asparse_/, "") if type == "sparse"
   ruby_name = name if name.start_with?("__")
 
   # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
