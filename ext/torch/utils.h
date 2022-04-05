@@ -1,7 +1,14 @@
 #pragma once
 
+#include <torch/torch.h>
+
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
+
+static_assert(
+  TORCH_VERSION_MAJOR == 1 && TORCH_VERSION_MINOR == 11,
+  "Incompatible LibTorch version"
+);
 
 // TODO find better place
 inline void handle_error(torch::Error const & ex) {
