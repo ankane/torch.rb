@@ -103,4 +103,14 @@ class TensorCreationTest < Minitest::Test
     input = Torch.empty(2, 3)
     assert_equal [[0, 0, 0], [0, 0, 0]], Torch.zeros_like(input).to_a
   end
+
+  def test_like_type
+    input = Torch.empty(2, 3, dtype: :int8)
+    assert_equal :int8, Torch.zeros_like(input).dtype
+  end
+
+  def test_new_type
+    input = Torch.empty(2, 3, dtype: :int8)
+    assert_equal :int8, input.new_zeros([2, 3]).dtype
+  end
 end

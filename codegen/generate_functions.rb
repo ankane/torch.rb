@@ -293,7 +293,13 @@ def split_opt_params(params)
 end
 
 def generate_tensor_options(function, opt_params)
-  code = "\n  const auto options = TensorOptions()"
+  new_function = function.base_name.start_with?("new_")
+  like_function = function.base_name.end_with?("_like")
+
+  code = String.new("")
+  code << "\n  auto self = _r.tensor(0);" if like_function
+  code << "\n  const auto options = TensorOptions()"
+
   order = ["dtype", "device", "layout", "requires_grad", "pin_memory"]
   opt_params.sort_by { |v| order.index(v[:name]) }.each do |opt|
     i = opt[:position]
@@ -304,12 +310,24 @@ def generate_tensor_options(function, opt_params)
         if function.base_name == "arange"
           "dtype(_r.scalartypeOptional(#{i}))"
         else
-          "dtype(_r.scalartype(#{i}))"
+          if new_function || like_function
+            "dtype(_r.scalartypeWithDefault(#{i}, self.scalar_type()))"
+          else
+            "dtype(_r.scalartype(#{i}))"
+          end
         end
       when "device"
-        "device(_r.device(#{i}))"
+        if new_function || like_function
+          "device(_r.deviceWithDefault(#{i}, self.device()))"
+        else
+          "device(_r.device(#{i}))"
+        end
       when "layout"
-        "layout(_r.layoutOptional(#{i}))"
+        if new_function || like_function
+          "layout(_r.layoutWithDefault(#{i}, self.layout()))"
+        else
+          "layout(_r.layoutOptional(#{i}))"
+        end
       when "requires_grad"
         "requires_grad(_r.toBool(#{i}))"
       when "pin_memory"

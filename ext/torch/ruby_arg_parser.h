@@ -88,18 +88,18 @@ struct RubyArgs {
   inline c10::optional<at::Generator> generator(int i);
   inline at::Storage storage(int i);
   inline at::ScalarType scalartype(int i);
-  // inline at::ScalarType scalartypeWithDefault(int i, at::ScalarType default_scalartype);
+  inline at::ScalarType scalartypeWithDefault(int i, at::ScalarType default_scalartype);
   inline c10::optional<at::ScalarType> scalartypeOptional(int i);
   inline c10::optional<at::Scalar> scalarOptional(int i);
   inline c10::optional<int64_t> toInt64Optional(int i);
   inline c10::optional<bool> toBoolOptional(int i);
   inline c10::optional<double> toDoubleOptional(int i);
   inline c10::OptionalArray<double> doublelistOptional(int i);
-  // inline at::Layout layout(int i);
-  // inline at::Layout layoutWithDefault(int i, at::Layout default_layout);
+  inline at::Layout layout(int i);
+  inline at::Layout layoutWithDefault(int i, at::Layout default_layout);
   inline c10::optional<at::Layout> layoutOptional(int i);
   inline at::Device device(int i);
-  // inline at::Device deviceWithDefault(int i, const at::Device& default_device);
+  inline at::Device deviceWithDefault(int i, const at::Device& default_device);
   // inline c10::optional<at::Device> deviceOptional(int i);
   // inline at::Dimname dimname(int i);
   // inline std::vector<at::Dimname> dimnamelist(int i);
@@ -240,6 +240,11 @@ inline ScalarType RubyArgs::scalartype(int i) {
   return it->second;
 }
 
+inline at::ScalarType RubyArgs::scalartypeWithDefault(int i, at::ScalarType default_scalartype) {
+  if (NIL_P(args[i])) return default_scalartype;
+  return scalartype(i);
+}
+
 inline c10::optional<ScalarType> RubyArgs::scalartypeOptional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
   return scalartype(i);
@@ -284,8 +289,8 @@ inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
   return res;
 }
 
-inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
-  if (NIL_P(args[i])) return c10::nullopt;
+inline at::Layout RubyArgs::layout(int i) {
+  if (NIL_P(args[i])) return signature.params[i].default_layout;
 
   static std::unordered_map<VALUE, Layout> layout_map = {
     {ID2SYM(rb_intern("strided")), Layout::Strided},
@@ -298,12 +303,27 @@ inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
   return it->second;
 }
 
+inline at::Layout RubyArgs::layoutWithDefault(int i, at::Layout default_layout) {
+  if (NIL_P(args[i])) return default_layout;
+  return layout(i);
+}
+
+inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
+  if (NIL_P(args[i])) return c10::nullopt;
+  return layout(i);
+}
+
 inline at::Device RubyArgs::device(int i) {
   if (NIL_P(args[i])) {
     return at::Device("cpu");
   }
   const std::string &device_str = THPUtils_unpackString(args[i]);
   return at::Device(device_str);
+}
+
+inline at::Device RubyArgs::deviceWithDefault(int i, const at::Device& default_device) {
+  if (NIL_P(args[i])) return default_device;
+  return device(i);
 }
 
 inline at::MemoryFormat RubyArgs::memoryformat(int i) {
