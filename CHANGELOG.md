@@ -1,4 +1,4 @@
-## 0.10.1 (unreleased)
+## 0.10.1 (2022-04-12)
 
 - Fixed `dtype`, `device`, and `layout` for `new_*` and `like_*` methods
 
