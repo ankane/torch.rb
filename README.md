@@ -421,13 +421,25 @@ Torch.rb | LibTorch
 
 ### Homebrew
 
-For Mac, you can use Homebrew.
+You can also use Homebrew.
 
 ```sh
 brew install libtorch
 ```
 
-Then install the gem (no need for `bundle config`).
+For Mac ARM, run:
+
+```sh
+bundle config build.torch-rb --with-torch-dir=/opt/homebrew
+```
+
+And for Linux, run:
+
+```sh
+bundle config build.torch-rb --with-torch-dir=/home/linuxbrew/.linuxbrew
+```
+
+Then install the gem.
 
 ## Performance
 
