@@ -64,11 +64,15 @@ class OperationsTest < Minitest::Test
   def test_scalar
     x = Torch.tensor([10, 20, 30])
     assert_equal [15, 25, 35], (x + 5).to_a
+    assert_equal [15, 25, 35], (5 + x).to_a
     assert_equal [5, 15, 25], (x - 5).to_a
+    assert_equal [-5, -15, -25], (5 - x).to_a
     assert_equal [50, 100, 150], (x * 5).to_a
-    # throws error until Torch 1.7
-    # assert_equal [2, 4, 6], (x / 5).to_a
+    assert_equal [50, 100, 150], (5 * x).to_a
+    assert_equal [2, 4, 6], (x / 5).to_a
+    assert_equal [6, 3, 2], (60 / x).to_a
     assert_equal [1, 2, 0], (x % 3).to_a
+    assert_equal [5, 5, 25], (25 % x).to_a
     assert_equal [100, 400, 900], (x ** 2).to_a
     assert_equal [-10, -20, -30], (-x).to_a
   end

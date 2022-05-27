@@ -199,5 +199,13 @@ module Torch
     def real
       Torch.real(self)
     end
+
+    def coerce(other)
+      if other.is_a?(Numeric)
+        [Torch.tensor(other), self]
+      else
+        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+      end
+    end
   end
 end

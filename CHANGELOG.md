@@ -1,3 +1,7 @@
+## 0.10.2 (unreleased)
+
+- Improved numeric operations between scalars and tensors
+
 ## 0.10.1 (2022-04-12)
 
 - Fixed `dtype`, `device`, and `layout` for `new_*` and `like_*` methods
