@@ -8,11 +8,11 @@ jobs:
       matrix:
         include:
         - ruby: 3.1
-          os: ubuntu-20.04
+          os: ubuntu-22.04
         - ruby: "3.0"
           os: ubuntu-20.04
         - ruby: 2.7
-          os: ubuntu-18.04
+          os: ubuntu-20.04
         - ruby: 2.6
           os: ubuntu-18.04
     env:

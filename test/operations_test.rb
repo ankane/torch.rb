@@ -77,6 +77,12 @@ class OperationsTest < Minitest::Test
     assert_equal [-10, -20, -30], (-x).to_a
   end
 
+  def test_scalar_dtype
+    x = Torch.tensor([10, 20, 30], dtype: :int16)
+    assert_equal :int16, (x + 5).dtype
+    assert_equal :float32, (x + 5.0).dtype
+  end
+
   def test_sum
     assert_equal 6, Torch.tensor([1, 2, 3]).sum.item
   end
