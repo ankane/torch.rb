@@ -129,7 +129,7 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [1, 2, 3], y.to_a
   end
 
-  def test_cumsum_type
+  def test_cumsum_dtype
     assert_equal :int64, Torch.tensor([1, 2, 3]).cumsum(dim: 0).dtype
   end
 end
