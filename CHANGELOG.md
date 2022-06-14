@@ -1,6 +1,7 @@
 ## 0.10.2 (unreleased)
 
 - Improved numeric operations between scalars and tensors
+- Fixed `dtype` of `cumsum` method
 
 ## 0.10.1 (2022-04-12)
 

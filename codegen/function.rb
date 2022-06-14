@@ -60,7 +60,7 @@ class Function
 
       optional = false
       if type.include?("?")
-        optional = true unless ["dtype", "device", "layout", "pin_memory"].include?(name)
+        optional = true
         type = type.delete("?")
       end
 
