@@ -7,12 +7,6 @@ $CXXFLAGS += " -D_GLIBCXX_USE_CXX11_ABI=1"
 
 apple_clang = RbConfig::CONFIG["CC_VERSION_MESSAGE"] =~ /apple clang/i
 
-# check omp first
-if have_library("omp") || have_library("gomp")
-  $CXXFLAGS += " -Xclang" if apple_clang
-  $CXXFLAGS += " -fopenmp"
-end
-
 if apple_clang
   # silence torch warnings
   $CXXFLAGS += " -Wno-deprecated-declarations"
