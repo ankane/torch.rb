@@ -156,13 +156,6 @@ class OperationsTest < Minitest::Test
     assert_match "exponential_ expects lambda >= 0.0", error.message
   end
 
-  def test_normal
-    error = assert_raises do
-      Torch.normal(Torch.zeros(3), Torch.ones(3), out: Torch.randn(2))
-    end
-    assert_match "inconsistent tensor, output size ([2]) is not the same", error.message
-  end
-
   def test_random!
     x = Torch.empty(10)
     assert x.random!.to_a.all? { |v| v >= 0 }
@@ -302,5 +295,21 @@ class OperationsTest < Minitest::Test
     assert z.neg?
     z.add!(2)
     assert_equal [1 - 0i], x.to_a
+  end
+
+  def test_clamp_dtype
+    a = Torch.tensor([1.0, 2.0, 3.0, 4.0], dtype: :float32)
+    b = Torch.tensor([2.0, 2.0, 2.0, 2.0], dtype: :float64)
+    c = Torch.tensor([3.0, 3.0, 3.0, 3.0], dtype: :float64)
+    assert_equal :float64, Torch.clamp(a, b, c).dtype
+  end
+
+  def test_complex_dtype
+    a = Torch.randn([2, 2], dtype: :float)
+    b = Torch.tensor(1, dtype: :cdouble)
+
+    # TODO fix
+    skip
+    assert_equal :complex64, (a + b).dtype
   end
 end

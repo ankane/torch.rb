@@ -83,8 +83,8 @@ struct RubyArgs {
   template<int N>
   inline std::array<at::Tensor, N> tensorlist_n(int i);
   inline std::vector<int64_t> intlist(int i);
-  // inline c10::OptionalArray<int64_t> intlistOptional(int i);
-  // inline std::vector<int64_t> intlistWithDefault(int i, std::vector<int64_t> default_intlist);
+  inline c10::OptionalArray<int64_t> intlistOptional(int i);
+  inline std::vector<int64_t> intlistWithDefault(int i, std::vector<int64_t> default_intlist);
   inline c10::optional<at::Generator> generator(int i);
   inline at::Storage storage(int i);
   inline at::ScalarType scalartype(int i);
@@ -166,8 +166,11 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
 }
 
 inline std::vector<int64_t> RubyArgs::intlist(int i) {
-  if (NIL_P(args[i])) return signature.params[i].default_intlist;
+  return intlistWithDefault(i, signature.params[i].default_intlist);
+}
 
+inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int64_t> default_intlist) {
+  if (NIL_P(args[i])) return default_intlist;
   VALUE arg = args[i];
   auto size = signature.params[i].size;
   if (size > 0 && FIXNUM_P(arg)) {
@@ -187,6 +190,11 @@ inline std::vector<int64_t> RubyArgs::intlist(int i) {
     }
   }
   return res;
+}
+
+inline c10::OptionalArray<int64_t> RubyArgs::intlistOptional(int i) {
+  if (NIL_P(args[i])) return {};
+  return intlist(i);
 }
 
 inline c10::optional<at::Generator> RubyArgs::generator(int i) {

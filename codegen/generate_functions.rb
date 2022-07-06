@@ -39,7 +39,14 @@ def skip_functions(functions)
     f.base_name == "index_put" ||
     # not supported yet
     f.func.include?("Dimname") ||
-    f.func.include?("ConstQuantizerPtr")
+    f.func.include?("ConstQuantizerPtr") ||
+    f.func.include?("SymInt") ||
+    # TODO fix LibTorch 1.12 changes
+    f.base_name == "histogramdd" ||
+    f.base_name == "nested_tensor" ||
+    f.base_name == "split_copy" ||
+    f.base_name == "split_with_sizes_copy" ||
+    f.base_name == "unbind_copy"
   end
 end
 
@@ -250,7 +257,7 @@ def generate_dispatch(function, def_method)
 
   cpp_params = generate_dispatch_params(function, params)
   if opt_index
-    cpp_params.insert(remove_self ? opt_index + 1 : opt_index, "const TensorOptions & options")
+    cpp_params.insert(remove_self ? opt_index + 1 : opt_index, "TensorOptions options")
   end
 
   retval = generate_dispatch_retval(function)
@@ -410,7 +417,7 @@ def generate_function_params(function, params, remove_self)
           else
             "optionalTensor"
           end
-        when "generator", "tensorlist", "intlist"
+        when "generator", "tensorlist"
           func
         when "string"
           "stringViewOptional"
@@ -471,7 +478,11 @@ def generate_dispatch_params(function, params)
       when "float"
         "double"
       when /\Aint\[/
-        "IntArrayRef"
+        if param[:optional]
+          "at::OptionalIntArrayRef"
+        else
+          "IntArrayRef"
+        end
       when "float[]"
         "ArrayRef<double>"
       when "str"
@@ -480,13 +491,19 @@ def generate_dispatch_params(function, params)
         else
           "std::string"
         end
-      when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
+      when "Scalar"
+        if param[:optional]
+          "const c10::optional<Scalar> &"
+        else
+          "const Scalar &"
+        end
+      when "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
         param[:type]
       else
         raise "Unknown type: #{param[:type]} (#{function.name})"
       end
 
-    if param[:optional] && param[:type] != "Tensor"
+    if param[:optional] && !["Tensor", "Scalar"].include?(param[:type]) && !param[:type].start_with?("int[")
       type = "c10::optional<#{type}>"
     end
 
@@ -529,7 +546,7 @@ def generate_dispatch_retval(function)
   when ["float", "float"]
     "std::tuple<double,double>"
   else
-    raise "Unknown retvals: #{types}"
+    raise "Unknown retvals: #{types} (#{function.name})"
   end
 end
 

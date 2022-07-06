@@ -1,3 +1,8 @@
+## 0.11.0 (unreleased)
+
+- Updated LibTorch to 1.12.0
+- Dropped support for Ruby < 2.7
+
 ## 0.10.2 (2022-06-14)
 
 - Improved numeric operations between scalars and tensors

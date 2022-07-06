@@ -249,6 +249,7 @@ module Torch
     complex_float: 9,
     complex64: 9,
     complex_double: 10,
+    cdouble: 10,
     complex128: 10,
     bool: 11,
     qint8: 12,
