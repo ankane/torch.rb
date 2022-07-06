@@ -35,6 +35,7 @@ struct FunctionParameter {
   at::SmallVector<VALUE, 5> numpy_python_names;
   at::Scalar default_scalar;
   std::vector<int64_t> default_intlist;
+  std::string default_string;
   union {
     bool default_bool;
     int64_t default_int;
@@ -108,6 +109,7 @@ struct RubyArgs {
   inline c10::optional<at::MemoryFormat> memoryformatOptional(int i);
   // inline at::QScheme toQScheme(int i);
   inline std::string string(int i);
+  inline std::string stringWithDefault(int i, const std::string& default_str);
   inline c10::optional<std::string> stringOptional(int i);
   inline c10::string_view stringView(int i);
   // inline c10::string_view stringViewWithDefault(int i, const c10::string_view default_str);
@@ -345,6 +347,11 @@ inline c10::optional<at::MemoryFormat> RubyArgs::memoryformatOptional(int i) {
 }
 
 inline std::string RubyArgs::string(int i) {
+  return stringWithDefault(i, signature.params[i].default_string);
+}
+
+inline std::string RubyArgs::stringWithDefault(int i, const std::string& default_str) {
+  if (!args[i]) return default_str;
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 

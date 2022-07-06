@@ -177,11 +177,6 @@ module Torch
       _random!(*args)
     end
 
-    # center option
-    def stft(*args)
-      Torch.stft(*args)
-    end
-
     def dup
       Torch.no_grad do
         clone

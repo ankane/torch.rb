@@ -128,8 +128,11 @@ def write_body(type, method_defs, attach_defs)
 end
 
 def write_file(name, contents)
-  path = File.expand_path("../ext/torch", __dir__)
-  File.write(File.join(path, name), contents)
+  path = File.join(File.expand_path("../ext/torch", __dir__), name)
+  # only write if changed to improve compile times in development
+  if !File.exist?(path) || File.read(path) != contents
+    File.write(path, contents)
+  end
 end
 
 def generate_attach_def(name, type, def_method)
@@ -142,7 +145,7 @@ def generate_attach_def(name, type, def_method)
       name
     end
 
-  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
+  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!"].include?(ruby_name)
   ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
   ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"

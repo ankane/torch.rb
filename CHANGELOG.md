@@ -1,3 +1,7 @@
+## 0.11.1 (unreleased)
+
+- Fixed error with `stft` method
+
 ## 0.11.0 (2022-07-06)
 
 - Updated LibTorch to 1.12.0
