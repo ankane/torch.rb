@@ -2,11 +2,15 @@ require_relative "test_helper"
 
 class TorchTest < Minitest::Test
   def test_show_config
-    assert_match "PyTorch built with:", Torch.show_config
+    config = Torch.show_config
+    assert_match "PyTorch built with:", config
+    assert_match "USE_OPENMP=ON", config
   end
 
   def test_parallel_info
-    assert_match "ATen/Parallel:", Torch.parallel_info
+    info = Torch.parallel_info
+    assert_match "ATen/Parallel:", info
+    assert_match "ATen parallel backend: OpenMP", info
   end
 
   def test_tutorial
