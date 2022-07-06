@@ -152,7 +152,7 @@ def generate_attach_def(name, type, def_method)
   ruby_name = ruby_name.sub(/\Asparse_/, "") if type == "sparse"
   ruby_name = name if name.start_with?("__")
 
-  # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
+  # cast for Ruby < 3.0 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
   cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
 
   "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name(name, type)}, -1);"
