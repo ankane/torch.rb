@@ -1,4 +1,4 @@
-## 0.11.1 (unreleased)
+## 0.11.1 (2022-07-06)
 
 - Fixed error with `stft` method
 
