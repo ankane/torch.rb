@@ -18,9 +18,19 @@ else
   $CXXFLAGS += " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
 
+paths = [
+  "/usr/local",
+  "/opt/homebrew",
+  "/home/linuxbrew/.linuxbrew"
+]
+
 inc, lib = dir_config("torch")
-inc ||= "/usr/local/include"
-lib ||= "/usr/local/lib"
+inc ||= paths.map { |v| "#{v}/include" }.find { |v| Dir.exist?("#{v}/torch") }
+lib ||= paths.map { |v| "#{v}/lib" }.find { |v| Dir["#{v}/*torch_cpu*"].any? }
+
+unless inc && lib
+  abort "LibTorch not found"
+end
 
 cuda_inc, cuda_lib = dir_config("cuda")
 cuda_inc ||= "/usr/local/cuda/include"

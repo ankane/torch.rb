@@ -1,3 +1,7 @@
+## 0.11.2 (unreleased)
+
+- Improved LibTorch detection for Homebrew on Mac ARM and Linux
+
 ## 0.11.1 (2022-07-06)
 
 - Fixed error with `stft` method
