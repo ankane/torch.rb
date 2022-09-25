@@ -428,20 +428,6 @@ You can also use Homebrew.
 brew install libtorch
 ```
 
-For Mac ARM, run:
-
-```sh
-bundle config build.torch-rb --with-torch-dir=/opt/homebrew
-```
-
-And for Linux, run:
-
-```sh
-bundle config build.torch-rb --with-torch-dir=/home/linuxbrew/.linuxbrew
-```
-
-Then install the gem.
-
 ## Performance
 
 Deep learning is significantly faster on a GPU. With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
