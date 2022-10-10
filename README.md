@@ -13,10 +13,10 @@ Check out:
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). For Homebrew, use:
+First, [install LibTorch](#libtorch-installation). For Homebrew, it’s part of the PyTorch package:
 
 ```sh
-brew install libtorch
+brew install pytorch
 ```
 
 Add this line to your application’s Gemfile:
@@ -425,7 +425,7 @@ Torch.rb | LibTorch
 You can also use Homebrew.
 
 ```sh
-brew install libtorch
+brew install pytorch
 ```
 
 ## Performance
