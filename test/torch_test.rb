@@ -4,13 +4,19 @@ class TorchTest < Minitest::Test
   def test_show_config
     config = Torch.show_config
     assert_match "PyTorch built with:", config
-    assert_match "USE_OPENMP=ON", config
+    # pre-built Mac library has
+    # OpenMP disabled in include/ATen/Config.h
+    # starting with LibTorch 1.13.0
+    assert_match "USE_OPENMP=ON", config unless mac?
   end
 
   def test_parallel_info
     info = Torch.parallel_info
     assert_match "ATen/Parallel:", info
-    assert_match "ATen parallel backend: OpenMP", info
+    # pre-built Mac library has
+    # OpenMP disabled in include/ATen/Config.h
+    # starting with LibTorch 1.13.0
+    assert_match "ATen parallel backend: OpenMP", info unless mac?
   end
 
   def test_tutorial

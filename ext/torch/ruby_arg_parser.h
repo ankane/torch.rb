@@ -11,9 +11,9 @@
 #include "utils.h"
 
 enum class ParameterType {
-  TENSOR, SCALAR, INT64, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
-  BOOL, STORAGE, PYOBJECT, SCALARTYPE, LAYOUT, MEMORY_FORMAT, DEVICE, STRING,
-  DIMNAME, DIMNAME_LIST, QSCHEME, FLOAT_LIST
+  TENSOR, SCALAR, INT64, SYM_INT, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
+  BOOL, STORAGE, PYOBJECT, SCALARTYPE, LAYOUT, MEMORY_FORMAT, DEVICE, STREAM, STRING,
+  DIMNAME, DIMNAME_LIST, QSCHEME, FLOAT_LIST, SCALAR_LIST, SYM_INT_LIST
 };
 
 struct FunctionParameter {
@@ -84,7 +84,9 @@ struct RubyArgs {
   template<int N>
   inline std::array<at::Tensor, N> tensorlist_n(int i);
   inline std::vector<int64_t> intlist(int i);
+  inline std::vector<c10::SymInt> symintlist(int i);
   inline c10::OptionalArray<int64_t> intlistOptional(int i);
+  inline c10::OptionalArray<c10::SymInt> symintlistOptional(int i);
   inline std::vector<int64_t> intlistWithDefault(int i, std::vector<int64_t> default_intlist);
   inline c10::optional<at::Generator> generator(int i);
   inline at::Storage storage(int i);
@@ -93,6 +95,7 @@ struct RubyArgs {
   inline c10::optional<at::ScalarType> scalartypeOptional(int i);
   inline c10::optional<at::Scalar> scalarOptional(int i);
   inline c10::optional<int64_t> toInt64Optional(int i);
+  inline c10::optional<c10::SymInt> toSymIntOptional(int i);
   inline c10::optional<bool> toBoolOptional(int i);
   inline c10::optional<double> toDoubleOptional(int i);
   inline c10::OptionalArray<double> doublelistOptional(int i);
@@ -116,6 +119,7 @@ struct RubyArgs {
   inline c10::optional<c10::string_view> stringViewOptional(int i);
   // inline PyObject* pyobject(int i);
   inline int64_t toInt64(int i);
+  inline c10::SymInt toSymInt(int i);
   // inline int64_t toInt64WithDefault(int i, int64_t default_int);
   inline double toDouble(int i);
   // inline double toDoubleWithDefault(int i, double default_double);
@@ -171,6 +175,19 @@ inline std::vector<int64_t> RubyArgs::intlist(int i) {
   return intlistWithDefault(i, signature.params[i].default_intlist);
 }
 
+inline std::vector<c10::SymInt> RubyArgs::symintlist(int i) {
+  if (NIL_P(args[i])) {
+    return c10::fmap(signature.params[i].default_intlist, [](int64_t di) {
+      return c10::SymInt(di);
+    });
+  }
+
+  // TODO improve
+  return c10::fmap(intlist(i), [](int64_t di) {
+    return c10::SymInt(di);
+  });
+}
+
 inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int64_t> default_intlist) {
   if (NIL_P(args[i])) return default_intlist;
   VALUE arg = args[i];
@@ -197,6 +214,11 @@ inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int6
 inline c10::OptionalArray<int64_t> RubyArgs::intlistOptional(int i) {
   if (NIL_P(args[i])) return {};
   return intlist(i);
+}
+
+inline c10::OptionalArray<c10::SymInt> RubyArgs::symintlistOptional(int i) {
+  if (NIL_P(args[i])) return {};
+  return symintlist(i);
 }
 
 inline c10::optional<at::Generator> RubyArgs::generator(int i) {
@@ -268,6 +290,11 @@ inline c10::optional<Scalar> RubyArgs::scalarOptional(int i) {
 inline c10::optional<int64_t> RubyArgs::toInt64Optional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
   return toInt64(i);
+}
+
+inline c10::optional<c10::SymInt> RubyArgs::toSymIntOptional(int i) {
+  if (NIL_P(args[i])) return c10::nullopt;
+  return toSymInt(i);
 }
 
 inline c10::optional<bool> RubyArgs::toBoolOptional(int i) {
@@ -374,6 +401,15 @@ inline c10::optional<c10::string_view> RubyArgs::stringViewOptional(int i) {
 inline int64_t RubyArgs::toInt64(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_int;
   return Rice::detail::From_Ruby<int64_t>().convert(args[i]);
+}
+
+inline c10::SymInt RubyArgs::toSymInt(int i) {
+  if (NIL_P(args[i])) {
+    return c10::SymInt(signature.params[i].default_int);
+  }
+
+  // TODO improve
+  return c10::SymInt(toInt64(i));
 }
 
 inline double RubyArgs::toDouble(int i) {

@@ -1,3 +1,7 @@
+## 0.12.0 (unreleased)
+
+- Updated LibTorch to 1.13.0
+
 ## 0.11.2 (2022-09-25)
 
 - Improved LibTorch detection for Homebrew on Mac ARM and Linux

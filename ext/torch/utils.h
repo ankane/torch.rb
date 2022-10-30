@@ -6,7 +6,7 @@
 #include <rice/stl.hpp>
 
 static_assert(
-  TORCH_VERSION_MAJOR == 1 && TORCH_VERSION_MINOR == 12,
+  TORCH_VERSION_MAJOR == 1 && TORCH_VERSION_MINOR == 13,
   "Incompatible LibTorch version"
 );
 
@@ -33,6 +33,10 @@ inline bool THPUtils_checkSymbol(VALUE obj) {
 }
 
 inline bool THPUtils_checkIndex(VALUE obj) {
+  return FIXNUM_P(obj);
+}
+
+inline bool THPUtils_checkLong(VALUE obj) {
   return FIXNUM_P(obj);
 }
 

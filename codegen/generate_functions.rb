@@ -15,6 +15,7 @@ def generate_functions
   generate_files("linalg", :define_singleton_method, functions[:linalg])
   generate_files("special", :define_singleton_method, functions[:special])
   generate_files("sparse", :define_singleton_method, functions[:sparse])
+  # TODO generate nested
 end
 
 def load_functions
@@ -40,13 +41,14 @@ def skip_functions(functions)
     # not supported yet
     f.func.include?("Dimname") ||
     f.func.include?("ConstQuantizerPtr") ||
-    f.func.include?("SymInt") ||
     # TODO fix LibTorch 1.12 changes
     f.base_name == "histogramdd" ||
     f.base_name == "nested_tensor" ||
     f.base_name == "split_copy" ||
     f.base_name == "split_with_sizes_copy" ||
-    f.base_name == "unbind_copy"
+    f.base_name == "unbind_copy" ||
+    # TODO fix LibTorch 1.13 changes
+    f.base_name == "native_channel_shuffle"
   end
 end
 
@@ -56,6 +58,7 @@ def group_functions(functions)
   fft_functions, other_functions = other_functions.partition { |f| f.python_module == "fft" }
   special_functions, other_functions = other_functions.partition { |f| f.python_module == "special" }
   sparse_functions, other_functions = other_functions.partition { |f| f.python_module == "sparse" }
+  nested_functions, other_functions = other_functions.partition { |f| f.python_module == "nested" }
   unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
@@ -72,7 +75,8 @@ def group_functions(functions)
     linalg: linalg_functions,
     fft: fft_functions,
     special: special_functions,
-    sparse: sparse_functions
+    sparse: sparse_functions,
+    nested: nested_functions
   }
 end
 
@@ -387,6 +391,8 @@ def generate_function_params(function, params, remove_self)
         "scalarlist"
       when /\Aint\[/
         "intlist"
+      when /\ASymInt\[/
+        "symintlist"
       when "float[]"
         "doublelist"
       when "Scalar"
@@ -395,6 +401,8 @@ def generate_function_params(function, params, remove_self)
         "toBool"
       when "int"
         "toInt64"
+      when "SymInt"
+        "toSymInt"
       when "float"
         "toDouble"
       when "ScalarType"
@@ -437,7 +445,12 @@ def generate_dispatch_code(function, def_method, params, opt_index, remove_self)
   # torch::empty sets requires_grad by at::empty doesn't
   # https://github.com/pytorch/pytorch/issues/36455
   prefix = remove_self ? "self." : (opt_index ? "torch::" : "at::")
-  dispatch = function.out? ? "#{function.base_name}_out" : function.base_name
+  dispatch = function.dispatch_name
+  unless dispatch
+    dispatch = function.base_name
+    dispatch += "_symint" if function.func.include?("SymInt")
+    dispatch += "_out" if function.out?
+  end
 
   params = params.map { |v| v[:name] }
   params.reject! { |v| v == "self" } if remove_self
@@ -478,6 +491,8 @@ def generate_dispatch_params(function, params)
         "ScalarList"
       when "int"
         "int64_t"
+      when "SymInt"
+        "c10::SymInt"
       when "float"
         "double"
       when /\Aint\[/
@@ -485,6 +500,12 @@ def generate_dispatch_params(function, params)
           "at::OptionalIntArrayRef"
         else
           "IntArrayRef"
+        end
+      when /\ASymInt\[/
+        if param[:optional]
+          "at::OptionalSymIntArrayRef"
+        else
+          "c10::SymIntArrayRef"
         end
       when "float[]"
         "ArrayRef<double>"
@@ -506,7 +527,7 @@ def generate_dispatch_params(function, params)
         raise "Unknown type: #{param[:type]} (#{function.name})"
       end
 
-    if param[:optional] && !["Tensor", "Scalar"].include?(param[:type]) && !param[:type].start_with?("int[")
+    if param[:optional] && !["Tensor", "Scalar"].include?(param[:type]) && !param[:type].start_with?("int[") && !param[:type].start_with?("SymInt[")
       type = "c10::optional<#{type}>"
     end
 
@@ -614,8 +635,12 @@ def signature_type(param)
       "DirnameList"
     when /\Aint\[\d*\]\z/
       "IntArrayRef"
+    when /\ASymInt\[\d*\]\z/
+      "SymIntArrayRef"
     when "int"
       "int64_t"
+    when "SymInt"
+      "c10::SymInt"
     when "float"
       "double"
     when "str"
