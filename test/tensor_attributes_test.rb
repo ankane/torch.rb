@@ -11,8 +11,7 @@ class TensorAttributesTest < Minitest::Test
   def test_dtype
     %i(uint8 int8 int16 int32 int64 float32 float64).each do |dtype|
       x = Torch.tensor([1, 2, 3], dtype: dtype)
-      assert_equal dtype, x.dtype
-      assert_equal [1, 2, 3], x.to_a
+      assert_tensor [1, 2, 3], x, dtype: dtype
     end
   end
 
@@ -20,15 +19,13 @@ class TensorAttributesTest < Minitest::Test
     # TODO support complex32
     %i(complex64 complex128).each do |dtype|
       x = Torch.tensor([1i, 2+3i], dtype: dtype)
-      assert_equal dtype, x.dtype
-      assert_equal [1i, 2+3i], x.to_a
+      assert_tensor [1i, 2+3i], x, dtype: dtype
     end
   end
 
   def test_dtype_bool
     x = Torch.tensor([false, true, false])
-    assert_equal :bool, x.dtype
-    assert_equal [false, true, false], x.to_a
+    assert_tensor [false, true, false], x, dtype: :bool
   end
 
   def test_dtype_default
@@ -71,7 +68,7 @@ class TensorAttributesTest < Minitest::Test
     %i(strided).each do |layout|
       x = Torch.tensor([1, 2, 3], layout: layout)
       assert_equal layout, x.layout
-      assert_equal [1, 2, 3], x.to_a
+      assert_tensor [1, 2, 3], x
     end
   end
 
@@ -165,6 +162,6 @@ class TensorAttributesTest < Minitest::Test
   # TODO raise error
   def test_inconsistent_dimensions_correct_size
     x = Torch.tensor([[1, 2], [3], [4, 5, 6]])
-    assert_equal [[1, 2], [3, 4], [5, 6]], x.to_a
+    assert_tensor [[1, 2], [3, 4], [5, 6]], x
   end
 end
