@@ -21,24 +21,23 @@ class TensorCreationTest < Minitest::Test
   end
 
   def test_eye
-    assert_equal [[1, 0], [0, 1]], Torch.eye(2).to_a
-    assert_equal [[1, 0, 0], [0, 1, 0]], Torch.eye(2, 3).to_a
-    assert_equal :float32, Torch.eye(2).dtype
+    assert_tensor [[1, 0], [0, 1]], Torch.eye(2), dtype: :float32
+    assert_tensor [[1, 0, 0], [0, 1, 0]], Torch.eye(2, 3)
   end
 
   def test_full
-    assert_equal [[5, 5, 5], [5, 5, 5]], Torch.full([2, 3], 5, dtype: :long).to_a
+    assert_tensor [[5, 5, 5], [5, 5, 5]], Torch.full([2, 3], 5, dtype: :long)
   end
 
   def test_full_like
     input = Torch.empty(2, 3)
-    assert_equal [[5, 5, 5], [5, 5, 5]], Torch.full_like(input, 5).to_a
+    assert_tensor [[5, 5, 5], [5, 5, 5]], Torch.full_like(input, 5)
   end
 
   def test_linspace
-    assert_equal [3, 4.75, 6.5, 8.25, 10], Torch.linspace(3, 10, 5).to_a
-    assert_equal [-10, -5, 0, 5, 10], Torch.linspace(-10, 10, 5).to_a
-    assert_equal [-10], Torch.linspace(-10, 10, 1).to_a
+    assert_tensor [3, 4.75, 6.5, 8.25, 10], Torch.linspace(3, 10, 5)
+    assert_tensor [-10, -5, 0, 5, 10], Torch.linspace(-10, 10, 5)
+    assert_tensor [-10], Torch.linspace(-10, 10, 1)
   end
 
   def test_logspace

@@ -3,12 +3,12 @@ require_relative "test_helper"
 class FFTTest < Minitest::Test
   def test_fft
     t = Torch.arange(4)
-    assert_equal [6, -2+2i, -2, -2-2i], Torch::FFT.fft(t).to_a
+    assert_tensor [6, -2+2i, -2, -2-2i], Torch::FFT.fft(t)
   end
 
   def test_ifft
     t = Torch.tensor([6, -2+2i, -2, -2-2i])
-    assert_equal [0, 1, 2, 3], Torch::FFT.ifft(t).to_a
+    assert_tensor [0, 1, 2, 3], Torch::FFT.ifft(t)
   end
 
   def test_ifft2
@@ -31,14 +31,14 @@ class FFTTest < Minitest::Test
 
   def test_rfft
     t = Torch.arange(4)
-    assert_equal [6, -2+2i, -2], Torch::FFT.rfft(t).to_a
+    assert_tensor [6, -2+2i, -2], Torch::FFT.rfft(t)
   end
 
   def test_irfft
     t = Torch.arange(5)
     t2 = Torch::FFT.rfft(t)
-    assert_elements_in_delta [0.6250, 1.4045, 3.1250, 4.8455], Torch::FFT.irfft(t2).to_a
-    assert_elements_in_delta [0, 1, 2, 3, 4], Torch::FFT.irfft(t2, t.numel).to_a
+    assert_tensor [0.6250, 1.4045, 3.1250, 4.8455], Torch::FFT.irfft(t2)
+    assert_tensor [0, 1, 2, 3, 4], Torch::FFT.irfft(t2, t.numel)
   end
 
   def test_rfft2
@@ -66,7 +66,7 @@ class FFTTest < Minitest::Test
 
   def test_ihfft
     t = Torch.arange(5)
-    assert_elements_in_delta [2, -0.5-0.6882i, -0.5-0.1625i], Torch::FFT.ihfft(t).to_a
+    assert_tensor [2, -0.5-0.6882i, -0.5-0.1625i], Torch::FFT.ihfft(t)
   end
 
   def test_fftfreq
@@ -80,10 +80,10 @@ class FFTTest < Minitest::Test
   def test_fftshift
     _f = Torch::FFT.fftfreq(4)
     # TODO fix
-    # assert_elements_in_delta [-0.5, -0.25,  0,  0.25], Torch::FFT.fftshift(f).to_a
+    # assert_tensor [-0.5, -0.25,  0,  0.25], Torch::FFT.fftshift(f)
   end
 
   def test_ifftshift
-    assert_elements_in_delta [0, 0.2, 0.4, -0.4, -0.2], Torch::FFT.fftfreq(5).to_a
+    assert_tensor [0, 0.2, 0.4, -0.4, -0.2], Torch::FFT.fftfreq(5)
   end
 end

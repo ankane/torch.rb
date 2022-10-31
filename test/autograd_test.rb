@@ -7,7 +7,7 @@ class AutogradTest < Minitest::Test
     z = y * y * 3
     out = z.mean
     out.backward
-    assert_equal [[4.5, 4.5], [4.5, 4.5]], x.grad.to_a
+    assert_tensor [[4.5, 4.5], [4.5, 4.5]], x.grad
   end
 
   def test_example_backward
@@ -64,7 +64,7 @@ class AutogradTest < Minitest::Test
     stress_gc do
       x.grad = Torch.tensor([1, 1, 1])
     end
-    assert_equal [1, 1, 1], x.grad.to_a
+    assert_tensor [1, 1, 1], x.grad
   end
 
   def test_set_grad_nil

@@ -3,14 +3,14 @@ require_relative "test_helper"
 class ArgParserTest < Minitest::Test
   def test_works
     x = Torch.tensor([1.0, 2, -3])
-    assert_equal [1, 2, 3], Torch.abs(x).to_a
+    assert_tensor [1, 2, 3], Torch.abs(x)
   end
 
   def test_out_works
     x = Torch.tensor([1.0, 2, -3])
     out = Torch.empty(3)
     Torch.abs(x, out: out)
-    assert_equal [1, 2, 3], out.to_a
+    assert_tensor [1, 2, 3], out
   end
 
   def test_too_few_arguments
