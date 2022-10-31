@@ -13,7 +13,7 @@ Check out:
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). For Homebrew, it’s part of the PyTorch package:
+First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
 
 ```sh
 brew install pytorch
