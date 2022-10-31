@@ -274,6 +274,12 @@ class OperationsTest < Minitest::Test
     assert_elements_in_delta [2.0, -1.0], Torch.div(a, b, rounding_mode: "trunc").to_a
   end
 
+  # TODO raise
+  # RuntimeError: value cannnot be converted to type int8 without overflow
+  def test_tensor_overflow
+    assert_equal [-24], Torch.tensor(1000, dtype: :int8).to_a
+  end
+
   def test_left_shift
     assert_equal [128], (Torch.tensor([64]) << 1).to_a
   end
