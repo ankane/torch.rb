@@ -2,10 +2,9 @@ require_relative "test_helper"
 
 class TensorCreationTest < Minitest::Test
   def test_arange
-    assert_equal [0, 1, 2, 3, 4], Torch.arange(5).to_a
-    assert_equal [1, 2, 3], Torch.arange(1, 4).to_a
-    assert_equal [1, 1.5, 2], Torch.arange(1, 2.5, 0.5).to_a
-    assert_equal :int64, Torch.arange(5).dtype
+    assert_tensor [0, 1, 2, 3, 4], Torch.arange(5), dtype: :int64
+    assert_tensor [1, 2, 3], Torch.arange(1, 4)
+    assert_tensor [1, 1.5, 2], Torch.arange(1, 2.5, 0.5)
   end
 
   def test_empty
@@ -41,20 +40,20 @@ class TensorCreationTest < Minitest::Test
   end
 
   def test_logspace
-    assert_elements_in_delta [1e-10, 1e-5, 1, 1e5, 1e10], Torch.logspace(-10, 10, 5).to_a
-    assert_elements_in_delta [1.2589, 2.1135, 3.5481, 5.9566, 10.0000], Torch.logspace(0.1, 1.0, 5).to_a
-    assert_elements_in_delta [1.2589], Torch.logspace(0.1, 1.0, 1).to_a
-    assert_elements_in_delta [4], Torch.logspace(2, 2, 1, 2).to_a
+    assert_tensor [1e-10, 1e-5, 1, 1e5, 1e10], Torch.logspace(-10, 10, 5)
+    assert_tensor [1.2589, 2.1135, 3.5481, 5.9566, 10.0000], Torch.logspace(0.1, 1.0, 5)
+    assert_tensor [1.2589], Torch.logspace(0.1, 1.0, 1)
+    assert_tensor [4], Torch.logspace(2, 2, 1, 2)
   end
 
   def test_ones
-    assert_equal [[1, 1, 1], [1, 1, 1]], Torch.ones(2, 3).to_a
-    assert_equal [1, 1, 1, 1, 1], Torch.ones(5).to_a
+    assert_tensor [[1, 1, 1], [1, 1, 1]], Torch.ones(2, 3)
+    assert_tensor [1, 1, 1, 1, 1], Torch.ones(5)
   end
 
   def test_ones_like
     input = Torch.empty(2, 3)
-    assert_equal [[1, 1, 1], [1, 1, 1]], Torch.ones_like(input).to_a
+    assert_tensor [[1, 1, 1], [1, 1, 1]], Torch.ones_like(input)
   end
 
   def test_rand
@@ -94,13 +93,13 @@ class TensorCreationTest < Minitest::Test
   end
 
   def test_zeros
-    assert_equal [[0, 0, 0], [0, 0, 0]], Torch.zeros(2, 3).to_a
-    assert_equal [0, 0, 0, 0, 0], Torch.zeros(5).to_a
+    assert_tensor [[0, 0, 0], [0, 0, 0]], Torch.zeros(2, 3)
+    assert_tensor [0, 0, 0, 0, 0], Torch.zeros(5)
   end
 
   def test_zeros_like
     input = Torch.empty(2, 3)
-    assert_equal [[0, 0, 0], [0, 0, 0]], Torch.zeros_like(input).to_a
+    assert_tensor [[0, 0, 0], [0, 0, 0]], Torch.zeros_like(input)
   end
 
   def test_like_type
