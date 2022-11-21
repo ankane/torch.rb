@@ -7,30 +7,30 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - ruby: 3.1
-          os: ubuntu-22.04
-        - ruby: "3.0"
-          os: ubuntu-20.04
-        - ruby: 2.7
-          os: ubuntu-18.04
+          - ruby: 3.1
+            os: ubuntu-22.04
+          - ruby: "3.0"
+            os: ubuntu-20.04
+          - ruby: 2.7
+            os: ubuntu-18.04
     env:
       LIBTORCH_VERSION: 1.13.0
     steps:
-    - uses: actions/checkout@v3
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - uses: actions/cache@v3
-      with:
-        path: ~/libtorch
-        key: libtorch-${{ env.LIBTORCH_VERSION }}
-      id: cache-libtorch
-    - name: Download LibTorch
-      if: steps.cache-libtorch.outputs.cache-hit != 'true'
-      run: |
-        cd ~
-        wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
-        unzip -q libtorch.zip
-    - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
-    - run: bundle exec rake test
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - uses: actions/cache@v3
+        with:
+          path: ~/libtorch
+          key: libtorch-${{ env.LIBTORCH_VERSION }}
+        id: cache-libtorch
+      - name: Download LibTorch
+        if: steps.cache-libtorch.outputs.cache-hit != 'true'
+        run: |
+          cd ~
+          wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
+          unzip -q libtorch.zip
+      - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
+      - run: bundle exec rake test
