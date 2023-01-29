@@ -11,6 +11,15 @@ class GeneratorTest < Minitest::Test
     assert_kind_of Integer, g.seed
   end
 
+  def test_state
+    g = Torch::Generator.new
+    g2 = Torch::Generator.new
+    state = g.state
+    assert_kind_of Torch::Tensor, state
+    g2.state = state
+    assert_equal g2.initial_seed, g.initial_seed
+  end
+
   def test_multinomial
     g = Torch::Generator.new.manual_seed(2147483647)
     t = Torch.tensor([0.2, 0.6, 0.2])
