@@ -15,6 +15,11 @@ void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator) {
         return torch::make_generator<torch::CPUGeneratorImpl>();
       })
     .define_method(
+      "device",
+      [](torch::Generator& self) {
+        return self.device();
+      })
+    .define_method(
       "initial_seed",
       [](torch::Generator& self) {
         return self.current_seed();
