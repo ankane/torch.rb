@@ -2,6 +2,7 @@
 
 #include "ruby_arg_parser.h"
 
+VALUE THPGeneratorClass = Qnil;
 VALUE THPVariableClass = Qnil;
 
 static std::unordered_map<std::string, ParameterType> type_map = {
@@ -244,7 +245,7 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
       return size > 0 && FIXNUM_P(obj);
     }
     case ParameterType::FLOAT_LIST: return (RB_TYPE_P(obj, T_ARRAY));
-    case ParameterType::GENERATOR: return false; // return THPGenerator_Check(obj);
+    case ParameterType::GENERATOR: return THPGenerator_Check(obj);
     case ParameterType::BOOL: return obj == Qtrue || obj == Qfalse;
     case ParameterType::STORAGE: return false; // return isStorage(obj);
     // case ParameterType::PYOBJECT: return true;

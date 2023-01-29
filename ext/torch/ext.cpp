@@ -12,6 +12,7 @@ void init_torch(Rice::Module& m);
 void init_backends(Rice::Module& m);
 void init_cuda(Rice::Module& m);
 void init_device(Rice::Module& m);
+void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator);
 void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
 void init_random(Rice::Module& m);
 
@@ -23,6 +24,7 @@ void Init_ext()
   // need to define certain classes up front to keep Rice happy
   auto rb_cIValue = Rice::define_class_under<torch::IValue>(m, "IValue")
     .define_constructor(Rice::Constructor<torch::IValue>());
+  auto rb_cGenerator = Rice::define_class_under<torch::Generator>(m, "Generator");
   auto rb_cTensor = Rice::define_class_under<torch::Tensor>(m, "Tensor");
   auto rb_cTensorOptions = Rice::define_class_under<torch::TensorOptions>(m, "TensorOptions")
     .define_constructor(Rice::Constructor<torch::TensorOptions>());
@@ -38,6 +40,7 @@ void Init_ext()
   init_backends(m);
   init_cuda(m);
   init_device(m);
+  init_generator(m, rb_cGenerator);
   init_ivalue(m, rb_cIValue);
   init_random(m);
 }

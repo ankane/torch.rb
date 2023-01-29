@@ -1,3 +1,7 @@
+## 0.12.1 (unreleased)
+
+- Added `Generator` class
+
 ## 0.12.0 (2022-11-05)
 
 - Updated LibTorch to 1.13.0

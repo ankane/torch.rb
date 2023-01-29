@@ -17,6 +17,7 @@ inline void handle_error(torch::Error const & ex) {
 
 // keep THP prefix for now to make it easier to compare code
 
+extern VALUE THPGeneratorClass;
 extern VALUE THPVariableClass;
 
 inline VALUE THPUtils_internSymbol(const std::string& str) {
@@ -42,6 +43,10 @@ inline bool THPUtils_checkLong(VALUE obj) {
 
 inline bool THPUtils_checkScalar(VALUE obj) {
   return FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj) || RB_TYPE_P(obj, T_COMPLEX);
+}
+
+inline bool THPGenerator_Check(VALUE obj) {
+  return rb_obj_is_kind_of(obj, THPGeneratorClass);
 }
 
 inline bool THPVariable_Check(VALUE obj) {

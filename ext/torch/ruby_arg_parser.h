@@ -223,7 +223,7 @@ inline c10::OptionalArray<c10::SymInt> RubyArgs::symintlistOptional(int i) {
 
 inline c10::optional<at::Generator> RubyArgs::generator(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
-  throw std::runtime_error("generator not supported yet");
+  return Rice::detail::From_Ruby<torch::Generator>().convert(args[i]);
 }
 
 inline at::Storage RubyArgs::storage(int i) {
