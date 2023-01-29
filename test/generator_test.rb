@@ -1,6 +1,11 @@
 require_relative "test_helper"
 
 class GeneratorTest < Minitest::Test
+  def test_initial_seed
+    g = Torch::Generator.new
+    assert_kind_of Integer, g.initial_seed
+  end
+
   def test_seed
     g = Torch::Generator.new
     assert_kind_of Integer, g.seed
