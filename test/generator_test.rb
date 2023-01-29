@@ -1,6 +1,11 @@
 require_relative "test_helper"
 
 class GeneratorTest < Minitest::Test
+  def test_seed
+    g = Torch::Generator.new
+    assert_kind_of Integer, g.seed
+  end
+
   def test_multinomial
     g = Torch::Generator.new.manual_seed(2147483647)
     t = Torch.tensor([0.2, 0.6, 0.2])

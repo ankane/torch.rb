@@ -19,6 +19,11 @@ void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator) {
       [](torch::Generator& self, uint64_t seed) {
         self.set_current_seed(seed);
         return self;
+      })
+    .define_method(
+      "seed",
+      [](torch::Generator& self) {
+        return self.seed();
       });
 
   THPGeneratorClass = rb_cGenerator.value();
