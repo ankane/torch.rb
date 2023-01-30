@@ -1,4 +1,4 @@
-## 0.12.1 (unreleased)
+## 0.12.1 (2023-01-29)
 
 - Added `Generator` class
 
