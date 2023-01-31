@@ -1,3 +1,7 @@
+## 0.12.2 (unreleased)
+
+- Added experimental support for DataPipes
+
 ## 0.12.1 (2023-01-29)
 
 - Added `Generator` class
