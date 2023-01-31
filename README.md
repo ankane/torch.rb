@@ -8,6 +8,7 @@ Check out:
 - [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
 - [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
+- [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
 
 [![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
 
