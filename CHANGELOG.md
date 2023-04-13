@@ -1,4 +1,4 @@
-## 0.13.0 (unreleased)
+## 0.13.0 (2023-04-13)
 
 - Updated LibTorch to 2.0.0
 - Dropped support for Ruby < 3
