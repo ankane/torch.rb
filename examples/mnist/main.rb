@@ -81,8 +81,15 @@ seed = 1
 
 Torch.manual_seed(seed)
 
-use_cuda = Torch::CUDA.available?
-device = Torch.device(use_cuda ? "cuda" : "cpu")
+device_type =
+  if Torch::CUDA.available?
+    "cuda"
+  elsif Torch::Backends::MPS.available?
+    "mps"
+  else
+    "cpu"
+  end
+device = Torch.device(device_type)
 puts "Device type: #{device.type}"
 
 root = File.join(__dir__, "data")

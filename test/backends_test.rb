@@ -8,4 +8,8 @@ class BackendsTest < Minitest::Test
   def test_mkl
     Torch::Backends::MKL.available?
   end
+
+  def test_mps
+    Torch::Backends::MPS.available?
+  end
 end
