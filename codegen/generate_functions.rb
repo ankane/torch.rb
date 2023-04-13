@@ -415,6 +415,8 @@ def generate_function_params(function, params, remove_self)
         "memoryformat"
       when "Storage"
         "storage"
+      when "Layout"
+        "layout"
       else
         raise "Unknown type: #{param[:type]} (#{function.name})"
       end
@@ -445,7 +447,7 @@ def generate_dispatch_code(function, def_method, params, opt_index, remove_self)
   # torch::empty sets requires_grad by at::empty doesn't
   # https://github.com/pytorch/pytorch/issues/36455
   prefix = remove_self ? "self." : (opt_index ? "torch::" : "at::")
-  dispatch = function.dispatch_name
+  dispatch = nil # function.dispatch_name
   unless dispatch
     dispatch = function.base_name
     dispatch += "_symint" if function.func.include?("SymInt")
@@ -640,7 +642,7 @@ def signature_type(param)
     when "int"
       "int64_t"
     when "SymInt"
-      "c10::SymInt"
+      "SymInt"
     when "float"
       "double"
     when "str"

@@ -1,3 +1,8 @@
+## 0.13.0 (unreleased)
+
+- Updated LibTorch to 2.0.0
+- Dropped support for Ruby < 3
+
 ## 0.12.2 (2023-01-30)
 
 - Added experimental support for DataPipes

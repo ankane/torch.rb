@@ -35,17 +35,17 @@ std::vector<TensorIndex> index_vector(Array a) {
     if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(Rice::detail::From_Ruby<int64_t>().convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
-      torch::optional<int64_t> start_index = torch::nullopt;
-      torch::optional<int64_t> stop_index = torch::nullopt;
+      torch::optional<c10::SymInt> start_index = torch::nullopt;
+      torch::optional<c10::SymInt> stop_index = torch::nullopt;
 
       Object begin = obj.call("begin");
       if (!begin.is_nil()) {
-        start_index = Rice::detail::From_Ruby<int64_t>().convert(begin.value());
+        start_index = c10::SymInt(Rice::detail::From_Ruby<int64_t>().convert(begin.value()));
       }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
-        stop_index = Rice::detail::From_Ruby<int64_t>().convert(end.value());
+        stop_index = c10::SymInt(Rice::detail::From_Ruby<int64_t>().convert(end.value()));
       }
 
       Object exclude_end = obj.call("exclude_end?");

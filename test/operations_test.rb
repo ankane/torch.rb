@@ -153,7 +153,7 @@ class OperationsTest < Minitest::Test
     error = assert_raises do
       Torch.empty(3).exponential!(-1.5)
     end
-    assert_match "exponential_ expects lambda >= 0.0", error.message
+    assert_match "exponential_ expects lambda > 0.0", error.message
   end
 
   def test_random!
