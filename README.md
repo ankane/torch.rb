@@ -427,7 +427,11 @@ brew install pytorch
 
 ## Performance
 
-Deep learning is significantly faster on a GPU. With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Deep learning is significantly faster on a GPU.
+
+### Linux
+
+With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
@@ -448,6 +452,21 @@ ankane/ml-stack:torch-gpu
 ```
 
 And leave the other fields in that section blank. Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
+
+### Mac
+
+With Apple silicon, check if Metal Performance Shaders (MPS) is available
+
+```ruby
+Torch::Backends::MPS.available?
+```
+
+Move a neural network to a GPU
+
+```ruby
+device = Torch.device("mps")
+net.to(device)
+```
 
 ## History
 
