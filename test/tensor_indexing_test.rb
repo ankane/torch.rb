@@ -22,21 +22,21 @@ class TensorIndexingTest < Minitest::Test
 
   def test_getter_endless_range
     x = Torch.tensor([0, 1, 2])
-    assert_tensor [1, 2], x[eval("1..")]
-    assert_tensor [1, 2], x[eval("(1...)")]
-    assert_tensor [2], x[eval("-1..")]
-    assert_tensor [2], x[eval("(-1...)")]
-    assert_tensor [1, 2], x[eval("-2..")]
-    assert_tensor [1, 2], x[eval("(-2...)")]
+    assert_tensor [1, 2], x[1..]
+    assert_tensor [1, 2], x[1...]
+    assert_tensor [2], x[-1..]
+    assert_tensor [2], x[-1...]
+    assert_tensor [1, 2], x[-2..]
+    assert_tensor [1, 2], x[-2...]
   end
 
   def test_getter_beginless_range
     x = Torch.tensor([0, 1, 2])
-    assert_tensor [0, 1], x[eval("..1")]
-    assert_tensor [0], x[eval("...1")]
-    assert_tensor [0, 1, 2], x[eval("..-1")]
-    assert_tensor [0, 1], x[eval("..-2")]
-    assert_tensor [0], x[eval("...-2")]
+    assert_tensor [0, 1], x[..1]
+    assert_tensor [0], x[...1]
+    assert_tensor [0, 1, 2], x[..-1]
+    assert_tensor [0, 1], x[..-2]
+    assert_tensor [0], x[...-2]
   end
 
   def test_getter_tensor
