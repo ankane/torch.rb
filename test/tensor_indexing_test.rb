@@ -21,8 +21,6 @@ class TensorIndexingTest < Minitest::Test
   end
 
   def test_getter_endless_range
-    skip if RUBY_VERSION.to_f < 2.6
-
     x = Torch.tensor([0, 1, 2])
     assert_tensor [1, 2], x[eval("1..")]
     assert_tensor [1, 2], x[eval("(1...)")]
@@ -33,8 +31,6 @@ class TensorIndexingTest < Minitest::Test
   end
 
   def test_getter_beginless_range
-    skip if RUBY_VERSION.to_f < 2.7
-
     x = Torch.tensor([0, 1, 2])
     assert_tensor [0, 1], x[eval("..1")]
     assert_tensor [0], x[eval("...1")]
