@@ -1,1 +1,1 @@
-require "torch"
+require_relative "torch"
