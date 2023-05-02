@@ -571,7 +571,7 @@ module Torch
         end
 
         def _interp_output_size(closed_over_args)
-          input, size, scale_factor, recompute_scale_factor = closed_over_args
+          input, size, scale_factor, _recompute_scale_factor = closed_over_args
           dim = input.dim - 2
           if size.nil? && scale_factor.nil?
             raise ArgumentError, "either size or scale_factor should be defined"

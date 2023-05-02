@@ -2,11 +2,21 @@ require_relative "test_helper"
 
 class TorchTest < Minitest::Test
   def test_show_config
-    assert_match "PyTorch built with:", Torch.show_config
+    config = Torch.show_config
+    assert_match "PyTorch built with:", config
+    # pre-built Mac library has
+    # OpenMP disabled in include/ATen/Config.h
+    # starting with LibTorch 1.13.0
+    assert_match "USE_OPENMP=ON", config unless mac?
   end
 
   def test_parallel_info
-    assert_match "ATen/Parallel:", Torch.parallel_info
+    info = Torch.parallel_info
+    assert_match "ATen/Parallel:", info
+    # pre-built Mac library has
+    # OpenMP disabled in include/ATen/Config.h
+    # starting with LibTorch 1.13.0
+    assert_match "ATen parallel backend: OpenMP", info unless mac?
   end
 
   def test_tutorial
@@ -28,7 +38,7 @@ class TorchTest < Minitest::Test
     assert_equal [5, 3], x.size
 
     y = Torch.rand(5, 3)
-    x + y
+    _ = x + y
 
     Torch.add(x, y)
 
@@ -73,7 +83,10 @@ class TorchTest < Minitest::Test
   end
 
   def test_byte_storage
-    s = Torch::ByteStorage.from_buffer("\x01\x02\x03")
-    assert_equal [1, 2, 3], Torch::ByteTensor.new(s).to_a
+    x = stress_gc do
+      s = Torch::ByteStorage.from_buffer("\x01\x02\x03")
+      Torch::ByteTensor.new(s)
+    end
+    assert_equal [1, 2, 3], x.to_a
   end
 end

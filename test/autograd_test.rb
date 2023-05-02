@@ -7,7 +7,7 @@ class AutogradTest < Minitest::Test
     z = y * y * 3
     out = z.mean
     out.backward
-    assert_equal [[4.5, 4.5], [4.5, 4.5]], x.grad.to_a
+    assert_tensor [[4.5, 4.5], [4.5, 4.5]], x.grad
   end
 
   def test_example_backward
@@ -30,7 +30,7 @@ class AutogradTest < Minitest::Test
     assert !a.requires_grad
     a.requires_grad!(true)
     assert a.requires_grad
-    b = (a * a).sum
+    _b = (a * a).sum
   end
 
   def test_no_grad
@@ -61,8 +61,42 @@ class AutogradTest < Minitest::Test
 
   def test_set_grad
     x = Torch.tensor([1, 2, 3])
-    x.grad = Torch.tensor([1, 1, 1])
-    assert_equal [1, 1, 1], x.grad.to_a
+    stress_gc do
+      x.grad = Torch.tensor([1, 1, 1])
+    end
+    assert_tensor [1, 1, 1], x.grad
+  end
+
+  def test_set_grad_nil
+    x = Torch.tensor([1, 2, 3])
+    x.grad = nil
+    assert_nil x.grad
+  end
+
+  def test_set_grad_different_size
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x.grad = Torch.tensor([1, 1])
+    end
+    assert_equal "assigned grad has data of a different size", error.message
+  end
+
+  def test_set_grad_different_device
+    skip "Requires CUDA" unless Torch::CUDA.available?
+
+    x = Torch.tensor([1, 2, 3], device: "cuda")
+    error = assert_raises(ArgumentError) do
+      x.grad = Torch.tensor([1, 1, 1])
+    end
+    assert_equal "assigned grad has data located on a different device", error.message
+  end
+
+  def test_set_grad_different_type
+    x = Torch.tensor([1, 2, 3])
+    error = assert_raises(ArgumentError) do
+      x.grad = Torch.tensor([1, 1, 1], dtype: :int32)
+    end
+    assert_equal "assigned grad has data of a different type", error.message
   end
 
   def test_variable

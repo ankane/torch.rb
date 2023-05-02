@@ -2,6 +2,7 @@
 
 #include "ruby_arg_parser.h"
 
+VALUE THPGeneratorClass = Qnil;
 VALUE THPVariableClass = Qnil;
 
 static std::unordered_map<std::string, ParameterType> type_map = {
@@ -11,6 +12,7 @@ static std::unordered_map<std::string, ParameterType> type_map = {
   {"double", ParameterType::DOUBLE},
   {"complex", ParameterType::COMPLEX},
   {"TensorList", ParameterType::TENSOR_LIST},
+  {"c10::List<c10::optional<Tensor>>", ParameterType::TENSOR_LIST},
   {"IntArrayRef", ParameterType::INT_LIST},
   {"ArrayRef<double>", ParameterType::FLOAT_LIST},
   {"Generator", ParameterType::GENERATOR},
@@ -22,9 +24,14 @@ static std::unordered_map<std::string, ParameterType> type_map = {
   {"MemoryFormat", ParameterType::MEMORY_FORMAT},
   {"QScheme", ParameterType::QSCHEME},
   {"Device", ParameterType::DEVICE},
+  {"Stream", ParameterType::STREAM},
   {"std::string", ParameterType::STRING},
+  {"c10::string_view", ParameterType::STRING},
+  {"SymInt", ParameterType::SYM_INT},
   {"Dimname", ParameterType::DIMNAME},
+  {"SymIntArrayRef", ParameterType::SYM_INT_LIST},
   {"DimnameList", ParameterType::DIMNAME_LIST},
+  {"ScalarList", ParameterType::SCALAR_LIST}
 };
 
 static const std::unordered_map<std::string, std::vector<std::string>> numpy_compatibility_arg_names = {
@@ -116,6 +123,72 @@ bool is_tensor_list(VALUE obj, int argnum, bool throw_error) {
   return true;
 }
 
+static bool is_int_list(VALUE obj, int broadcast_size) {
+  if (RB_TYPE_P(obj, T_ARRAY)) {
+    auto len = RARRAY_LEN(obj);
+    if (len == 0) {
+      return true;
+    }
+
+    auto item = rb_ary_entry(obj, 0);
+    bool int_first = false;
+    if (THPUtils_checkIndex(item)) {
+      // we still have to check that the rest of items are NOT symint nodes
+      int_first = true;
+    }
+
+    // Make sure none of the later arguments are SymInt
+    // NB: do NOT check that the later arguments are ints, as this is
+    // BC-breaking for FX
+    // for (int i = 1; i < len; i++) {
+    //   if (torch::is_symint_node(
+    //           py::reinterpret_steal<py::object>(PySequence_GetItem(obj, i)))) {
+    //     return false;
+    //   }
+    // }
+
+    if (int_first) {
+      return true;
+    }
+
+    // NOTE: JIT tracer allows arbitrary scalar tensors to act as ints
+    // in an intlist argument. Even float or complex scalar tensors.
+    // return (
+    //     jit::tracer::isTracing() && THPVariable_Check(item.ptr()) &&
+    //     THPVariable_Unpack(item.ptr()).sizes() == c10::IntArrayRef{});
+    return false;
+  }
+  // if a size is specified (e.g. IntArrayRef[2]) we also allow passing a single
+  // int
+  return broadcast_size > 0 && THPUtils_checkLong(obj);
+}
+
+static bool is_int_or_symint(VALUE obj) {
+  return THPUtils_checkIndex(obj);
+}
+
+static bool is_int_or_symint_list(VALUE obj, int broadcast_size) {
+  if (RB_TYPE_P(obj, T_ARRAY)) {
+    if (RARRAY_LEN(obj) == 0) {
+      return true;
+    }
+    auto item = rb_ary_entry(obj, 0);
+
+    if (is_int_or_symint(item)) {
+      return true;
+    }
+    // NOTE: JIT tracer allows arbitrary scalar tensors to act as ints
+    // in an intlist argument. Even float or complex scalar tensors.
+    // return (
+    //     jit::tracer::isTracing() && THPVariable_Check(item.ptr()) &&
+    //     THPVariable_Unpack(item.ptr()).sizes() == c10::IntArrayRef{});
+    return false;
+  }
+  // if a size is specified (e.g. IntArrayRef[2]) we also allow passing a single
+  // int
+  return broadcast_size > 0 && THPUtils_checkLong(obj);
+}
+
 // argnum is needed for raising the TypeError, it's used in the error message.
 auto FunctionParameter::check(VALUE obj, int argnum) -> bool
 {
@@ -172,7 +245,7 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
       return size > 0 && FIXNUM_P(obj);
     }
     case ParameterType::FLOAT_LIST: return (RB_TYPE_P(obj, T_ARRAY));
-    case ParameterType::GENERATOR: return false; // return THPGenerator_Check(obj);
+    case ParameterType::GENERATOR: return THPGenerator_Check(obj);
     case ParameterType::BOOL: return obj == Qtrue || obj == Qfalse;
     case ParameterType::STORAGE: return false; // return isStorage(obj);
     // case ParameterType::PYOBJECT: return true;
@@ -182,6 +255,8 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool
     case ParameterType::QSCHEME: return false; // return THPQScheme_Check(obj);
     case ParameterType::DEVICE: return RB_TYPE_P(obj, T_STRING); // TODO check device
     case ParameterType::STRING: return RB_TYPE_P(obj, T_STRING);
+    case ParameterType::SYM_INT: return is_int_or_symint(obj);
+    case ParameterType::SYM_INT_LIST: return is_int_or_symint_list(obj, size);
     default: throw std::runtime_error("unknown parameter type");
   }
 }
@@ -191,6 +266,7 @@ std::string FunctionParameter::type_name() const {
     case ParameterType::TENSOR: return "Tensor";
     case ParameterType::SCALAR: return "Number";
     case ParameterType::INT64: return "int";
+    case ParameterType::SYM_INT: return "SymInt";
     case ParameterType::DOUBLE: return "float";
     case ParameterType::COMPLEX: return "complex";
     case ParameterType::TENSOR_LIST: return "array of Tensors";
@@ -208,6 +284,8 @@ std::string FunctionParameter::type_name() const {
     case ParameterType::STRING: return "str";
     case ParameterType::DIMNAME: return "name";
     case ParameterType::DIMNAME_LIST: return "array of names";
+    case ParameterType::SCALAR_LIST: return "array of Scalars";
+    case ParameterType::SYM_INT_LIST: return "array of SymInts";
     default: throw std::runtime_error("unknown parameter type");
   }
 }
@@ -251,6 +329,68 @@ static inline std::vector<int64_t> parse_intlist_args(const std::string& s, int6
     args.emplace_back(std::stol(tok));
   }
   return args;
+}
+
+// Parse a string literal to remove quotes and escape sequences
+static std::string parse_string_literal(c10::string_view str) {
+  TORCH_CHECK(str.length() >= 2, "String defaults must be quoted");
+
+  if (str.front() == '"') {
+    TORCH_CHECK(
+        str.back() == '"', "Mismatched quotes in string default: ", str);
+  } else {
+    TORCH_CHECK(
+        str.front() == '\'' && str.back() == '\'',
+        "Invalid quotes in string default: ",
+        str)
+  }
+
+  std::string parsed;
+  parsed.reserve(str.size());
+  for (size_t i = 1; i < str.size() - 1;) {
+    if (str[i] != '\\') {
+      parsed.push_back(str[i]);
+      ++i;
+      continue;
+    }
+
+    // Handle escape sequences
+    TORCH_CHECK(
+        i < str.size() - 2, "String ends with escaped final quote: ", str)
+    char c = str[i + 1];
+    switch (c) {
+      case '\\':
+      case '\'':
+      case '\"':
+        break;
+      case 'a':
+        c = '\a';
+        break;
+      case 'b':
+        c = '\b';
+        break;
+      case 'f':
+        c = '\f';
+        break;
+      case 'n':
+        c = '\n';
+        break;
+      case 'v':
+        c = '\v';
+        break;
+      case 't':
+        c = '\t';
+        break;
+      default:
+        TORCH_CHECK(
+            false,
+            "Unsupported escape sequence in string default: \\",
+            str[i + 1]);
+    }
+    parsed.push_back(c);
+    i += 2;
+  }
+  return parsed;
 }
 
 void FunctionParameter::set_default_str(const std::string& str) {
@@ -308,8 +448,8 @@ void FunctionParameter::set_default_str(const std::string& str) {
       throw std::runtime_error("invalid device: " + str);
     }
   } else if (type_ == ParameterType::STRING) {
-    if (str != "None" && str != "") {
-      throw std::runtime_error("invalid default string: " + str);
+    if (str != "None") {
+      default_string = parse_string_literal(str);
     }
   }
 }
@@ -472,12 +612,12 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
     auto param_idx = find_param(signature, key);
     if (param_idx < 0) {
       rb_raise(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
-          signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
+          signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
 
     if (param_idx < num_pos_args) {
       rb_raise(rb_eArgError, "%s() got multiple values for argument '%s'",
-          signature.name.c_str(), THPUtils_unpackSymbol(key).c_str());
+          signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
   }
 
@@ -496,8 +636,14 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],
 
   // if there is a single positional IntArrayRef argument, i.e. expand(..), view(...),
   // allow a var-args style IntArrayRef, so expand(5,3) behaves as expand((5,3))
-  if (max_pos_args == 1 && params[0].type_ == ParameterType::INT_LIST) {
+  int int_list_overload = false;
+  if (max_pos_args == 1 &&
+      (params[0].type_ == ParameterType::INT_LIST ||
+       params[0].type_ == ParameterType::SYM_INT_LIST)) {
     allow_varargs_intlist = true;
+    if (params[0].type_ == ParameterType::INT_LIST) {
+      int_list_overload = true;
+    }
   }
 
   if (nargs > max_pos_args && !allow_varargs_intlist) {
@@ -552,8 +698,10 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],
     // XXX: the Variable check is necessary because sizes become tensors when
     // tracer is enabled. This behavior easily leads to ambiguities, and we
     // should avoid having complex signatures that make use of it...
-    } else if (allow_varargs_intlist && arg_pos == 0 && !is_kwd &&
-               THPUtils_checkIndex(obj)) {
+    } else if (
+        allow_varargs_intlist && arg_pos == 0 && !is_kwd &&
+        ((int_list_overload ? is_int_list(args, param.size)
+                            : is_int_or_symint_list(args, param.size)))) {
       // take all positional arguments as this parameter
       // e.g. permute(1, 2, 3) -> permute((1, 2, 3))
       dst[i++] = args;

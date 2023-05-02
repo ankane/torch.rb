@@ -7,24 +7,26 @@ Check out:
 - [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks
 - [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
+- [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
+- [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
 
 [![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). For Homebrew, use:
+First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
 
 ```sh
-brew install libtorch
+brew install pytorch
 ```
 
 Add this line to your application’s Gemfile:
 
 ```ruby
-gem 'torch-rb'
+gem "torch-rb"
 ```
 
-It can take a few minutes to compile the extension.
+It can take 5-10 minutes to compile the extension.
 
 ## Getting Started
 
@@ -408,28 +410,28 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
-0.9.0+ | 1.10.0+
-0.8.0-0.8.3 | 1.9.0-1.9.1
-0.6.0-0.7.0 | 1.8.0-1.8.1
-0.5.0-0.5.3 | 1.7.0-1.7.1
-0.3.0-0.4.2 | 1.6.0
-0.2.0-0.2.7 | 1.5.0-1.5.1
-0.1.8 | 1.4.0
-0.1.0-0.1.7 | 1.3.1
+0.13.x | 2.0.x
+0.12.x | 1.13.x
+0.11.x | 1.12.x
+0.10.x | 1.11.x
+0.9.x | 1.10.x
+0.8.x | 1.9.x
 
 ### Homebrew
 
-For Mac, you can use Homebrew.
+You can also use Homebrew.
 
 ```sh
-brew install libtorch
+brew install pytorch
 ```
-
-Then install the gem (no need for `bundle config`).
 
 ## Performance
 
-Deep learning is significantly faster on a GPU. With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
+Deep learning is significantly faster on a GPU.
+
+### Linux
+
+With Linux, install [CUDA](https://developer.nvidia.com/cuda-downloads) and [cuDNN](https://developer.nvidia.com/cudnn) and reinstall the gem.
 
 Check if CUDA is available
 
@@ -450,6 +452,21 @@ ankane/ml-stack:torch-gpu
 ```
 
 And leave the other fields in that section blank. Once the notebook is running, you can run the [MNIST example](https://github.com/ankane/ml-stack/blob/master/torch-gpu/MNIST.ipynb).
+
+### Mac
+
+With Apple silicon, check if Metal Performance Shaders (MPS) is available
+
+```ruby
+Torch::Backends::MPS.available?
+```
+
+Move a neural network to a GPU
+
+```ruby
+device = Torch.device("mps")
+net.to(device)
+```
 
 ## History
 

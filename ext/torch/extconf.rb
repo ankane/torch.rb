@@ -7,21 +7,9 @@ $CXXFLAGS += " -D_GLIBCXX_USE_CXX11_ABI=1"
 
 apple_clang = RbConfig::CONFIG["CC_VERSION_MESSAGE"] =~ /apple clang/i
 
-# check omp first
-if have_library("omp") || have_library("gomp")
-  $CXXFLAGS += " -Xclang" if apple_clang
-  $CXXFLAGS += " -fopenmp"
-end
-
 if apple_clang
-  # silence rice warnings
-  $CXXFLAGS += " -Wno-deprecated-declarations"
-
-  # silence ruby/intern.h warning
-  $CXXFLAGS += " -Wno-deprecated-register"
-
   # silence torch warnings
-  $CXXFLAGS += " -Wno-shorten-64-to-32 -Wno-missing-noreturn"
+  $CXXFLAGS += " -Wno-deprecated-declarations"
 else
   # silence rice warnings
   $CXXFLAGS += " -Wno-noexcept-type"
@@ -30,9 +18,19 @@ else
   $CXXFLAGS += " -Wno-duplicated-cond -Wno-suggest-attribute=noreturn"
 end
 
+paths = [
+  "/usr/local",
+  "/opt/homebrew",
+  "/home/linuxbrew/.linuxbrew"
+]
+
 inc, lib = dir_config("torch")
-inc ||= "/usr/local/include"
-lib ||= "/usr/local/lib"
+inc ||= paths.map { |v| "#{v}/include" }.find { |v| Dir.exist?("#{v}/torch") }
+lib ||= paths.map { |v| "#{v}/lib" }.find { |v| Dir["#{v}/*torch_cpu*"].any? }
+
+unless inc && lib
+  abort "LibTorch not found"
+end
 
 cuda_inc, cuda_lib = dir_config("cuda")
 cuda_inc ||= "/usr/local/cuda/include"

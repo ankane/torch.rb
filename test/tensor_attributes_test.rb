@@ -11,8 +11,7 @@ class TensorAttributesTest < Minitest::Test
   def test_dtype
     %i(uint8 int8 int16 int32 int64 float32 float64).each do |dtype|
       x = Torch.tensor([1, 2, 3], dtype: dtype)
-      assert_equal dtype, x.dtype
-      assert_equal [1, 2, 3], x.to_a
+      assert_tensor [1, 2, 3], x, dtype: dtype
     end
   end
 
@@ -20,15 +19,13 @@ class TensorAttributesTest < Minitest::Test
     # TODO support complex32
     %i(complex64 complex128).each do |dtype|
       x = Torch.tensor([1i, 2+3i], dtype: dtype)
-      assert_equal dtype, x.dtype
-      assert_equal [1i, 2+3i], x.to_a
+      assert_tensor [1i, 2+3i], x, dtype: dtype
     end
   end
 
   def test_dtype_bool
     x = Torch.tensor([false, true, false])
-    assert_equal :bool, x.dtype
-    assert_equal [false, true, false], x.to_a
+    assert_tensor [false, true, false], x, dtype: :bool
   end
 
   def test_dtype_default
@@ -51,12 +48,27 @@ class TensorAttributesTest < Minitest::Test
     assert_equal :int32, x.dtype
   end
 
+  # different message locally and on CI
+  def test_dtype_bad
+    assert_raises(TypeError) do
+      Torch.tensor([true], dtype: :int64)
+    end
+  end
+
+  # TODO improve error type and message
+  def test_dtype_bad_complex
+    error = assert_raises(NoMethodError) do
+      Torch.tensor([true], dtype: :complex64)
+    end
+    assert_match "undefined method `real' for true:TrueClass", error.message
+  end
+
   def test_layout
     # TODO support sparse
     %i(strided).each do |layout|
       x = Torch.tensor([1, 2, 3], layout: layout)
       assert_equal layout, x.layout
-      assert_equal [1, 2, 3], x.to_a
+      assert_tensor [1, 2, 3], x
     end
   end
 
@@ -76,7 +88,7 @@ class TensorAttributesTest < Minitest::Test
     error = assert_raises do
       Torch.tensor([1, 2, 3], device: "bad")
     end
-    assert_match /Expected one of .+ device type at start of device string: bad/, error.message
+    assert_match(/Expected one of .+ device type at start of device string: bad/, error.message)
   end
 
   def test_requires_grad
@@ -138,5 +150,18 @@ class TensorAttributesTest < Minitest::Test
   def test_floating_point
     assert Torch.floating_point?(Torch.empty(1))
     assert !Torch.floating_point?(Torch.empty(1, dtype: Torch.long))
+  end
+
+  def test_inconsistent_dimensions
+    error = assert_raises(Torch::Error) do
+      Torch.tensor([[1, 2], [3]])
+    end
+    assert_equal "Inconsistent dimensions", error.message
+  end
+
+  # TODO raise error
+  def test_inconsistent_dimensions_correct_size
+    x = Torch.tensor([[1, 2], [3], [4, 5, 6]])
+    assert_tensor [[1, 2], [3, 4], [5, 6]], x
   end
 end

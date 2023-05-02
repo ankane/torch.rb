@@ -34,10 +34,10 @@ class PaddingLayersTest < Minitest::Test
   def test_replication_pad3d
     m = Torch::NN::ReplicationPad3d.new(3)
     input = Torch.randn(16, 3, 8, 320, 480)
-    output = m.call(input)
+    _output = m.call(input)
 
     m = Torch::NN::ReplicationPad3d.new([3, 3, 6, 6, 1, 1])
-    output = m.call(input)
+    _output = m.call(input)
   end
 
   def test_zero_pad2d

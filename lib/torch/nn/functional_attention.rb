@@ -56,7 +56,7 @@ module Torch
           attn_mask: nil, dropout_p: 0.0
         )
 
-          b, nt, e = q.shape
+          _b, _nt, e = q.shape
 
           q = q / Math.sqrt(e)
 

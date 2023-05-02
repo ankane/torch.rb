@@ -34,10 +34,14 @@ class Function
     !out_index.nil?
   end
 
+  def dispatch_name
+    definition.dig("dispatch", "CompositeImplicitAutograd")
+  end
+
   private
 
   def parse_func
-    input, output = func.split(/\s*->\s*/)
+    input, _, output = func.rpartition(/\s+->\s+/)
     [generate_params(input), generate_retvals(output)]
   end
 
@@ -52,7 +56,7 @@ class Function
         next
       end
 
-      type, name = i.split(/\s+/)
+      type, _, name = i.rpartition(/\s+/)
 
       if name.include?("=")
         name, default = name.split("=", 2)
@@ -60,7 +64,7 @@ class Function
 
       optional = false
       if type.include?("?")
-        optional = true unless ["dtype", "device", "layout", "pin_memory"].include?(name)
+        optional = true
         type = type.delete("?")
       end
 
@@ -75,6 +79,10 @@ class Function
         # dtype hack
         # https://github.com/pytorch/pytorch/blob/v1.6.0/tools/autograd/gen_python_functions.py#L1307-L1311
         default = "torch.int64"
+      end
+
+      if name == "dtype" && base_name == "randint"
+        default = "None"
       end
 
       default = nil if definition["cpp_no_default_args"].to_a.include?(name)

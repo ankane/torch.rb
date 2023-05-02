@@ -29,7 +29,7 @@ module Torch
 
           # try to keep the random number generator in sync with Python
           # this makes it easy to compare results
-          base_seed = Torch.empty([], dtype: :int64).random!.item
+          _base_seed = Torch.empty([], dtype: :int64).random!.item
 
           indexes =
             if @shuffle

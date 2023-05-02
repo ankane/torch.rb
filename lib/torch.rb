@@ -1,5 +1,5 @@
 # ext
-require "torch/ext"
+require_relative "torch/ext"
 
 # stdlib
 require "fileutils"
@@ -8,189 +8,197 @@ require "set"
 require "tmpdir"
 
 # modules
-require "torch/inspector"
-require "torch/tensor"
-require "torch/version"
+require_relative "torch/inspector"
+require_relative "torch/tensor"
+require_relative "torch/version"
 
 # optim
-require "torch/optim/optimizer"
-require "torch/optim/adadelta"
-require "torch/optim/adagrad"
-require "torch/optim/adam"
-require "torch/optim/adamax"
-require "torch/optim/adamw"
-require "torch/optim/asgd"
-require "torch/optim/rmsprop"
-require "torch/optim/rprop"
-require "torch/optim/sgd"
+require_relative "torch/optim/optimizer"
+require_relative "torch/optim/adadelta"
+require_relative "torch/optim/adagrad"
+require_relative "torch/optim/adam"
+require_relative "torch/optim/adamax"
+require_relative "torch/optim/adamw"
+require_relative "torch/optim/asgd"
+require_relative "torch/optim/rmsprop"
+require_relative "torch/optim/rprop"
+require_relative "torch/optim/sgd"
 
 # optim lr_scheduler
-require "torch/optim/lr_scheduler/lr_scheduler"
-require "torch/optim/lr_scheduler/lambda_lr"
-require "torch/optim/lr_scheduler/multiplicative_lr"
-require "torch/optim/lr_scheduler/step_lr"
-require "torch/optim/lr_scheduler/multi_step_lr"
-require "torch/optim/lr_scheduler/exponential_lr"
-require "torch/optim/lr_scheduler/cosine_annealing_lr"
+require_relative "torch/optim/lr_scheduler/lr_scheduler"
+require_relative "torch/optim/lr_scheduler/lambda_lr"
+require_relative "torch/optim/lr_scheduler/multiplicative_lr"
+require_relative "torch/optim/lr_scheduler/step_lr"
+require_relative "torch/optim/lr_scheduler/multi_step_lr"
+require_relative "torch/optim/lr_scheduler/exponential_lr"
+require_relative "torch/optim/lr_scheduler/cosine_annealing_lr"
 
 # nn parameters
-require "torch/nn/parameter"
-require "torch/nn/utils"
+require_relative "torch/nn/parameter"
+require_relative "torch/nn/utils"
 
 # nn containers
-require "torch/nn/module"
-require "torch/nn/module_list"
-require "torch/nn/sequential"
+require_relative "torch/nn/module"
+require_relative "torch/nn/module_list"
+require_relative "torch/nn/parameter_list"
+require_relative "torch/nn/sequential"
 
 # nn convolution layers
-require "torch/nn/convnd"
-require "torch/nn/conv1d"
-require "torch/nn/conv2d"
-require "torch/nn/conv3d"
-require "torch/nn/unfold"
-require "torch/nn/fold"
+require_relative "torch/nn/convnd"
+require_relative "torch/nn/conv1d"
+require_relative "torch/nn/conv2d"
+require_relative "torch/nn/conv3d"
+require_relative "torch/nn/unfold"
+require_relative "torch/nn/fold"
 
 # nn pooling layers
-require "torch/nn/max_poolnd"
-require "torch/nn/max_pool1d"
-require "torch/nn/max_pool2d"
-require "torch/nn/max_pool3d"
-require "torch/nn/max_unpoolnd"
-require "torch/nn/max_unpool1d"
-require "torch/nn/max_unpool2d"
-require "torch/nn/max_unpool3d"
-require "torch/nn/avg_poolnd"
-require "torch/nn/avg_pool1d"
-require "torch/nn/avg_pool2d"
-require "torch/nn/avg_pool3d"
-require "torch/nn/lp_poolnd"
-require "torch/nn/lp_pool1d"
-require "torch/nn/lp_pool2d"
-require "torch/nn/adaptive_max_poolnd"
-require "torch/nn/adaptive_max_pool1d"
-require "torch/nn/adaptive_max_pool2d"
-require "torch/nn/adaptive_max_pool3d"
-require "torch/nn/adaptive_avg_poolnd"
-require "torch/nn/adaptive_avg_pool1d"
-require "torch/nn/adaptive_avg_pool2d"
-require "torch/nn/adaptive_avg_pool3d"
+require_relative "torch/nn/max_poolnd"
+require_relative "torch/nn/max_pool1d"
+require_relative "torch/nn/max_pool2d"
+require_relative "torch/nn/max_pool3d"
+require_relative "torch/nn/max_unpoolnd"
+require_relative "torch/nn/max_unpool1d"
+require_relative "torch/nn/max_unpool2d"
+require_relative "torch/nn/max_unpool3d"
+require_relative "torch/nn/avg_poolnd"
+require_relative "torch/nn/avg_pool1d"
+require_relative "torch/nn/avg_pool2d"
+require_relative "torch/nn/avg_pool3d"
+require_relative "torch/nn/lp_poolnd"
+require_relative "torch/nn/lp_pool1d"
+require_relative "torch/nn/lp_pool2d"
+require_relative "torch/nn/adaptive_max_poolnd"
+require_relative "torch/nn/adaptive_max_pool1d"
+require_relative "torch/nn/adaptive_max_pool2d"
+require_relative "torch/nn/adaptive_max_pool3d"
+require_relative "torch/nn/adaptive_avg_poolnd"
+require_relative "torch/nn/adaptive_avg_pool1d"
+require_relative "torch/nn/adaptive_avg_pool2d"
+require_relative "torch/nn/adaptive_avg_pool3d"
 
 # nn padding layers
-require "torch/nn/reflection_padnd"
-require "torch/nn/reflection_pad1d"
-require "torch/nn/reflection_pad2d"
-require "torch/nn/replication_padnd"
-require "torch/nn/replication_pad1d"
-require "torch/nn/replication_pad2d"
-require "torch/nn/replication_pad3d"
-require "torch/nn/constant_padnd"
-require "torch/nn/constant_pad1d"
-require "torch/nn/constant_pad2d"
-require "torch/nn/constant_pad3d"
-require "torch/nn/zero_pad2d"
+require_relative "torch/nn/reflection_padnd"
+require_relative "torch/nn/reflection_pad1d"
+require_relative "torch/nn/reflection_pad2d"
+require_relative "torch/nn/replication_padnd"
+require_relative "torch/nn/replication_pad1d"
+require_relative "torch/nn/replication_pad2d"
+require_relative "torch/nn/replication_pad3d"
+require_relative "torch/nn/constant_padnd"
+require_relative "torch/nn/constant_pad1d"
+require_relative "torch/nn/constant_pad2d"
+require_relative "torch/nn/constant_pad3d"
+require_relative "torch/nn/zero_pad2d"
 
 # nn normalization layers
-require "torch/nn/batch_norm"
-require "torch/nn/batch_norm1d"
-require "torch/nn/batch_norm2d"
-require "torch/nn/batch_norm3d"
-require "torch/nn/group_norm"
-require "torch/nn/instance_norm"
-require "torch/nn/instance_norm1d"
-require "torch/nn/instance_norm2d"
-require "torch/nn/instance_norm3d"
-require "torch/nn/layer_norm"
-require "torch/nn/local_response_norm"
+require_relative "torch/nn/batch_norm"
+require_relative "torch/nn/batch_norm1d"
+require_relative "torch/nn/batch_norm2d"
+require_relative "torch/nn/batch_norm3d"
+require_relative "torch/nn/group_norm"
+require_relative "torch/nn/instance_norm"
+require_relative "torch/nn/instance_norm1d"
+require_relative "torch/nn/instance_norm2d"
+require_relative "torch/nn/instance_norm3d"
+require_relative "torch/nn/layer_norm"
+require_relative "torch/nn/local_response_norm"
 
 # nn recurrent layers
-require "torch/nn/rnn_base"
-require "torch/nn/rnn"
-require "torch/nn/lstm"
-require "torch/nn/gru"
+require_relative "torch/nn/rnn_base"
+require_relative "torch/nn/rnn"
+require_relative "torch/nn/lstm"
+require_relative "torch/nn/gru"
 
 # nn linear layers
-require "torch/nn/bilinear"
-require "torch/nn/identity"
-require "torch/nn/linear"
+require_relative "torch/nn/bilinear"
+require_relative "torch/nn/identity"
+require_relative "torch/nn/linear"
 
 # nn dropout layers
-require "torch/nn/dropoutnd"
-require "torch/nn/alpha_dropout"
-require "torch/nn/dropout"
-require "torch/nn/dropout2d"
-require "torch/nn/dropout3d"
-require "torch/nn/feature_alpha_dropout"
+require_relative "torch/nn/dropoutnd"
+require_relative "torch/nn/alpha_dropout"
+require_relative "torch/nn/dropout"
+require_relative "torch/nn/dropout2d"
+require_relative "torch/nn/dropout3d"
+require_relative "torch/nn/feature_alpha_dropout"
 
 # nn activations
-require "torch/nn/hardshrink"
-require "torch/nn/leaky_relu"
-require "torch/nn/log_sigmoid"
-require "torch/nn/prelu"
-require "torch/nn/relu"
-require "torch/nn/sigmoid"
-require "torch/nn/softplus"
-require "torch/nn/softshrink"
-require "torch/nn/softsign"
-require "torch/nn/tanh"
-require "torch/nn/tanhshrink"
+require_relative "torch/nn/hardshrink"
+require_relative "torch/nn/leaky_relu"
+require_relative "torch/nn/log_sigmoid"
+require_relative "torch/nn/prelu"
+require_relative "torch/nn/relu"
+require_relative "torch/nn/sigmoid"
+require_relative "torch/nn/softplus"
+require_relative "torch/nn/softshrink"
+require_relative "torch/nn/softsign"
+require_relative "torch/nn/tanh"
+require_relative "torch/nn/tanhshrink"
 
 # nn activations other
-require "torch/nn/log_softmax"
-require "torch/nn/softmax"
-require "torch/nn/softmax2d"
-require "torch/nn/softmin"
+require_relative "torch/nn/log_softmax"
+require_relative "torch/nn/softmax"
+require_relative "torch/nn/softmax2d"
+require_relative "torch/nn/softmin"
 
 # nn sparse layers
-require "torch/nn/embedding"
-require "torch/nn/embedding_bag"
+require_relative "torch/nn/embedding"
+require_relative "torch/nn/embedding_bag"
 
 # attention is all you need
-require "torch/nn/multihead_attention"
-require "torch/nn/transformer"
+require_relative "torch/nn/multihead_attention"
+require_relative "torch/nn/transformer"
 
 # nn distance functions
-require "torch/nn/cosine_similarity"
-require "torch/nn/pairwise_distance"
+require_relative "torch/nn/cosine_similarity"
+require_relative "torch/nn/pairwise_distance"
 
 # nn loss functions
-require "torch/nn/loss"
-require "torch/nn/weighted_loss"
-require "torch/nn/bce_loss"
-require "torch/nn/bce_with_logits_loss"
-require "torch/nn/cosine_embedding_loss"
-require "torch/nn/cross_entropy_loss"
-require "torch/nn/ctc_loss"
-require "torch/nn/hinge_embedding_loss"
-require "torch/nn/kl_div_loss"
-require "torch/nn/l1_loss"
-require "torch/nn/margin_ranking_loss"
-require "torch/nn/mse_loss"
-require "torch/nn/multi_label_margin_loss"
-require "torch/nn/multi_label_soft_margin_loss"
-require "torch/nn/multi_margin_loss"
-require "torch/nn/nll_loss"
-require "torch/nn/poisson_nll_loss"
-require "torch/nn/smooth_l1_loss"
-require "torch/nn/soft_margin_loss"
-require "torch/nn/triplet_margin_loss"
+require_relative "torch/nn/loss"
+require_relative "torch/nn/weighted_loss"
+require_relative "torch/nn/bce_loss"
+require_relative "torch/nn/bce_with_logits_loss"
+require_relative "torch/nn/cosine_embedding_loss"
+require_relative "torch/nn/cross_entropy_loss"
+require_relative "torch/nn/ctc_loss"
+require_relative "torch/nn/hinge_embedding_loss"
+require_relative "torch/nn/kl_div_loss"
+require_relative "torch/nn/l1_loss"
+require_relative "torch/nn/margin_ranking_loss"
+require_relative "torch/nn/mse_loss"
+require_relative "torch/nn/multi_label_margin_loss"
+require_relative "torch/nn/multi_label_soft_margin_loss"
+require_relative "torch/nn/multi_margin_loss"
+require_relative "torch/nn/nll_loss"
+require_relative "torch/nn/poisson_nll_loss"
+require_relative "torch/nn/smooth_l1_loss"
+require_relative "torch/nn/soft_margin_loss"
+require_relative "torch/nn/triplet_margin_loss"
 
 # nn vision
-require "torch/nn/upsample"
+require_relative "torch/nn/upsample"
 
 # nn other
-require "torch/nn/functional"
-require "torch/nn/functional_attention"
-require "torch/nn/init"
+require_relative "torch/nn/functional"
+require_relative "torch/nn/functional_attention"
+require_relative "torch/nn/init"
 
 # utils
-require "torch/utils/data"
-require "torch/utils/data/data_loader"
-require "torch/utils/data/dataset"
-require "torch/utils/data/subset"
-require "torch/utils/data/tensor_dataset"
+require_relative "torch/utils/data"
+require_relative "torch/utils/data/data_loader"
+require_relative "torch/utils/data/dataset"
+require_relative "torch/utils/data/iterable_dataset"
+require_relative "torch/utils/data/data_pipes/iter_data_pipe"
+require_relative "torch/utils/data/data_pipes/filter_iter_data_pipe"
+require_relative "torch/utils/data/data_pipes/iter/file_lister"
+require_relative "torch/utils/data/data_pipes/iter/file_opener"
+require_relative "torch/utils/data/data_pipes/iter/iterable_wrapper"
+require_relative "torch/utils/data/data_pipes/iter/stream_wrapper"
+require_relative "torch/utils/data/subset"
+require_relative "torch/utils/data/tensor_dataset"
 
 # hub
-require "torch/hub"
+require_relative "torch/hub"
 
 module Torch
   class Error < StandardError; end
@@ -248,6 +256,7 @@ module Torch
     complex_float: 9,
     complex64: 9,
     complex_double: 10,
+    cdouble: 10,
     complex128: 10,
     bool: 11,
     qint8: 12,
@@ -267,7 +276,7 @@ module Torch
         args.first.send(dtype).to(device)
       elsif args.size == 1 && args.first.is_a?(ByteStorage) && dtype == :uint8
         bytes = args.first.bytes
-        Torch._from_blob(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
+        Torch._from_blob_ref(bytes, [bytes.bytesize], TensorOptions.new.dtype(DTYPE_TO_ENUM[dtype]))
       elsif args.size == 1 && args.first.is_a?(Array)
         Torch.tensor(args.first, dtype: dtype, device: device)
       elsif args.size == 0
@@ -320,12 +329,17 @@ module Torch
       raise Error, "Cannot convert #{ndarray.class.name} to tensor" unless dtype
       options = tensor_options(device: "cpu", dtype: dtype[0])
       # TODO pass pointer to array instead of creating string
-      str = ndarray.to_string
-      tensor = _from_blob(str, ndarray.shape, options)
+      _from_blob_ref(ndarray.to_string, ndarray.shape, options)
+    end
+
+    # private
+    # TODO use keepAlive in Rice (currently segfaults)
+    def _from_blob_ref(data, size, options)
+      tensor = _from_blob(data, size, options)
       # from_blob does not own the data, so we need to keep
       # a reference to it for duration of tensor
       # can remove when passing pointer directly
-      tensor.instance_variable_set("@_numo_str", str)
+      tensor.instance_variable_set("@_numo_data", data)
       tensor
     end
 
@@ -377,8 +391,6 @@ module Torch
       to_ruby(_load(File.binread(f)))
     end
 
-    # --- begin tensor creation: https://pytorch.org/cppdocs/notes/tensor_creation.html ---
-
     def tensor(data, **options)
       if options[:dtype].nil? && defined?(Numo::NArray) && data.is_a?(Numo::NArray)
         numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h
@@ -408,54 +420,13 @@ module Torch
         end
       end
 
+      # TODO check each dimensions for consistency in future
+      raise Error, "Inconsistent dimensions" if data.size != size.inject(1, :*)
+
+      # TOOD move to C++
+      data = data.map { |v| v ? 1 : 0 } if options[:dtype] == :bool
+
       _tensor(data, size, tensor_options(**options))
-    end
-
-    # --- begin like ---
-
-    def ones_like(input, **options)
-      ones(input.size, **like_options(input, options))
-    end
-
-    def empty_like(input, **options)
-      empty(input.size, **like_options(input, options))
-    end
-
-    def full_like(input, fill_value, **options)
-      full(input.size, fill_value, **like_options(input, options))
-    end
-
-    def rand_like(input, **options)
-      rand(input.size, **like_options(input, options))
-    end
-
-    def randint_like(input, low, high = nil, **options)
-      # ruby doesn't support input, low = 0, high, ...
-      if high.nil?
-        high = low
-        low = 0
-      end
-      randint(low, high, input.size, **like_options(input, options))
-    end
-
-    def randn_like(input, **options)
-      randn(input.size, **like_options(input, options))
-    end
-
-    def zeros_like(input, **options)
-      zeros(input.size, **like_options(input, options))
-    end
-
-    # center option
-    def stft(input, n_fft, hop_length: nil, win_length: nil, window: nil, center: true, pad_mode: "reflect", normalized: false, onesided: true, return_complex: nil)
-      if center
-        signal_dim = input.dim
-        extended_shape = [1] * (3 - signal_dim) + input.size
-        pad = n_fft.div(2).to_i
-        input = NN::F.pad(input.view(extended_shape), [pad, pad], mode: pad_mode)
-        input = input.view(input.shape[-signal_dim..-1])
-      end
-      _stft(input, n_fft, hop_length, win_length, window, normalized, onesided, return_complex)
     end
 
     private
@@ -570,14 +541,6 @@ module Torch
       unless requires_grad.nil?
         options = options.requires_grad(requires_grad)
       end
-      options
-    end
-
-    def like_options(input, options)
-      options = options.dup
-      options[:dtype] ||= input.dtype
-      options[:layout] ||= input.layout
-      options[:device] ||= input.device
       options
     end
   end

@@ -14,6 +14,8 @@ def generate_functions
   generate_files("fft", :define_singleton_method, functions[:fft])
   generate_files("linalg", :define_singleton_method, functions[:linalg])
   generate_files("special", :define_singleton_method, functions[:special])
+  generate_files("sparse", :define_singleton_method, functions[:sparse])
+  # TODO generate nested
 end
 
 def load_functions
@@ -38,7 +40,15 @@ def skip_functions(functions)
     f.base_name == "index_put" ||
     # not supported yet
     f.func.include?("Dimname") ||
-    f.func.include?("ConstQuantizerPtr")
+    f.func.include?("ConstQuantizerPtr") ||
+    # TODO fix LibTorch 1.12 changes
+    f.base_name == "histogramdd" ||
+    f.base_name == "nested_tensor" ||
+    f.base_name == "split_copy" ||
+    f.base_name == "split_with_sizes_copy" ||
+    f.base_name == "unbind_copy" ||
+    # TODO fix LibTorch 1.13 changes
+    f.base_name == "native_channel_shuffle"
   end
 end
 
@@ -47,6 +57,8 @@ def group_functions(functions)
   linalg_functions, other_functions = other_functions.partition { |f| f.python_module == "linalg" }
   fft_functions, other_functions = other_functions.partition { |f| f.python_module == "fft" }
   special_functions, other_functions = other_functions.partition { |f| f.python_module == "special" }
+  sparse_functions, other_functions = other_functions.partition { |f| f.python_module == "sparse" }
+  nested_functions, other_functions = other_functions.partition { |f| f.python_module == "nested" }
   unexpected_functions, other_functions = other_functions.partition { |f| f.python_module }
   torch_functions = other_functions.select { |f| f.variants.include?("function") }
   tensor_functions = other_functions.select { |f| f.variants.include?("method") }
@@ -62,7 +74,9 @@ def group_functions(functions)
     nn: nn_functions,
     linalg: linalg_functions,
     fft: fft_functions,
-    special: special_functions
+    special: special_functions,
+    sparse: sparse_functions,
+    nested: nested_functions
   }
 end
 
@@ -118,8 +132,11 @@ def write_body(type, method_defs, attach_defs)
 end
 
 def write_file(name, contents)
-  path = File.expand_path("../ext/torch", __dir__)
-  File.write(File.join(path, name), contents)
+  path = File.join(File.expand_path("../ext/torch", __dir__), name)
+  # only write if changed to improve compile times in development
+  if !File.exist?(path) || File.read(path) != contents
+    File.write(path, contents)
+  end
 end
 
 def generate_attach_def(name, type, def_method)
@@ -132,16 +149,14 @@ def generate_attach_def(name, type, def_method)
       name
     end
 
-  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!", "stft"].include?(ruby_name)
+  ruby_name = "_#{ruby_name}" if ["size", "stride", "random!"].include?(ruby_name)
   ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
   ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
   ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
+  ruby_name = ruby_name.sub(/\Asparse_/, "") if type == "sparse"
   ruby_name = name if name.start_with?("__")
 
-  # cast for Ruby < 2.7 https://github.com/thisMagpie/fftw/issues/22#issuecomment-49508900
-  cast = RUBY_VERSION.to_f > 2.7 ? "" : "(VALUE (*)(...)) "
-
-  "rb_#{def_method}(m, \"#{ruby_name}\", #{cast}#{full_name(name, type)}, -1);"
+  "rb_#{def_method}(m, \"#{ruby_name}\", #{full_name(name, type)}, -1);"
 end
 
 def generate_method_def(name, functions, type, def_method)
@@ -246,7 +261,7 @@ def generate_dispatch(function, def_method)
 
   cpp_params = generate_dispatch_params(function, params)
   if opt_index
-    cpp_params.insert(remove_self ? opt_index + 1 : opt_index, "const TensorOptions & options")
+    cpp_params.insert(remove_self ? opt_index + 1 : opt_index, "TensorOptions options")
   end
 
   retval = generate_dispatch_retval(function)
@@ -289,7 +304,13 @@ def split_opt_params(params)
 end
 
 def generate_tensor_options(function, opt_params)
-  code = "\n  const auto options = TensorOptions()"
+  new_function = function.base_name.start_with?("new_")
+  like_function = function.base_name.end_with?("_like")
+
+  code = String.new("")
+  code << "\n  auto self = _r.tensor(0);" if like_function
+  code << "\n  const auto options = TensorOptions()"
+
   order = ["dtype", "device", "layout", "requires_grad", "pin_memory"]
   opt_params.sort_by { |v| order.index(v[:name]) }.each do |opt|
     i = opt[:position]
@@ -300,12 +321,24 @@ def generate_tensor_options(function, opt_params)
         if function.base_name == "arange"
           "dtype(_r.scalartypeOptional(#{i}))"
         else
-          "dtype(_r.scalartype(#{i}))"
+          if new_function || like_function
+            "dtype(_r.scalartypeWithDefault(#{i}, self.scalar_type()))"
+          else
+            "dtype(_r.scalartype(#{i}))"
+          end
         end
       when "device"
-        "device(_r.device(#{i}))"
+        if new_function || like_function
+          "device(_r.deviceWithDefault(#{i}, self.device()))"
+        else
+          "device(_r.device(#{i}))"
+        end
       when "layout"
-        "layout(_r.layoutOptional(#{i}))"
+        if new_function || like_function
+          "layout(_r.layoutWithDefault(#{i}, self.layout()))"
+        else
+          "layout(_r.layoutOptional(#{i}))"
+        end
       when "requires_grad"
         "requires_grad(_r.toBool(#{i}))"
       when "pin_memory"
@@ -355,6 +388,8 @@ def generate_function_params(function, params, remove_self)
         "scalarlist"
       when /\Aint\[/
         "intlist"
+      when /\ASymInt\[/
+        "symintlist"
       when "float[]"
         "doublelist"
       when "Scalar"
@@ -363,6 +398,8 @@ def generate_function_params(function, params, remove_self)
         "toBool"
       when "int"
         "toInt64"
+      when "SymInt"
+        "toSymInt"
       when "float"
         "toDouble"
       when "ScalarType"
@@ -375,6 +412,8 @@ def generate_function_params(function, params, remove_self)
         "memoryformat"
       when "Storage"
         "storage"
+      when "Layout"
+        "layout"
       else
         raise "Unknown type: #{param[:type]} (#{function.name})"
       end
@@ -388,7 +427,7 @@ def generate_function_params(function, params, remove_self)
           else
             "optionalTensor"
           end
-        when "generator", "tensorlist", "intlist"
+        when "generator", "tensorlist"
           func
         when "string"
           "stringViewOptional"
@@ -405,7 +444,12 @@ def generate_dispatch_code(function, def_method, params, opt_index, remove_self)
   # torch::empty sets requires_grad by at::empty doesn't
   # https://github.com/pytorch/pytorch/issues/36455
   prefix = remove_self ? "self." : (opt_index ? "torch::" : "at::")
-  dispatch = function.out? ? "#{function.base_name}_out" : function.base_name
+  dispatch = nil # function.dispatch_name
+  unless dispatch
+    dispatch = function.base_name
+    dispatch += "_symint" if function.func.include?("SymInt")
+    dispatch += "_out" if function.out?
+  end
 
   params = params.map { |v| v[:name] }
   params.reject! { |v| v == "self" } if remove_self
@@ -446,10 +490,22 @@ def generate_dispatch_params(function, params)
         "ScalarList"
       when "int"
         "int64_t"
+      when "SymInt"
+        "c10::SymInt"
       when "float"
         "double"
       when /\Aint\[/
-        "IntArrayRef"
+        if param[:optional]
+          "at::OptionalIntArrayRef"
+        else
+          "IntArrayRef"
+        end
+      when /\ASymInt\[/
+        if param[:optional]
+          "at::OptionalSymIntArrayRef"
+        else
+          "c10::SymIntArrayRef"
+        end
       when "float[]"
         "ArrayRef<double>"
       when "str"
@@ -458,13 +514,19 @@ def generate_dispatch_params(function, params)
         else
           "std::string"
         end
-      when "Scalar", "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
+      when "Scalar"
+        if param[:optional]
+          "const c10::optional<Scalar> &"
+        else
+          "const Scalar &"
+        end
+      when "bool", "ScalarType", "Layout", "Device", "Storage", "Generator", "MemoryFormat", "Storage"
         param[:type]
       else
         raise "Unknown type: #{param[:type]} (#{function.name})"
       end
 
-    if param[:optional] && param[:type] != "Tensor"
+    if param[:optional] && !["Tensor", "Scalar"].include?(param[:type]) && !param[:type].start_with?("int[") && !param[:type].start_with?("SymInt[")
       type = "c10::optional<#{type}>"
     end
 
@@ -507,7 +569,7 @@ def generate_dispatch_retval(function)
   when ["float", "float"]
     "std::tuple<double,double>"
   else
-    raise "Unknown retvals: #{types}"
+    raise "Unknown retvals: #{types} (#{function.name})"
   end
 end
 
@@ -572,8 +634,12 @@ def signature_type(param)
       "DirnameList"
     when /\Aint\[\d*\]\z/
       "IntArrayRef"
+    when /\ASymInt\[\d*\]\z/
+      "SymIntArrayRef"
     when "int"
       "int64_t"
+    when "SymInt"
+      "SymInt"
     when "float"
       "double"
     when "str"

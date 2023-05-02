@@ -10,28 +10,6 @@
 using namespace Rice;
 using torch::indexing::TensorIndex;
 
-namespace Rice::detail
-{
-  template<typename T>
-  struct Type<c10::complex<T>>
-  {
-    static bool verify()
-    {
-      return true;
-    }
-  };
-
-  template<typename T>
-  class To_Ruby<c10::complex<T>>
-  {
-  public:
-    VALUE convert(c10::complex<T> const& x)
-    {
-      return rb_dbl_complex_new(x.real(), x.imag());
-    }
-  };
-}
-
 template<typename T>
 Array flat_data(Tensor& tensor) {
   Tensor view = tensor.reshape({tensor.numel()});
@@ -57,17 +35,17 @@ std::vector<TensorIndex> index_vector(Array a) {
     if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(Rice::detail::From_Ruby<int64_t>().convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
-      torch::optional<int64_t> start_index = torch::nullopt;
-      torch::optional<int64_t> stop_index = torch::nullopt;
+      torch::optional<c10::SymInt> start_index = torch::nullopt;
+      torch::optional<c10::SymInt> stop_index = torch::nullopt;
 
       Object begin = obj.call("begin");
       if (!begin.is_nil()) {
-        start_index = Rice::detail::From_Ruby<int64_t>().convert(begin.value());
+        start_index = c10::SymInt(Rice::detail::From_Ruby<int64_t>().convert(begin.value()));
       }
 
       Object end = obj.call("end");
       if (!end.is_nil()) {
-        stop_index = Rice::detail::From_Ruby<int64_t>().convert(end.value());
+        stop_index = c10::SymInt(Rice::detail::From_Ruby<int64_t>().convert(end.value()));
       }
 
       Object exclude_end = obj.call("exclude_end?");
@@ -189,9 +167,31 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         auto grad = self.grad();
         return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
       })
+    // can't use grad=
+    // assignment methods fail with Ruby 3.0
     .define_method(
-      "grad=",
-      [](Tensor& self, torch::Tensor& grad) {
+      "_set_grad",
+      [](Tensor& self, Rice::Object value) {
+        if (value.is_nil()) {
+          self.mutable_grad().reset();
+          return;
+        }
+
+        const auto& grad = Rice::detail::From_Ruby<torch::Tensor>().convert(value.value());
+
+        // TODO support sparse grad
+        if (!grad.options().type_equal(self.options())) {
+          rb_raise(rb_eArgError, "assigned grad has data of a different type");
+        }
+
+        if (self.is_cuda() && grad.get_device() != self.get_device()) {
+          rb_raise(rb_eArgError, "assigned grad has data located on a different device");
+        }
+
+        if (!self.sizes().equals(grad.sizes())) {
+          rb_raise(rb_eArgError, "assigned grad has data of a different size");
+        }
+
         self.mutable_grad() = grad;
       })
     .define_method(
@@ -281,7 +281,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       })
     .define_method(
       "_to",
-      [](Tensor& self, torch::Device device, int dtype, bool non_blocking, bool copy) {
+      [](Tensor& self, torch::Device& device, int dtype, bool non_blocking, bool copy) {
         return self.to(device, (torch::ScalarType) dtype, non_blocking, copy);
       });
 

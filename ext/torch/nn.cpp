@@ -98,8 +98,11 @@ void init_nn(Rice::Module& m) {
         auto grad = self.grad();
         return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
       })
+    // can't use grad=
+    // assignment methods fail with Ruby 3.0
+    // TODO add checks like Tensor
     .define_method(
-      "grad=",
+      "_set_grad",
       [](Parameter& self, torch::Tensor& grad) {
         self.mutable_grad() = grad;
       })

@@ -11,9 +11,9 @@
 #include "utils.h"
 
 enum class ParameterType {
-  TENSOR, SCALAR, INT64, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
-  BOOL, STORAGE, PYOBJECT, SCALARTYPE, LAYOUT, MEMORY_FORMAT, DEVICE, STRING,
-  DIMNAME, DIMNAME_LIST, QSCHEME, FLOAT_LIST
+  TENSOR, SCALAR, INT64, SYM_INT, DOUBLE, COMPLEX, TENSOR_LIST, INT_LIST, GENERATOR,
+  BOOL, STORAGE, PYOBJECT, SCALARTYPE, LAYOUT, MEMORY_FORMAT, DEVICE, STREAM, STRING,
+  DIMNAME, DIMNAME_LIST, QSCHEME, FLOAT_LIST, SCALAR_LIST, SYM_INT_LIST
 };
 
 struct FunctionParameter {
@@ -35,6 +35,7 @@ struct FunctionParameter {
   at::SmallVector<VALUE, 5> numpy_python_names;
   at::Scalar default_scalar;
   std::vector<int64_t> default_intlist;
+  std::string default_string;
   union {
     bool default_bool;
     int64_t default_int;
@@ -83,23 +84,26 @@ struct RubyArgs {
   template<int N>
   inline std::array<at::Tensor, N> tensorlist_n(int i);
   inline std::vector<int64_t> intlist(int i);
-  // inline c10::OptionalArray<int64_t> intlistOptional(int i);
-  // inline std::vector<int64_t> intlistWithDefault(int i, std::vector<int64_t> default_intlist);
+  inline std::vector<c10::SymInt> symintlist(int i);
+  inline c10::OptionalArray<int64_t> intlistOptional(int i);
+  inline c10::OptionalArray<c10::SymInt> symintlistOptional(int i);
+  inline std::vector<int64_t> intlistWithDefault(int i, std::vector<int64_t> default_intlist);
   inline c10::optional<at::Generator> generator(int i);
   inline at::Storage storage(int i);
   inline at::ScalarType scalartype(int i);
-  // inline at::ScalarType scalartypeWithDefault(int i, at::ScalarType default_scalartype);
+  inline at::ScalarType scalartypeWithDefault(int i, at::ScalarType default_scalartype);
   inline c10::optional<at::ScalarType> scalartypeOptional(int i);
   inline c10::optional<at::Scalar> scalarOptional(int i);
   inline c10::optional<int64_t> toInt64Optional(int i);
+  inline c10::optional<c10::SymInt> toSymIntOptional(int i);
   inline c10::optional<bool> toBoolOptional(int i);
   inline c10::optional<double> toDoubleOptional(int i);
   inline c10::OptionalArray<double> doublelistOptional(int i);
-  // inline at::Layout layout(int i);
-  // inline at::Layout layoutWithDefault(int i, at::Layout default_layout);
+  inline at::Layout layout(int i);
+  inline at::Layout layoutWithDefault(int i, at::Layout default_layout);
   inline c10::optional<at::Layout> layoutOptional(int i);
   inline at::Device device(int i);
-  // inline at::Device deviceWithDefault(int i, const at::Device& default_device);
+  inline at::Device deviceWithDefault(int i, const at::Device& default_device);
   // inline c10::optional<at::Device> deviceOptional(int i);
   // inline at::Dimname dimname(int i);
   // inline std::vector<at::Dimname> dimnamelist(int i);
@@ -108,12 +112,14 @@ struct RubyArgs {
   inline c10::optional<at::MemoryFormat> memoryformatOptional(int i);
   // inline at::QScheme toQScheme(int i);
   inline std::string string(int i);
+  inline std::string stringWithDefault(int i, const std::string& default_str);
   inline c10::optional<std::string> stringOptional(int i);
   inline c10::string_view stringView(int i);
   // inline c10::string_view stringViewWithDefault(int i, const c10::string_view default_str);
   inline c10::optional<c10::string_view> stringViewOptional(int i);
   // inline PyObject* pyobject(int i);
   inline int64_t toInt64(int i);
+  inline c10::SymInt toSymInt(int i);
   // inline int64_t toInt64WithDefault(int i, int64_t default_int);
   inline double toDouble(int i);
   // inline double toDoubleWithDefault(int i, double default_double);
@@ -166,8 +172,24 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
 }
 
 inline std::vector<int64_t> RubyArgs::intlist(int i) {
-  if (NIL_P(args[i])) return signature.params[i].default_intlist;
+  return intlistWithDefault(i, signature.params[i].default_intlist);
+}
 
+inline std::vector<c10::SymInt> RubyArgs::symintlist(int i) {
+  if (NIL_P(args[i])) {
+    return c10::fmap(signature.params[i].default_intlist, [](int64_t di) {
+      return c10::SymInt(di);
+    });
+  }
+
+  // TODO improve
+  return c10::fmap(intlist(i), [](int64_t di) {
+    return c10::SymInt(di);
+  });
+}
+
+inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int64_t> default_intlist) {
+  if (NIL_P(args[i])) return default_intlist;
   VALUE arg = args[i];
   auto size = signature.params[i].size;
   if (size > 0 && FIXNUM_P(arg)) {
@@ -189,9 +211,19 @@ inline std::vector<int64_t> RubyArgs::intlist(int i) {
   return res;
 }
 
+inline c10::OptionalArray<int64_t> RubyArgs::intlistOptional(int i) {
+  if (NIL_P(args[i])) return {};
+  return intlist(i);
+}
+
+inline c10::OptionalArray<c10::SymInt> RubyArgs::symintlistOptional(int i) {
+  if (NIL_P(args[i])) return {};
+  return symintlist(i);
+}
+
 inline c10::optional<at::Generator> RubyArgs::generator(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
-  throw std::runtime_error("generator not supported yet");
+  return Rice::detail::From_Ruby<torch::Generator>().convert(args[i]);
 }
 
 inline at::Storage RubyArgs::storage(int i) {
@@ -235,9 +267,14 @@ inline ScalarType RubyArgs::scalartype(int i) {
 
   auto it = dtype_map.find(args[i]);
   if (it == dtype_map.end()) {
-    rb_raise(rb_eArgError, "invalid dtype: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    rb_raise(rb_eArgError, "invalid dtype: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
+}
+
+inline at::ScalarType RubyArgs::scalartypeWithDefault(int i, at::ScalarType default_scalartype) {
+  if (NIL_P(args[i])) return default_scalartype;
+  return scalartype(i);
 }
 
 inline c10::optional<ScalarType> RubyArgs::scalartypeOptional(int i) {
@@ -253,6 +290,11 @@ inline c10::optional<Scalar> RubyArgs::scalarOptional(int i) {
 inline c10::optional<int64_t> RubyArgs::toInt64Optional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
   return toInt64(i);
+}
+
+inline c10::optional<c10::SymInt> RubyArgs::toSymIntOptional(int i) {
+  if (NIL_P(args[i])) return c10::nullopt;
+  return toSymInt(i);
 }
 
 inline c10::optional<bool> RubyArgs::toBoolOptional(int i) {
@@ -284,8 +326,8 @@ inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
   return res;
 }
 
-inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
-  if (NIL_P(args[i])) return c10::nullopt;
+inline at::Layout RubyArgs::layout(int i) {
+  if (NIL_P(args[i])) return signature.params[i].default_layout;
 
   static std::unordered_map<VALUE, Layout> layout_map = {
     {ID2SYM(rb_intern("strided")), Layout::Strided},
@@ -293,9 +335,19 @@ inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
 
   auto it = layout_map.find(args[i]);
   if (it == layout_map.end()) {
-    rb_raise(rb_eArgError, "invalid layout: %s", THPUtils_unpackSymbol(args[i]).c_str());
+    rb_raise(rb_eArgError, "invalid layout: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
+}
+
+inline at::Layout RubyArgs::layoutWithDefault(int i, at::Layout default_layout) {
+  if (NIL_P(args[i])) return default_layout;
+  return layout(i);
+}
+
+inline c10::optional<at::Layout> RubyArgs::layoutOptional(int i) {
+  if (NIL_P(args[i])) return c10::nullopt;
+  return layout(i);
 }
 
 inline at::Device RubyArgs::device(int i) {
@@ -304,6 +356,11 @@ inline at::Device RubyArgs::device(int i) {
   }
   const std::string &device_str = THPUtils_unpackString(args[i]);
   return at::Device(device_str);
+}
+
+inline at::Device RubyArgs::deviceWithDefault(int i, const at::Device& default_device) {
+  if (NIL_P(args[i])) return default_device;
+  return device(i);
 }
 
 inline at::MemoryFormat RubyArgs::memoryformat(int i) {
@@ -317,6 +374,11 @@ inline c10::optional<at::MemoryFormat> RubyArgs::memoryformatOptional(int i) {
 }
 
 inline std::string RubyArgs::string(int i) {
+  return stringWithDefault(i, signature.params[i].default_string);
+}
+
+inline std::string RubyArgs::stringWithDefault(int i, const std::string& default_str) {
+  if (!args[i]) return default_str;
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 
@@ -325,20 +387,29 @@ inline c10::optional<std::string> RubyArgs::stringOptional(int i) {
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 
+// string_view does not own data
 inline c10::string_view RubyArgs::stringView(int i) {
-  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
-  return c10::string_view(str.data(), str.size());
+  return c10::string_view(RSTRING_PTR(args[i]), RSTRING_LEN(args[i]));
 }
 
+// string_view does not own data
 inline c10::optional<c10::string_view> RubyArgs::stringViewOptional(int i) {
   if (NIL_P(args[i])) return c10::nullopt;
-  auto str = Rice::detail::From_Ruby<std::string>().convert(args[i]);
-  return c10::string_view(str.data(), str.size());
+  return c10::string_view(RSTRING_PTR(args[i]), RSTRING_LEN(args[i]));
 }
 
 inline int64_t RubyArgs::toInt64(int i) {
   if (NIL_P(args[i])) return signature.params[i].default_int;
   return Rice::detail::From_Ruby<int64_t>().convert(args[i]);
+}
+
+inline c10::SymInt RubyArgs::toSymInt(int i) {
+  if (NIL_P(args[i])) {
+    return c10::SymInt(signature.params[i].default_int);
+  }
+
+  // TODO improve
+  return c10::SymInt(toInt64(i));
 }
 
 inline double RubyArgs::toDouble(int i) {

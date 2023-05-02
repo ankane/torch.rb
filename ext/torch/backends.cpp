@@ -14,4 +14,8 @@ void init_backends(Rice::Module& m) {
   Rice::define_module_under(rb_mBackends, "MKL")
     .add_handler<torch::Error>(handle_error)
     .define_singleton_function("available?", &torch::hasMKL);
+
+  Rice::define_module_under(rb_mBackends, "MPS")
+    .add_handler<torch::Error>(handle_error)
+    .define_singleton_function("available?", &torch::hasMPS);
 }

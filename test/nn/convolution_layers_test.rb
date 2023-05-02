@@ -4,7 +4,7 @@ class ConvolutionLayersTest < Minitest::Test
   def test_conv1d
     m = Torch::NN::Conv1d.new(16, 33, 3, stride: 2)
     input = Torch.randn(20, 16, 50)
-    output = m.call(input)
+    _output = m.call(input)
   end
 
   def test_conv2d
@@ -12,14 +12,14 @@ class ConvolutionLayersTest < Minitest::Test
     m = Torch::NN::Conv2d.new(16, 33, [3, 5], stride: [2, 1], padding: [4, 2])
     m = Torch::NN::Conv2d.new(16, 33, [3, 5], stride: [2, 1], padding: [4, 2], dilation: [3, 1])
     input = Torch.randn(20, 16, 50, 100)
-    output = m.call(input)
+    _output = m.call(input)
   end
 
   def test_conv3d
     m = Torch::NN::Conv3d.new(16, 33, 3, stride: 2)
     m = Torch::NN::Conv3d.new(16, 33, [3, 5, 2], stride: [2, 1, 1], padding: [4, 2, 0])
     input = Torch.randn(20, 16, 10, 50, 100)
-    output = m.call(input)
+    _output = m.call(input)
   end
 
   def test_conv_transpose1d
@@ -48,7 +48,7 @@ class ConvolutionLayersTest < Minitest::Test
     m = Torch::NN::ConvTranspose3d.new(16, 33, 3, stride: 2)
     m = Torch::NN::ConvTranspose3d.new(16, 33, [3, 5, 2], stride: [2, 1, 1], padding: [0, 4, 2])
     input = Torch.randn(20, 16, 10, 50, 100)
-    output = m.call(input)
+    _output = m.call(input)
   end
 
   def test_unfold

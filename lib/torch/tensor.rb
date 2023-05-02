@@ -8,6 +8,9 @@ module Torch
     alias_method :ndim, :dim
     alias_method :ndimension, :dim
 
+    # fix for issue w/ assignment methods
+    alias_method :grad=, :_set_grad
+
     # use alias_method for performance
     alias_method :+, :add
     alias_method :-, :sub
@@ -106,6 +109,7 @@ module Torch
       size(0)
     end
 
+    remove_method :item
     def item
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
@@ -133,15 +137,7 @@ module Torch
       cls.from_string(_data_str).reshape(*shape)
     end
 
-    def new_ones(*size, **options)
-      Torch.ones_like(Torch.empty(*size), **options)
-    end
-
     def requires_grad=(requires_grad)
-      _requires_grad!(requires_grad)
-    end
-
-    def requires_grad!(requires_grad = true)
       _requires_grad!(requires_grad)
     end
 
@@ -181,11 +177,6 @@ module Torch
       _random!(*args)
     end
 
-    # center option
-    def stft(*args)
-      Torch.stft(*args)
-    end
-
     def dup
       Torch.no_grad do
         clone
@@ -202,6 +193,14 @@ module Torch
     # attribute in Python rather than method
     def real
       Torch.real(self)
+    end
+
+    def coerce(other)
+      if other.is_a?(Numeric)
+        [Torch.tensor(other), self]
+      else
+        raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+      end
     end
   end
 end
