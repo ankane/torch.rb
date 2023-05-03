@@ -24,7 +24,7 @@ torch::Tensor make_tensor(Rice::Array a, std::vector<int64_t> size, const torch:
 }
 
 void init_torch(Rice::Module& m) {
-  m.add_handler<torch::Error>(handle_error);
+  register_handler<torch::Error>(handle_global_error);
   add_torch_functions(m);
   m.define_singleton_function(
       "grad_enabled?",

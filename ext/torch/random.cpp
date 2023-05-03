@@ -6,7 +6,6 @@
 
 void init_random(Rice::Module& m) {
   Rice::define_module_under(m, "Random")
-    .add_handler<torch::Error>(handle_error)
     .define_singleton_function(
       "initial_seed",
       []() {
