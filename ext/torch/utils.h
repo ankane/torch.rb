@@ -10,8 +10,7 @@ static_assert(
   "Incompatible LibTorch version"
 );
 
-// TODO find better place
-inline void handle_error(torch::Error const & ex) {
+inline void handle_global_error(const torch::Error& ex) {
   throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
 }
 

@@ -6,7 +6,6 @@
 
 void init_cuda(Rice::Module& m) {
   Rice::define_module_under(m, "CUDA")
-    .add_handler<torch::Error>(handle_error)
     .define_singleton_function("available?", &torch::cuda::is_available)
     .define_singleton_function("device_count", &torch::cuda::device_count)
     .define_singleton_function("manual_seed", &torch::cuda::manual_seed)

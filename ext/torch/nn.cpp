@@ -14,11 +14,9 @@ class Parameter: public torch::autograd::Variable {
 
 void init_nn(Rice::Module& m) {
   auto rb_mNN = Rice::define_module_under(m, "NN");
-  rb_mNN.add_handler<torch::Error>(handle_error);
   add_nn_functions(rb_mNN);
 
   Rice::define_module_under(rb_mNN, "Init")
-    .add_handler<torch::Error>(handle_error)
     .define_singleton_function(
       "_calculate_gain",
       [](NonlinearityType nonlinearity, double param) {
@@ -91,7 +89,6 @@ void init_nn(Rice::Module& m) {
       });
 
   Rice::define_class_under<Parameter, torch::Tensor>(rb_mNN, "Parameter")
-    .add_handler<torch::Error>(handle_error)
     .define_method(
       "grad",
       [](Parameter& self) {
