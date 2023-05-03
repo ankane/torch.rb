@@ -7,7 +7,6 @@
 void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator) {
   // https://github.com/pytorch/pytorch/blob/master/torch/csrc/Generator.cpp
   rb_cGenerator
-    .add_handler<torch::Error>(handle_error)
     .define_singleton_function(
       "new",
       []() {
