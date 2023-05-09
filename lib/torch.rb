@@ -1,5 +1,5 @@
 # ext
-require_relative "torch/ext"
+require "torch/ext"
 
 # stdlib
 require "fileutils"

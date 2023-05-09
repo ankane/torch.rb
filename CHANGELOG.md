@@ -1,3 +1,7 @@
+## 0.13.2 (unreleased)
+
+- Fixed error on Fedora
+
 ## 0.13.1 (2023-05-03)
 
 - Fixed error with Rice 4.1
