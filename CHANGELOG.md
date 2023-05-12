@@ -1,4 +1,4 @@
-## 0.13.2 (unreleased)
+## 0.13.2 (2023-05-11)
 
 - Fixed error on Fedora
 
