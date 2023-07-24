@@ -62,11 +62,15 @@ void init_torch(Rice::Module& m) {
       })
     .define_singleton_function(
       "_load",
-      [](const std::string &s) {
-        std::vector<char> v;
-        std::copy(s.begin(), s.end(), std::back_inserter(v));
+      [](const std::string filename) {
         // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
-        return torch::pickle_load(v);
+        std::ifstream input(filename, std::ios::binary);
+        std::vector<char> bytes(
+            (std::istreambuf_iterator<char>(input)),
+            (std::istreambuf_iterator<char>()));
+
+        input.close();
+        return torch::pickle_load(bytes);
       })
     .define_singleton_function(
       "_from_blob",

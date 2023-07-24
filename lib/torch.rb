@@ -388,7 +388,7 @@ module Torch
     end
 
     def load(f)
-      to_ruby(_load(File.binread(f)))
+      to_ruby(_load(f))
     end
 
     def tensor(data, **options)
