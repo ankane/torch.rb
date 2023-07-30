@@ -48,6 +48,13 @@ class SaveTest < Minitest::Test
     assert_save({"hello" => 1, "world" => 2})
   end
 
+  def test_load_missing
+    error = assert_raises(Errno::ENOENT) do
+      Torch.load("missing.bin")
+    end
+    assert_equal "No such file or directory @ rb_sysopen - missing.bin", error.message
+  end
+
   private
 
   def assert_save(obj)
