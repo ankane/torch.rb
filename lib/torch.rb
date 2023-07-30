@@ -387,11 +387,11 @@ module Torch
       File.binwrite(f, _save(to_ivalue(obj)))
     end
 
-    def load(f)
+    def load(filename)
       # keep backwards compatibility
-      File.open(f, "rb") { |f2| f2.read(1) }
+      File.open(filename, "rb") { |f| f.read(1) }
 
-      to_ruby(_load(f))
+      to_ruby(_load(filename))
     end
 
     def tensor(data, **options)
