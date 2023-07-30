@@ -1,3 +1,7 @@
+## 0.13.3 (unreleased)
+
+- Improved performance of saving and loading models
+
 ## 0.13.2 (2023-05-11)
 
 - Fixed error on Fedora
