@@ -57,8 +57,7 @@ void init_torch(Rice::Module& m) {
       "_save",
       [](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
-        std::string str(v.begin(), v.end());
-        return str;
+        return Object(rb_str_new(v.data(), v.size()));
       })
     .define_singleton_function(
       "_load",
