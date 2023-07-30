@@ -388,6 +388,9 @@ module Torch
     end
 
     def load(f)
+      # keep backwards compatibility
+      File.open(f, "rb") { |f2| f2.read(1) }
+
       to_ruby(_load(f))
     end
 

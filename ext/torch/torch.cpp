@@ -62,13 +62,12 @@ void init_torch(Rice::Module& m) {
       })
     .define_singleton_function(
       "_load",
-      [](const std::string filename) {
+      [](const std::string &filename) {
         // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
         std::ifstream input(filename, std::ios::binary);
         std::vector<char> bytes(
             (std::istreambuf_iterator<char>(input)),
             (std::istreambuf_iterator<char>()));
-
         input.close();
         return torch::pickle_load(bytes);
       })
