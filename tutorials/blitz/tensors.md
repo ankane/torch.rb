@@ -188,14 +188,13 @@ puts "tensor.matmul(tensor.T)\n#{tensor.matmul(tensor.t)}"
 
 Out:
 
-```ruby
+```text
 tensor.matmul(tensor.T)
 tensor([[3., 3., 3., 3.],
         [3., 3., 3., 3.],
         [3., 3., 3., 3.],
         [3., 3., 3., 3.]])
 ```
-
 
 **In-place operations**
 
