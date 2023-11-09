@@ -2,6 +2,8 @@
 
 #include <rice/rice.hpp>
 
+#include <fstream>
+
 #include "torch_functions.h"
 #include "templates.h"
 #include "utils.h"

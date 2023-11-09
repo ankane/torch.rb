@@ -1,5 +1,6 @@
-## 0.13.3 (unreleased)
+## 0.14.0 (unreleased)
 
+- Updated LibTorch to 2.1.0
 - Improved performance of saving and loading models
 
 ## 0.13.2 (2023-05-11)

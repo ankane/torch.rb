@@ -14,9 +14,9 @@ jobs:
           - ruby: "3.0"
             os: ubuntu-20.04
     env:
-      LIBTORCH_VERSION: 2.0.1
+      LIBTORCH_VERSION: 2.1.0
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

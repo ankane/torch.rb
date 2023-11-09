@@ -48,7 +48,12 @@ def skip_functions(functions)
     f.base_name == "split_with_sizes_copy" ||
     f.base_name == "unbind_copy" ||
     # TODO fix LibTorch 1.13 changes
-    f.base_name == "native_channel_shuffle"
+    f.base_name == "native_channel_shuffle" ||
+    # TODO fix LibTorch 2.1 changes
+    f.base_name == "sym_size" ||
+    f.base_name == "sym_numel" ||
+    f.base_name == "sym_storage_offset" ||
+    f.base_name == "sym_stride"
   end
 end
 
