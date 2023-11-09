@@ -1,17 +1,10 @@
-require_relative '../test_helper'
+require_relative "../test_helper"
 
 class FunctionalAttentionTest < Minitest::Test
-  T = 4
-  S = 8
-  B = 2
-  E = 6
-
-  SEED = 42
-
   def test_self_attention_no_mask
-    t = Torch.ones([T, B, E])
-    Torch.manual_seed SEED
-    attn = Torch::NN::MultiheadAttention.new E, 2
+    t = Torch.ones([4, 2, 6])
+    Torch.manual_seed(42)
+    attn = Torch::NN::MultiheadAttention.new(6, 2)
     out, weights = attn.(t, t, t)
 
     expected_out = Torch.tensor([
@@ -49,12 +42,12 @@ class FunctionalAttentionTest < Minitest::Test
   end
 
   def test_self_attention_with_masks
-    t = Torch.ones([T, B, E])
-    Torch.manual_seed SEED
-    attn = Torch::NN::MultiheadAttention.new E, 2
+    t = Torch.ones([4, 2, 6])
+    Torch.manual_seed(42)
+    attn = Torch::NN::MultiheadAttention.new(6, 2)
 
-    attn_mask = Torch.triu(Torch.ones([T, T]), diagonal: 1).eq(1)
-    key_padding_mask = Torch.triu(Torch.zeros(B, T))
+    attn_mask = Torch.triu(Torch.ones([4, 4]), diagonal: 1).eq(1)
+    key_padding_mask = Torch.triu(Torch.zeros(2, 4))
     key_padding_mask[0, -1] = 1
 
     out, weights = attn.(t, t, t, attn_mask: attn_mask, key_padding_mask: key_padding_mask)
@@ -94,13 +87,13 @@ class FunctionalAttentionTest < Minitest::Test
   end
 
   def test_encoder_decoder_attention
-    q = Torch.ones([T, B, E])
-    k = v = Torch.ones([S, B, E])
-    Torch.manual_seed SEED
-    attn = Torch::NN::MultiheadAttention.new E, 2
+    q = Torch.ones([4, 2, 6])
+    k = v = Torch.ones([8, 2, 6])
+    Torch.manual_seed(42)
+    attn = Torch::NN::MultiheadAttention.new(6, 2)
 
-    attn_mask = Torch.triu(Torch.ones([T, S]), diagonal: 1).eq(1)
-    key_padding_mask = Torch.triu(Torch.zeros(B, S))
+    attn_mask = Torch.triu(Torch.ones([4, 8]), diagonal: 1).eq(1)
+    key_padding_mask = Torch.triu(Torch.zeros(2, 8))
     key_padding_mask[0, -1] = 1
 
     out, weights = attn.(q, k, v, attn_mask: attn_mask, key_padding_mask: key_padding_mask)
