@@ -14,10 +14,16 @@ Check out:
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
+First, [install LibTorch](#libtorch-installation).
 
 ```sh
 brew install pytorch
+```
+
+If using homebrew, LibTorch part of the PyTorch formula:
+
+```sh
+gem install torch-rb -- --with-torch-dir=$(brew --prefix pytorch)
 ```
 
 Add this line to your application’s Gemfile:
