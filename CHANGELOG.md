@@ -1,3 +1,7 @@
+## 0.14.1 (unreleased)
+
+- Fixed default arguments for `conv1d`
+
 ## 0.14.0 (2023-11-09)
 
 - Updated LibTorch to 2.1.0
