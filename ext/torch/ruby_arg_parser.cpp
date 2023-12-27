@@ -401,7 +401,7 @@ void FunctionParameter::set_default_str(const std::string& str) {
     if (str != "None") {
       throw std::runtime_error("default value for Tensor must be none, got: " + str);
     }
-  } else if (type_ == ParameterType::INT64) {
+  } else if (type_ == ParameterType::INT64 || type_ == ParameterType::SYM_INT) {
     default_int = atol(str.c_str());
   } else if (type_ == ParameterType::BOOL) {
     default_bool = (str == "True" || str == "true");
@@ -451,6 +451,31 @@ void FunctionParameter::set_default_str(const std::string& str) {
     if (str != "None") {
       default_string = parse_string_literal(str);
     }
+  }
+  // These types weren't handled here before. Adding a default error
+  // led to a lot of test failures so adding this skip for now.
+  // We should correctly handle these though because it might be causing
+  // silent failures.
+  else if (type_ == ParameterType::TENSOR_LIST) {
+    // throw std::runtime_error("Invalid Tensor List");
+  } else if (type_ == ParameterType::GENERATOR) {
+    // throw std::runtime_error("ParameterType::GENERATOR");
+  } else if (type_ == ParameterType::PYOBJECT) {
+    // throw std::runtime_error("ParameterType::PYOBJECT");
+  } else if (type_ == ParameterType::MEMORY_FORMAT) {
+    // throw std::runtime_error("ParameterType::MEMORY_FORMAT");
+  } else if (type_ == ParameterType::DIMNAME) {
+    // throw std::runtime_error("ParameterType::DIMNAME");
+  } else if (type_ == ParameterType::DIMNAME_LIST) {
+    // throw std::runtime_error("ParameterType::DIMNAME_LIST");
+  } else if (type_ == ParameterType::SCALAR_LIST) {
+    // throw std::runtime_error("ParameterType::SCALAR_LIST");
+  } else if (type_ == ParameterType::STORAGE) {
+    // throw std::runtime_error("ParameterType::STORAGE");
+  } else if (type_ == ParameterType::QSCHEME) {
+    // throw std::runtime_error("ParameterType::QSCHEME");
+  } else {
+    throw std::runtime_error("unknown parameter type");
   }
 }
 
