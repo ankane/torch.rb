@@ -169,27 +169,4 @@ namespace Rice::detail
       }
     }
   };
-
-  template<typename T>
-  struct Type<torch::optional<T>>
-  {
-    static bool verify()
-    {
-      return true;
-    }
-  };
-
-  template<typename T>
-  class From_Ruby<torch::optional<T>>
-  {
-  public:
-    torch::optional<T> convert(VALUE x)
-    {
-      if (NIL_P(x)) {
-        return torch::nullopt;
-      } else {
-        return torch::optional<T>{From_Ruby<T>().convert(x)};
-      }
-    }
-  };
 }
