@@ -10,7 +10,7 @@ Check out:
 - [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
 - [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
 
-[![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
+[![Build Status](https://github.com/ankane/torch.rb/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/torch.rb/actions)
 
 ## Installation
 
