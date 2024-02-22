@@ -89,7 +89,7 @@ Each tensor has four properties
 You can specify properties when creating a tensor
 
 ```ruby
-Torch.rand(2, 3, dtype: :double, layout: :strided, device: "cpu", requires_grad: true)
+Torch.rand(2, 3, dtype: :float64, layout: :strided, device: "cpu", requires_grad: true)
 ```
 
 ### Operations
