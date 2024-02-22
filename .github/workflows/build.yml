@@ -23,7 +23,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/libtorch
           key: libtorch-${{ env.LIBTORCH_VERSION }}
