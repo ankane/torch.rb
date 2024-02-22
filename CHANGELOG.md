@@ -1,6 +1,7 @@
 ## 0.15.0 (unreleased)
 
 - Updated LibTorch to 2.2.0
+- Fixed error with `inspect` for MPS tensors
 
 ## 0.14.1 (2023-12-26)
 

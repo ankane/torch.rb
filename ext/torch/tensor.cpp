@@ -103,6 +103,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
 
   rb_cTensor
     .define_method("cuda?", [](Tensor& self) { return self.is_cuda(); })
+    .define_method("mps?", [](Tensor& self) { return self.is_mps(); })
     .define_method("sparse?", [](Tensor& self) { return self.is_sparse(); })
     .define_method("quantized?", [](Tensor& self) { return self.is_quantized(); })
     .define_method("dim", [](Tensor& self) { return self.dim(); })

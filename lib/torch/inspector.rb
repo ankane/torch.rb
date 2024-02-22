@@ -31,9 +31,9 @@ module Torch
           return if nonzero_finite_vals.numel == 0
 
           # Convert to double for easy calculation. HalfTensor overflows with 1e8, and there's no div() on CPU.
-          nonzero_finite_abs = nonzero_finite_vals.abs.double
-          nonzero_finite_min = nonzero_finite_abs.min.double
-          nonzero_finite_max = nonzero_finite_abs.max.double
+          nonzero_finite_abs = tensor_totype(nonzero_finite_vals.abs)
+          nonzero_finite_min = tensor_totype(nonzero_finite_abs.min)
+          nonzero_finite_max = tensor_totype(nonzero_finite_abs.max)
 
           nonzero_finite_vals.each do |value|
             if value.item != value.item.ceil
@@ -106,6 +106,11 @@ module Torch
         end
         # Ruby throws error when negative, Python doesn't
         " " * [@max_width - ret.size, 0].max + ret
+      end
+
+      def tensor_totype(t)
+        dtype = t.mps? ? :float : :double
+        t.to(dtype: dtype)
       end
     end
 
