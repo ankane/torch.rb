@@ -9,12 +9,6 @@ jobs:
         include:
           - ruby: 3.3
             os: ubuntu-22.04
-          - ruby: 3.2
-            os: ubuntu-22.04
-          - ruby: 3.1
-            os: ubuntu-20.04
-          - ruby: "3.0"
-            os: ubuntu-20.04
     env:
       LIBTORCH_VERSION: 2.2.1
     steps:
@@ -35,4 +29,5 @@ jobs:
           wget -q -O libtorch.zip https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-$LIBTORCH_VERSION%2Bcpu.zip
           unzip -q libtorch.zip
       - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
-      - run: bundle exec rake test
+      - run: sudo apt-get update && sudo apt-get install valgrind
+      - run: bundle exec rake test:valgrind
