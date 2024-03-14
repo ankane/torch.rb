@@ -9,7 +9,7 @@
 #include "utils.h"
 
 template<typename T>
-torch::Tensor make_tensor(Rice::Array a, std::vector<int64_t> size, const torch::TensorOptions &options) {
+torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
   std::vector<T> vec;
   for (long i = 0; i < a.size(); i++) {
     vec.push_back(Rice::detail::From_Ruby<T>().convert(a[i].value()));
@@ -74,13 +74,13 @@ void init_torch(Rice::Module& m) {
       })
     .define_singleton_function(
       "_from_blob",
-      [](Rice::String s, std::vector<int64_t> size, const torch::TensorOptions &options) {
+      [](Rice::String s, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
         void *data = const_cast<char *>(s.c_str());
         return torch::from_blob(data, size, options);
       })
     .define_singleton_function(
       "_tensor",
-      [](Rice::Array a, std::vector<int64_t> size, const torch::TensorOptions &options) {
+      [](Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
         auto dtype = options.dtype();
         if (dtype == torch::kByte) {
           return make_tensor<uint8_t>(a, size, options);
