@@ -174,6 +174,14 @@ module Torch
 
         # activation layers
 
+        def elu(input, alpha: 1, inplace: false)
+          if inplace
+            NN.elu!(input, alpha)
+          else
+            NN.elu(input, alpha)
+          end
+        end
+
         def hardshrink(input, lambd = 0.5)
           Torch.hardshrink(input, lambd)
         end

@@ -1,6 +1,12 @@
 require_relative "../test_helper"
 
 class ActivationsTest < Minitest::Test
+  def test_elu
+    m = Torch::NN::ELU.new
+    input = Torch.randn(2)
+    _output = m.call(input)
+  end
+
   def test_hardshrink
     m = Torch::NN::Hardshrink.new
     input = Torch.randn(2)
