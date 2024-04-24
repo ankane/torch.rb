@@ -124,6 +124,7 @@ require_relative "torch/nn/feature_alpha_dropout"
 
 # nn activations
 require_relative "torch/nn/elu"
+require_relative "torch/nn/gelu"
 require_relative "torch/nn/hardshrink"
 require_relative "torch/nn/leaky_relu"
 require_relative "torch/nn/log_sigmoid"

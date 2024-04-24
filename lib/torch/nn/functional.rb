@@ -182,6 +182,10 @@ module Torch
           end
         end
 
+        def gelu(input, approximate: 'none')
+          NN.gelu(input, approximate: approximate)
+        end
+
         def hardshrink(input, lambd = 0.5)
           Torch.hardshrink(input, lambd)
         end
