@@ -1,6 +1,6 @@
 ## 0.15.1 (unreleased)
 
-- Added `ELU` class
+- Added `ELU` and `GELU` classes
 
 ## 0.15.0 (2024-02-28)
 
