@@ -2,6 +2,7 @@
 
 - Updated LibTorch to 2.3.0
 - Added `ELU` and `GELU` classes
+- Dropped support for Ruby < 3.1
 
 ## 0.15.0 (2024-02-28)
 
