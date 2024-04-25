@@ -1,5 +1,6 @@
-## 0.15.1 (unreleased)
+## 0.16.0 (unreleased)
 
+- Updated LibTorch to 2.3.0
 - Added `ELU` and `GELU` classes
 
 ## 0.15.0 (2024-02-28)
