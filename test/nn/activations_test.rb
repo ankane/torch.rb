@@ -72,4 +72,10 @@ class ActivationsTest < Minitest::Test
     input = Torch.randn(2)
     _output = m.call(input)
   end
+
+  def test_gelu
+    m = Torch::NN::GELU.new
+    input = Torch.randn(2)
+    _output = m.call(input)
+  end
 end
