@@ -11,7 +11,7 @@ module Torch
       end
 
       def extra_inspect
-        "approximate: '%{@approximate}'"
+        "approximate: #{@approximate.inspect}"
       end
     end
   end
