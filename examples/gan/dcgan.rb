@@ -8,7 +8,7 @@ require "torchvision"
 
 Dir.mkdir("images") unless Dir.exist?("images")
 
-cuda = Torch::CUDA::available?
+cuda = Torch::CUDA.available?
 
 weights_init_normal = lambda do |m|
   classname = m.class.name
@@ -54,7 +54,7 @@ class Discriminator < Torch::NN::Module
   def initialize
     super()
 
-    discriminator_block = lambda do |in_filters, out_filters, bn=true|
+    discriminator_block = lambda do |in_filters, out_filters, bn = true|
       block = [Torch::NN::Conv2d.new(in_filters, out_filters, 3, stride: 2, padding: 1), Torch::NN::LeakyReLU.new(negative_slope: 0.2, inplace: true), Torch::NN::Dropout2d.new(p: 0.25)]
       if bn
         block << Torch::NN::BatchNorm2d.new(out_filters, eps: 0.8)

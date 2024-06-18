@@ -10,14 +10,14 @@ Dir.mkdir("images") unless Dir.exist?("images")
 
 img_shape = [1, 28, 28]
 
-cuda = Torch::CUDA::available?
+cuda = Torch::CUDA.available?
 
 class Generator < Torch::NN::Module
   def initialize(img_shape)
     super()
     @img_shape = img_shape
 
-    block = lambda do |in_feat, out_feat, normalize=true|
+    block = lambda do |in_feat, out_feat, normalize = true|
       layers = [Torch::NN::Linear.new(in_feat, out_feat)]
       if normalize
         layers << Torch::NN::BatchNorm1d.new(out_feat, eps: 0.8)
@@ -103,7 +103,6 @@ batches_done = 0
 gen_imgs = nil
 200.times do |epoch|
   dataloader.each_with_index do |(imgs, _), i|
-
     # Configure input
     real_imgs = imgs.type(Tensor)
 

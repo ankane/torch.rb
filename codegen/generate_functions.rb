@@ -216,7 +216,7 @@ def add_dispatch(function, def_method)
     out_code = generate_dispatch(function["out"], def_method)
     out_index = function["out"].out_index
 
-    return "if (_r.isNone(#{out_index})) {
+    "if (_r.isNone(#{out_index})) {
     #{indent(base_code)}
   } else {
     #{indent(out_code)}
@@ -439,7 +439,7 @@ def generate_function_params(function, params, remove_self)
         else
           "#{func}Optional"
         end
-      end
+    end
 
     "_r.#{func}(#{param[:position]})"
   end

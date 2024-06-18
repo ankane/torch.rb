@@ -134,7 +134,7 @@ module Torch
           raise ArgumentError, "Padding length too large" unless pad.size / 2 <= input.dim
 
           if mode == "constant"
-            return Torch.constant_pad_nd(input, pad, value)
+            Torch.constant_pad_nd(input, pad, value)
           else
             raise ArgumentError, "Padding mode doesn't take in value argument" unless value == 0
 

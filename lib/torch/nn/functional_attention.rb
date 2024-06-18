@@ -5,10 +5,10 @@ module Torch
         def in_projection_packed(q, k, v, w, b: nil)
           e = q.size(-1)
 
-          if k.eql? v
-            if q.eql? k
+          if k.eql?(v)
+            if q.eql?(k)
               # self-attention
-              return linear(q, w, b).chunk(3, dim: -1)
+              linear(q, w, b).chunk(3, dim: -1)
             else
               # encoder-decoder attention
               w_q, w_kv = w.split_with_sizes([e, e * 2])
@@ -18,7 +18,7 @@ module Torch
                 b_q, b_kv = b.split_with_sizes([e, e * 2])
               end
 
-              return [linear(q, w_q, b_q), *linear(k, w_kv, b_kv).chunk(2, dim: -1)]
+              [linear(q, w_q, b_q), *linear(k, w_kv, b_kv).chunk(2, dim: -1)]
             end
           else
             w_q, w_k, w_v = w.chunk(3)
@@ -28,7 +28,7 @@ module Torch
               b_q, b_k, b_v = b.chunk(3)
             end
 
-            return [linear(q, w_q, b_q), linear(k, w_k, b_k), linear(v, w_v, b_v)]
+            [linear(q, w_q, b_q), linear(k, w_k, b_k), linear(v, w_v, b_v)]
           end
         end
 
