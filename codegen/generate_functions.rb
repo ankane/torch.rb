@@ -155,10 +155,10 @@ def generate_attach_def(name, type, def_method)
     end
 
   ruby_name = "_#{ruby_name}" if ["size", "stride", "random!"].include?(ruby_name)
-  ruby_name = ruby_name.sub(/\Afft_/, "") if type == "fft"
-  ruby_name = ruby_name.sub(/\Alinalg_/, "") if type == "linalg"
-  ruby_name = ruby_name.sub(/\Aspecial_/, "") if type == "special"
-  ruby_name = ruby_name.sub(/\Asparse_/, "") if type == "sparse"
+  ruby_name = ruby_name.delete_prefix("fft_") if type == "fft"
+  ruby_name = ruby_name.delete_prefix("linalg_") if type == "linalg"
+  ruby_name = ruby_name.delete_prefix("special_") if type == "special"
+  ruby_name = ruby_name.delete_prefix("sparse_") if type == "sparse"
   ruby_name = name if name.start_with?("__")
 
   "rb_#{def_method}(m, \"#{ruby_name}\", #{full_name(name, type)}, -1);"

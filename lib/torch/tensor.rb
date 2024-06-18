@@ -57,7 +57,7 @@ module Torch
       if shape.empty?
         arr
       else
-        shape[1..-1].reverse.each do |dim|
+        shape[1..-1].reverse_each do |dim|
           arr = arr.each_slice(dim)
         end
         arr.to_a
