@@ -26,7 +26,7 @@ Add this line to your application’s Gemfile:
 gem "torch-rb"
 ```
 
-It can take 5-10 minutes to compile the extension.
+It can take 5-10 minutes to compile the extension. Windows is not currently supported.
 
 ## Getting Started
 
