@@ -160,6 +160,7 @@ module Torch
     # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def [](*indexes)
+      indexes = indexes.map { |v| v.is_a?(Array) ? Torch.tensor(v) : v }
       _index(indexes)
     end
 
@@ -167,6 +168,7 @@ module Torch
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def []=(*indexes, value)
       raise ArgumentError, "Tensor does not support deleting items" if value.nil?
+      indexes = indexes.map { |v| v.is_a?(Array) ? Torch.tensor(v) : v }
       value = Torch.tensor(value, dtype: dtype) unless value.is_a?(Tensor)
       _index_put_custom(indexes, value)
     end

@@ -1,3 +1,7 @@
+## 0.16.1 (unreleased)
+
+- Added support for tensor indexing with arrays
+
 ## 0.16.0 (2024-06-12)
 
 - Updated LibTorch to 2.3.0
