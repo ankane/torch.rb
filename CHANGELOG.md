@@ -1,5 +1,6 @@
 ## 0.16.1 (unreleased)
 
+- Added `normalize` method
 - Added support for tensor indexing with arrays
 
 ## 0.16.0 (2024-06-12)

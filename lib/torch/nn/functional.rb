@@ -481,6 +481,16 @@ module Torch
           Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, to_reduction(reduction))
         end
 
+        def normalize(input, p: 2.0, dim: 1, eps: 1e-12, out: nil)
+          if out.nil?
+            denom = input.norm(p, dim, keepdim: true).clamp_min(eps).expand_as(input)
+            input / denom
+          else
+            denom = input.norm(p, dim, keepdim: true).clamp_min!(eps).expand_as(input)
+            Torch.div(input, denom, out: out)
+          end
+        end
+
         # vision
 
         def interpolate(input, size: nil, scale_factor: nil, mode: "nearest", align_corners: nil, recompute_scale_factor: nil)
