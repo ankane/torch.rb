@@ -1,5 +1,6 @@
-## 0.16.1 (unreleased)
+## 0.17.0 (unreleased)
 
+- Updated LibTorch to 2.4.0
 - Added `normalize` method
 - Added support for tensor indexing with arrays
 
