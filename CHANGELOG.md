@@ -1,4 +1,4 @@
-## 0.17.0 (unreleased)
+## 0.17.0 (2024-07-26)
 
 - Updated LibTorch to 2.4.0
 - Added `normalize` method
