@@ -10,16 +10,23 @@ module Torch
         @parameters = {}
         @buffers = {}
         @modules = {}
+        @non_persistent_buffers_set = Set.new
       end
 
       def forward
         raise NotImplementedError
       end
 
-      def register_buffer(name, tensor)
+      def register_buffer(name, tensor, persistent: true)
         # TODO add checks
         @buffers[name] = tensor
         instance_variable_set("@#{name}", tensor)
+
+        if persistent
+          @non_persistent_buffers_set.delete(name)
+        else
+          @non_persistent_buffers_set << name
+        end
       end
 
       def register_parameter(name, param)
