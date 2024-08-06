@@ -197,8 +197,18 @@ module Torch
         named_buffers.values
       end
 
-      def named_buffers
-        @buffers || {}
+      # TODO set recurse: true in 0.18.0
+      def named_buffers(prefix: "", recurse: false)
+        buffers = {}
+        if recurse
+          named_children.each do |name, mod|
+            buffers.merge!(mod.named_buffers(prefix: "#{prefix}#{name}.", recurse: recurse))
+          end
+        end
+        (@buffers || {}).each do |k, v|
+          buffers[[prefix, k].join] = v
+        end
+        buffers
       end
 
       def children
