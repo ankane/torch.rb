@@ -407,7 +407,10 @@ module Torch
           destination[prefix + k] = v
         end
         named_buffers.each do |k, v|
-          destination[prefix + k] = v
+          # TODO exclude v.nil?
+          if !@non_persistent_buffers_set.include?(k)
+            destination[prefix + k] = v
+          end
         end
       end
 
