@@ -1,4 +1,4 @@
-## 0.17.1 (unreleased)
+## 0.17.1 (2024-08-19)
 
 - Added `persistent` option to `register_buffer` method
 - Added `prefix` and `recurse` options to `named_buffers` method
