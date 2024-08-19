@@ -132,9 +132,13 @@ module Torch
 
     # TODO read directly from memory
     def numo
-      cls = Torch._dtype_to_numo[dtype]
-      raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.from_string(_data_str).reshape(*shape)
+      if dtype == :bool
+        Numo::UInt8.from_string(_data_str).ne(0).reshape(*shape)
+      else
+        cls = Torch._dtype_to_numo[dtype]
+        raise Error, "Cannot convert #{dtype} to Numo" unless cls
+        cls.from_string(_data_str).reshape(*shape)
+      end
     end
 
     def requires_grad=(requires_grad)
