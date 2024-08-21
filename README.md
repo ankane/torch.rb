@@ -14,7 +14,16 @@ Check out:
 
 ## Installation
 
-First, [download LibTorch](https://pytorch.org/get-started/locally/) (for Linux, use the `cxx11 ABI` version). Then run:
+First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
+
+```sh
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip > libtorch.zip
+unzip -q libtorch.zip
+```
+
+For Linux x86-64, select your compute platform and use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
+
+Then run:
 
 ```sh
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
