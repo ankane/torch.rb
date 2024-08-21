@@ -21,7 +21,7 @@ curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip
 unzip -q libtorch.zip
 ```
 
-For Linux x86-64, select your compute platform and use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
+For Linux x86-64, use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
 
 Then run:
 
