@@ -14,7 +14,7 @@ Check out:
 
 ## Installation
 
-First, [download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
+First, [download LibTorch](https://pytorch.org/get-started/locally/) (for Linux, use the `cxx11 ABI` version). Then run:
 
 ```sh
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
