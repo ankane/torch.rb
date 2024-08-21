@@ -14,13 +14,13 @@ Check out:
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
+First, [download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
 
 ```sh
-brew install pytorch
+bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
-Add this line to your application’s Gemfile:
+And add this line to your application’s Gemfile:
 
 ```ruby
 gem "torch-rb"
@@ -398,13 +398,7 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
 
-## LibTorch Installation
-
-[Download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
-
-```sh
-bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
-```
+## LibTorch Compatibility
 
 Here’s the list of compatible versions.
 
@@ -416,14 +410,6 @@ Torch.rb | LibTorch
 0.14.x | 2.1.x
 0.13.x | 2.0.x
 0.12.x | 1.13.x
-
-### Homebrew
-
-You can also use Homebrew.
-
-```sh
-brew install pytorch
-```
 
 ## Performance
 
