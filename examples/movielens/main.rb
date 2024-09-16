@@ -2,6 +2,7 @@
 # https://github.com/maciejkula/spotlight
 # see LICENSE-movielens-example.txt
 
+require "bundler/setup"
 require "torch"
 require "csv"
 

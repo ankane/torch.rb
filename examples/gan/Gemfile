@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gemspec path: "../.."
+
+gem "torchvision", ">= 0.2"

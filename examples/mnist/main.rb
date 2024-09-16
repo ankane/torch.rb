@@ -2,6 +2,7 @@
 # https://github.com/pytorch/examples/blob/master/mnist/main.py
 # see LICENSE-mnist-example.txt
 
+require "bundler/setup"
 require "torch"
 require "torchvision"
 

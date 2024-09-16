@@ -3,6 +3,7 @@
 # see LICENSE-gan-examples.txt
 # paper: https://arxiv.org/abs/1701.07875
 
+require "bundler/setup"
 require "torch"
 require "torchvision"
 
