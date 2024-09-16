@@ -24,6 +24,7 @@ module Torch
     alias_method :^, :logical_xor
     alias_method :<<, :__lshift__
     alias_method :>>, :__rshift__
+    alias_method :~, :bitwise_not
 
     def self.new(*args)
       FloatTensor.new(*args)
