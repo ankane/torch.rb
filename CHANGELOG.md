@@ -1,3 +1,7 @@
+## 0.18.0 (unreleased)
+
+- Updated LibTorch to 2.5.0
+
 ## 0.17.1 (2024-08-19)
 
 - Added `persistent` option to `register_buffer` method

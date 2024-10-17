@@ -413,6 +413,7 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
+0.18.x | 2.5.x
 0.17.x | 2.4.x
 0.16.x | 2.3.x
 0.15.x | 2.2.x
