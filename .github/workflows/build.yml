@@ -30,5 +30,7 @@ jobs:
           unzip -q libtorch.zip
       - run: MAKE="make -j$(nproc)" bundle exec rake compile -- --with-torch-dir=$HOME/libtorch
       - if: ${{ failure() }}
-        run: cat tmp/**/*.log
+        run: |
+          find tmp
+          cat tmp/x86_64-linux/ext/3.1.6/mkmf.log
       - run: bundle exec rake test
