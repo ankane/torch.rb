@@ -1,5 +1,6 @@
 ## 0.18.1 (unreleased)
 
+- Improved `inspect` for `Device`
 - Fixed equality for `Device`
 
 ## 0.18.0 (2024-10-22)
