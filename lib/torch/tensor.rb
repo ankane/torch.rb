@@ -209,5 +209,10 @@ module Torch
         raise TypeError, "#{self.class} can't be coerced into #{other.class}"
       end
     end
+
+    # TODO return Device instead of String in 0.19.0
+    def device
+      _device._str
+    end
   end
 end

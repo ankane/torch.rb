@@ -212,11 +212,9 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         return s.str();
       })
     .define_method(
-      "device",
+      "_device",
       [](Tensor& self) {
-        std::stringstream s;
-        s << self.device();
-        return s.str();
+        return self.device();
       })
     .define_method(
       "_data_str",
