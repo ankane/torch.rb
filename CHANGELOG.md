@@ -2,6 +2,7 @@
 
 - Improved `inspect` for `Device`
 - Fixed equality for `Device`
+- Fixed `index` method for `Device` when no index
 
 ## 0.18.0 (2024-10-22)
 

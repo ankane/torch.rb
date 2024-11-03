@@ -1,7 +1,11 @@
 module Torch
   class Device
+    def index
+      index? ? _index : nil
+    end
+
     def inspect
-      extra = ", index: #{index.inspect}" if index != -1
+      extra = ", index: #{index.inspect}" if index?
       "device(type: #{type.inspect}#{extra})"
     end
     alias_method :to_s, :inspect
