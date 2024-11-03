@@ -8,6 +8,7 @@ require "set"
 require "tmpdir"
 
 # modules
+require_relative "torch/device"
 require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
