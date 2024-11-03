@@ -383,7 +383,11 @@ module Torch
     alias_method :set_grad_enabled, :grad_enabled
 
     def device(str)
-      Device.new(str)
+      if str.is_a?(Device)
+        str
+      else
+        Device.new(str)
+      end
     end
 
     def save(obj, f)
