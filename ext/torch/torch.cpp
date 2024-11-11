@@ -11,6 +11,7 @@
 template<typename T>
 torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
   std::vector<T> vec;
+  vec.reserve(a.size());
   for (long i = 0; i < a.size(); i++) {
     vec.push_back(Rice::detail::From_Ruby<T>().convert(a[i].value()));
   }
