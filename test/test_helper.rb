@@ -7,7 +7,13 @@ require "numo/narray"
 # support
 require_relative "support/net"
 
+$stdout.sync = true
+
 class Minitest::Test
+  def setup
+    $stdout.puts "#{self.class.name}##{name}"
+  end
+
   def assert_elements_in_delta(expected, actual)
     assert_equal expected.size, actual.size
     expected.zip(actual) do |exp, act|
