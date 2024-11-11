@@ -11,17 +11,12 @@
 template<typename T>
 torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
   std::vector<T> vec;
+  vec.reserve(a.size());
   for (long i = 0; i < a.size(); i++) {
     vec.push_back(Rice::detail::From_Ruby<T>().convert(a[i].value()));
   }
 
-  // hack for requires_grad error
-  auto requires_grad = options.requires_grad();
-  torch::Tensor t = torch::tensor(vec, options.requires_grad(c10::nullopt));
-  if (requires_grad) {
-    t.set_requires_grad(true);
-  }
-
+  torch::Tensor t = torch::tensor(vec, options);
   return t.reshape(size);
 }
 
