@@ -105,5 +105,5 @@ void init_torch(Rice::Module& m) {
         } else {
           throw std::runtime_error("Unsupported type");
         }
-      });
+      }, Rice::Return().takeOwnership());
 }
