@@ -14,19 +14,28 @@ Check out:
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
+First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-brew install pytorch
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.5.1.zip > libtorch.zip
+unzip -q libtorch.zip
 ```
 
-Add this line to your application’s Gemfile:
+For Linux x86-64, use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
+
+Then run:
+
+```sh
+bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
+```
+
+And add this line to your application’s Gemfile:
 
 ```ruby
 gem "torch-rb"
 ```
 
-It can take 5-10 minutes to compile the extension.
+It can take 5-10 minutes to compile the extension. Windows is not currently supported.
 
 ## Getting Started
 
@@ -398,30 +407,19 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
 
-## LibTorch Installation
-
-[Download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
-
-```sh
-bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
-```
+## LibTorch Compatibility
 
 Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
+0.18.x | 2.5.x
+0.17.x | 2.4.x
+0.16.x | 2.3.x
 0.15.x | 2.2.x
 0.14.x | 2.1.x
 0.13.x | 2.0.x
 0.12.x | 1.13.x
-
-### Homebrew
-
-You can also use Homebrew.
-
-```sh
-brew install pytorch
-```
 
 ## Performance
 

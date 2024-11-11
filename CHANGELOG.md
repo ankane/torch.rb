@@ -1,3 +1,30 @@
+## 0.18.1 (unreleased)
+
+- Improved `inspect` for `Device`
+- Fixed equality for `Device`
+- Fixed `index` method for `Device` when no index
+
+## 0.18.0 (2024-10-22)
+
+- Updated LibTorch to 2.5.0
+
+## 0.17.1 (2024-08-19)
+
+- Added `persistent` option to `register_buffer` method
+- Added `prefix` and `recurse` options to `named_buffers` method
+
+## 0.17.0 (2024-07-26)
+
+- Updated LibTorch to 2.4.0
+- Added `normalize` method
+- Added support for tensor indexing with arrays
+
+## 0.16.0 (2024-06-12)
+
+- Updated LibTorch to 2.3.0
+- Added `ELU` and `GELU` classes
+- Dropped support for Ruby < 3.1
+
 ## 0.15.0 (2024-02-28)
 
 - Updated LibTorch to 2.2.0

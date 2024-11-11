@@ -2,6 +2,7 @@
 # https://github.com/pytorch/examples/blob/master/mnist/main.py
 # see LICENSE-mnist-example.txt
 
+require "bundler/setup"
 require "torch"
 require "torchvision"
 
@@ -98,7 +99,7 @@ train_dataset = TorchVision::Datasets::MNIST.new(root,
   download: true,
   transform: TorchVision::Transforms::Compose.new([
     TorchVision::Transforms::ToTensor.new,
-    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081])
   ])
 )
 test_dataset = TorchVision::Datasets::MNIST.new(root,
@@ -106,7 +107,7 @@ test_dataset = TorchVision::Datasets::MNIST.new(root,
   download: true,
   transform: TorchVision::Transforms::Compose.new([
     TorchVision::Transforms::ToTensor.new,
-    TorchVision::Transforms::Normalize.new([0.1307], [0.3081]),
+    TorchVision::Transforms::Normalize.new([0.1307], [0.3081])
   ])
 )
 

@@ -8,7 +8,7 @@ void init_device(Rice::Module& m) {
   Rice::define_class_under<torch::Device>(m, "Device")
     .define_constructor(Rice::Constructor<torch::Device, const std::string&>())
     .define_method(
-      "index",
+      "_index",
       [](torch::Device& self) {
         return self.index();
       })
@@ -23,5 +23,10 @@ void init_device(Rice::Module& m) {
         std::stringstream s;
         s << self.type();
         return s.str();
+      })
+    .define_method(
+      "_str",
+      [](torch::Device& self) {
+        return self.str();
       });
 }

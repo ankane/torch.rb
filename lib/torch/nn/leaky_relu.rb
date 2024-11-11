@@ -13,7 +13,7 @@ module Torch
 
       def extra_inspect
         inplace_str = @inplace ? ", inplace: true" : ""
-        format("negative_slope: %s%s", @negative_slope, inplace_str)
+        format("negative_slope: %s", @negative_slope) + inplace_str
       end
     end
   end

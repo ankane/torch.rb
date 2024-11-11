@@ -3,7 +3,7 @@ require_relative "../test_helper"
 class SparseLayersTest < Minitest::Test
   def test_embedding
     embedding = Torch::NN::Embedding.new(10, 3)
-    input = Torch::LongTensor.new([[1, 2, 4, 5],[4, 3, 2, 9]])
+    input = Torch::LongTensor.new([[1, 2, 4, 5], [4, 3, 2, 9]])
     embedding.call(input)
 
     embedding = Torch::NN::Embedding.new(10, 3, padding_idx: 0)

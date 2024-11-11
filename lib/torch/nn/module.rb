@@ -10,16 +10,23 @@ module Torch
         @parameters = {}
         @buffers = {}
         @modules = {}
+        @non_persistent_buffers_set = Set.new
       end
 
       def forward
         raise NotImplementedError
       end
 
-      def register_buffer(name, tensor)
+      def register_buffer(name, tensor, persistent: true)
         # TODO add checks
         @buffers[name] = tensor
         instance_variable_set("@#{name}", tensor)
+
+        if persistent
+          @non_persistent_buffers_set.delete(name)
+        else
+          @non_persistent_buffers_set << name
+        end
       end
 
       def register_parameter(name, param)
@@ -190,8 +197,18 @@ module Torch
         named_buffers.values
       end
 
-      def named_buffers
-        @buffers || {}
+      # TODO set recurse: true in 0.18.0
+      def named_buffers(prefix: "", recurse: false)
+        buffers = {}
+        if recurse
+          named_children.each do |name, mod|
+            buffers.merge!(mod.named_buffers(prefix: "#{prefix}#{name}.", recurse: recurse))
+          end
+        end
+        (@buffers || {}).each do |k, v|
+          buffers[[prefix, k].join] = v
+        end
+        buffers
       end
 
       def children
@@ -390,7 +407,10 @@ module Torch
           destination[prefix + k] = v
         end
         named_buffers.each do |k, v|
-          destination[prefix + k] = v
+          # TODO exclude v.nil?
+          if !@non_persistent_buffers_set.include?(k)
+            destination[prefix + k] = v
+          end
         end
       end
 

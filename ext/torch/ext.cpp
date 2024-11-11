@@ -31,6 +31,7 @@ void Init_ext()
 
   // keep this order
   init_torch(m);
+  init_device(m);
   init_tensor(m, rb_cTensor, rb_cTensorOptions);
   init_nn(m);
   init_fft(m);
@@ -39,7 +40,6 @@ void Init_ext()
 
   init_backends(m);
   init_cuda(m);
-  init_device(m);
   init_generator(m, rb_cGenerator);
   init_ivalue(m, rb_cIValue);
   init_random(m);

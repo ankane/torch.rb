@@ -132,4 +132,9 @@ class TensorMethodsTest < Minitest::Test
   def test_cumsum_dtype
     assert_equal :int64, Torch.tensor([1, 2, 3]).cumsum(dim: 0).dtype
   end
+
+  def test_bitwise_not
+    x = Torch.tensor([1, 2, 3])
+    assert_tensor [-2, -3, -4], ~x
+  end
 end

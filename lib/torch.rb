@@ -8,6 +8,7 @@ require "set"
 require "tmpdir"
 
 # modules
+require_relative "torch/device"
 require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
@@ -123,6 +124,8 @@ require_relative "torch/nn/dropout3d"
 require_relative "torch/nn/feature_alpha_dropout"
 
 # nn activations
+require_relative "torch/nn/elu"
+require_relative "torch/nn/gelu"
 require_relative "torch/nn/hardshrink"
 require_relative "torch/nn/leaky_relu"
 require_relative "torch/nn/log_sigmoid"
@@ -380,7 +383,11 @@ module Torch
     alias_method :set_grad_enabled, :grad_enabled
 
     def device(str)
-      Device.new(str)
+      if str.is_a?(Device)
+        str
+      else
+        Device.new(str)
+      end
     end
 
     def save(obj, f)
