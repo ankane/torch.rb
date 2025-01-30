@@ -1,4 +1,4 @@
-## 0.19.0 (unreleased)
+## 0.19.0 (2025-01-29)
 
 - Updated LibTorch to 2.6.0
 - Improved `inspect` for `Device`
