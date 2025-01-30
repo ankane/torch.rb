@@ -53,7 +53,9 @@ def skip_functions(functions)
     f.base_name == "sym_size" ||
     f.base_name == "sym_numel" ||
     f.base_name == "sym_storage_offset" ||
-    f.base_name == "sym_stride"
+    f.base_name == "sym_stride" ||
+    # TODO fix LibTorch 2.6 changes
+    f.base_name == "rrelu_with_noise"
   end
 end
 

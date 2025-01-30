@@ -1,5 +1,6 @@
-## 0.18.1 (unreleased)
+## 0.19.0 (unreleased)
 
+- Updated LibTorch to 2.6.0
 - Improved `inspect` for `Device`
 - Fixed equality for `Device`
 - Fixed `index` method for `Device` when no index

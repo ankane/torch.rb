@@ -60,7 +60,7 @@ class TensorAttributesTest < Minitest::Test
     error = assert_raises(NoMethodError) do
       Torch.tensor([true], dtype: :complex64)
     end
-    assert_match "undefined method `real' for true", error.message
+    assert_match(/undefined method [`']real' for true/, error.message)
   end
 
   def test_layout

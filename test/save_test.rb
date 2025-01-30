@@ -19,7 +19,7 @@ class SaveTest < Minitest::Test
     error = assert_raises(RangeError) do
       Torch.save(2**64, tmpfile.path)
     end
-    assert_match "bignum too big to convert into `long", error.message
+    assert_match(/bignum too big to convert into [`']long/, error.message)
   end
 
   def test_float
