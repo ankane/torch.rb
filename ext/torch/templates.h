@@ -46,10 +46,7 @@ namespace Rice::detail
   template<typename T>
   struct Type<c10::complex<T>>
   {
-    static bool verify()
-    {
-      return true;
-    }
+    static bool verify() { return true; }
   };
 
   template<typename T>
@@ -66,10 +63,7 @@ namespace Rice::detail
   class From_Ruby<c10::complex<T>>
   {
   public:
-    Convertible is_convertible(VALUE value)
-    {
-      return Convertible::Cast;
-    }
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     c10::complex<T> convert(VALUE x)
     {
@@ -85,20 +79,14 @@ namespace Rice::detail
   template<>
   struct Type<FanModeType>
   {
-    static bool verify()
-    {
-      return true;
-    }
+    static bool verify() { return true; }
   };
 
   template<>
   class From_Ruby<FanModeType>
   {
   public:
-    Convertible is_convertible(VALUE value)
-    {
-      return Convertible::Cast;
-    }
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     FanModeType convert(VALUE x)
     {
@@ -116,20 +104,14 @@ namespace Rice::detail
   template<>
   struct Type<NonlinearityType>
   {
-    static bool verify()
-    {
-      return true;
-    }
+    static bool verify() { return true; }
   };
 
   template<>
   class From_Ruby<NonlinearityType>
   {
   public:
-    Convertible is_convertible(VALUE value)
-    {
-      return Convertible::Cast;
-    }
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     NonlinearityType convert(VALUE x)
     {
@@ -165,20 +147,14 @@ namespace Rice::detail
   template<>
   struct Type<Scalar>
   {
-    static bool verify()
-    {
-      return true;
-    }
+    static bool verify() { return true; }
   };
 
   template<>
   class From_Ruby<Scalar>
   {
   public:
-    Convertible is_convertible(VALUE value)
-    {
-      return Convertible::Cast;
-    }
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     Scalar convert(VALUE x)
     {
