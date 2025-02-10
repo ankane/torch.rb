@@ -66,6 +66,11 @@ namespace Rice::detail
   class From_Ruby<c10::complex<T>>
   {
   public:
+    Convertible is_convertible(VALUE value)
+    {
+      return Convertible::Cast;
+    }
+
     c10::complex<T> convert(VALUE x)
     {
       VALUE real = rb_funcall(x, rb_intern("real"), 0);
@@ -90,6 +95,11 @@ namespace Rice::detail
   class From_Ruby<FanModeType>
   {
   public:
+    Convertible is_convertible(VALUE value)
+    {
+      return Convertible::Cast;
+    }
+
     FanModeType convert(VALUE x)
     {
       auto s = String(x).str();
@@ -116,6 +126,11 @@ namespace Rice::detail
   class From_Ruby<NonlinearityType>
   {
   public:
+    Convertible is_convertible(VALUE value)
+    {
+      return Convertible::Cast;
+    }
+
     NonlinearityType convert(VALUE x)
     {
       auto s = String(x).str();
@@ -160,6 +175,11 @@ namespace Rice::detail
   class From_Ruby<Scalar>
   {
   public:
+    Convertible is_convertible(VALUE value)
+    {
+      return Convertible::Cast;
+    }
+
     Scalar convert(VALUE x)
     {
       if (FIXNUM_P(x)) {
