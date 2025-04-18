@@ -159,7 +159,7 @@ module Torch
 
     # TODO better compare?
     def <=>(other)
-      item <=> other
+      -1 * (other <=> item)
     end
 
     # based on python_variable_indexing.cpp and

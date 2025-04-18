@@ -30,6 +30,17 @@ class TensorMethodsTest < Minitest::Test
     assert_equal :float64, x.to(dtype: :float64).dtype
   end
 
+  def test_comparison_operator
+    x = Torch.tensor(42)
+
+    assert_equal 0, 42 <=> x
+    assert_equal 0, x <=> 42
+    assert_equal -1, 35.0 <=> x
+    assert_equal 1, x <=> 35.0
+    assert_equal -1, x <=> 1138
+    assert_equal 1, 1138 <=> x
+  end
+
   def test_to_symbol
     x = Torch.tensor([1, 2, 3])
     assert_equal :float64, x.to(:float64).dtype
