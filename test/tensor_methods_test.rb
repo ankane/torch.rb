@@ -81,6 +81,27 @@ class TensorMethodsTest < Minitest::Test
     assert_equal [false, true, true, false], (x ^ y).to_a
   end
 
+  def test_comparison_operator
+    assert_equal true, Torch.tensor(1) == 1
+    assert_equal false, Torch.tensor(1) == 2
+    assert_equal true, 1 == Torch.tensor(1)
+    assert_equal false, 2 == Torch.tensor(1)
+
+    # TODO support
+    # assert_equal true, Torch.tensor([1, 2, 3]) == Torch.tensor([1, 2, 3])
+    # assert_equal false, Torch.tensor(1) == Torch.tensor([1, 2, 3])
+
+    assert_equal false, Torch.tensor(1) > 2
+    assert_equal true, 2 > Torch.tensor(1)
+
+    assert_equal 0, Torch.tensor(1) <=> 1
+    assert_equal (-1), Torch.tensor(1) <=> 2
+    assert_equal 1, Torch.tensor(1) <=> 0
+    assert_equal 0, 1 <=> Torch.tensor(1)
+    assert_equal (-1), 0 <=> Torch.tensor(1)
+    assert_equal 1, 2 <=> Torch.tensor(1)
+  end
+
   def test_type
     x = Torch.tensor([1, 2, 3])
     assert_equal :float64, x.type(:float64).dtype

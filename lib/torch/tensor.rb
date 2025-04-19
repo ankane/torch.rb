@@ -159,6 +159,7 @@ module Torch
 
     # TODO better compare?
     def <=>(other)
+      other = other.item if other.is_a?(Tensor)
       item <=> other
     end
 

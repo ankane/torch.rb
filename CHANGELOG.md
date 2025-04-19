@@ -1,6 +1,7 @@
 ## 0.19.2 (unreleased)
 
 - Added `Normal` distribution
+- Fixed `SystemStackError` with certain tensor comparisons
 
 ## 0.19.1 (2025-02-10)
 
