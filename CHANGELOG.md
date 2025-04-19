@@ -1,3 +1,7 @@
+## 0.19.2 (unreleased)
+
+- Added `Normal` distribution
+
 ## 0.19.1 (2025-02-10)
 
 - Fixed error with Rice 4.5

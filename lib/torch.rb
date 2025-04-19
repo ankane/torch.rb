@@ -13,6 +13,12 @@ require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
 
+# distributions
+require_relative "torch/distributions/distribution"
+require_relative "torch/distributions/exponential_family"
+require_relative "torch/distributions/normal"
+require_relative "torch/distributions/utils"
+
 # optim
 require_relative "torch/optim/optimizer"
 require_relative "torch/optim/adadelta"
