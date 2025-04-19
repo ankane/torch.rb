@@ -13,6 +13,8 @@ module Torch
         super()
       end
 
+      private
+
       def _extended_shape(sample_shape: [])
         if !sample_shape.is_a?(Array)
           sample_shape = Array(sample_shape)
