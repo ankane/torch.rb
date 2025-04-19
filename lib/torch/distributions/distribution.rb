@@ -17,7 +17,7 @@ module Torch
 
       def _extended_shape(sample_shape: [])
         if !sample_shape.is_a?(Array)
-          sample_shape = Array(sample_shape)
+          sample_shape = sample_shape.to_a
         end
         sample_shape + @batch_shape + @event_shape
       end
