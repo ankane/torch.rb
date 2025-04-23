@@ -1,5 +1,6 @@
-## 0.19.2 (unreleased)
+## 0.20.0 (unreleased)
 
+- Updated LibTorch to 2.7.0
 - Added `Normal` distribution
 - Fixed `SystemStackError` with certain tensor comparisons
 
