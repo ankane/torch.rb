@@ -1,4 +1,4 @@
-## 0.20.0 (unreleased)
+## 0.20.0 (2025-04-26)
 
 - Updated LibTorch to 2.7.0
 - Added `Normal` distribution
