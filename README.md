@@ -14,28 +14,50 @@ Check out:
 
 ## Installation
 
-First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
+First, download LibTorch by using their [configuration matrix](https://pytorch.org/get-started/locally/) to get the right URL for your platform.
+
+For macOS arm64, you can use:
 
 ```sh
 curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.7.0.zip > libtorch.zip
 unzip -q libtorch.zip
 ```
 
-For Linux x86-64, use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
+For Linux x86-64, use their configuration matrix to select the platform choices that are right for you.  If you want CUDA support, specify that in the Compute Platform section of their matrix along with Language: C++/Java.  Download the version with `cxx11 ABI` in the URL.
 
-Then run:
+For other platforms, build LibTorch from source.  Windows is not currently supported.
+
+Once you have the LibTorch library downloaded, run:
 
 ```sh
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
-And add this line to your application’s Gemfile:
+Create a Gemfile and add this line to it:
 
 ```ruby
 gem "torch-rb"
 ```
 
-It can take 5-10 minutes to compile the extension. Windows is not currently supported.
+Create a simple test program (e.g., "test.rb"):
+
+```ruby
+require 'torch-rb'
+
+# Returns true on macOS
+puts Torch::Backends::MPS.available?
+# Returns truue on Linux with CUDA and an NVIDIA GPU installed
+puts Torch::CUDA.available?
+```
+
+Install the gem and run your program:
+
+```bash
+bundle install
+ruby test.rb
+```
+
+It can take 5-10 minutes to compile the extension.
 
 ## Getting Started
 
