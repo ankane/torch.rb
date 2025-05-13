@@ -250,9 +250,16 @@ module Torch
 
         # normalization layers
 
-        def batch_norm(input, running_mean, running_var, weight: nil, bias: nil,
-          training: false, momentum: 0.1, eps: 1e-5)
-
+        def batch_norm(
+          input,
+          running_mean,
+          running_var,
+          weight: nil,
+          bias: nil,
+          training: false,
+          momentum: 0.1,
+          eps: 1e-5
+        )
           if training
             size = input.size
             size_prods = size[0]
@@ -274,9 +281,16 @@ module Torch
           Torch.group_norm(input, num_groups, weight, bias, eps, false)
         end
 
-        def instance_norm(input, running_mean: nil, running_var: nil, weight: nil,
-          bias: nil, use_input_stats: true, momentum: 0.1, eps: 1e-5)
-
+        def instance_norm(
+          input,
+          running_mean: nil,
+          running_var: nil,
+          weight: nil,
+          bias: nil,
+          use_input_stats: true,
+          momentum: 0.1,
+          eps: 1e-5
+        )
           Torch.instance_norm(
               input, weight, bias, running_mean, running_var,
               use_input_stats, momentum, eps, false

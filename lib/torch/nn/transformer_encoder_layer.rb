@@ -2,11 +2,14 @@ module Torch
   module NN
     class TransformerEncoderLayer < Module
       def initialize(
-        d_model, n_head,
-        dim_feedforward: 2048, dropout: 0.1, activation: :relu,
-        layer_norm_eps: 1e-5, batch_first: false
+        d_model,
+        n_head,
+        dim_feedforward: 2048,
+        dropout: 0.1,
+        activation: :relu,
+        layer_norm_eps: 1e-5,
+        batch_first: false
       )
-
         super()
 
         @self_attn = MultiheadAttention.new(d_model, n_head, dropout: dropout, batch_first: batch_first)
