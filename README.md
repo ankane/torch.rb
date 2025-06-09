@@ -2,13 +2,18 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-Check out:
+Also check out:
 
 - [TorchVision](https://github.com/ankane/torchvision-ruby) for computer vision tasks
 - [TorchText](https://github.com/ankane/torchtext-ruby) for text and NLP tasks
 - [TorchAudio](https://github.com/ankane/torchaudio-ruby) for audio tasks
 - [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
 - [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
+
+As well as:
+
+- [Transformers](https://github.com/ankane/transformers-ruby) for transformers
+- [Safetensors](https://github.com/ankane/safetensors-ruby) for storing tensors
 
 [![Build Status](https://github.com/ankane/torch.rb/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/torch.rb/actions)
 
