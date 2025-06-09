@@ -439,7 +439,7 @@ module Torch
       # TODO check each dimensions for consistency in future
       raise Error, "Inconsistent dimensions" if data.size != size.inject(1, :*)
 
-      # TOOD move to C++
+      # TODO move to C++
       data = data.map { |v| v ? 1 : 0 } if options[:dtype] == :bool
 
       _tensor(data, size, tensor_options(**options))
