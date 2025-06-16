@@ -17,8 +17,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
 void init_random(Rice::Module& m);
 
 extern "C"
-void Init_ext()
-{
+void Init_ext() {
   auto m = Rice::define_module("Torch");
 
   // need to define certain classes up front to keep Rice happy

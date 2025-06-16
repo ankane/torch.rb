@@ -1,5 +1,10 @@
 // adapted from PyTorch - python_arg_parser.cpp
 
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
 #include "ruby_arg_parser.h"
 
 VALUE THPGeneratorClass = Qnil;
@@ -99,7 +104,7 @@ FunctionParameter::FunctionParameter(const std::string& fmt, bool keyword_only)
   ruby_name = THPUtils_internSymbol(name);
   auto np_compat_it = numpy_compatibility_arg_names.find(name);
   if (np_compat_it != numpy_compatibility_arg_names.end()) {
-    for (const auto& str: np_compat_it->second) {
+    for (const auto& str : np_compat_it->second) {
       numpy_python_names.push_back(THPUtils_internSymbol(str));
     }
   }
@@ -190,8 +195,7 @@ static bool is_int_or_symint_list(VALUE obj, int broadcast_size) {
 }
 
 // argnum is needed for raising the TypeError, it's used in the error message.
-auto FunctionParameter::check(VALUE obj, int argnum) -> bool
-{
+auto FunctionParameter::check(VALUE obj, int argnum) -> bool {
   switch (type_) {
     case ParameterType::TENSOR: {
       if (THPVariable_Check(obj)) {

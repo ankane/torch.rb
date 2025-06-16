@@ -1,6 +1,9 @@
+#include <string>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "utils.h"
 

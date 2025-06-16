@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
@@ -7,7 +10,8 @@
 #include "templates.h"
 #include "utils.h"
 
-using namespace Rice;
+using Rice::Array;
+using Rice::Object;
 using torch::indexing::TensorIndex;
 
 template<typename T>
@@ -75,8 +79,7 @@ std::vector<TensorIndex> index_vector(Array a) {
 // https://github.com/pytorch/pytorch/commit/2e5bfa9824f549be69a28e4705a72b4cf8a4c519
 // TODO add support for inputs argument
 // _backward
-static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
-{
+static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_) {
   HANDLE_TH_ERRORS
   Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);
   static RubyArgParser parser({
@@ -197,7 +200,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method(
       "_dtype",
       [](Tensor& self) {
-        return (int) at::typeMetaToScalarType(self.dtype());
+        return static_cast<int>(at::typeMetaToScalarType(self.dtype()));
       })
     .define_method(
       "_type",
