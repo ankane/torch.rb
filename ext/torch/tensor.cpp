@@ -25,7 +25,7 @@ Array flat_data(Tensor& tensor) {
   return a;
 }
 
-Class rb_cTensor;
+Rice::Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
   Object obj;
@@ -66,10 +66,10 @@ std::vector<TensorIndex> index_vector(Array a) {
       indices.push_back(Rice::detail::From_Ruby<Tensor>().convert(obj.value()));
     } else if (obj.is_nil()) {
       indices.push_back(torch::indexing::None);
-    } else if (obj == True || obj == False) {
+    } else if (obj == Rice::True || obj == Rice::False) {
       indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
-      throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
+      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
   }
   return indices;
@@ -168,7 +168,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
+        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Rice::Nil;
       })
     // can't use grad=
     // assignment methods fail with Ruby 3.0

@@ -3,6 +3,9 @@
 #pragma once
 
 #include <sstream>
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 #include <torch/torch.h>
 #include <rice/rice.hpp>
@@ -162,7 +165,7 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
   Check_Type(arg, T_ARRAY);
   auto size = RARRAY_LEN(arg);
   if (size != N) {
-    rb_raise(rb_eArgError, "expected array of %d elements but got %d", N, (int)size);
+    rb_raise(rb_eArgError, "expected array of %d elements but got %d", N, static_cast<int>(size));
   }
   for (int idx = 0; idx < size; idx++) {
     VALUE obj = rb_ary_entry(arg, idx);
@@ -463,7 +466,7 @@ struct RubyArgParser {
     template<int N>
     inline RubyArgs parse(VALUE self, int argc, VALUE* argv, ParsedArgs<N> &dst) {
       if (N < max_args) {
-        rb_raise(rb_eArgError, "RubyArgParser: dst ParsedArgs buffer does not have enough capacity, expected %d (got %d)", (int)max_args, N);
+        rb_raise(rb_eArgError, "RubyArgParser: dst ParsedArgs buffer does not have enough capacity, expected %d (got %d)", static_cast<int>(max_args), N);
       }
       return raw_parse(self, argc, argv, dst.args);
     }

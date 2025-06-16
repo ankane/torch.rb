@@ -95,7 +95,7 @@ void init_nn(Rice::Module& m) {
       "grad",
       [](Parameter& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
+        return grad.defined() ? Rice::Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Rice::Nil;
       })
     // can't use grad=
     // assignment methods fail with Ruby 3.0

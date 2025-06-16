@@ -5,6 +5,7 @@
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "torch_functions.h"
 #include "templates.h"
@@ -62,7 +63,7 @@ void init_torch(Rice::Module& m) {
       "_save",
       [](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
-        return Object(rb_str_new(v.data(), v.size()));
+        return Rice::Object(rb_str_new(v.data(), v.size()));
       })
     .define_singleton_function(
       "_load",

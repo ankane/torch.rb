@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
