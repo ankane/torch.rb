@@ -17,8 +17,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
 void init_random(Rice::Module& m);
 
 extern "C"
-void Init_ext()
-{
+void Init_ext() {
   auto m = Rice::define_module("Torch");
 
   // need to define certain classes up front to keep Rice happy
@@ -31,6 +30,7 @@ void Init_ext()
 
   // keep this order
   init_torch(m);
+  init_device(m);
   init_tensor(m, rb_cTensor, rb_cTensorOptions);
   init_nn(m);
   init_fft(m);
@@ -39,7 +39,6 @@ void Init_ext()
 
   init_backends(m);
   init_cuda(m);
-  init_device(m);
   init_generator(m, rb_cGenerator);
   init_ivalue(m, rb_cIValue);
   init_random(m);

@@ -1,12 +1,12 @@
 #pragma once
 
+#include <string>
+
 #ifdef isfinite
 #undef isfinite
 #endif
 
 #include <rice/rice.hpp>
-
-using namespace Rice;
 
 using torch::Device;
 using torch::Scalar;
@@ -41,57 +41,43 @@ using torch::nn::init::NonlinearityType;
 #define RETURN_NIL                                                   \
   return Qnil;
 
-namespace Rice::detail
-{
+namespace Rice::detail {
   template<typename T>
-  struct Type<c10::complex<T>>
-  {
-    static bool verify()
-    {
-      return true;
-    }
+  struct Type<c10::complex<T>> {
+    static bool verify() { return true; }
   };
 
   template<typename T>
-  class To_Ruby<c10::complex<T>>
-  {
+  class To_Ruby<c10::complex<T>> {
   public:
-    VALUE convert(c10::complex<T> const& x)
-    {
+    VALUE convert(c10::complex<T> const& x) {
       return rb_dbl_complex_new(x.real(), x.imag());
     }
   };
 
   template<typename T>
-  class From_Ruby<c10::complex<T>>
-  {
+  class From_Ruby<c10::complex<T>> {
   public:
-    c10::complex<T> convert(VALUE x)
-    {
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+
+    c10::complex<T> convert(VALUE x) {
       VALUE real = rb_funcall(x, rb_intern("real"), 0);
       VALUE imag = rb_funcall(x, rb_intern("imag"), 0);
       return c10::complex<T>(From_Ruby<T>().convert(real), From_Ruby<T>().convert(imag));
     }
   };
-}
 
-namespace Rice::detail
-{
   template<>
-  struct Type<FanModeType>
-  {
-    static bool verify()
-    {
-      return true;
-    }
+  struct Type<FanModeType> {
+    static bool verify() { return true; }
   };
 
   template<>
-  class From_Ruby<FanModeType>
-  {
+  class From_Ruby<FanModeType> {
   public:
-    FanModeType convert(VALUE x)
-    {
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+
+    FanModeType convert(VALUE x) {
       auto s = String(x).str();
       if (s == "fan_in") {
         return torch::kFanIn;
@@ -104,20 +90,16 @@ namespace Rice::detail
   };
 
   template<>
-  struct Type<NonlinearityType>
-  {
-    static bool verify()
-    {
-      return true;
-    }
+  struct Type<NonlinearityType> {
+    static bool verify() { return true; }
   };
 
   template<>
-  class From_Ruby<NonlinearityType>
-  {
+  class From_Ruby<NonlinearityType> {
   public:
-    NonlinearityType convert(VALUE x)
-    {
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+
+    NonlinearityType convert(VALUE x) {
       auto s = String(x).str();
       if (s == "linear") {
         return torch::kLinear;
@@ -148,20 +130,16 @@ namespace Rice::detail
   };
 
   template<>
-  struct Type<Scalar>
-  {
-    static bool verify()
-    {
-      return true;
-    }
+  struct Type<Scalar> {
+    static bool verify() { return true; }
   };
 
   template<>
-  class From_Ruby<Scalar>
-  {
+  class From_Ruby<Scalar> {
   public:
-    Scalar convert(VALUE x)
-    {
+    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+
+    Scalar convert(VALUE x) {
       if (FIXNUM_P(x)) {
         return torch::Scalar(From_Ruby<int64_t>().convert(x));
       } else {
@@ -169,27 +147,4 @@ namespace Rice::detail
       }
     }
   };
-
-  template<typename T>
-  struct Type<torch::optional<T>>
-  {
-    static bool verify()
-    {
-      return true;
-    }
-  };
-
-  template<typename T>
-  class From_Ruby<torch::optional<T>>
-  {
-  public:
-    torch::optional<T> convert(VALUE x)
-    {
-      if (NIL_P(x)) {
-        return torch::nullopt;
-      } else {
-        return torch::optional<T>{From_Ruby<T>().convert(x)};
-      }
-    }
-  };
-}
+} // namespace Rice::detail

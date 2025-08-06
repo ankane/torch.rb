@@ -9,6 +9,10 @@ class NumoTest < Minitest::Test
     x = Torch.tensor([[1, 2, 3], [4, 5, 6]])
     assert x.numo.is_a?(Numo::Int64)
     assert_equal x.to_a, x.numo.to_a
+
+    x = Torch.tensor([[true, false], [false, true]])
+    assert x.numo.is_a?(Numo::Bit)
+    assert_equal [[1, 0], [0, 1]], x.numo.to_a
   end
 
   def test_from_numo

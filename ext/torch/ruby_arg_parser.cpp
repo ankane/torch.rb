@@ -1,5 +1,10 @@
 // adapted from PyTorch - python_arg_parser.cpp
 
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
 #include "ruby_arg_parser.h"
 
 VALUE THPGeneratorClass = Qnil;
@@ -99,7 +104,7 @@ FunctionParameter::FunctionParameter(const std::string& fmt, bool keyword_only)
   ruby_name = THPUtils_internSymbol(name);
   auto np_compat_it = numpy_compatibility_arg_names.find(name);
   if (np_compat_it != numpy_compatibility_arg_names.end()) {
-    for (const auto& str: np_compat_it->second) {
+    for (const auto& str : np_compat_it->second) {
       numpy_python_names.push_back(THPUtils_internSymbol(str));
     }
   }
@@ -190,8 +195,7 @@ static bool is_int_or_symint_list(VALUE obj, int broadcast_size) {
 }
 
 // argnum is needed for raising the TypeError, it's used in the error message.
-auto FunctionParameter::check(VALUE obj, int argnum) -> bool
-{
+auto FunctionParameter::check(VALUE obj, int argnum) -> bool {
   switch (type_) {
     case ParameterType::TENSOR: {
       if (THPVariable_Check(obj)) {
@@ -401,7 +405,7 @@ void FunctionParameter::set_default_str(const std::string& str) {
     if (str != "None") {
       throw std::runtime_error("default value for Tensor must be none, got: " + str);
     }
-  } else if (type_ == ParameterType::INT64) {
+  } else if (type_ == ParameterType::INT64 || type_ == ParameterType::SYM_INT) {
     default_int = atol(str.c_str());
   } else if (type_ == ParameterType::BOOL) {
     default_bool = (str == "True" || str == "true");
@@ -417,7 +421,7 @@ void FunctionParameter::set_default_str(const std::string& str) {
       default_scalar = as_integer.has_value() ? at::Scalar(as_integer.value()) :
                                                 at::Scalar(atof(str.c_str()));
     }
-  } else if (type_ == ParameterType::INT_LIST) {
+  } else if (type_ == ParameterType::INT_LIST || type_ == ParameterType::SYM_INT_LIST) {
     if (str != "None") {
       default_intlist = parse_intlist_args(str, size);
     }
@@ -451,6 +455,31 @@ void FunctionParameter::set_default_str(const std::string& str) {
     if (str != "None") {
       default_string = parse_string_literal(str);
     }
+  }
+  // These types weren't handled here before. Adding a default error
+  // led to a lot of test failures so adding this skip for now.
+  // We should correctly handle these though because it might be causing
+  // silent failures.
+  else if (type_ == ParameterType::TENSOR_LIST) {
+    // throw std::runtime_error("Invalid Tensor List");
+  } else if (type_ == ParameterType::GENERATOR) {
+    // throw std::runtime_error("ParameterType::GENERATOR");
+  } else if (type_ == ParameterType::PYOBJECT) {
+    // throw std::runtime_error("ParameterType::PYOBJECT");
+  } else if (type_ == ParameterType::MEMORY_FORMAT) {
+    // throw std::runtime_error("ParameterType::MEMORY_FORMAT");
+  } else if (type_ == ParameterType::DIMNAME) {
+    // throw std::runtime_error("ParameterType::DIMNAME");
+  } else if (type_ == ParameterType::DIMNAME_LIST) {
+    // throw std::runtime_error("ParameterType::DIMNAME_LIST");
+  } else if (type_ == ParameterType::SCALAR_LIST) {
+    // throw std::runtime_error("ParameterType::SCALAR_LIST");
+  } else if (type_ == ParameterType::STORAGE) {
+    // throw std::runtime_error("ParameterType::STORAGE");
+  } else if (type_ == ParameterType::QSCHEME) {
+    // throw std::runtime_error("ParameterType::QSCHEME");
+  } else {
+    throw std::runtime_error("unknown parameter type");
   }
 }
 

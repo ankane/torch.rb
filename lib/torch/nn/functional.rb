@@ -134,7 +134,7 @@ module Torch
           raise ArgumentError, "Padding length too large" unless pad.size / 2 <= input.dim
 
           if mode == "constant"
-            return Torch.constant_pad_nd(input, pad, value)
+            Torch.constant_pad_nd(input, pad, value)
           else
             raise ArgumentError, "Padding mode doesn't take in value argument" unless value == 0
 
@@ -173,6 +173,18 @@ module Torch
         end
 
         # activation layers
+
+        def elu(input, alpha: 1, inplace: false)
+          if inplace
+            NN.elu!(input, alpha)
+          else
+            NN.elu(input, alpha)
+          end
+        end
+
+        def gelu(input, approximate: 'none')
+          NN.gelu(input, approximate: approximate)
+        end
 
         def hardshrink(input, lambd = 0.5)
           Torch.hardshrink(input, lambd)
@@ -238,9 +250,16 @@ module Torch
 
         # normalization layers
 
-        def batch_norm(input, running_mean, running_var, weight: nil, bias: nil,
-          training: false, momentum: 0.1, eps: 1e-5)
-
+        def batch_norm(
+          input,
+          running_mean,
+          running_var,
+          weight: nil,
+          bias: nil,
+          training: false,
+          momentum: 0.1,
+          eps: 1e-5
+        )
           if training
             size = input.size
             size_prods = size[0]
@@ -262,9 +281,16 @@ module Torch
           Torch.group_norm(input, num_groups, weight, bias, eps, false)
         end
 
-        def instance_norm(input, running_mean: nil, running_var: nil, weight: nil,
-          bias: nil, use_input_stats: true, momentum: 0.1, eps: 1e-5)
-
+        def instance_norm(
+          input,
+          running_mean: nil,
+          running_var: nil,
+          weight: nil,
+          bias: nil,
+          use_input_stats: true,
+          momentum: 0.1,
+          eps: 1e-5
+        )
           Torch.instance_norm(
               input, weight, bias, running_mean, running_var,
               use_input_stats, momentum, eps, false
@@ -467,6 +493,16 @@ module Torch
 
         def triplet_margin_loss(anchor, positive, negative, margin: 1.0, p: 2, eps: 1e-06, swap: false, reduction: "mean")
           Torch.triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, to_reduction(reduction))
+        end
+
+        def normalize(input, p: 2.0, dim: 1, eps: 1e-12, out: nil)
+          if out.nil?
+            denom = input.norm(p, dim, keepdim: true).clamp_min(eps).expand_as(input)
+            input / denom
+          else
+            denom = input.norm(p, dim, keepdim: true).clamp_min!(eps).expand_as(input)
+            Torch.div(input, denom, out: out)
+          end
         end
 
         # vision

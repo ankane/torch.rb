@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>

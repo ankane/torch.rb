@@ -2,31 +2,45 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-Check out:
+Also check out:
 
-- [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks
-- [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
-- [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
+- [TorchVision](https://github.com/ankane/torchvision-ruby) for computer vision tasks
+- [TorchText](https://github.com/ankane/torchtext-ruby) for text and NLP tasks
+- [TorchAudio](https://github.com/ankane/torchaudio-ruby) for audio tasks
 - [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
 - [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
 
-[![Build Status](https://github.com/ankane/torch.rb/workflows/build/badge.svg?branch=master)](https://github.com/ankane/torch.rb/actions)
+As well as:
+
+- [Transformers](https://github.com/ankane/transformers-ruby) for transformers
+- [Safetensors](https://github.com/ankane/safetensors-ruby) for storing tensors
+
+[![Build Status](https://github.com/ankane/torch.rb/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/torch.rb/actions)
 
 ## Installation
 
-First, [install LibTorch](#libtorch-installation). With Homebrew, it’s part of the PyTorch package:
+First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-brew install pytorch
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.7.1.zip > libtorch.zip
+unzip -q libtorch.zip
 ```
 
-Add this line to your application’s Gemfile:
+For Linux x86-64, use the build that matches your CUDA version. For other platforms, build LibTorch from source.
+
+Then run:
+
+```sh
+bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
+```
+
+And add this line to your application’s Gemfile:
 
 ```ruby
 gem "torch-rb"
 ```
 
-It can take 5-10 minutes to compile the extension.
+It can take 5-10 minutes to compile the extension. Windows is not currently supported.
 
 ## Getting Started
 
@@ -89,7 +103,7 @@ Each tensor has four properties
 You can specify properties when creating a tensor
 
 ```ruby
-Torch.rand(2, 3, dtype: :double, layout: :strided, device: "cpu", requires_grad: true)
+Torch.rand(2, 3, dtype: :float64, layout: :strided, device: "cpu", requires_grad: true)
 ```
 
 ### Operations
@@ -398,32 +412,17 @@ Here’s a list of functions to create tensors (descriptions from the [C++ docs]
   Torch.zeros(3) # tensor([0, 0, 0])
   ```
 
-## LibTorch Installation
-
-[Download LibTorch](https://pytorch.org/) (for Linux, use the `cxx11 ABI` version). Then run:
-
-```sh
-bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
-```
+## LibTorch Compatibility
 
 Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
-0.13.x | 2.0.x
-0.12.x | 1.13.x
-0.11.x | 1.12.x
-0.10.x | 1.11.x
-0.9.x | 1.10.x
-0.8.x | 1.9.x
-
-### Homebrew
-
-You can also use Homebrew.
-
-```sh
-brew install pytorch
-```
+0.20.x | 2.7.x
+0.19.x | 2.6.x
+0.18.x | 2.5.x
+0.17.x | 2.4.x
+0.16.x | 2.3.x
 
 ## Performance
 

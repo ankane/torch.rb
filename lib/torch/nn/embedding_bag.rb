@@ -2,9 +2,16 @@
 module Torch
   module NN
     class EmbeddingBag < Module
-      def initialize(num_embeddings, embedding_dim, max_norm: nil, norm_type: 2.0,
-        scale_grad_by_freq: false, mode: "mean", sparse: false, _weight: nil)
-
+      def initialize(
+        num_embeddings,
+        embedding_dim,
+        max_norm: nil,
+        norm_type: 2.0,
+        scale_grad_by_freq: false,
+        mode: "mean",
+        sparse: false,
+        _weight: nil
+      )
         super()
         @num_embeddings = num_embeddings
         @embedding_dim = embedding_dim

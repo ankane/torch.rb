@@ -24,6 +24,7 @@ module Torch
     alias_method :^, :logical_xor
     alias_method :<<, :__lshift__
     alias_method :>>, :__rshift__
+    alias_method :~, :bitwise_not
 
     def self.new(*args)
       FloatTensor.new(*args)
@@ -57,7 +58,7 @@ module Torch
       if shape.empty?
         arr
       else
-        shape[1..-1].reverse.each do |dim|
+        shape[1..-1].reverse_each do |dim|
           arr = arr.each_slice(dim)
         end
         arr.to_a
@@ -132,9 +133,13 @@ module Torch
 
     # TODO read directly from memory
     def numo
-      cls = Torch._dtype_to_numo[dtype]
-      raise Error, "Cannot convert #{dtype} to Numo" unless cls
-      cls.from_string(_data_str).reshape(*shape)
+      if dtype == :bool
+        Numo::UInt8.from_string(_data_str).ne(0).reshape(*shape)
+      else
+        cls = Torch._dtype_to_numo[dtype]
+        raise Error, "Cannot convert #{dtype} to Numo" unless cls
+        cls.from_string(_data_str).reshape(*shape)
+      end
     end
 
     def requires_grad=(requires_grad)
@@ -154,12 +159,14 @@ module Torch
 
     # TODO better compare?
     def <=>(other)
+      other = other.item if other.is_a?(Tensor)
       item <=> other
     end
 
     # based on python_variable_indexing.cpp and
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def [](*indexes)
+      indexes = indexes.map { |v| v.is_a?(Array) ? Torch.tensor(v) : v }
       _index(indexes)
     end
 
@@ -167,6 +174,7 @@ module Torch
     # https://pytorch.org/cppdocs/notes/tensor_indexing.html
     def []=(*indexes, value)
       raise ArgumentError, "Tensor does not support deleting items" if value.nil?
+      indexes = indexes.map { |v| v.is_a?(Array) ? Torch.tensor(v) : v }
       value = Torch.tensor(value, dtype: dtype) unless value.is_a?(Tensor)
       _index_put_custom(indexes, value)
     end
@@ -201,6 +209,11 @@ module Torch
       else
         raise TypeError, "#{self.class} can't be coerced into #{other.class}"
       end
+    end
+
+    # TODO return Device instead of String in 0.19.0
+    def device
+      _device._str
     end
   end
 end

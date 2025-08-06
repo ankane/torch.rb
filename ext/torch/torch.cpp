@@ -1,30 +1,36 @@
+#include <fstream>
+#include <string>
+#include <vector>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
+#include <rice/stl.hpp>
 
 #include "torch_functions.h"
 #include "templates.h"
 #include "utils.h"
 
 template<typename T>
-torch::Tensor make_tensor(Rice::Array a, std::vector<int64_t> size, const torch::TensorOptions &options) {
+torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
   std::vector<T> vec;
+  vec.reserve(a.size());
   for (long i = 0; i < a.size(); i++) {
     vec.push_back(Rice::detail::From_Ruby<T>().convert(a[i].value()));
   }
 
-  // hack for requires_grad error
-  auto requires_grad = options.requires_grad();
-  torch::Tensor t = torch::tensor(vec, options.requires_grad(c10::nullopt));
-  if (requires_grad) {
-    t.set_requires_grad(true);
-  }
-
+  torch::Tensor t = torch::tensor(vec, options);
   return t.reshape(size);
 }
 
 void init_torch(Rice::Module& m) {
-  register_handler<torch::Error>(handle_global_error);
+  Rice::detail::Registries::instance.handlers.set([]() {
+    try {
+      throw;
+    } catch (const torch::Error& ex) {
+      handle_global_error(ex);
+    }
+  });
   add_torch_functions(m);
   m.define_singleton_function(
       "grad_enabled?",
@@ -44,12 +50,12 @@ void init_torch(Rice::Module& m) {
     // config
     .define_singleton_function(
       "show_config",
-      [] {
+      []() {
         return torch::show_config();
       })
     .define_singleton_function(
       "parallel_info",
-      [] {
+      []() {
         return torch::get_parallel_info();
       })
     // begin operations
@@ -57,26 +63,28 @@ void init_torch(Rice::Module& m) {
       "_save",
       [](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
-        std::string str(v.begin(), v.end());
-        return str;
+        return Rice::Object(rb_str_new(v.data(), v.size()));
       })
     .define_singleton_function(
       "_load",
-      [](const std::string &s) {
-        std::vector<char> v;
-        std::copy(s.begin(), s.end(), std::back_inserter(v));
+      [](const std::string &filename) {
         // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
-        return torch::pickle_load(v);
+        std::ifstream input(filename, std::ios::binary);
+        std::vector<char> bytes(
+            (std::istreambuf_iterator<char>(input)),
+            (std::istreambuf_iterator<char>()));
+        input.close();
+        return torch::pickle_load(bytes);
       })
     .define_singleton_function(
       "_from_blob",
-      [](Rice::String s, std::vector<int64_t> size, const torch::TensorOptions &options) {
+      [](Rice::String s, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
         void *data = const_cast<char *>(s.c_str());
         return torch::from_blob(data, size, options);
       })
     .define_singleton_function(
       "_tensor",
-      [](Rice::Array a, std::vector<int64_t> size, const torch::TensorOptions &options) {
+      [](Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
         auto dtype = options.dtype();
         if (dtype == torch::kByte) {
           return make_tensor<uint8_t>(a, size, options);

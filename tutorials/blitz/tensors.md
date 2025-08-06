@@ -183,19 +183,18 @@ tensor([[1., 0., 1., 1.],
 This computes the matrix multiplication between two tensors
 
 ```ruby
-puts "tensor.matmul(tensor.T)\n#{tensor.matmul(tensor.t)}"
+puts "tensor.matmul(tensor.t)\n#{tensor.matmul(tensor.t)}"
 ```
 
 Out:
 
-```ruby
-tensor.matmul(tensor.T)
+```text
+tensor.matmul(tensor.t)
 tensor([[3., 3., 3., 3.],
         [3., 3., 3., 3.],
         [3., 3., 3., 3.],
         [3., 3., 3., 3.]])
 ```
-
 
 **In-place operations**
 

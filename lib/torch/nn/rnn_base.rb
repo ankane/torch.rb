@@ -1,9 +1,16 @@
 module Torch
   module NN
     class RNNBase < Module
-      def initialize(mode, input_size, hidden_size, num_layers: 1, bias: true,
-        batch_first: false, dropout: 0.0, bidirectional: false)
-
+      def initialize(
+        mode,
+        input_size,
+        hidden_size,
+        num_layers: 1,
+        bias: true,
+        batch_first: false,
+        dropout: 0.0,
+        bidirectional: false
+      )
         super()
         @mode = mode
         @input_size = input_size

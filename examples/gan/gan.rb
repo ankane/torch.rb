@@ -3,6 +3,7 @@
 # see LICENSE-gan-examples.txt
 # paper: https://arxiv.org/abs/1406.2661
 
+require "bundler/setup"
 require "torch"
 require "torchvision"
 
@@ -10,14 +11,14 @@ Dir.mkdir("images") unless Dir.exist?("images")
 
 img_shape = [1, 28, 28]
 
-cuda = Torch::CUDA::available?
+cuda = Torch::CUDA.available?
 
 class Generator < Torch::NN::Module
   def initialize(img_shape)
     super()
     @img_shape = img_shape
 
-    block = lambda do |in_feat, out_feat, normalize=true|
+    block = lambda do |in_feat, out_feat, normalize = true|
       layers = [Torch::NN::Linear.new(in_feat, out_feat)]
       if normalize
         layers << Torch::NN::BatchNorm1d.new(out_feat, eps: 0.8)

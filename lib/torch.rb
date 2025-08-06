@@ -1,5 +1,5 @@
 # ext
-require_relative "torch/ext"
+require "torch/ext"
 
 # stdlib
 require "fileutils"
@@ -8,9 +8,16 @@ require "set"
 require "tmpdir"
 
 # modules
+require_relative "torch/device"
 require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
+
+# distributions
+require_relative "torch/distributions/distribution"
+require_relative "torch/distributions/exponential_family"
+require_relative "torch/distributions/normal"
+require_relative "torch/distributions/utils"
 
 # optim
 require_relative "torch/optim/optimizer"
@@ -123,6 +130,8 @@ require_relative "torch/nn/dropout3d"
 require_relative "torch/nn/feature_alpha_dropout"
 
 # nn activations
+require_relative "torch/nn/elu"
+require_relative "torch/nn/gelu"
 require_relative "torch/nn/hardshrink"
 require_relative "torch/nn/leaky_relu"
 require_relative "torch/nn/log_sigmoid"
@@ -380,15 +389,22 @@ module Torch
     alias_method :set_grad_enabled, :grad_enabled
 
     def device(str)
-      Device.new(str)
+      if str.is_a?(Device)
+        str
+      else
+        Device.new(str)
+      end
     end
 
     def save(obj, f)
       File.binwrite(f, _save(to_ivalue(obj)))
     end
 
-    def load(f)
-      to_ruby(_load(File.binread(f)))
+    def load(filename)
+      # keep backwards compatibility
+      File.open(filename, "rb") { |f| f.read(1) }
+
+      to_ruby(_load(filename))
     end
 
     def tensor(data, **options)
@@ -423,7 +439,7 @@ module Torch
       # TODO check each dimensions for consistency in future
       raise Error, "Inconsistent dimensions" if data.size != size.inject(1, :*)
 
-      # TOOD move to C++
+      # TODO move to C++
       data = data.map { |v| v ? 1 : 0 } if options[:dtype] == :bool
 
       _tensor(data, size, tensor_options(**options))

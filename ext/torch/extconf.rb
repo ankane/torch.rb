@@ -52,6 +52,9 @@ $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
 
 $LDFLAGS += " -Wl,-rpath,#{lib}"
+if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm|aarch64/i && Dir.exist?("/opt/homebrew/opt/libomp/lib")
+  $LDFLAGS += ",-rpath,/opt/homebrew/opt/libomp/lib"
+end
 $LDFLAGS += ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 
 # https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238

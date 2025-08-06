@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
@@ -7,7 +10,8 @@
 #include "templates.h"
 #include "utils.h"
 
-using namespace Rice;
+using Rice::Array;
+using Rice::Object;
 using torch::indexing::TensorIndex;
 
 template<typename T>
@@ -21,7 +25,7 @@ Array flat_data(Tensor& tensor) {
   return a;
 }
 
-Class rb_cTensor;
+Rice::Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
   Object obj;
@@ -62,10 +66,10 @@ std::vector<TensorIndex> index_vector(Array a) {
       indices.push_back(Rice::detail::From_Ruby<Tensor>().convert(obj.value()));
     } else if (obj.is_nil()) {
       indices.push_back(torch::indexing::None);
-    } else if (obj == True || obj == False) {
+    } else if (obj == Rice::True || obj == Rice::False) {
       indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
-      throw Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
+      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
     }
   }
   return indices;
@@ -75,8 +79,7 @@ std::vector<TensorIndex> index_vector(Array a) {
 // https://github.com/pytorch/pytorch/commit/2e5bfa9824f549be69a28e4705a72b4cf8a4c519
 // TODO add support for inputs argument
 // _backward
-static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_)
-{
+static VALUE tensor__backward(int argc, VALUE* argv, VALUE self_) {
   HANDLE_TH_ERRORS
   Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);
   static RubyArgParser parser({
@@ -103,6 +106,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
 
   rb_cTensor
     .define_method("cuda?", [](Tensor& self) { return self.is_cuda(); })
+    .define_method("mps?", [](Tensor& self) { return self.is_mps(); })
     .define_method("sparse?", [](Tensor& self) { return self.is_sparse(); })
     .define_method("quantized?", [](Tensor& self) { return self.is_quantized(); })
     .define_method("dim", [](Tensor& self) { return self.dim(); })
@@ -164,7 +168,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Nil;
+        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Rice::Nil;
       })
     // can't use grad=
     // assignment methods fail with Ruby 3.0
@@ -196,7 +200,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method(
       "_dtype",
       [](Tensor& self) {
-        return (int) at::typeMetaToScalarType(self.dtype());
+        return static_cast<int>(at::typeMetaToScalarType(self.dtype()));
       })
     .define_method(
       "_type",
@@ -211,11 +215,9 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         return s.str();
       })
     .define_method(
-      "device",
+      "_device",
       [](Tensor& self) {
-        std::stringstream s;
-        s << self.device();
-        return s.str();
+        return self.device();
       })
     .define_method(
       "_data_str",

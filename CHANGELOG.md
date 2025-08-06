@@ -1,3 +1,59 @@
+## 0.20.0 (2025-04-26)
+
+- Updated LibTorch to 2.7.0
+- Added `Normal` distribution
+- Fixed `SystemStackError` with certain tensor comparisons
+
+## 0.19.1 (2025-02-10)
+
+- Fixed error with Rice 4.5
+
+## 0.19.0 (2025-01-29)
+
+- Updated LibTorch to 2.6.0
+- Improved `inspect` for `Device`
+- Fixed equality for `Device`
+- Fixed `index` method for `Device` when no index
+
+## 0.18.0 (2024-10-22)
+
+- Updated LibTorch to 2.5.0
+
+## 0.17.1 (2024-08-19)
+
+- Added `persistent` option to `register_buffer` method
+- Added `prefix` and `recurse` options to `named_buffers` method
+
+## 0.17.0 (2024-07-26)
+
+- Updated LibTorch to 2.4.0
+- Added `normalize` method
+- Added support for tensor indexing with arrays
+
+## 0.16.0 (2024-06-12)
+
+- Updated LibTorch to 2.3.0
+- Added `ELU` and `GELU` classes
+- Dropped support for Ruby < 3.1
+
+## 0.15.0 (2024-02-28)
+
+- Updated LibTorch to 2.2.0
+- Fixed error with `inspect` for MPS tensors
+
+## 0.14.1 (2023-12-26)
+
+- Fixed default arguments for `conv1d`
+
+## 0.14.0 (2023-11-09)
+
+- Updated LibTorch to 2.1.0
+- Improved performance of saving and loading models
+
+## 0.13.2 (2023-05-11)
+
+- Fixed error on Fedora
+
 ## 0.13.1 (2023-05-03)
 
 - Fixed error with Rice 4.1

@@ -1,12 +1,14 @@
 #pragma once
 
+#include <string>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
 
 static_assert(
-  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 0,
+  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 7,
   "Incompatible LibTorch version"
 );
 

@@ -45,6 +45,12 @@ class TensorIndexingTest < Minitest::Test
     assert_tensor [2], x[index]
   end
 
+  def test_getter_array
+    x = Torch.tensor([1, 2, 3])
+    index = [0, 2]
+    assert_tensor [1, 3], x[index]
+  end
+
   def test_getter_large_integer
     x = Torch.tensor([1, 2, 3])
     error = assert_raises(RangeError) do
@@ -90,6 +96,12 @@ class TensorIndexingTest < Minitest::Test
     index = Torch.tensor([false, true, false])
     x[index] = 9
     assert_tensor [1, 9, 3], x
+  end
+
+  def test_setter_array
+    x = Torch.tensor([1, 2, 3])
+    x[[0, 2]] = 0
+    assert_tensor [0, 2, 0], x
   end
 
   def test_setter_range_index

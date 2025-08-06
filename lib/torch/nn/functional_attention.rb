@@ -5,10 +5,10 @@ module Torch
         def in_projection_packed(q, k, v, w, b: nil)
           e = q.size(-1)
 
-          if k.eql? v
-            if q.eql? k
+          if k.eql?(v)
+            if q.eql?(k)
               # self-attention
-              return linear(q, w, b).chunk(3, dim: -1)
+              linear(q, w, b).chunk(3, dim: -1)
             else
               # encoder-decoder attention
               w_q, w_kv = w.split_with_sizes([e, e * 2])
@@ -18,7 +18,7 @@ module Torch
                 b_q, b_kv = b.split_with_sizes([e, e * 2])
               end
 
-              return [linear(q, w_q, b_q), *linear(k, w_kv, b_kv).chunk(2, dim: -1)]
+              [linear(q, w_q, b_q), *linear(k, w_kv, b_kv).chunk(2, dim: -1)]
             end
           else
             w_q, w_k, w_v = w.chunk(3)
@@ -28,16 +28,21 @@ module Torch
               b_q, b_k, b_v = b.chunk(3)
             end
 
-            return [linear(q, w_q, b_q), linear(k, w_k, b_k), linear(v, w_v, b_v)]
+            [linear(q, w_q, b_q), linear(k, w_k, b_k), linear(v, w_v, b_v)]
           end
         end
 
         def in_projection(
-          q, k, v,
-          w_q, w_k, w_v,
-          b_q: nil, b_k: nil, b_v: nil
+          q,
+          k,
+          v,
+          w_q,
+          w_k,
+          w_v,
+          b_q: nil,
+          b_k: nil,
+          b_v: nil
         )
-
           e_q, e_k, e_v = q.size(-1), k.size(-1), v.size(-1)
 
           raise ArgumentError, "Expecting query weights shape of #{[e_q, e_q]}, but got #{w_q.shape}" unless w_q.shape == [e_q, e_q]
@@ -52,10 +57,12 @@ module Torch
         end
 
         def scaled_dot_product_attention(
-          q, k, v,
-          attn_mask: nil, dropout_p: 0.0
+          q,
+          k,
+          v,
+          attn_mask: nil,
+          dropout_p: 0.0
         )
-
           _b, _nt, e = q.shape
 
           q = q / Math.sqrt(e)
@@ -71,22 +78,30 @@ module Torch
         end
 
         def multi_head_attention_forward(
-          query, key, value,
-          embed_dim_to_check, num_heads,
-          in_proj_weight, in_proj_bias,
-          bias_k, bias_v,
+          query,
+          key,
+          value,
+          embed_dim_to_check,
+          num_heads,
+          in_proj_weight,
+          in_proj_bias,
+          bias_k,
+          bias_v,
           add_zero_attn,
           dropout_p,
-          out_proj_weight, out_proj_bias,
+          out_proj_weight,
+          out_proj_bias,
           training: true,
           key_padding_mask: nil,
           need_weights: true,
           attn_mask: nil,
           use_separate_proj_weight: false,
-          q_proj_weight: nil, k_proj_weight: nil, v_proj_weight: nil,
-          static_k: nil, static_v: nil
+          q_proj_weight: nil,
+          k_proj_weight: nil,
+          v_proj_weight: nil,
+          static_k: nil,
+          static_v: nil
         )
-
           tgt_len, bsz, embed_dim = query.shape
           src_len = key.shape.first
 

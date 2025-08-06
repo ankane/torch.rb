@@ -273,7 +273,7 @@ class OperationsTest < Minitest::Test
   end
 
   # TODO raise
-  # RuntimeError: value cannnot be converted to type int8 without overflow
+  # RuntimeError: value cannot be converted to type int8 without overflow
   def test_tensor_overflow
     assert_tensor [-24], Torch.tensor(1000, dtype: :int8)
   end
