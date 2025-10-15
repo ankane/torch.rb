@@ -1,3 +1,7 @@
+## 0.22.0 (unreleased)
+
+- Updated LibTorch to 2.9.0
+
 ## 0.21.0 (2025-08-07)
 
 - Updated LibTorch to 2.8.0
