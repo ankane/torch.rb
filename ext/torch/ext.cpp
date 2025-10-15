@@ -16,9 +16,13 @@ void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator);
 void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
 void init_random(Rice::Module& m);
 
+VALUE rb_eTorchError = Qnil;
+
 extern "C"
 void Init_ext() {
   auto m = Rice::define_module("Torch");
+
+  rb_eTorchError = Rice::define_class_under(m, "Error", rb_eStandardError);
 
   // need to define certain classes up front to keep Rice happy
   auto rb_cIValue = Rice::define_class_under<torch::IValue>(m, "IValue")

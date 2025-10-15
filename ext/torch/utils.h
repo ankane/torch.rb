@@ -12,8 +12,10 @@ static_assert(
   "Incompatible LibTorch version"
 );
 
+extern VALUE rb_eTorchError;
+
 inline void handle_global_error(const torch::Error& ex) {
-  throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
+  throw Rice::Exception(rb_eTorchError, ex.what_without_backtrace());
 }
 
 // keep THP prefix for now to make it easier to compare code

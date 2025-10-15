@@ -1,6 +1,7 @@
 ## 0.22.0 (unreleased)
 
 - Updated LibTorch to 2.9.0
+- Improved error classes
 
 ## 0.21.0 (2025-08-07)
 

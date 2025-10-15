@@ -31,7 +31,7 @@ using torch::nn::init::NonlinearityType;
 
 #define END_HANDLE_TH_ERRORS                                         \
   } catch (const torch::Error& ex) {                                 \
-    rb_raise(rb_eRuntimeError, "%s", ex.what_without_backtrace());   \
+    rb_raise(rb_eTorchError, "%s", ex.what_without_backtrace());   \
   } catch (const Rice::Exception& ex) {                              \
     rb_raise(ex.class_of(), "%s", ex.what());                        \
   } catch (const std::exception& ex) {                               \

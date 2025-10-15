@@ -210,7 +210,6 @@ require_relative "torch/utils/data/tensor_dataset"
 require_relative "torch/hub"
 
 module Torch
-  class Error < StandardError; end
   class NotImplementedYet < StandardError
     def message
       "This feature has not been implemented yet. Consider submitting a PR."
