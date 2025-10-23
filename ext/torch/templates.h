@@ -50,14 +50,23 @@ namespace Rice::detail {
   template<typename T>
   class To_Ruby<c10::complex<T>> {
   public:
+    explicit To_Ruby(Arg* arg) : arg_(arg) { }
+
     VALUE convert(c10::complex<T> const& x) {
       return rb_dbl_complex_new(x.real(), x.imag());
     }
+
+  private:
+    Arg* arg_ = nullptr;
   };
 
   template<typename T>
   class From_Ruby<c10::complex<T>> {
   public:
+    From_Ruby() = default;
+
+    explicit From_Ruby(Arg* arg) : arg_(arg) { }
+
     Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     c10::complex<T> convert(VALUE x) {
@@ -65,6 +74,9 @@ namespace Rice::detail {
       VALUE imag = rb_funcall(x, rb_intern("imag"), 0);
       return c10::complex<T>(From_Ruby<T>().convert(real), From_Ruby<T>().convert(imag));
     }
+
+  private:
+    Arg* arg_ = nullptr;
   };
 
   template<>
@@ -75,6 +87,10 @@ namespace Rice::detail {
   template<>
   class From_Ruby<FanModeType> {
   public:
+    From_Ruby() = default;
+
+    explicit From_Ruby(Arg* arg) : arg_(arg) { }
+
     Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     FanModeType convert(VALUE x) {
@@ -87,6 +103,9 @@ namespace Rice::detail {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
     }
+
+  private:
+    Arg* arg_ = nullptr;
   };
 
   template<>
@@ -97,6 +116,10 @@ namespace Rice::detail {
   template<>
   class From_Ruby<NonlinearityType> {
   public:
+    From_Ruby() = default;
+
+    explicit From_Ruby(Arg* arg) : arg_(arg) { }
+
     Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     NonlinearityType convert(VALUE x) {
@@ -127,6 +150,9 @@ namespace Rice::detail {
         throw std::runtime_error("Unsupported nonlinearity type: " + s);
       }
     }
+
+  private:
+    Arg* arg_ = nullptr;
   };
 
   template<>
@@ -137,6 +163,10 @@ namespace Rice::detail {
   template<>
   class From_Ruby<Scalar> {
   public:
+    From_Ruby() = default;
+
+    explicit From_Ruby(Arg* arg) : arg_(arg) { }
+
     Convertible is_convertible(VALUE value) { return Convertible::Cast; }
 
     Scalar convert(VALUE x) {
@@ -146,5 +176,8 @@ namespace Rice::detail {
         return torch::Scalar(From_Ruby<double>().convert(x));
       }
     }
+
+  private:
+    Arg* arg_ = nullptr;
   };
 } // namespace Rice::detail

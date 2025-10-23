@@ -55,7 +55,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
         Rice::Array obj;
         for (auto& elem : list) {
           auto v = torch::IValue{elem};
-          obj.push(Rice::Object(Rice::detail::To_Ruby<torch::IValue>().convert(v)));
+          obj.push(Rice::Object(Rice::detail::To_Ruby<torch::IValue>().convert(v)), false);
         }
         return obj;
       })

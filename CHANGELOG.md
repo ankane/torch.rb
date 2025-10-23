@@ -1,3 +1,7 @@
+## 0.22.1 (unreleased)
+
+- Fixed error with Rice 4.7
+
 ## 0.22.0 (2025-10-15)
 
 - Updated LibTorch to 2.9.0
