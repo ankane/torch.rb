@@ -50,6 +50,8 @@ namespace Rice::detail {
   template<typename T>
   class To_Ruby<c10::complex<T>> {
   public:
+    To_Ruby() = default;
+
     explicit To_Ruby(Arg* arg) : arg_(arg) { }
 
     VALUE convert(c10::complex<T> const& x) {
