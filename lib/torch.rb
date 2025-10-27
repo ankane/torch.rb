@@ -19,6 +19,9 @@ require_relative "torch/distributions/exponential_family"
 require_relative "torch/distributions/normal"
 require_relative "torch/distributions/utils"
 
+# jit
+require_relative "torch/jit"
+
 # optim
 require_relative "torch/optim/optimizer"
 require_relative "torch/optim/adadelta"

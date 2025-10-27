@@ -14,6 +14,7 @@ void init_cuda(Rice::Module& m);
 void init_device(Rice::Module& m);
 void init_generator(Rice::Module& m, Rice::Class& rb_cGenerator);
 void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue);
+void init_jit(Rice::Module& m, Rice::Class& rb_cScriptModule);
 void init_random(Rice::Module& m);
 
 VALUE rb_eTorchError = Qnil;
@@ -31,6 +32,7 @@ void Init_ext() {
   auto rb_cTensor = Rice::define_class_under<torch::Tensor>(m, "Tensor");
   auto rb_cTensorOptions = Rice::define_class_under<torch::TensorOptions>(m, "TensorOptions")
     .define_constructor(Rice::Constructor<torch::TensorOptions>());
+  auto rb_cScriptModule = Rice::define_class_under<torch::jit::script::Module>(m, "ScriptModule");
 
   // keep this order
   init_torch(m);
@@ -45,5 +47,6 @@ void Init_ext() {
   init_cuda(m);
   init_generator(m, rb_cGenerator);
   init_ivalue(m, rb_cIValue);
+  init_jit(m, rb_cScriptModule);
   init_random(m);
 }
