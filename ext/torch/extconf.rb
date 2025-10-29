@@ -60,7 +60,7 @@ if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /
 end
 $LDFLAGS += ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 
-# https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238
+# https://github.com/pytorch/pytorch/blob/v2.9.0/torch/utils/cpp_extension.py#L1351-L1364
 $LDFLAGS += " -lc10 -ltorch_cpu -ltorch"
 if with_cuda
   $LDFLAGS += " -lcuda -lnvrtc"
