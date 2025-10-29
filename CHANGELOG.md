@@ -1,3 +1,7 @@
+## 0.22.2 (unreleased)
+
+- Added support for CUDA 13.0
+
 ## 0.22.1 (2025-10-26)
 
 - Fixed error with Rice 4.7

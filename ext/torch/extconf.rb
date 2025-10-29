@@ -33,8 +33,10 @@ unless inc && lib
 end
 
 cuda_inc, cuda_lib = dir_config("cuda")
-cuda_inc ||= "/usr/local/cuda/include"
 cuda_lib ||= "/usr/local/cuda/lib64"
+
+cudnn_inc, cudnn_lib = dir_config("cudnn")
+cudnn_lib ||= "/usr/local/cuda/lib"
 
 $LDFLAGS += " -L#{lib}" if Dir.exist?(lib)
 abort "LibTorch not found" unless have_library("torch")
@@ -45,6 +47,7 @@ have_library("nnpack")
 with_cuda = false
 if Dir["#{lib}/*torch_cuda*"].any?
   $LDFLAGS += " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
+  $LDFLAGS += " -L#{cudnn_lib}" if Dir.exist?(cudnn_lib) && cudnn_lib != cuda_lib
   with_cuda = have_library("cuda") && have_library("cudnn")
 end
 
@@ -60,7 +63,9 @@ $LDFLAGS += ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 # https://github.com/pytorch/pytorch/blob/v1.5.0/torch/utils/cpp_extension.py#L1232-L1238
 $LDFLAGS += " -lc10 -ltorch_cpu -ltorch"
 if with_cuda
-  $LDFLAGS += " -lcuda -lnvrtc -lnvToolsExt -lcudart -lc10_cuda -ltorch_cuda -lcufft -lcurand -lcublas -lcudnn"
+  $LDFLAGS += " -lcuda -lnvrtc"
+  $LDFLAGS += " -lnvToolsExt" if File.exist?("#{cuda_lib}/libnvToolsExt.so")
+  $LDFLAGS += " -lcudart -lc10_cuda -ltorch_cuda -lcufft -lcurand -lcublas -lcudnn"
   # TODO figure out why this is needed
   $LDFLAGS += " -Wl,--no-as-needed,#{lib}/libtorch.so"
 end
