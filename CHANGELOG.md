@@ -1,4 +1,4 @@
-## 0.22.2 (unreleased)
+## 0.22.2 (2025-11-04)
 
 - Added support for CUDA 12.9+
 
