@@ -192,8 +192,7 @@ Generic method to display predictions for a few images
 
 ```ruby
 visualize_model = lambda do |model, num_images=6|
-  # TODO use model.training after 0.8.2 release
-  was_training = model.instance_variable_get(:@training)
+  was_training = model.training
   model.eval
   images_so_far = 0
   fig = plt.figure

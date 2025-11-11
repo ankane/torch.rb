@@ -22,7 +22,7 @@ As well as:
 First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.7.1.zip > libtorch.zip
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.9.0.zip > libtorch.zip
 unzip -q libtorch.zip
 ```
 
@@ -418,11 +418,11 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
+0.22.x | 2.9.x
+0.21.x | 2.8.x
 0.20.x | 2.7.x
 0.19.x | 2.6.x
 0.18.x | 2.5.x
-0.17.x | 2.4.x
-0.16.x | 2.3.x
 
 ## Performance
 

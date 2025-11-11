@@ -1,3 +1,21 @@
+## 0.22.2 (2025-11-04)
+
+- Added support for CUDA 12.9+
+
+## 0.22.1 (2025-10-26)
+
+- Fixed error with Rice 4.7
+
+## 0.22.0 (2025-10-15)
+
+- Updated LibTorch to 2.9.0
+- Improved error classes
+
+## 0.21.0 (2025-08-07)
+
+- Updated LibTorch to 2.8.0
+- Dropped support for Ruby < 3.2
+
 ## 0.20.0 (2025-04-26)
 
 - Updated LibTorch to 2.7.0

@@ -4,5 +4,5 @@ gemspec
 
 gem "rake"
 gem "rake-compiler"
-gem "minitest", ">= 5"
+gem "minitest"
 gem "numo-narray", platform: :mri

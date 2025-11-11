@@ -20,7 +20,7 @@ Array flat_data(Tensor& tensor) {
 
   Array a;
   for (int i = 0; i < tensor.numel(); i++) {
-    a.push(view[i].item().to<T>());
+    a.push(view[i].item().to<T>(), false);
   }
   return a;
 }
@@ -129,7 +129,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       [](Tensor& self) {
         Array a;
         for (auto &size : self.sizes()) {
-          a.push(size);
+          a.push(size, false);
         }
         return a;
       })
@@ -138,7 +138,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       [](Tensor& self) {
         Array a;
         for (auto &stride : self.strides()) {
-          a.push(stride);
+          a.push(stride, false);
         }
         return a;
       })

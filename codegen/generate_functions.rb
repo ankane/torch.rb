@@ -55,7 +55,11 @@ def skip_functions(functions)
     f.base_name == "sym_storage_offset" ||
     f.base_name == "sym_stride" ||
     # TODO fix LibTorch 2.6 changes
-    f.base_name == "rrelu_with_noise"
+    f.base_name == "rrelu_with_noise" ||
+    # TODO fix LibTorch 2.9 changes
+    f.base_name == "sym_is_contiguous" ||
+    f.base_name == "fbgemm_linear_fp16_weight" ||
+    f.base_name == "fbgemm_linear_fp16_weight_fp32_activation"
   end
 end
 

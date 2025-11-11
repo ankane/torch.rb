@@ -8,12 +8,14 @@
 #include <rice/stl.hpp>
 
 static_assert(
-  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 7,
+  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 9,
   "Incompatible LibTorch version"
 );
 
+extern VALUE rb_eTorchError;
+
 inline void handle_global_error(const torch::Error& ex) {
-  throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
+  throw Rice::Exception(rb_eTorchError, ex.what_without_backtrace());
 }
 
 // keep THP prefix for now to make it easier to compare code
