@@ -1,9 +1,12 @@
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
+#include <ruby/thread.h>
 
 #include "tensor_functions.h"
 #include "ruby_arg_parser.h"
@@ -26,6 +29,103 @@ Array flat_data(Tensor& tensor) {
 }
 
 Rice::Class rb_cTensor;
+Rice::Class rb_cHookHandle;
+
+namespace {
+
+struct RubyTensorHook {
+  explicit RubyTensorHook(VALUE proc) : proc_(proc) {
+    rb_gc_register_address(&proc_);
+  }
+
+  ~RubyTensorHook() {
+    rb_gc_unregister_address(&proc_);
+  }
+
+  at::Tensor call(const at::Tensor& grad) {
+    HookCallData data{proc_, grad};
+    rb_thread_call_with_gvl(&RubyTensorHook::invoke, &data);
+    if (data.return_value_defined) {
+      return data.return_tensor;
+    }
+    return grad;
+  }
+
+ private:
+  struct HookCallData {
+    VALUE proc;
+    at::Tensor grad;
+    at::Tensor return_tensor;
+    bool return_value_defined = false;
+  };
+
+  static void* invoke(void* arg) {
+    auto* data = reinterpret_cast<HookCallData*>(arg);
+    VALUE grad_obj = Rice::detail::To_Ruby<at::Tensor>().convert(data->grad);
+    VALUE result = rb_funcall(data->proc, rb_intern("call"), 1, grad_obj);
+    if (!NIL_P(result)) {
+      data->return_tensor = Rice::detail::From_Ruby<at::Tensor>().convert(result);
+      data->return_value_defined = true;
+    }
+    return nullptr;
+  }
+
+  VALUE proc_;
+};
+
+class HookHandle {
+ public:
+  HookHandle(const at::Tensor& tensor, unsigned handle, std::shared_ptr<RubyTensorHook> hook)
+      : tensor_(tensor), handle_(handle), hook_(std::move(hook)), removed_(false) {}
+
+  HookHandle(const HookHandle& other) = default;
+  HookHandle& operator=(const HookHandle& other) = default;
+
+  ~HookHandle() {
+    remove();
+  }
+
+  void remove() {
+    if (!removed_) {
+      tensor_.remove_hook(handle_);
+      removed_ = true;
+      hook_.reset();
+    }
+  }
+
+ private:
+  at::Tensor tensor_;
+  unsigned handle_;
+  std::shared_ptr<RubyTensorHook> hook_;
+  bool removed_;
+};
+
+VALUE tensor_register_hook(int argc, VALUE* argv, VALUE self_) {
+  HANDLE_TH_ERRORS
+  VALUE callable = Qnil;
+  rb_scan_args(argc, argv, "01", &callable);
+  if (NIL_P(callable)) {
+    if (rb_block_given_p()) {
+      callable = rb_block_proc();
+    } else {
+      rb_raise(rb_eArgError, "Expected a callable or block");
+    }
+  }
+  if (!rb_respond_to(callable, rb_intern("call"))) {
+    rb_raise(rb_eArgError, "Hook must respond to call");
+  }
+
+  Tensor& self = Rice::detail::From_Ruby<Tensor&>().convert(self_);
+  auto hook = std::make_shared<RubyTensorHook>(callable);
+  unsigned handle = self.register_hook([hook](const at::Tensor& grad) {
+    return hook->call(grad);
+  });
+
+  return Rice::Data_Object<HookHandle>(new HookHandle(self, handle, hook), rb_cHookHandle, true);
+  END_HANDLE_TH_ERRORS
+}
+
+} // namespace
 
 std::vector<TensorIndex> index_vector(Array a) {
   Object obj;
@@ -102,7 +202,17 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
   add_tensor_functions(rb_cTensor);
   THPVariableClass = rb_cTensor.value();
 
+  auto rb_mAutograd = Rice::define_module_under(m, "Autograd");
+  rb_cHookHandle = Rice::define_class_under<HookHandle>(rb_mAutograd, "RemovableHandle")
+    .define_method(
+      "remove",
+      [](HookHandle& self) {
+        self.remove();
+        return Rice::Nil;
+      });
+
   rb_define_method(rb_cTensor, "backward", (VALUE (*)(...)) tensor__backward, -1);
+  rb_define_method(rb_cTensor, "register_hook", (VALUE (*)(...)) tensor_register_hook, -1);
 
   rb_cTensor
     .define_method("cuda?", [](Tensor& self) { return self.is_cuda(); })

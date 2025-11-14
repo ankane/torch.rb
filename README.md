@@ -55,8 +55,34 @@ A good place to start is [Deep Learning with Torch.rb: A 60 Minute Blitz](tutori
 ## Examples
 
 - [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
+- [Distributed MNIST training](examples/mnist/distributed.rb)
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Generative adversarial networks](examples/gan)
+
+## Distributed Training
+
+Torch.rb ships with a `torchrun` launcher that mirrors the PyTorch CLI. It handles process orchestration and sets the `RANK`, `LOCAL_RANK`, `WORLD_SIZE`, `MASTER_ADDR`, and `MASTER_PORT` environment variables expected by `Torch::Distributed.init_process_group`.
+
+Start a single-node job with a process per GPU (or CPU) with:
+
+```sh
+bundle exec torchrun --standalone --nproc-per-node=gpu path/to/training_script.rb --script-arg value
+```
+
+For multi-node runs, launch the same command on every node with matching rendezvous settings:
+
+```sh
+bundle exec torchrun \
+  --nnodes=2 \
+  --node-rank=0 \
+  --rdzv-backend=c10d \
+  --rdzv-endpoint=host0.example.com:29503 \
+  --rdzv-id=my-job \
+  --nproc-per-node=4 \
+  path/to/training_script.rb
+```
+
+On node 1, change `--node-rank=1`. The launcher restarts workers up to `--max-restarts` times and can be combined with tools like `bundle exec` or custom scripts via `--no-ruby`.
 
 ## API
 
@@ -328,6 +354,8 @@ net = MyNet.new
 net.load_state_dict(Torch.load("net.pth"))
 net.eval
 ```
+
+`Torch.load` mirrors the Python API and accepts `map_location` and `weights_only` keyword arguments for compatibility with existing PyTorch checkpoints.
 
 When saving a model in Python to load in Ruby, convert parameters to tensors (due to outstanding bugs in LibTorch)
 
