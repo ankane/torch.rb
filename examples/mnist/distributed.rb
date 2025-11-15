@@ -5,11 +5,13 @@ require "bundler/setup"
 require "optparse"
 require "torch"
 require "torchvision"
-require "socket"
+require "tmpdir"
 
 unless Torch::Distributed.available?
   abort "torch.distributed was not built in this binary"
 end
+
+DEFAULT_CHECKPOINT_PATH = File.join(Dir.tmpdir, "mnist_ddp_checkpoint.pt")
 
 class MyNet < Torch::NN::Module
   def initialize
@@ -43,7 +45,9 @@ def parse_options
     backend: "gloo",
     gpus: Torch::CUDA.available? ? [Torch::CUDA.device_count, 1].max : 1,
     log_interval: 20,
-    data_dir: File.join(__dir__, "data")
+    data_dir: File.join(__dir__, "data"),
+    checkpoint_path: DEFAULT_CHECKPOINT_PATH,
+    resume: false
   }
 
   OptionParser.new do |opts|
@@ -56,26 +60,11 @@ def parse_options
     opts.on("--gpus N", Integer, "Number of GPUs/processes to use") { |v| defaults[:gpus] = v }
     opts.on("--log-interval N", Integer, "Batches between log statements") { |v| defaults[:log_interval] = v }
     opts.on("--data-dir PATH", String, "Directory for cached MNIST data") { |v| defaults[:data_dir] = v }
+    opts.on("--checkpoint PATH", String, "Checkpoint file to save to (default: #{defaults[:checkpoint_path]})") { |v| defaults[:checkpoint_path] = v }
+    opts.on("--resume", "Load checkpoint weights before training if the file exists") { defaults[:resume] = true }
   end.parse!(ARGV)
 
   defaults
-end
-
-def free_port
-  server = TCPServer.new("127.0.0.1", 0)
-  port = server.addr[1]
-  server.close
-  port
-end
-
-def spawn_workers(world_size)
-  port = free_port
-
-  world_size.times.map do |rank|
-    fork do
-      yield(rank, world_size, port)
-    end
-  end.each { Process.wait2(_1) }
 end
 
 def load_datasets(rank, data_dir)
@@ -100,6 +89,39 @@ end
 def subset_for_rank(dataset, rank, world_size)
   indices = rank.step(dataset.size - 1, world_size).to_a
   Torch::Utils::Data::Subset.new(dataset, indices)
+end
+
+def checkpoint_map_location(device, rank)
+  accelerator_device = Torch::Accelerator.current_accelerator
+  return nil unless accelerator_device
+
+  accelerator_type = accelerator_device.type
+  target_index = device.index
+  if target_index.nil? && Torch::Accelerator.respond_to?(:device_count)
+    count = Torch::Accelerator.device_count
+    target_index = count.positive? ? rank % count : 0
+  end
+  { "#{accelerator_type}:0" => "#{accelerator_type}:#{target_index}" }
+end
+
+def load_checkpoint_if_present(ddp, device, rank, path)
+  return false unless path && File.exist?(path)
+
+  Torch::Distributed.barrier
+  kwargs = { weights_only: true }
+  map_location = checkpoint_map_location(device, rank)
+  kwargs[:map_location] = map_location if map_location
+  state_dict = Torch.load(path, **kwargs)
+  ddp.module.load_state_dict(state_dict)
+  true
+end
+
+def save_checkpoint(ddp, path, rank)
+  return unless path
+
+  Torch.save(ddp.module.state_dict, path) if rank.zero?
+  Torch::Distributed.barrier
+  puts "Saved checkpoint to #{path}" if rank.zero?
 end
 
 def train_epoch(model, device, loader, optimizer, epoch, rank, log_interval)
@@ -163,6 +185,18 @@ def run_worker(rank, world_size, port, options)
   train_subset = subset_for_rank(train_dataset, rank, world_size)
   train_loader = Torch::Utils::Data::DataLoader.new(train_subset, batch_size: options[:batch_size], shuffle: true)
   test_loader = Torch::Utils::Data::DataLoader.new(test_dataset, batch_size: options[:batch_size], shuffle: false) if rank.zero?
+  checkpoint_path = options[:checkpoint_path]
+
+  if options[:resume]
+    loaded = load_checkpoint_if_present(ddp, device, rank, checkpoint_path)
+    if rank.zero?
+      if loaded
+        puts "Loaded checkpoint weights from #{checkpoint_path}"
+      else
+        puts "No checkpoint found at #{checkpoint_path}, starting from random initialization"
+      end
+    end
+  end
 
   options[:epochs].times do |epoch_idx|
     epoch = epoch_idx + 1
@@ -170,6 +204,7 @@ def run_worker(rank, world_size, port, options)
     if rank.zero?
       evaluate(ddp.module, device, test_loader)
     end
+    save_checkpoint(ddp, checkpoint_path, rank) if checkpoint_path
   end
 
   Torch::Distributed.destroy_process_group
@@ -190,9 +225,9 @@ end
 Torch.manual_seed(1)
 
 if world_size == 1
-  run_worker(0, 1, free_port, options)
+  run_worker(0, 1, Torch::Distributed.free_port, options)
 else
-  spawn_workers(world_size) do |rank, total, port|
-    run_worker(rank, total, port, options)
+  Torch::Distributed.fork_world(world_size) do |rank, port|
+    run_worker(rank, world_size, port, options)
   end
 end
