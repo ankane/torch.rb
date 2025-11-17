@@ -211,9 +211,8 @@ module Torch
       end
     end
 
-    # TODO return Device instead of String in 0.19.0
     def device
-      _device._str
+      DeviceString.new(_device)
     end
   end
 end

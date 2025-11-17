@@ -406,7 +406,19 @@ module Torch
       # keep backwards compatibility
       File.open(filename, "rb") { |f| f.read(1) }
 
-      result = to_ruby(_load(filename))
+      load_device = map_location_device(map_location) if map_location
+      result =
+        if load_device
+          device_str =
+            if load_device.respond_to?(:_str)
+              load_device._str
+            else
+              load_device.to_s
+            end
+          to_ruby(_load_with_device(filename, device_str))
+        else
+          to_ruby(_load(filename))
+        end
       ensure_weights_only_contents!(result) if weights_only
       result = apply_map_location(result, map_location) if map_location
       result
@@ -567,6 +579,25 @@ module Torch
         end
       else
         raise Error, "weights_only load supports tensors, primitive Ruby types, arrays, and hashes (found #{obj.class.name})"
+      end
+    end
+
+    def map_location_device(map_location)
+      case map_location
+      when Device, String, Symbol
+        normalize_map_location_device(map_location)
+      when Hash
+        devices =
+          map_location.values.map do |value|
+            normalize_map_location_device(value)
+          rescue StandardError
+            nil
+          end.compact
+        return nil if devices.empty?
+        devices.uniq!
+        devices.one? ? devices.first : nil
+      else
+        nil
       end
     end
 

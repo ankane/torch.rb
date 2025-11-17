@@ -22,4 +22,20 @@ module Torch
       [type, index].hash
     end
   end
+
+  # String-like wrapper that also exposes device metadata
+  class DeviceString < String
+    def initialize(device)
+      @device = device
+      super(device._str)
+    end
+
+    def type
+      @device.type
+    end
+
+    def index
+      @device.index
+    end
+  end
 end
