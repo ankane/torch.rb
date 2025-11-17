@@ -70,6 +70,45 @@ if with_cuda
   $LDFLAGS += " -Wl,--no-as-needed,#{lib}/libtorch.so"
 end
 
+supports_c10d = try_link(<<~CPP, "-DUSE_C10D")
+  #include <torch/torch.h>
+  #include <torch/csrc/distributed/c10d/FileStore.hpp>
+
+  int main() {
+    ::c10d::FileStore store("unused", 1);
+    return 0;
+  }
+CPP
+
+supports_c10d_gloo = supports_c10d && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_GLOO")
+  #include <torch/torch.h>
+  #include <torch/csrc/distributed/c10d/ProcessGroupGloo.hpp>
+  #include <torch/csrc/distributed/c10d/FileStore.hpp>
+
+  int main() {
+    auto store = c10::make_intrusive<::c10d::FileStore>("unused", 1);
+    auto opts = ::c10d::ProcessGroupGloo::Options::create();
+    opts->devices.push_back(::c10d::ProcessGroupGloo::createDefaultDevice());
+    ::c10d::ProcessGroupGloo pg(store, 0, 1, opts);
+    return static_cast<int>(pg.getRank());
+  }
+CPP
+
+supports_c10d_nccl = with_cuda && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_NCCL")
+  #include <torch/torch.h>
+  #include <torch/csrc/distributed/c10d/ProcessGroupNCCL.hpp>
+
+  int main() {
+    auto opts = c10::make_intrusive<::c10d::ProcessGroupNCCL::Options>();
+    opts->is_high_priority_stream = false;
+    return 0;
+  }
+CPP
+
+$defs << "-DUSE_C10D" if supports_c10d
+$defs << "-DUSE_C10D_GLOO" if supports_c10d_gloo
+$defs << "-DUSE_C10D_NCCL" if supports_c10d_nccl
+
 # generate C++ functions
 puts "Generating C++ functions..."
 require_relative "../../codegen/generate_functions"
