@@ -55,6 +55,25 @@ end
 $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
 
+CONFIG["CC"] = CONFIG["CXX"]
+$CFLAGS = $CXXFLAGS
+
+supports_c10_cuda = with_cuda && try_compile(<<~CPP)
+  #include <torch/torch.h>
+  #include <c10/cuda/CUDAFunctions.h>
+
+  int main() {
+    c10::cuda::set_device(0);
+    return 0;
+  }
+CPP
+
+unless supports_c10_cuda
+  puts "c10 CUDA headers not available; features that require them will be disabled"
+else
+  $defs << " -DHAVE_C10_CUDA"
+end
+
 $LDFLAGS += " -Wl,-rpath,#{lib}"
 if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm|aarch64/i && Dir.exist?("/opt/homebrew/opt/libomp/lib")
   $LDFLAGS += ",-rpath,/opt/homebrew/opt/libomp/lib"
@@ -70,9 +89,6 @@ if with_cuda
   # TODO figure out why this is needed
   $LDFLAGS += " -Wl,--no-as-needed,#{lib}/libtorch.so"
 end
-
-CONFIG["CC"] = CONFIG["CXX"]
-$CFLAGS = $CXXFLAGS
 
 supports_c10d = try_link(<<~CPP, "-DUSE_C10D")
   #include <torch/torch.h>
@@ -98,7 +114,7 @@ supports_c10d_gloo = supports_c10d && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_GL
   }
 CPP
 
-supports_c10d_nccl = with_cuda && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_NCCL")
+supports_c10d_nccl = with_cuda && supports_c10_cuda && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_NCCL")
   #include <torch/torch.h>
   #include <torch/csrc/distributed/c10d/ProcessGroupNCCL.hpp>
 
