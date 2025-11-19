@@ -5,6 +5,7 @@ require "socket"
 class DistributedInitProcessGroupTest < Minitest::Test
   def setup
     skip "Distributed backend not available" unless Torch::Distributed.available?
+    skip "CUDA not available for NCCL backend" unless cuda_available?
   end
 
   def test_defaults_nccl_device_id_from_local_rank_env
@@ -54,6 +55,10 @@ class DistributedInitProcessGroupTest < Minitest::Test
     yield
   ensure
     Torch::Distributed.singleton_class.define_method(:_init_process_group, original)
+  end
+
+  def cuda_available?
+    Torch.const_defined?(:CUDA) && Torch::CUDA.respond_to?(:available?) && Torch::CUDA.available?
   end
 end
 
