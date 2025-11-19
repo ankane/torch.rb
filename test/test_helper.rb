@@ -1,6 +1,32 @@
+spawn_worker = ENV["TORCH_DISTRIBUTED_SPAWNED"] == "1"
+
+# Spawned distributed workers shouldn't try to load minitest plugins from the
+# parent test environment.
+ENV["MT_NO_PLUGINS"] = "1" if spawn_worker
+
 require "bundler/setup"
 Bundler.require(:default)
 require "minitest/autorun"
+
+if spawn_worker
+  module TorchDistributedSpawnTest
+    module QuietSummaryReporter
+      def start # :nodoc:
+        Minitest::StatisticsReporter.instance_method(:start).bind(self).call
+        self.sync = io.respond_to?(:"sync=")
+        self.old_sync, io.sync = io.sync, true if self.sync
+      end
+
+      def report # :nodoc:
+        super
+      ensure
+        io.sync = self.old_sync if self.sync
+      end
+    end
+  end
+
+  Minitest::SummaryReporter.prepend(TorchDistributedSpawnTest::QuietSummaryReporter)
+end
 
 # support
 require_relative "support/net"

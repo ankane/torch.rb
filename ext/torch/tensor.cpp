@@ -6,6 +6,7 @@
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
+#include <ruby/ruby.h>
 #include <ruby/thread.h>
 
 #include "tensor_functions.h"
@@ -38,11 +39,22 @@ struct RubyTensorHook {
     rb_gc_register_address(&proc_);
   }
 
+  // The autograd engine can invoke hooks from threads not created by Ruby.
+  // Register the calling thread with Ruby before acquiring the GVL to avoid
+  // "rb_thread_call_with_gvl() is called by non-ruby thread" crashes.
+  static void ensure_ruby_thread_registered() {
+    // ruby_init_stack is idempotent and safe to call repeatedly; it ensures the
+    // current native thread is known to the VM before we try to grab the GVL.
+    volatile VALUE stack_anchor = Qnil;
+    ruby_init_stack(&stack_anchor);
+  }
+
   ~RubyTensorHook() {
     rb_gc_unregister_address(&proc_);
   }
 
   at::Tensor call(const at::Tensor& grad) {
+    ensure_ruby_thread_registered();
     HookCallData data{proc_, grad};
     rb_thread_call_with_gvl(&RubyTensorHook::invoke, &data);
     if (data.return_value_defined) {
@@ -121,7 +133,7 @@ VALUE tensor_register_hook(int argc, VALUE* argv, VALUE self_) {
     return hook->call(grad);
   });
 
-  return Rice::Data_Object<HookHandle>(new HookHandle(self, handle, hook), rb_cHookHandle, true);
+  return Rice::Data_Object<HookHandle>(new HookHandle(self, handle, hook), true, rb_cHookHandle);
   END_HANDLE_TH_ERRORS
 }
 

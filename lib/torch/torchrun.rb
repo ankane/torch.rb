@@ -203,20 +203,28 @@ module Torch
 
         status
       ensure
+        @worker_pgid = nil
         @current_pids = []
       end
 
       def spawn_workers(restart_count)
         base_env = base_environment(restart_count)
-        Array.new(@local_world_size) do |local_rank|
+        pgid = nil
+        workers = Array.new(@local_world_size) do |local_rank|
           env = base_env.merge(rank_environment(local_rank))
-          spawn_worker(env, local_rank)
+          pid, pgid = spawn_worker(env, local_rank, pgid)
+          pid
         end
+        @worker_pgid = pgid
+        workers
       end
 
-      def spawn_worker(env, local_rank)
+      def spawn_worker(env, local_rank, pgid)
         args = command_arguments(local_rank)
-        Process.spawn(env, *args)
+        spawn_opts = pgid ? { pgroup: pgid } : { pgroup: true }
+        pid = Process.spawn(env, *args, spawn_opts)
+        pgid ||= pid
+        [pid, pgid]
       rescue SystemCallError => e
         raise Error, "failed to launch worker #{local_rank}: #{e.message}"
       end
@@ -287,6 +295,7 @@ module Torch
       def terminate_workers(pids)
         return if pids.empty?
 
+        send_process_group_signal("TERM")
         pids.each { |pid| send_signal(pid, "TERM") }
         sleep(0.2)
         pids.each do |pid|
@@ -322,6 +331,7 @@ module Torch
       end
 
       def forward_signal(sig)
+        send_process_group_signal(sig)
         (@current_pids || []).each { |pid| send_signal(pid, sig) }
       end
 
@@ -335,6 +345,14 @@ module Torch
 
       def send_signal(pid, sig)
         Process.kill(sig, pid)
+      rescue Errno::ESRCH
+        nil
+      end
+
+      def send_process_group_signal(sig)
+        return unless @worker_pgid
+
+        Process.kill(sig, -@worker_pgid)
       rescue Errno::ESRCH
         nil
       end

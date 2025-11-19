@@ -12,6 +12,11 @@ unless Torch::Distributed.available?
 end
 
 DEFAULT_CHECKPOINT_PATH = File.join(Dir.tmpdir, "mnist_ddp_checkpoint.pt")
+DEFAULT_BACKEND = if Torch.const_defined?(:CUDA) && Torch::CUDA.respond_to?(:available?) && Torch::CUDA.available?
+  "nccl"
+else
+  Torch::Distributed.get_default_backend_for_device(Torch::Accelerator.current_accelerator) || "gloo"
+end
 
 class MyNet < Torch::NN::Module
   def initialize
@@ -42,7 +47,7 @@ def parse_options
     batch_size: 64,
     lr: 1.0,
     gamma: 0.7,
-    backend: "gloo",
+    backend: DEFAULT_BACKEND,
     gpus: Torch::CUDA.available? ? [Torch::CUDA.device_count, 1].max : 1,
     log_interval: 20,
     data_dir: File.join(__dir__, "data"),
@@ -167,7 +172,7 @@ end
 def run_worker(rank, world_size, port, options)
   store = Torch::Distributed::TCPStore.new("127.0.0.1", port, world_size, rank.zero?)
   accelerator = Torch::Accelerator.current_accelerator
-  backend = options[:backend] || Torch::Distributed.get_default_backend_for_device(accelerator)
+  backend = options[:backend] || Torch::Distributed.get_default_backend_for_device(accelerator) || DEFAULT_BACKEND
   Torch::Distributed.init_process_group(backend, store: store, rank: rank, world_size: world_size)
 
   device = if Torch::CUDA.available? && options[:gpus] > 0
@@ -227,7 +232,7 @@ Torch.manual_seed(1)
 if world_size == 1
   run_worker(0, 1, Torch::Distributed.free_port, options)
 else
-  Torch::Distributed.fork_world(world_size) do |rank, port|
+  Torch::Distributed.fork_world(world_size, start_method: :spawn) do |rank, port|
     run_worker(rank, world_size, port, options)
   end
 end

@@ -15,7 +15,7 @@ module Torch
 
           @world_size = Torch::Distributed.get_world_size(@process_group)
           @rank = Torch::Distributed.get_rank(@process_group)
-          @device = Array(device_ids).compact.first
+          @device = normalize_device(Array(device_ids).compact.first)
           move_to_device(@device) if @device
 
           synchronize_parameters
@@ -37,6 +37,19 @@ module Torch
         end
 
         private
+
+        def normalize_device(device)
+          return nil unless device
+          return device if device.is_a?(Torch::Device)
+
+          if device.is_a?(Integer)
+            if Torch.const_defined?(:CUDA) && Torch::CUDA.respond_to?(:available?) && Torch::CUDA.available?
+              return Torch.device("cuda:#{device}")
+            end
+          end
+
+          Torch.device(device)
+        end
 
         def move_to_device(device)
           return unless device
@@ -89,10 +102,7 @@ module Torch
           @module.parameters.filter_map do |param|
             next unless param.requires_grad?
 
-            param.register_hook do |grad|
-              Torch::Distributed.all_reduce(grad, group: @process_group)
-              grad.div!(@world_size.to_f)
-            end
+            Torch::Distributed.register_ddp_hook(param, @process_group, @world_size)
           end
         end
       end

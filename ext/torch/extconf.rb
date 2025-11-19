@@ -47,6 +47,7 @@ have_library("nnpack")
 with_cuda = false
 if Dir["#{lib}/*torch_cuda*"].any?
   $LDFLAGS += " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
+  $INCFLAGS += " -I#{cuda_inc}" if Dir.exist?(cuda_inc)
   $LDFLAGS += " -L#{cudnn_lib}" if Dir.exist?(cudnn_lib) && cudnn_lib != cuda_lib
   with_cuda = have_library("cuda") && have_library("cudnn")
 end
@@ -69,6 +70,9 @@ if with_cuda
   # TODO figure out why this is needed
   $LDFLAGS += " -Wl,--no-as-needed,#{lib}/libtorch.so"
 end
+
+CONFIG["CC"] = CONFIG["CXX"]
+$CFLAGS = $CXXFLAGS
 
 supports_c10d = try_link(<<~CPP, "-DUSE_C10D")
   #include <torch/torch.h>
@@ -105,9 +109,21 @@ supports_c10d_nccl = with_cuda && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_NCCL")
   }
 CPP
 
-$defs << "-DUSE_C10D" if supports_c10d
-$defs << "-DUSE_C10D_GLOO" if supports_c10d_gloo
-$defs << "-DUSE_C10D_NCCL" if supports_c10d_nccl
+if supports_c10d
+  $defs << " -DUSE_C10D"
+  puts "Building with distributed support"
+else
+  puts "Building without distributed support"
+end
+
+if supports_c10d_gloo
+  $defs << "-DUSE_C10D_GLOO"
+  puts "GLOO support detected"
+end
+if supports_c10d_nccl
+  $defs << "-DUSE_C10D_NCCL"
+  puts "NCCL support detected"
+end
 
 # generate C++ functions
 puts "Generating C++ functions..."

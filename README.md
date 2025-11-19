@@ -56,8 +56,17 @@ A good place to start is [Deep Learning with Torch.rb: A 60 Minute Blitz](tutori
 
 - [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
 - [Distributed MNIST training](examples/mnist/distributed.rb)
+- [Training benchmarks (variable batch size / GPU count)](examples/benchmark/training.rb)
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Generative adversarial networks](examples/gan)
+
+Run the benchmark with:
+
+```sh
+bundle exec ruby examples/benchmark/training.rb --arch mnist_cnn --batch-size 256 --gpus 1 --steps 50
+```
+
+Set `--gpus` to 2+ to enable distributed training; `--steps` measures only timed steps and `--warmup` sets warmup iterations.
 
 ## Distributed Training
 
@@ -83,6 +92,8 @@ bundle exec torchrun \
 ```
 
 On node 1, change `--node-rank=1`. The launcher restarts workers up to `--max-restarts` times and can be combined with tools like `bundle exec` or custom scripts via `--no-ruby`.
+
+For scripts that use the `Torch::Distributed.fork_world` helper directly, set `start_method: :spawn` to launch fresh worker processes instead of forking. This matches Python’s multiprocessing start methods and avoids CUDA fork issues.
 
 ## API
 

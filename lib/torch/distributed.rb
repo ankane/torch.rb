@@ -1,4 +1,5 @@
 require "socket"
+require "rbconfig"
 
 module Torch
   module Distributed
@@ -8,6 +9,15 @@ module Torch
       "xpu" => "xccl",
       "mps" => "gloo"
     }.freeze
+
+    SPAWN_ENV_KEY = "TORCH_DISTRIBUTED_SPAWNED".freeze
+    SPAWN_RANK_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_RANK".freeze
+    SPAWN_WORLD_SIZE_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_WORLD_SIZE".freeze
+    SPAWN_PORT_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_PORT".freeze
+    SPAWN_PIPE_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_PIPE".freeze
+    SPAWN_SCRIPT_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_SCRIPT".freeze
+    SPAWN_TEST_ENV_KEY = "TORCH_DISTRIBUTED_SPAWN_TEST".freeze
+    SPAWN_ARGV = ARGV.dup.freeze
 
     class << self
       def initialized?
@@ -38,8 +48,15 @@ module Torch
         raise ArgumentError, "rank is required" if rank.nil?
         raise ArgumentError, "world_size is required" if world_size.nil?
 
+        device_id ||= default_device_id_for_backend(backend, rank, world_size)
+
         timeout_ms = (timeout * 1000).to_i
-        _init_process_group(backend, store, rank, world_size, timeout_ms)
+        bound_device_id = device_id.nil? ? -1 : Integer(device_id)
+        if backend == "nccl" && bound_device_id >= 0 && Torch.const_defined?(:CUDA) && Torch::CUDA.respond_to?(:set_device)
+          Torch::CUDA.set_device(bound_device_id)
+        end
+        pg = _init_process_group(backend, store, rank, world_size, timeout_ms, bound_device_id)
+        warmup_process_group(pg, backend)
       end
 
       def destroy_process_group
@@ -75,64 +92,101 @@ module Torch
         _broadcast(tensor, src, group)
       end
 
+      def register_ddp_hook(tensor, process_group, world_size)
+        ensure_process_group!(process_group)
+        _register_ddp_hook(tensor, process_group, Integer(world_size))
+      rescue NoMethodError
+        # Fallback for environments built without the native helper; this may
+        # still call back into Ruby from autograd threads.
+        tensor.register_hook do |grad|
+          all_reduce(grad, group: process_group)
+          grad.div!(world_size.to_f)
+        end
+      end
+
       def get_default_backend_for_device(device)
         backend = DEFAULT_DEVICE_BACKENDS[device_type_from(device)]
         raise ArgumentError, "Default backend not registered for device: #{device.inspect}" unless backend
         backend
       end
 
-      def fork_world(world_size, host: "127.0.0.1")
+      def fork_world(world_size, host: "127.0.0.1", start_method: :fork, &block)
         raise ArgumentError, "world_size must be positive" unless world_size.to_i.positive?
-        raise ArgumentError, "block required" unless block_given?
+        raise ArgumentError, "block required" unless block
 
+        start_method = normalize_start_method(start_method)
+        return run_spawn_worker(&block) if start_method == :spawn && spawn_worker?
+
+        fork_spawn_world(world_size, host: host, start_method: start_method, &block)
+      end
+
+      def fork_spawn_world(world_size, host:, start_method:, &block)
         port = free_port(host: host)
         readers = []
         pids = []
-        world_size.times do |rank|
-          reader, writer = IO.pipe
-          pid = fork do
-            reader.close
+        pgid = nil
+        completed = false
+
+        begin
+          world_size.times do |rank|
+            reader, writer = IO.pipe
             begin
-              writer.binmode
-              result = yield(rank, port)
-              Marshal.dump(result, writer)
-              exit! 0
-            rescue => e
-              Marshal.dump({error: "#{e.class}: #{e.message}", backtrace: e.backtrace}, writer)
-              exit! 1
-            ensure
+              case start_method
+              when :fork
+                pids << fork_worker(reader, writer, rank, port, world_size, &block)
+              when :spawn
+                pid, pgid = spawn_worker(reader, writer, rank, port, host: host, world_size: world_size, pgid: pgid)
+                pids << pid
+              else
+                raise ArgumentError, "Unsupported start_method: #{start_method.inspect}"
+              end
+              readers << reader
               writer.close unless writer.closed?
+            rescue Exception
+              reader.close unless reader.closed?
+              writer.close unless writer.closed?
+              raise
             end
           end
-          writer.close
-          readers << reader
-          pids << pid
-        end
 
-        outputs = readers.map do |reader|
-          data = Marshal.load(reader)
-          reader.close
-          data
-        end
+          read_failure = Object.new
 
-        statuses = pids.each_with_index.map do |pid, idx|
-          _pid, status = Process.wait2(pid)
-          [idx, pid, status]
-        end
-
-        statuses.each do |idx, pid, status|
-          output = outputs[idx]
-          if !status.success? || (output.is_a?(Hash) && output[:error])
-            message = if output.is_a?(Hash) && output[:error]
-              "Child #{pid} failed: #{output[:error]}\n#{Array(output[:backtrace]).join("\n")}"
-            else
-              "Child #{pid} exited with status #{status.exitstatus}"
+          outputs = readers.map do |reader|
+            begin
+              Marshal.load(reader)
+            rescue EOFError
+              read_failure
+            ensure
+              reader.close unless reader.closed?
             end
-            raise Torch::Error, message
           end
-        end
 
-        outputs
+          statuses = pids.each_with_index.map do |pid, idx|
+            _pid, status = Process.wait2(pid)
+            [idx, pid, status]
+          end
+
+          statuses.each do |idx, pid, status|
+            output = outputs[idx]
+            if output.equal?(read_failure)
+              raise Torch::Error, "Child #{pid} closed pipe before sending result (status #{status.exitstatus})"
+            end
+            if !status.success? || (output.is_a?(Hash) && output[:error])
+              message = if output.is_a?(Hash) && output[:error]
+                "Child #{pid} failed: #{output[:error]}\n#{Array(output[:backtrace]).join("\n")}"
+              else
+                "Child #{pid} exited with status #{status.exitstatus}"
+              end
+              raise Torch::Error, message
+            end
+          end
+
+          completed = true
+          outputs
+        ensure
+          # Ensure child workers are cleaned up if an interrupt or error occurs.
+          terminate_processes(pids, pgid: pgid) unless completed
+        end
       end
 
       def free_port(host: "127.0.0.1")
@@ -150,6 +204,44 @@ module Torch
         raise Torch::Error, "Default process group is not initialized"
       end
 
+      def default_device_id_for_backend(backend, rank, world_size)
+        return unless backend == "nccl"
+
+        default_local_rank(rank, world_size)
+      end
+
+      def warmup_process_group(pg, backend)
+        return pg unless backend == "nccl"
+
+        # Only warm up when a native process group was returned.
+        # Test helpers may stub out `_init_process_group` and return arbitrary
+        # Ruby objects, which cannot be passed to the C++ bindings.
+        return pg unless pg.nil? || (defined?(Torch::Distributed::ProcessGroup) && pg.is_a?(Torch::Distributed::ProcessGroup))
+
+        # Prime NCCL communicators so the first user-visible collective is fast
+        _barrier(pg)
+        pg
+      rescue
+        _destroy_process_group
+        raise
+      end
+
+      def default_local_rank(rank, world_size)
+        local_rank = env_integer("LOCAL_RANK")
+        return local_rank unless local_rank.nil?
+
+        local_world_size = env_integer("LOCAL_WORLD_SIZE") || world_size
+        return unless local_world_size && rank
+
+        rank % local_world_size if local_world_size.positive?
+      end
+
+      def env_integer(key)
+        Integer(ENV[key]) if ENV.key?(key)
+      rescue ArgumentError
+        nil
+      end
+
       def default_backend_for(device_id)
         get_default_backend_for_device(device_id)
       end
@@ -158,17 +250,173 @@ module Torch
         case device
         when Torch::Device
           device.type
+        when NilClass
+          accelerator_type || "cpu"
         when String
           Torch.device(device).type
         when Integer
-          Torch.device("cuda:#{device}").type
-        when NilClass
-          Torch::Accelerator.current_accelerator&.type || "cpu"
+          return accelerator_type || "cpu" if device.negative?
+          if Torch.const_defined?(:CUDA) && Torch::CUDA.respond_to?(:device_count)
+            max = Torch::CUDA.device_count
+            return accelerator_type || "cpu" if max <= 0 || device >= max
+            return Torch.device("cuda:#{device}").type
+          end
+          accelerator_type || "cpu"
         else
+          return device.type if device.respond_to?(:type)
           Torch.device(device).type
         end
       rescue => e
         raise ArgumentError, "Invalid device #{device.inspect}: #{e.message}"
+      end
+
+      def accelerator_type
+        acc = Torch::Accelerator.current_accelerator
+        acc.type if acc && acc.respond_to?(:type)
+      rescue
+        nil
+      end
+
+      def normalize_start_method(start_method)
+        method = start_method&.to_sym
+        return method if [:fork, :spawn].include?(method)
+
+        raise ArgumentError, "start_method must be :fork or :spawn (got #{start_method.inspect})"
+      end
+
+      def spawn_worker?
+        ENV[SPAWN_ENV_KEY] == "1"
+      end
+
+      def run_spawn_worker(&block)
+        rank = Integer(ENV.fetch(SPAWN_RANK_ENV_KEY))
+        port = Integer(ENV.fetch(SPAWN_PORT_ENV_KEY))
+        pipe_fd = Integer(ENV.fetch(SPAWN_PIPE_ENV_KEY))
+
+        writer = IO.new(pipe_fd, "wb")
+        writer.binmode
+        writer.sync = true
+
+        result = block.call(rank, port)
+        Marshal.dump(result, writer)
+        writer.flush
+        writer.close
+        Process.exit!(0)
+      rescue Exception => e
+        begin
+          if defined?(writer) && writer && !writer.closed?
+            Marshal.dump({error: "#{e.class}: #{e.message}", backtrace: e.backtrace}, writer)
+            writer.flush
+            writer.close
+          end
+        rescue StandardError
+          # best-effort error reporting back to parent
+        ensure
+          Process.exit!(1)
+          end
+      end
+
+      def fork_worker(reader, writer, rank, port, world_size, &block)
+        fork do
+          reader.close
+          begin
+            ENV["LOCAL_RANK"] = rank.to_s
+            ENV["LOCAL_WORLD_SIZE"] = world_size.to_s
+            ENV["RANK"] = rank.to_s
+            ENV["WORLD_SIZE"] = world_size.to_s
+            writer.binmode
+            writer.sync = true
+            result = block.call(rank, port)
+            Marshal.dump(result, writer)
+            writer.flush
+            writer.close
+            Process.exit!(0)
+          rescue => e
+            Marshal.dump({error: "#{e.class}: #{e.message}", backtrace: e.backtrace}, writer)
+            writer.flush
+            writer.close
+            Process.exit!(1)
+          ensure
+            writer.close unless writer.closed?
+          end
+        end
+      end
+
+      def spawn_worker(reader, writer, rank, port, host:, world_size:, pgid: nil)
+        writer.binmode
+        writer.close_on_exec = false
+
+        script = ENV[SPAWN_SCRIPT_ENV_KEY] || $0
+        env = {
+          SPAWN_ENV_KEY => "1",
+          SPAWN_RANK_ENV_KEY => rank.to_s,
+          SPAWN_WORLD_SIZE_ENV_KEY => world_size.to_s,
+          SPAWN_PORT_ENV_KEY => port.to_s,
+          SPAWN_PIPE_ENV_KEY => writer.fileno.to_s,
+          "LOCAL_RANK" => rank.to_s,
+          "LOCAL_WORLD_SIZE" => world_size.to_s,
+          "MASTER_ADDR" => host,
+          "MASTER_PORT" => port.to_s,
+          "RANK" => rank.to_s,
+          "WORLD_SIZE" => world_size.to_s
+        }
+        env["RUBYLIB"] = [ENV["RUBYLIB"], $LOAD_PATH.join(File::PATH_SEPARATOR)].compact.reject(&:empty?).join(File::PATH_SEPARATOR)
+
+        spawn_opts = {close_others: false}
+        spawn_opts[:pgroup] = pgid ? pgid : true
+
+        pid = Process.spawn(env, RbConfig.ruby, script, *spawn_argv, spawn_opts)
+        pgid ||= pid
+        [pid, pgid]
+      rescue SystemCallError => e
+        raise Torch::Error, "failed to spawn worker #{rank}: #{e.message}"
+      end
+
+      def spawn_argv
+        test_filter = ENV[SPAWN_TEST_ENV_KEY]
+        return SPAWN_ARGV unless test_filter
+        return SPAWN_ARGV if SPAWN_ARGV.include?("-n")
+
+        # Restrict child to the specific test that triggered the spawn
+        SPAWN_ARGV + ["-n", test_filter]
+      end
+
+      def terminate_processes(pids, pgid: nil)
+        return if pids.empty? && !pgid
+
+        send_process_group_signal(pgid, "TERM")
+        pids.each { |pid| safe_kill(pid, "TERM") }
+        sleep(0.2)
+        pids.each do |pid|
+          next unless process_alive?(pid)
+
+          safe_kill(pid, "KILL")
+        end
+        pids.each do |pid|
+          begin
+            Process.wait(pid)
+          rescue Errno::ECHILD
+          end
+        end
+      end
+
+      def send_process_group_signal(pgid, sig)
+        return unless pgid
+
+        Process.kill(sig, -pgid)
+      rescue Errno::ESRCH
+      end
+
+      def safe_kill(pid, sig)
+        Process.kill(sig, pid)
+      rescue Errno::ESRCH
+      end
+
+      def process_alive?(pid)
+        Process.kill(0, pid)
+        true
+      rescue Errno::ESRCH
+        false
       end
     end
 
@@ -191,5 +439,13 @@ module Torch
         end
       end
     end
+  end
+end
+
+at_exit do
+  begin
+    Torch::Distributed.destroy_process_group if Torch::Distributed.available? && Torch::Distributed.initialized?
+  rescue Exception
+    # best-effort cleanup to avoid leaked process groups
   end
 end
