@@ -46,7 +46,7 @@ struct RubyTensorHook {
     // ruby_init_stack is idempotent and safe to call repeatedly; it ensures the
     // current native thread is known to the VM before we try to grab the GVL.
     volatile VALUE stack_anchor = Qnil;
-    ruby_init_stack(&stack_anchor);
+    ruby_init_stack(const_cast<VALUE*>(&stack_anchor));
   }
 
   ~RubyTensorHook() {
