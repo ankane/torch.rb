@@ -38,6 +38,9 @@ cuda_lib ||= "/usr/local/cuda/lib64"
 cudnn_inc, cudnn_lib = dir_config("cudnn")
 cudnn_lib ||= "/usr/local/cuda/lib"
 
+gloo_inc, _ = dir_config("gloo")
+gloo_inc ||= "./vendor/gloo"
+
 $LDFLAGS += " -L#{lib}" if Dir.exist?(lib)
 abort "LibTorch not found" unless have_library("torch")
 
@@ -68,9 +71,7 @@ supports_c10_cuda = with_cuda && try_compile(<<~CPP)
   }
 CPP
 
-unless supports_c10_cuda
-  puts "c10 CUDA headers not available; features that require them will be disabled"
-else
+if supports_c10_cuda
   $defs << " -DHAVE_C10_CUDA"
 end
 
@@ -100,6 +101,19 @@ supports_c10d = try_link(<<~CPP, "-DUSE_C10D")
   }
 CPP
 
+if supports_c10d
+  $defs << " -DUSE_C10D"
+  puts "Building with distributed support"
+
+  if find_header("gloo/algorithm.h", gloo_inc)
+    $INCFLAGS += " -I#{gloo_inc}"
+  else
+    puts "GLOO headers not found. Consider setting --with-gloo-include param"
+  end
+else
+  puts "Building without distributed support"
+end
+
 supports_c10d_gloo = supports_c10d && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_GLOO")
   #include <torch/torch.h>
   #include <torch/csrc/distributed/c10d/ProcessGroupGloo.hpp>
@@ -125,16 +139,12 @@ supports_c10d_nccl = with_cuda && supports_c10_cuda && try_link(<<~CPP, "-DUSE_C
   }
 CPP
 
-if supports_c10d
-  $defs << " -DUSE_C10D"
-  puts "Building with distributed support"
-else
-  puts "Building without distributed support"
-end
-
 if supports_c10d_gloo
   $defs << "-DUSE_C10D_GLOO"
   puts "GLOO support detected"
+end
+unless supports_c10_cuda
+  puts "No c10 CUDA headers found. NCCL is unavailable"
 end
 if supports_c10d_nccl
   $defs << "-DUSE_C10D_NCCL"

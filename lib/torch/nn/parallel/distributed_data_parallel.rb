@@ -84,17 +84,21 @@ module Torch
 
         def synchronize_parameters
           Torch::Distributed.barrier(group: @process_group)
-          @module.parameters.each do |param|
-            Torch::Distributed.broadcast(param, src: 0, group: @process_group)
+          Torch.no_grad do
+            @module.parameters.each do |param|
+              Torch::Distributed.broadcast(param, src: 0, group: @process_group)
+            end
+            broadcast_buffers_if_needed
           end
-          broadcast_buffers_if_needed
         end
 
         def broadcast_buffers_if_needed
           return unless @broadcast_buffers
 
-          @module.buffers.each do |buffer|
-            Torch::Distributed.broadcast(buffer, src: 0, group: @process_group)
+          Torch.no_grad do
+            @module.buffers.each do |buffer|
+              Torch::Distributed.broadcast(buffer, src: 0, group: @process_group)
+            end
           end
         end
 

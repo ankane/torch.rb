@@ -8,7 +8,10 @@ module Torch
       extra = ", index: #{index.inspect}" if index?
       "device(type: #{type.inspect}#{extra})"
     end
-    alias_method :to_s, :inspect
+
+    def to_s
+      _str
+    end
 
     def ==(other)
       eql?(other)

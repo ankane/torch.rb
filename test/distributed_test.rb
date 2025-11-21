@@ -1,6 +1,7 @@
 require_relative "test_helper"
 require "torch/distributed"
 require "socket"
+require "timeout"
 
 class DistributedInitProcessGroupTest < Minitest::Test
   def setup
@@ -46,6 +47,8 @@ class DistributedInitProcessGroupTest < Minitest::Test
 
   private
 
+  # Stub out low-level init to capture arguments without starting a real process group
+  # Used for upper-level tests that don't require actial process group spawning 
   def with_stubbed_init_process_group(calls)
     original = Torch::Distributed.method(:_init_process_group)
     Torch::Distributed.singleton_class.define_method(:_init_process_group) do |backend, store, rank, world_size, timeout_ms, device_id|
@@ -110,9 +113,10 @@ class DistributedBackendTest < Minitest::Test
   end
 
   def backend_available?
+    timeout = distributed_timeout
     port = Torch::Distributed.free_port
-    store = Torch::Distributed::TCPStore.new("127.0.0.1", port, 1, true, wait_for_workers: false)
-    Torch::Distributed.init_process_group(backend, store: store, rank: 0, world_size: 1)
+    store = Torch::Distributed::TCPStore.new("127.0.0.1", port, 1, true, wait_for_workers: false, timeout: timeout)
+    Torch::Distributed.init_process_group(backend, store: store, rank: 0, world_size: 1, timeout: timeout)
     true
   rescue StandardError => e
     return false if e.message =~ /not available/i || e.message =~ /unsupported backend/i
@@ -121,23 +125,30 @@ class DistributedBackendTest < Minitest::Test
     Torch::Distributed.destroy_process_group if Torch::Distributed.initialized?
   end
 
-  def nccl_device_id(rank)
-    rank
-  end
-
-  def fork_with_backend(world_size: 2, start_method: :fork)
+  def fork_with_backend(world_size: 2, start_method: :spawn)
+    timeout = distributed_timeout
     original_filter = ENV[Torch::Distributed::SPAWN_TEST_ENV_KEY]
     original_script = ENV[Torch::Distributed::SPAWN_SCRIPT_ENV_KEY]
     ENV[Torch::Distributed::SPAWN_TEST_ENV_KEY] = name if start_method == :spawn
     ENV[Torch::Distributed::SPAWN_SCRIPT_ENV_KEY] = File.expand_path(__FILE__) if start_method == :spawn
-    Torch::Distributed.fork_world(world_size, start_method: start_method) do |rank, port|
-      store = Torch::Distributed::TCPStore.new("127.0.0.1", port, world_size, rank.zero?)
-      device_id = backend == "nccl" ? nccl_device_id(rank) : nil
-      Torch::Distributed.init_process_group(backend, store: store, rank: rank, world_size: world_size, device_id: device_id)
-      begin
-        yield(rank)
-      ensure
-        Torch::Distributed.destroy_process_group
+    Timeout.timeout(timeout, Timeout::Error, "distributed test exceeded #{timeout}s") do
+      Torch::Distributed.fork_world(world_size, start_method: start_method) do |rank, port|
+        Timeout.timeout(timeout, Timeout::Error, "distributed worker #{rank} exceeded #{timeout}s") do
+          store = Torch::Distributed::TCPStore.new("127.0.0.1", port, world_size, rank.zero?, timeout: timeout)
+          Torch::Distributed.init_process_group(
+            backend,
+            store: store,
+            rank: rank,
+            world_size: world_size,
+            device_id: rank,
+            timeout: timeout
+          )
+          begin
+            yield(rank)
+          ensure
+            Torch::Distributed.destroy_process_group
+          end
+        end
       end
     end
   ensure
@@ -179,7 +190,8 @@ class DistributedBackendTest < Minitest::Test
   end
 
   def test_ddp_gradient_sync
-    grads = fork_with_backend do |rank|
+    # autograd cannot run safely with fork-based multiprocessing; always use spawn here
+    grads = fork_with_backend(start_method: :spawn) do |rank|
       device = tensor_options[:device]
       model = Torch::NN::Linear.new(1, 1, bias: false)
       model = model.to(device) if device
@@ -198,10 +210,18 @@ class DistributedBackendTest < Minitest::Test
       assert_in_delta 1.5, grad, 1e-6
     end
   end
+
+  def distributed_timeout
+    Integer(ENV.fetch("TORCH_DISTRIBUTED_TEST_TIMEOUT", "30"))
+  end
 end
 
 class DistributedGlooTest < DistributedBackendTest
   BACKEND = "gloo"
+
+  def fork_with_backend(world_size: 2, start_method: :fork)
+    super(world_size: world_size, start_method: start_method)
+  end
 end
 
 class DistributedNcclTest < DistributedBackendTest

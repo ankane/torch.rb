@@ -34,6 +34,11 @@ Then run:
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
+In order to build distributed features (if your LibTorch supports it) add the following to the build config string:
+```sh
+... --with-cuda-include=/path/to/cuda/include --with-gloo-include=/path/to/gloo/repo
+```
+
 And add this line to your application’s Gemfile:
 
 ```ruby
@@ -94,6 +99,39 @@ bundle exec torchrun \
 On node 1, change `--node-rank=1`. The launcher restarts workers up to `--max-restarts` times and can be combined with tools like `bundle exec` or custom scripts via `--no-ruby`.
 
 For scripts that use the `Torch::Distributed.fork_world` helper directly, set `start_method: :spawn` to launch fresh worker processes instead of forking. This matches Python’s multiprocessing start methods and avoids CUDA fork issues.
+
+### Distributed benchmark
+
+Generate a comparison table across backends, group sizes, and batch sizes:
+
+```sh
+bundle exec ruby examples/benchmark/training.rb --backends gloo,nccl --batch-sizes 32,64,128,256 --gpus 2 --steps 50
+```
+
+Example results on dual RTX 3090s:
+Processing speed: images per second. Convergence speed: average loss reduction per step and per second.
+
+```text
+Backend | Proc Group | Batch | Images/s |
+--------+------------+-------+----------|
+gloo    | 1          | 32    | 1724.4   |
+gloo    | 1          | 64    | 1941.8   |
+gloo    | 1          | 128   | 2038.7   |
+gloo    | 1          | 256   | 2171.8   |
+gloo    | 2          | 32    | 2261.0   |
+gloo    | 2          | 64    | 2870.6   |
+gloo    | 2          | 128   | 3398.4   |
+gloo    | 2          | 256   | 3743.1   |
+nccl    | 1          | 32    | 1804.8   |
+nccl    | 1          | 64    | 1963.0   |
+nccl    | 1          | 128   | 2051.5   |
+nccl    | 1          | 256   | 2143.3   |
+nccl    | 2          | 32    | 3046.1   |
+nccl    | 2          | 64    | 3513.6   |
+nccl    | 2          | 128   | 3892.1   |
+nccl    | 2          | 256   | 4024.5   |
+--------+------------+-------+----------|
+```
 
 ## API
 

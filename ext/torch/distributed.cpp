@@ -198,6 +198,7 @@ void init_distributed(Rice::Module& m) {
         } else if (backend_lower == "nccl") {
 #if defined(USE_C10D_NCCL)
           auto options = c10::make_intrusive<::c10d::ProcessGroupNCCL::Options>();
+          options->timeout = std::chrono::milliseconds(timeout_millis);
           pg = c10::make_intrusive<::c10d::ProcessGroupNCCL>(store, rank, world_size, options);
 #else
           rb_raise(rb_eRuntimeError, "NCCL backend is not available in this build");
