@@ -115,7 +115,8 @@ module Torch
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
       end
-      to_a.first
+      # use flatten to handle tensors with a single element but multiple dimensions
+      to_a.flatten.first
     end
 
     def to_i
@@ -211,9 +212,8 @@ module Torch
       end
     end
 
-    # TODO return Device instead of String in 0.19.0
     def device
-      _device._str
+      DeviceString.new(_device)
     end
   end
 end
