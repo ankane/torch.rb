@@ -22,7 +22,7 @@ As well as:
 First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.9.0.zip > libtorch.zip
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.9.1.zip > libtorch.zip
 unzip -q libtorch.zip
 ```
 
@@ -34,11 +34,6 @@ Then run:
 bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
-In order to build distributed features (if your LibTorch supports it) add the following to the build config string:
-```sh
-... --with-cuda-include=/path/to/cuda/include --with-gloo-include=/path/to/gloo/repo
-```
-
 And add this line to your application’s Gemfile:
 
 ```ruby
@@ -46,6 +41,8 @@ gem "torch-rb"
 ```
 
 It can take 5-10 minutes to compile the extension. Windows is not currently supported.
+
+For distributed data parallel helpers, add the optional `torch-ddp` gem alongside this one.
 
 ## Getting Started
 
@@ -60,78 +57,8 @@ A good place to start is [Deep Learning with Torch.rb: A 60 Minute Blitz](tutori
 ## Examples
 
 - [Image classification with MNIST](examples/mnist) ([日本語版](https://qiita.com/kojix2/items/c19c36dc1bf73ea93409))
-- [Distributed MNIST training](examples/mnist/distributed.rb)
-- [Training benchmarks (variable batch size / GPU count)](examples/benchmark/training.rb)
 - [Collaborative filtering with MovieLens](examples/movielens)
 - [Generative adversarial networks](examples/gan)
-
-Run the benchmark with:
-
-```sh
-bundle exec ruby examples/benchmark/training.rb --arch mnist_cnn --batch-size 256 --gpus 1 --steps 50
-```
-
-Set `--gpus` to 2+ to enable distributed training; `--steps` measures only timed steps and `--warmup` sets warmup iterations.
-
-## Distributed Training
-
-Torch.rb ships with a `torchrun` launcher that mirrors the PyTorch CLI. It handles process orchestration and sets the `RANK`, `LOCAL_RANK`, `WORLD_SIZE`, `MASTER_ADDR`, and `MASTER_PORT` environment variables expected by `Torch::Distributed.init_process_group`.
-
-Start a single-node job with a process per GPU (or CPU) with:
-
-```sh
-bundle exec torchrun --standalone --nproc-per-node=gpu path/to/training_script.rb --script-arg value
-```
-
-For multi-node runs, launch the same command on every node with matching rendezvous settings:
-
-```sh
-bundle exec torchrun \
-  --nnodes=2 \
-  --node-rank=0 \
-  --rdzv-backend=c10d \
-  --rdzv-endpoint=host0.example.com:29503 \
-  --rdzv-id=my-job \
-  --nproc-per-node=4 \
-  path/to/training_script.rb
-```
-
-On node 1, change `--node-rank=1`. The launcher restarts workers up to `--max-restarts` times and can be combined with tools like `bundle exec` or custom scripts via `--no-ruby`.
-
-For scripts that use the `Torch::Distributed.fork_world` helper directly, set `start_method: :spawn` to launch fresh worker processes instead of forking. This matches Python’s multiprocessing start methods and avoids CUDA fork issues.
-
-### Distributed benchmark
-
-Generate a comparison table across backends, group sizes, and batch sizes:
-
-```sh
-bundle exec ruby examples/benchmark/training.rb --backends gloo,nccl --batch-sizes 32,64,128,256 --gpus 2 --steps 50
-```
-
-Example results on dual RTX 3090s:
-Processing speed: images per second. Convergence speed: average loss reduction per step and per second.
-
-```text
-Backend | Proc Group | Batch | Images/s |
---------+------------+-------+----------|
-gloo    | 1          | 32    | 1724.4   |
-gloo    | 1          | 64    | 1941.8   |
-gloo    | 1          | 128   | 2038.7   |
-gloo    | 1          | 256   | 2171.8   |
-gloo    | 2          | 32    | 2261.0   |
-gloo    | 2          | 64    | 2870.6   |
-gloo    | 2          | 128   | 3398.4   |
-gloo    | 2          | 256   | 3743.1   |
-nccl    | 1          | 32    | 1804.8   |
-nccl    | 1          | 64    | 1963.0   |
-nccl    | 1          | 128   | 2051.5   |
-nccl    | 1          | 256   | 2143.3   |
-nccl    | 2          | 32    | 3046.1   |
-nccl    | 2          | 64    | 3513.6   |
-nccl    | 2          | 128   | 3892.1   |
-nccl    | 2          | 256   | 4024.5   |
---------+------------+-------+----------|
-```
 
 ## API
 

@@ -10,9 +10,7 @@ Gem::Specification.new do |spec|
   spec.author        = "Andrew Kane"
   spec.email         = "andrew@ankane.org"
 
-  spec.files         = Dir["*.{md,txt}", "{codegen,ext,lib}/**/*", "bin/*"]
-  spec.executables   = Dir["bin/*"].map { |file| File.basename(file) }
-  spec.bindir        = "bin"
+  spec.files         = Dir["*.{md,txt}", "{codegen,ext,lib}/**/*"]
   spec.require_path  = "lib"
   spec.extensions    = ["ext/torch/extconf.rb"]
 

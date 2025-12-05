@@ -10,7 +10,6 @@ require "tmpdir"
 # modules
 require_relative "torch/device"
 require_relative "torch/accelerator"
-require_relative "torch/distributed"
 require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
@@ -193,7 +192,6 @@ require_relative "torch/nn/upsample"
 require_relative "torch/nn/functional"
 require_relative "torch/nn/functional_attention"
 require_relative "torch/nn/init"
-require_relative "torch/nn/parallel/distributed_data_parallel"
 
 # utils
 require_relative "torch/utils/data"

@@ -6,7 +6,7 @@ module Torch
       def initialize(mods = nil)
         super()
 
-        self.concat(mods) if mods
+        concat(mods) if mods
       end
 
       def length
@@ -29,6 +29,10 @@ module Torch
         else
           to_enum(:each)
         end
+      end
+
+      def map(&block)
+        @modules.values.map(&block)
       end
 
       def append(mod)

@@ -38,9 +38,6 @@ cuda_lib ||= "/usr/local/cuda/lib64"
 cudnn_inc, cudnn_lib = dir_config("cudnn")
 cudnn_lib ||= "/usr/local/cuda/lib"
 
-gloo_inc, _ = dir_config("gloo")
-gloo_inc ||= "./vendor/gloo"
-
 $LDFLAGS += " -L#{lib}" if Dir.exist?(lib)
 abort "LibTorch not found" unless have_library("torch")
 
@@ -50,7 +47,7 @@ have_library("nnpack")
 with_cuda = false
 if Dir["#{lib}/*torch_cuda*"].any?
   $LDFLAGS += " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
-  $INCFLAGS += " -I#{cuda_inc}" if Dir.exist?(cuda_inc)
+  $INCFLAGS += " -I#{cuda_inc}" if cuda_inc && Dir.exist?(cuda_inc)
   $LDFLAGS += " -L#{cudnn_lib}" if Dir.exist?(cudnn_lib) && cudnn_lib != cuda_lib
   with_cuda = have_library("cuda") && have_library("cudnn")
 end
@@ -61,6 +58,7 @@ $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
 CONFIG["CC"] = CONFIG["CXX"]
 $CFLAGS = $CXXFLAGS
 
+abort "cuda.h not found" if with_cuda && !find_header("cuda.h")
 supports_c10_cuda = with_cuda && try_compile(<<~CPP)
   #include <torch/torch.h>
   #include <c10/cuda/CUDAFunctions.h>
@@ -89,66 +87,6 @@ if with_cuda
   $LDFLAGS += " -lcudart -lc10_cuda -ltorch_cuda -lcufft -lcurand -lcublas -lcudnn"
   # TODO figure out why this is needed
   $LDFLAGS += " -Wl,--no-as-needed,#{lib}/libtorch.so"
-end
-
-supports_c10d = try_link(<<~CPP, "-DUSE_C10D")
-  #include <torch/torch.h>
-  #include <torch/csrc/distributed/c10d/FileStore.hpp>
-
-  int main() {
-    ::c10d::FileStore store("unused", 1);
-    return 0;
-  }
-CPP
-
-if supports_c10d
-  $defs << " -DUSE_C10D"
-  puts "Building with distributed support"
-
-  if find_header("gloo/algorithm.h", gloo_inc)
-    $INCFLAGS += " -I#{gloo_inc}"
-  else
-    puts "GLOO headers not found. Consider setting --with-gloo-include param"
-  end
-else
-  puts "Building without distributed support"
-end
-
-supports_c10d_gloo = supports_c10d && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_GLOO")
-  #include <torch/torch.h>
-  #include <torch/csrc/distributed/c10d/ProcessGroupGloo.hpp>
-  #include <torch/csrc/distributed/c10d/FileStore.hpp>
-
-  int main() {
-    auto store = c10::make_intrusive<::c10d::FileStore>("unused", 1);
-    auto opts = ::c10d::ProcessGroupGloo::Options::create();
-    opts->devices.push_back(::c10d::ProcessGroupGloo::createDefaultDevice());
-    ::c10d::ProcessGroupGloo pg(store, 0, 1, opts);
-    return static_cast<int>(pg.getRank());
-  }
-CPP
-
-supports_c10d_nccl = with_cuda && supports_c10_cuda && try_link(<<~CPP, "-DUSE_C10D -DUSE_C10D_NCCL")
-  #include <torch/torch.h>
-  #include <torch/csrc/distributed/c10d/ProcessGroupNCCL.hpp>
-
-  int main() {
-    auto opts = c10::make_intrusive<::c10d::ProcessGroupNCCL::Options>();
-    opts->is_high_priority_stream = false;
-    return 0;
-  }
-CPP
-
-if supports_c10d_gloo
-  $defs << "-DUSE_C10D_GLOO"
-  puts "GLOO support detected"
-end
-unless supports_c10_cuda
-  puts "No c10 CUDA headers found. NCCL is unavailable"
-end
-if supports_c10d_nccl
-  $defs << "-DUSE_C10D_NCCL"
-  puts "NCCL support detected"
 end
 
 # generate C++ functions

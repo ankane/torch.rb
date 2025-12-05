@@ -7,7 +7,6 @@ void init_linalg(Rice::Module& m);
 void init_nn(Rice::Module& m);
 void init_special(Rice::Module& m);
 void init_accelerator(Rice::Module& m);
-void init_distributed(Rice::Module& m);
 void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions);
 void init_torch(Rice::Module& m);
 
@@ -49,5 +48,4 @@ void Init_ext() {
   init_generator(m, rb_cGenerator);
   init_ivalue(m, rb_cIValue);
   init_random(m);
-  init_distributed(m);
 }
