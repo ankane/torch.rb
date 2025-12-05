@@ -42,6 +42,8 @@ gem "torch-rb"
 
 It can take 5-10 minutes to compile the extension. Windows is not currently supported.
 
+For distributed data parallel helpers, add the optional `torch-ddp` gem alongside this one.
+
 ## Getting Started
 
 A good place to start is [Deep Learning with Torch.rb: A 60 Minute Blitz](tutorials/blitz/README.md).
@@ -328,6 +330,8 @@ net = MyNet.new
 net.load_state_dict(Torch.load("net.pth"))
 net.eval
 ```
+
+`Torch.load` mirrors the Python API and accepts `map_location` and `weights_only` keyword arguments for compatibility with existing PyTorch checkpoints.
 
 When saving a model in Python to load in Ruby, convert parameters to tensors (due to outstanding bugs in LibTorch)
 

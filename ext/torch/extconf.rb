@@ -47,12 +47,31 @@ have_library("nnpack")
 with_cuda = false
 if Dir["#{lib}/*torch_cuda*"].any?
   $LDFLAGS += " -L#{cuda_lib}" if Dir.exist?(cuda_lib)
+  $INCFLAGS += " -I#{cuda_inc}" if cuda_inc && Dir.exist?(cuda_inc)
   $LDFLAGS += " -L#{cudnn_lib}" if Dir.exist?(cudnn_lib) && cudnn_lib != cuda_lib
   with_cuda = have_library("cuda") && have_library("cudnn")
 end
 
 $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
+
+CONFIG["CC"] = CONFIG["CXX"]
+$CFLAGS = $CXXFLAGS
+
+abort "cuda.h not found" if with_cuda && !find_header("cuda.h")
+supports_c10_cuda = with_cuda && try_compile(<<~CPP)
+  #include <torch/torch.h>
+  #include <c10/cuda/CUDAFunctions.h>
+
+  int main() {
+    c10::cuda::set_device(0);
+    return 0;
+  }
+CPP
+
+if supports_c10_cuda
+  $defs << " -DHAVE_C10_CUDA"
+end
 
 $LDFLAGS += " -Wl,-rpath,#{lib}"
 if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm|aarch64/i && Dir.exist?("/opt/homebrew/opt/libomp/lib")

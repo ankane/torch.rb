@@ -8,7 +8,10 @@ module Torch
       extra = ", index: #{index.inspect}" if index?
       "device(type: #{type.inspect}#{extra})"
     end
-    alias_method :to_s, :inspect
+
+    def to_s
+      _str
+    end
 
     def ==(other)
       eql?(other)
@@ -20,6 +23,22 @@ module Torch
 
     def hash
       [type, index].hash
+    end
+  end
+
+  # String-like wrapper that also exposes device metadata
+  class DeviceString < String
+    def initialize(device)
+      @device = device
+      super(device._str)
+    end
+
+    def type
+      @device.type
+    end
+
+    def index
+      @device.index
     end
   end
 end

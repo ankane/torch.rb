@@ -9,6 +9,7 @@ require "tmpdir"
 
 # modules
 require_relative "torch/device"
+require_relative "torch/accelerator"
 require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
@@ -399,11 +400,26 @@ module Torch
       File.binwrite(f, _save(to_ivalue(obj)))
     end
 
-    def load(filename)
+    def load(filename, map_location: nil, weights_only: false)
       # keep backwards compatibility
       File.open(filename, "rb") { |f| f.read(1) }
 
-      to_ruby(_load(filename))
+      load_device = map_location_device(map_location) if map_location
+      result =
+        if load_device
+          device_str =
+            if load_device.respond_to?(:_str)
+              load_device._str
+            else
+              load_device.to_s
+            end
+          to_ruby(_load_with_device(filename, device_str))
+        else
+          to_ruby(_load(filename))
+        end
+      ensure_weights_only_contents!(result) if weights_only
+      result = apply_map_location(result, map_location) if map_location
+      result
     end
 
     def tensor(data, **options)
@@ -533,6 +549,133 @@ module Torch
           end
 
         raise Error, "Unsupported type: #{type}"
+      end
+    end
+
+    WEIGHTS_ONLY_PRIMITIVE_CLASSES =
+      [
+        NilClass,
+        TrueClass,
+        FalseClass,
+        Integer,
+        Float,
+        String
+      ].freeze
+
+    def ensure_weights_only_contents!(obj)
+      case obj
+      when *WEIGHTS_ONLY_PRIMITIVE_CLASSES
+        obj
+      when Tensor
+        obj
+      when Array
+        obj.each { |value| ensure_weights_only_contents!(value) }
+      when Hash
+        obj.each do |key, value|
+          ensure_weights_only_contents!(key)
+          ensure_weights_only_contents!(value)
+        end
+      else
+        raise Error, "weights_only load supports tensors, primitive Ruby types, arrays, and hashes (found #{obj.class.name})"
+      end
+    end
+
+    def map_location_device(map_location)
+      case map_location
+      when Device, String, Symbol
+        normalize_map_location_device(map_location)
+      when Hash
+        devices =
+          map_location.values.map do |value|
+            normalize_map_location_device(value)
+          rescue StandardError
+            nil
+          end.compact
+        return nil if devices.empty?
+        devices.uniq!
+        devices.one? ? devices.first : nil
+      else
+        nil
+      end
+    end
+
+    def apply_map_location(obj, map_location)
+      case obj
+      when Tensor
+        map_tensor_location(obj, map_location)
+      when Array
+        obj.map { |value| apply_map_location(value, map_location) }
+      when Hash
+        obj.each_with_object({}) do |(key, value), memo|
+          memo[apply_map_location(key, map_location)] = apply_map_location(value, map_location)
+        end
+      else
+        obj
+      end
+    end
+
+    def map_tensor_location(tensor, map_location)
+      case map_location
+      when nil
+        tensor
+      when Hash
+        target = lookup_map_location_target(map_location, tensor.device)
+        return tensor if target.nil?
+        map_tensor_location(tensor, target)
+      else
+        return map_tensor_location_callable(tensor, map_location) if map_location.respond_to?(:call)
+        device = normalize_map_location_device(map_location)
+        tensor.to(device)
+      end
+    end
+
+    def map_tensor_location_callable(tensor, callable)
+      mapped = callable.call(tensor, map_location_device_tag(tensor.device))
+      return tensor if mapped.nil?
+      unless mapped.is_a?(Tensor)
+        raise Error, "map_location callable must return a Tensor or nil (got #{mapped.class.name})"
+      end
+      mapped
+    end
+
+    def lookup_map_location_target(mapping, device)
+      key = map_location_device_tag(device)
+      mapping.each do |candidate, value|
+        candidate_key =
+          case candidate
+          when Device
+            map_location_device_tag(candidate)
+          when String, Symbol
+            candidate.to_s
+          else
+            candidate
+          end
+        return value if candidate_key == key
+      end
+      nil
+    end
+
+    def map_location_device_tag(device)
+      case device
+      when Device
+        tag = device.type
+        tag += ":#{device.index}" unless device.index.nil?
+        tag
+      when String, Symbol
+        device.to_s
+      else
+        raise Error, "Unknown device reference: #{device.inspect}"
+      end
+    end
+
+    def normalize_map_location_device(location)
+      case location
+      when Device
+        location
+      when String, Symbol
+        device(location.to_s)
+      else
+        raise Error, "Unsupported map_location: #{location.inspect}"
       end
     end
 
