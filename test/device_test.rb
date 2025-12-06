@@ -22,4 +22,8 @@ class DeviceTest < Minitest::Test
     assert_equal %!device(type: "cpu")!, Torch.device("cpu").inspect
     assert_equal %!device(type: "cpu", index: 0)!, Torch.device("cpu:0").inspect
   end
+
+  def test_to_s
+    assert_equal "cpu", Torch.device("cpu").to_s
+  end
 end
