@@ -158,4 +158,9 @@ class TensorMethodsTest < Minitest::Test
     x = Torch.tensor([1, 2, 3])
     assert_tensor [-2, -3, -4], ~x
   end
+
+  def test_item
+    x = Torch.tensor([[[1]]])
+    assert_equal 1, x.item
+  end
 end

@@ -115,7 +115,7 @@ module Torch
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
       end
-      to_a.first
+      to_a.flatten.first
     end
 
     def to_i

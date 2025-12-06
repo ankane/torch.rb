@@ -1,3 +1,7 @@
+## 0.23.0 (unreleased)
+
+- Fixed `item` method for multi-dimensional tensors
+
 ## 0.22.2 (2025-11-04)
 
 - Added support for CUDA 12.9+
