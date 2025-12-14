@@ -6,6 +6,38 @@ class CUDATest < Minitest::Test
     assert Torch::CUDA.device_count
   end
 
+  def test_current_device
+    skip "CUDA not available" unless Torch::CUDA.available?
+
+    device = Torch::CUDA.current_device
+    assert_kind_of Integer, device
+    assert device >= 0
+    assert device < Torch::CUDA.device_count
+  end
+
+  def test_set_device
+    skip "CUDA not available" unless Torch::CUDA.available?
+
+    original_device = Torch::CUDA.current_device
+    Torch::CUDA.set_device(0)
+    assert_equal 0, Torch::CUDA.current_device
+
+    # Restore original device
+    Torch::CUDA.set_device(original_device)
+  end
+
+  def test_synchronize
+    skip "CUDA not available" unless Torch::CUDA.available?
+
+    # Should not raise
+    Torch::CUDA.synchronize
+  end
+
+  def test_nccl_available
+    result = Torch::CUDA.nccl_available?
+    assert [true, false].include?(result)
+  end
+
   def test_device
     device = Torch.device("cpu")
     assert_equal "cpu", device.type
