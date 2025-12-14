@@ -50,6 +50,11 @@ require_relative "torch/nn/module_list"
 require_relative "torch/nn/parameter_list"
 require_relative "torch/nn/sequential"
 
+# nn parallel
+require_relative "torch/nn/parallel/replicate"
+require_relative "torch/nn/parallel/parallel_apply"
+require_relative "torch/nn/parallel/data_parallel"
+
 # nn convolution layers
 require_relative "torch/nn/convnd"
 require_relative "torch/nn/conv1d"
