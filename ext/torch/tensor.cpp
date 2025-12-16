@@ -215,7 +215,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
         return s.str();
       })
     .define_method(
-      "_device",
+      "device",
       [](Tensor& self) {
         return self.device();
       })

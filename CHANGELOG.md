@@ -1,3 +1,8 @@
+## 0.23.0 (unreleased)
+
+- Changed `Tensor#device` method to return `Device` instead of string
+- Fixed `item` method for multi-dimensional tensors
+
 ## 0.22.2 (2025-11-04)
 
 - Added support for CUDA 12.9+

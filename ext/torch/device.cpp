@@ -28,7 +28,7 @@ void init_device(Rice::Module& m) {
         return s.str();
       })
     .define_method(
-      "_str",
+      "to_s",
       [](torch::Device& self) {
         return self.str();
       });

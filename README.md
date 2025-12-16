@@ -22,7 +22,7 @@ As well as:
 First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.9.0.zip > libtorch.zip
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.9.1.zip > libtorch.zip
 unzip -q libtorch.zip
 ```
 
