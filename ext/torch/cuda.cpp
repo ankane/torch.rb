@@ -5,6 +5,8 @@
 #include "utils.h"
 
 #if defined(WITH_CUDA)
+#include <c10/cuda/CUDACachingAllocator.h>
+
 extern "C" {
 int cudaGetDeviceCount(int* count);
 int cudaSetDevice(int device);
@@ -17,6 +19,16 @@ void init_cuda(Rice::Module& m) {
     .define_singleton_function("device_count", &torch::cuda::device_count)
     .define_singleton_function("manual_seed", &torch::cuda::manual_seed)
     .define_singleton_function("manual_seed_all", &torch::cuda::manual_seed_all)
+    .define_singleton_function(
+      "empty_cache",
+      []() {
+#if defined(WITH_CUDA)
+        c10::cuda::CUDACachingAllocator::emptyCache();
+#else
+        rb_raise(rb_eRuntimeError, "Torch::CUDA.empty_cache requires CUDA support");
+#endif
+        return Rice::Nil;
+      })
     .define_singleton_function(
       "set_device",
       [](int device_id) {
