@@ -2,6 +2,7 @@
 
 - Changed `Tensor#device` method to return `Device` instead of string
 - Fixed `item` method for multi-dimensional tensors
+- Fixed error with Rice 4.8
 
 ## 0.22.2 (2025-11-04)
 

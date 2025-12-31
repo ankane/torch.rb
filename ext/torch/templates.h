@@ -69,7 +69,7 @@ namespace Rice::detail {
 
     explicit From_Ruby(Arg* arg) : arg_(arg) { }
 
-    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+    double is_convertible(VALUE value) { return Convertible::Exact; }
 
     c10::complex<T> convert(VALUE x) {
       VALUE real = rb_funcall(x, rb_intern("real"), 0);
@@ -93,7 +93,7 @@ namespace Rice::detail {
 
     explicit From_Ruby(Arg* arg) : arg_(arg) { }
 
-    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+    double is_convertible(VALUE value) { return Convertible::Exact; }
 
     FanModeType convert(VALUE x) {
       auto s = String(x).str();
@@ -122,7 +122,7 @@ namespace Rice::detail {
 
     explicit From_Ruby(Arg* arg) : arg_(arg) { }
 
-    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+    double is_convertible(VALUE value) { return Convertible::Exact; }
 
     NonlinearityType convert(VALUE x) {
       auto s = String(x).str();
@@ -169,7 +169,7 @@ namespace Rice::detail {
 
     explicit From_Ruby(Arg* arg) : arg_(arg) { }
 
-    Convertible is_convertible(VALUE value) { return Convertible::Cast; }
+    double is_convertible(VALUE value) { return Convertible::Exact; }
 
     Scalar convert(VALUE x) {
       if (FIXNUM_P(x)) {
