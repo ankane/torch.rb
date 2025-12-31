@@ -14,8 +14,8 @@ Rake::ExtensionTask.new("torch") do |ext|
 end
 
 task :remove_ext do
-  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
-    File.unlink(path) if File.exist?(path)
+  Dir["lib/torch/ext.{bundle,so}", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
+    File.unlink(path)
   end
 end
 

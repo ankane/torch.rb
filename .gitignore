@@ -9,6 +9,7 @@
 /vendor
 *.lock
 *.bundle
+*.so
 /examples/gan/data
 /examples/gan/images
 /examples/mnist/data
