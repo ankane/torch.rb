@@ -1,4 +1,5 @@
 #include <utility>
+#include <vector>
 
 #include <torch/torch.h>
 
@@ -7,6 +8,7 @@
 #include "nn_functions.h"
 #include "templates.h"
 #include "utils.h"
+#include "wrap_outputs.h"
 
 // need to make a distinction between parameters and tensors
 class Parameter: public torch::autograd::Variable {
@@ -113,4 +115,30 @@ void init_nn(Rice::Module& m) {
         auto var = data.set_requires_grad(requires_grad);
         return Parameter(std::move(var));
       });
+
+  // DataParallel support functions
+  rb_mNN.define_singleton_function(
+    "_scatter",
+    [](const torch::Tensor& input, const std::vector<std::string>& devices, int64_t dim) {
+      auto chunks = input.chunk(devices.size(), dim);
+      std::vector<torch::Tensor> scattered;
+      scattered.reserve(chunks.size());
+      for (size_t i = 0; i < chunks.size(); i++) {
+        auto device = torch::Device(devices[i]);
+        scattered.push_back(chunks[i].to(device));
+      }
+      return scattered;
+    });
+
+  rb_mNN.define_singleton_function(
+    "_gather",
+    [](const std::vector<torch::Tensor>& inputs, const std::string& target_device, int64_t dim) {
+      std::vector<torch::Tensor> on_target;
+      on_target.reserve(inputs.size());
+      auto device = torch::Device(target_device);
+      for (const auto& t : inputs) {
+        on_target.push_back(t.to(device));
+      }
+      return torch::cat(on_target, dim);
+    });
 }
