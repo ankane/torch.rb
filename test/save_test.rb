@@ -55,6 +55,61 @@ class SaveTest < Minitest::Test
     assert_equal "No such file or directory @ rb_sysopen - missing.bin", error.message
   end
 
+  def test_load_with_map_location_string
+    tmpfile = Tempfile.new
+    tensor = Torch.tensor([1, 2, 3])
+    Torch.save(tensor, tmpfile.path)
+    loaded = Torch.load(tmpfile.path, map_location: "cpu")
+    assert_equal tensor.to_a, loaded.to_a
+  end
+
+  def test_load_with_map_location_callable
+    tmpfile = Tempfile.new
+    tensor = Torch.tensor([1, 2, 3])
+    Torch.save(tensor, tmpfile.path)
+    seen = []
+    loaded = Torch.load(tmpfile.path, map_location: lambda { |value, loc|
+      seen << loc
+      value
+    })
+    assert_equal tensor.to_a, loaded.to_a
+    assert_equal ["cpu"], seen
+  end
+
+  def test_load_with_weights_only
+    tmpfile = Tempfile.new
+    tensor = Torch.tensor([1, 2, 3])
+    Torch.save(tensor, tmpfile.path)
+    loaded = Torch.load(tmpfile.path, weights_only: true)
+    assert_equal tensor.to_a, loaded.to_a
+  end
+
+  def test_load_map_location_cuda_to_cpu
+    skip "Requires CUDA" unless Torch::CUDA.available?
+
+    tmpfile = Tempfile.new
+    tensor = Torch.tensor([1, 2, 3]).cuda
+    Torch.save(tensor, tmpfile.path)
+
+    loaded = Torch.load(tmpfile.path, map_location: "cpu")
+    assert_equal "cpu", loaded.device.type
+    assert_equal tensor.cpu.to_a, loaded.to_a
+  end
+
+  def test_load_map_location_cpu_to_cuda
+    skip "Requires CUDA" unless Torch::CUDA.available?
+
+    tmpfile = Tempfile.new
+    tensor = Torch.tensor([1, 2, 3])
+    Torch.save(tensor, tmpfile.path)
+
+    device = "cuda:0"
+    loaded = Torch.load(tmpfile.path, map_location: device)
+    assert_equal "cuda", loaded.device.type
+    assert_equal 0, loaded.device.index
+    assert_equal tensor.to_a, loaded.cpu.to_a
+  end
+
   private
 
   def assert_save(obj)
