@@ -5,6 +5,8 @@ class TensorCreationTest < Minitest::Test
     assert_tensor [0, 1, 2, 3, 4], Torch.arange(5), dtype: :int64
     assert_tensor [1, 2, 3], Torch.arange(1, 4)
     assert_tensor [1, 1.5, 2], Torch.arange(1, 2.5, 0.5)
+    assert_tensor [1, 2, 3], Torch.arange(1, 4, device: "cpu")
+    assert_tensor [1, 2, 3], Torch.arange(1, 4, device: Torch.device("cpu"))
   end
 
   def test_empty

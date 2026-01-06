@@ -7,6 +7,7 @@
 
 #include "ruby_arg_parser.h"
 
+VALUE THPDeviceClass = Qnil;
 VALUE THPGeneratorClass = Qnil;
 VALUE THPVariableClass = Qnil;
 
@@ -257,7 +258,7 @@ auto FunctionParameter::check(VALUE obj, int argnum) -> bool {
     case ParameterType::LAYOUT: return SYMBOL_P(obj);
     case ParameterType::MEMORY_FORMAT: return false; // return THPMemoryFormat_Check(obj);
     case ParameterType::QSCHEME: return false; // return THPQScheme_Check(obj);
-    case ParameterType::DEVICE: return RB_TYPE_P(obj, T_STRING); // TODO check device
+    case ParameterType::DEVICE: return RB_TYPE_P(obj, T_STRING) || THPDevice_Check(obj);
     case ParameterType::STRING: return RB_TYPE_P(obj, T_STRING);
     case ParameterType::SYM_INT: return is_int_or_symint(obj);
     case ParameterType::SYM_INT_LIST: return is_int_or_symint_list(obj, size);

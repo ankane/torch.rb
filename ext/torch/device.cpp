@@ -8,7 +8,8 @@
 #include "utils.h"
 
 void init_device(Rice::Module& m) {
-  Rice::define_class_under<torch::Device>(m, "Device")
+  auto rb_cDevice = Rice::define_class_under<torch::Device>(m, "Device");
+  rb_cDevice
     .define_constructor(Rice::Constructor<torch::Device, const std::string&>())
     .define_method(
       "_index",
@@ -32,4 +33,6 @@ void init_device(Rice::Module& m) {
       [](torch::Device& self) {
         return self.str();
       });
+
+  THPDeviceClass = rb_cDevice.value();
 }

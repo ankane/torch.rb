@@ -20,6 +20,7 @@ inline void handle_global_error(const torch::Error& ex) {
 
 // keep THP prefix for now to make it easier to compare code
 
+extern VALUE THPDeviceClass;
 extern VALUE THPGeneratorClass;
 extern VALUE THPVariableClass;
 
@@ -46,6 +47,10 @@ inline bool THPUtils_checkLong(VALUE obj) {
 
 inline bool THPUtils_checkScalar(VALUE obj) {
   return FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj) || RB_TYPE_P(obj, T_COMPLEX);
+}
+
+inline bool THPDevice_Check(VALUE obj) {
+  return rb_obj_is_kind_of(obj, THPDeviceClass);
 }
 
 inline bool THPGenerator_Check(VALUE obj) {

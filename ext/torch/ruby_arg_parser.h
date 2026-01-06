@@ -357,8 +357,11 @@ inline at::Device RubyArgs::device(int i) {
   if (NIL_P(args[i])) {
     return at::Device("cpu");
   }
-  const std::string &device_str = THPUtils_unpackString(args[i]);
-  return at::Device(device_str);
+  if (RB_TYPE_P(args[i], T_STRING)) {
+    const std::string &device_str = THPUtils_unpackString(args[i]);
+    return at::Device(device_str);
+  }
+  return Rice::detail::From_Ruby<torch::Device>().convert(args[i]);
 }
 
 inline at::Device RubyArgs::deviceWithDefault(int i, const at::Device& default_device) {
