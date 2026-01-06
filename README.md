@@ -31,7 +31,7 @@ For Linux x86-64, use the build that matches your CUDA version. For other platfo
 Then run:
 
 ```sh
-bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
+bundle config set build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
 And add this line to your application’s Gemfile:
