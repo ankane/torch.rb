@@ -361,7 +361,7 @@ inline at::Device RubyArgs::device(int i) {
     const std::string &device_str = THPUtils_unpackString(args[i]);
     return at::Device(device_str);
   }
-  return Rice::detail::From_Ruby<torch::Device>().convert(args[i]);
+  return Rice::detail::From_Ruby<at::Device>().convert(args[i]);
 }
 
 inline at::Device RubyArgs::deviceWithDefault(int i, const at::Device& default_device) {
