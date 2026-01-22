@@ -1,5 +1,6 @@
 ## 0.23.0 (unreleased)
 
+- Updated LibTorch to 2.10.0
 - Changed `Tensor#device` method to return `Device` instead of string
 - Fixed `item` method for multi-dimensional tensors
 - Fixed error with Rice 4.8

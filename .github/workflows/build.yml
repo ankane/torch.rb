@@ -16,7 +16,7 @@ jobs:
           - ruby: 3.2
             os: ubuntu-22.04
     env:
-      LIBTORCH_VERSION: 2.9.1
+      LIBTORCH_VERSION: 2.10.0
     steps:
       - uses: actions/checkout@v5
       - uses: ruby/setup-ruby@v1
