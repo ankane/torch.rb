@@ -18,7 +18,7 @@ jobs:
     env:
       LIBTORCH_VERSION: 2.10.0
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
