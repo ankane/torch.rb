@@ -1,4 +1,4 @@
-## 0.23.0 (unreleased)
+## 0.23.0 (2026-01-21)
 
 - Updated LibTorch to 2.10.0
 - Changed `Tensor#device` method to return `Device` instead of string
