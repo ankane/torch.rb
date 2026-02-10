@@ -1,8 +1,11 @@
+#include <fstream>
+#include <string>
+#include <vector>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
-
-#include <fstream>
+#include <rice/stl.hpp>
 
 #include "torch_functions.h"
 #include "templates.h"
@@ -21,7 +24,13 @@ torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const
 }
 
 void init_torch(Rice::Module& m) {
-  register_handler<torch::Error>(handle_global_error);
+  Rice::detail::Registries::instance.handlers.set([]() {
+    try {
+      throw;
+    } catch (const torch::Error& ex) {
+      handle_global_error(ex);
+    }
+  });
   add_torch_functions(m);
   m.define_singleton_function(
       "grad_enabled?",
@@ -54,7 +63,7 @@ void init_torch(Rice::Module& m) {
       "_save",
       [](const torch::IValue &value) {
         auto v = torch::pickle_save(value);
-        return Object(rb_str_new(v.data(), v.size()));
+        return Rice::Object(rb_str_new(v.data(), v.size()));
       })
     .define_singleton_function(
       "_load",

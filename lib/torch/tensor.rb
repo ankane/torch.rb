@@ -115,7 +115,7 @@ module Torch
       if numel != 1
         raise Error, "only one element tensors can be converted to Ruby scalars"
       end
-      to_a.first
+      to_a.flatten.first
     end
 
     def to_i
@@ -159,6 +159,7 @@ module Torch
 
     # TODO better compare?
     def <=>(other)
+      other = other.item if other.is_a?(Tensor)
       item <=> other
     end
 
@@ -208,11 +209,6 @@ module Torch
       else
         raise TypeError, "#{self.class} can't be coerced into #{other.class}"
       end
-    end
-
-    # TODO return Device instead of String in 0.19.0
-    def device
-      _device._str
     end
   end
 end

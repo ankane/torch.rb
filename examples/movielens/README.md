@@ -3,7 +3,7 @@
 Download the [MovieLens 100K dataset](https://grouplens.org/datasets/movielens/100k/)
 
 ```sh
-wget http://files.grouplens.org/datasets/movielens/ml-100k.zip
+wget https://files.grouplens.org/datasets/movielens/ml-100k.zip
 unzip ml-100k.zip
 ```
 

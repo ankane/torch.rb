@@ -7,13 +7,18 @@ module Torch
   module NN
     class Transformer < Module
       def initialize(
-        d_model: 512, nhead: 8,
-        num_encoder_layers: 6, num_decoder_layers: 6,
-        dim_feedforward: 2048, dropout: 0.1, activation: :relu,
-        custom_encoder: nil, custom_decoder: nil,
-        layer_norm_eps: 1e-5, batch_first: false
+        d_model: 512,
+        nhead: 8,
+        num_encoder_layers: 6,
+        num_decoder_layers: 6,
+        dim_feedforward: 2048,
+        dropout: 0.1,
+        activation: :relu,
+        custom_encoder: nil,
+        custom_decoder: nil,
+        layer_norm_eps: 1e-5,
+        batch_first: false
       )
-
         super()
 
         @encoder =
@@ -60,11 +65,15 @@ module Torch
       end
 
       def forward(
-        src, tgt,
-        src_mask: nil, tgt_mask: nil, memory_mask: nil,
-        src_key_padding_mask: nil, tgt_key_padding_mask: nil, memory_key_padding_mask: nil
+        src,
+        tgt,
+        src_mask: nil,
+        tgt_mask: nil,
+        memory_mask: nil,
+        src_key_padding_mask: nil,
+        tgt_key_padding_mask: nil,
+        memory_key_padding_mask: nil
       )
-
         if (!batch_first? && src.size(1) != tgt.size(1)) ||
           (batch_first? && src.size(0) != tgt.size(0))
 

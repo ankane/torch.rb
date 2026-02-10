@@ -60,7 +60,7 @@ class TensorAttributesTest < Minitest::Test
     error = assert_raises(NoMethodError) do
       Torch.tensor([true], dtype: :complex64)
     end
-    assert_match "undefined method `real' for true", error.message
+    assert_match(/undefined method [`']real' for true/, error.message)
   end
 
   def test_layout
@@ -81,7 +81,7 @@ class TensorAttributesTest < Minitest::Test
 
   def test_device
     x = Torch.tensor([1, 2, 3], device: "cpu")
-    assert_equal "cpu", x.device
+    assert_equal Torch.device("cpu"), x.device
   end
 
   def test_device_bad
@@ -102,7 +102,7 @@ class TensorAttributesTest < Minitest::Test
     x = Torch.ones(2, 3)
     assert_equal :float32, x.dtype
     assert_equal :strided, x.layout
-    assert_equal "cpu", x.device
+    assert_equal Torch.device("cpu"), x.device
     assert_equal 6, x.numel
     assert_equal 4, x.element_size
     assert !x.cuda?

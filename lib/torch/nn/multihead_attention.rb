@@ -2,11 +2,18 @@ module Torch
   module NN
     class MultiheadAttention < Module
       def initialize(
-        embed_dim, num_heads,
-        dropout: 0.0, bias: true, add_bias_kv: false, add_zero_attn: false,
-        kdim: nil, vdim: nil, batch_first: false, device: nil, dtype: nil
+        embed_dim,
+        num_heads,
+        dropout: 0.0,
+        bias: true,
+        add_bias_kv: false,
+        add_zero_attn: false,
+        kdim: nil,
+        vdim: nil,
+        batch_first: false,
+        device: nil,
+        dtype: nil
       )
-
         super()
 
         @embed_dim = embed_dim
@@ -77,10 +84,13 @@ module Torch
       end
 
       def forward(
-        query, key, value,
-        key_padding_mask: nil, need_weights: true, attn_mask: nil
+        query,
+        key,
+        value,
+        key_padding_mask: nil,
+        need_weights: true,
+        attn_mask: nil
       )
-
         if batch_first?
           query, key, value = [query, key, value].map { |t| t.transpose(1, 0) }
         end

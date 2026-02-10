@@ -1,5 +1,41 @@
-## 0.18.1 (unreleased)
+## 0.23.0 (2026-01-21)
 
+- Updated LibTorch to 2.10.0
+- Changed `Tensor#device` method to return `Device` instead of string
+- Fixed `item` method for multi-dimensional tensors
+- Fixed error with Rice 4.8
+
+## 0.22.2 (2025-11-04)
+
+- Added support for CUDA 12.9+
+
+## 0.22.1 (2025-10-26)
+
+- Fixed error with Rice 4.7
+
+## 0.22.0 (2025-10-15)
+
+- Updated LibTorch to 2.9.0
+- Improved error classes
+
+## 0.21.0 (2025-08-07)
+
+- Updated LibTorch to 2.8.0
+- Dropped support for Ruby < 3.2
+
+## 0.20.0 (2025-04-26)
+
+- Updated LibTorch to 2.7.0
+- Added `Normal` distribution
+- Fixed `SystemStackError` with certain tensor comparisons
+
+## 0.19.1 (2025-02-10)
+
+- Fixed error with Rice 4.5
+
+## 0.19.0 (2025-01-29)
+
+- Updated LibTorch to 2.6.0
 - Improved `inspect` for `Device`
 - Fixed equality for `Device`
 - Fixed `index` method for `Device` when no index

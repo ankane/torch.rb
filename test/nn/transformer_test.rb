@@ -1,6 +1,6 @@
 require_relative "../test_helper"
 
-class TranformerTest < Minitest::Test
+class TransformerTest < Minitest::Test
   def test_transformer_encoder
     Torch.manual_seed(42)
     src = Torch.randn(8, 2, 6)

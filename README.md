@@ -2,13 +2,18 @@
 
 :fire: Deep learning for Ruby, powered by [LibTorch](https://pytorch.org)
 
-Check out:
+Also check out:
 
-- [TorchVision](https://github.com/ankane/torchvision) for computer vision tasks
-- [TorchText](https://github.com/ankane/torchtext) for text and NLP tasks
-- [TorchAudio](https://github.com/ankane/torchaudio) for audio tasks
+- [TorchVision](https://github.com/ankane/torchvision-ruby) for computer vision tasks
+- [TorchText](https://github.com/ankane/torchtext-ruby) for text and NLP tasks
+- [TorchAudio](https://github.com/ankane/torchaudio-ruby) for audio tasks
 - [TorchRec](https://github.com/ankane/torchrec-ruby) for recommendation systems
 - [TorchData](https://github.com/ankane/torchdata-ruby) for data loading
+
+As well as:
+
+- [Transformers](https://github.com/ankane/transformers-ruby) for transformers
+- [Safetensors](https://github.com/ankane/safetensors-ruby) for storing tensors
 
 [![Build Status](https://github.com/ankane/torch.rb/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/torch.rb/actions)
 
@@ -17,16 +22,16 @@ Check out:
 First, [download LibTorch](https://pytorch.org/get-started/locally/). For Mac arm64, use:
 
 ```sh
-curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.5.1.zip > libtorch.zip
+curl -L https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.10.0.zip > libtorch.zip
 unzip -q libtorch.zip
 ```
 
-For Linux x86-64, use the `cxx11 ABI` version. For other platforms, build LibTorch from source.
+For Linux x86-64, use the build that matches your CUDA version. For other platforms, build LibTorch from source.
 
 Then run:
 
 ```sh
-bundle config build.torch-rb --with-torch-dir=/path/to/libtorch
+bundle config set build.torch-rb --with-torch-dir=/path/to/libtorch
 ```
 
 And add this line to your application’s Gemfile:
@@ -413,13 +418,12 @@ Here’s the list of compatible versions.
 
 Torch.rb | LibTorch
 --- | ---
+0.23.x | 2.10.x
+0.22.x | 2.9.x
+0.21.x | 2.8.x
+0.20.x | 2.7.x
+0.19.x | 2.6.x
 0.18.x | 2.5.x
-0.17.x | 2.4.x
-0.16.x | 2.3.x
-0.15.x | 2.2.x
-0.14.x | 2.1.x
-0.13.x | 2.0.x
-0.12.x | 1.13.x
 
 ## Performance
 

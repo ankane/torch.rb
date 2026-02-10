@@ -88,7 +88,7 @@ class AutogradTest < Minitest::Test
     error = assert_raises(ArgumentError) do
       x.grad = Torch.tensor([1, 1, 1])
     end
-    assert_equal "assigned grad has data located on a different device", error.message
+    assert_equal "assigned grad has data of a different type", error.message
   end
 
   def test_set_grad_different_type

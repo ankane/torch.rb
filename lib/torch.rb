@@ -13,6 +13,12 @@ require_relative "torch/inspector"
 require_relative "torch/tensor"
 require_relative "torch/version"
 
+# distributions
+require_relative "torch/distributions/distribution"
+require_relative "torch/distributions/exponential_family"
+require_relative "torch/distributions/normal"
+require_relative "torch/distributions/utils"
+
 # optim
 require_relative "torch/optim/optimizer"
 require_relative "torch/optim/adadelta"
@@ -204,7 +210,6 @@ require_relative "torch/utils/data/tensor_dataset"
 require_relative "torch/hub"
 
 module Torch
-  class Error < StandardError; end
   class NotImplementedYet < StandardError
     def message
       "This feature has not been implemented yet. Consider submitting a PR."
@@ -433,7 +438,7 @@ module Torch
       # TODO check each dimensions for consistency in future
       raise Error, "Inconsistent dimensions" if data.size != size.inject(1, :*)
 
-      # TOOD move to C++
+      # TODO move to C++
       data = data.map { |v| v ? 1 : 0 } if options[:dtype] == :bool
 
       _tensor(data, size, tensor_options(**options))

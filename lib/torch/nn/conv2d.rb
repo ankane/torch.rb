@@ -1,9 +1,17 @@
 module Torch
   module NN
     class Conv2d < ConvNd
-      def initialize(in_channels, out_channels, kernel_size, stride: 1,
-        padding: 0, dilation: 1, groups: 1, bias: true, padding_mode: "zeros")
-
+      def initialize(
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride: 1,
+        padding: 0,
+        dilation: 1,
+        groups: 1,
+        bias: true,
+        padding_mode: "zeros"
+      )
         kernel_size = _pair(kernel_size)
         stride = _pair(stride)
         padding = _pair(padding)

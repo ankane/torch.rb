@@ -1,21 +1,26 @@
 #pragma once
 
+#include <string>
+
 #include <torch/torch.h>
 
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
 
 static_assert(
-  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 5,
+  TORCH_VERSION_MAJOR == 2 && TORCH_VERSION_MINOR == 10,
   "Incompatible LibTorch version"
 );
 
+extern VALUE rb_eTorchError;
+
 inline void handle_global_error(const torch::Error& ex) {
-  throw Rice::Exception(rb_eRuntimeError, ex.what_without_backtrace());
+  throw Rice::Exception(rb_eTorchError, ex.what_without_backtrace());
 }
 
 // keep THP prefix for now to make it easier to compare code
 
+extern VALUE THPDeviceClass;
 extern VALUE THPGeneratorClass;
 extern VALUE THPVariableClass;
 
@@ -42,6 +47,10 @@ inline bool THPUtils_checkLong(VALUE obj) {
 
 inline bool THPUtils_checkScalar(VALUE obj) {
   return FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj) || RB_TYPE_P(obj, T_COMPLEX);
+}
+
+inline bool THPDevice_Check(VALUE obj) {
+  return rb_obj_is_kind_of(obj, THPDeviceClass);
 }
 
 inline bool THPGenerator_Check(VALUE obj) {

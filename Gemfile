@@ -4,6 +4,6 @@ gemspec
 
 gem "rake"
 gem "rake-compiler"
-gem "minitest", ">= 5"
-gem "numo-narray"
-gem "ruby_memcheck"
+gem "minitest"
+gem "numo-narray", platform: :mri
+gem "ruby_memcheck", require: false

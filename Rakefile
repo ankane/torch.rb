@@ -3,16 +3,16 @@ require "rake/testtask"
 require "rake/extensiontask"
 require "ruby_memcheck"
 
-task default: :test
 test_config = lambda do |t|
-  t.libs << "test"
   t.pattern = "test/**/*_test.rb"
 end
-Rake::TestTask.new(:test, &test_config)
+Rake::TestTask.new(&test_config)
 
 namespace :test do
   RubyMemcheck::TestTask.new(:valgrind, &test_config)
 end
+
+task default: :test
 
 Rake::ExtensionTask.new("torch") do |ext|
   ext.name = "ext"
@@ -20,8 +20,8 @@ Rake::ExtensionTask.new("torch") do |ext|
 end
 
 task :remove_ext do
-  Dir["lib/torch/ext.bundle", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
-    File.unlink(path) if File.exist?(path)
+  Dir["lib/torch/ext.{bundle,so}", "ext/torch/*_functions.{cpp,hpp}"].each do |path|
+    File.unlink(path)
   end
 end
 
