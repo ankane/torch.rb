@@ -3,13 +3,14 @@ require "rake/testtask"
 require "rake/extensiontask"
 require "ruby_memcheck"
 
-test_config = lambda do |t|
+Rake::TestTask.new do |t|
   t.pattern = "test/**/*_test.rb"
 end
-Rake::TestTask.new(&test_config)
 
 namespace :test do
-  RubyMemcheck::TestTask.new(:valgrind, &test_config)
+  RubyMemcheck::TestTask.new(:valgrind) do |t|
+    t.pattern = "test/*_test.rb"
+  end
 end
 
 task default: :test
