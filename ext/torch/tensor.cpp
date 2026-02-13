@@ -102,7 +102,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
   add_tensor_functions(rb_cTensor);
   THPVariableClass = rb_cTensor.value();
 
-  rb_define_method(rb_cTensor, "backward", (VALUE (*)(...)) tensor__backward, -1);
+  rb_define_method(rb_cTensor, "backward", tensor__backward, -1);
 
   rb_cTensor
     .define_method("cuda?", [](Tensor& self) { return self.is_cuda(); })
