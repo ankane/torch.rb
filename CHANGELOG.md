@@ -1,3 +1,7 @@
+## 0.23.1 (unreleased)
+
+- Fixed memory leaks
+
 ## 0.23.0 (2026-01-21)
 
 - Updated LibTorch to 2.10.0

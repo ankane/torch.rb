@@ -165,7 +165,7 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
   Check_Type(arg, T_ARRAY);
   auto size = RARRAY_LEN(arg);
   if (size != N) {
-    rb_raise(rb_eArgError, "expected array of %d elements but got %d", N, static_cast<int>(size));
+    throw Rice::Exception(rb_eArgError, "expected array of %d elements but got %d", N, static_cast<int>(size));
   }
   for (int idx = 0; idx < size; idx++) {
     VALUE obj = rb_ary_entry(arg, idx);
@@ -206,7 +206,7 @@ inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int6
     if (FIXNUM_P(obj)) {
       res[idx] = Rice::detail::From_Ruby<int64_t>().convert(obj);
     } else {
-      rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+      throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
           signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
     }
@@ -270,7 +270,7 @@ inline ScalarType RubyArgs::scalartype(int i) {
 
   auto it = dtype_map.find(args[i]);
   if (it == dtype_map.end()) {
-    rb_raise(rb_eArgError, "invalid dtype: %s", rb_id2name(rb_to_id(args[i])));
+    throw Rice::Exception(rb_eArgError, "invalid dtype: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
 }
@@ -321,7 +321,7 @@ inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
     if (FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj)) {
       res[idx] = Rice::detail::From_Ruby<double>().convert(obj);
     } else {
-      rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+      throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
           signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
     }
@@ -338,7 +338,7 @@ inline at::Layout RubyArgs::layout(int i) {
 
   auto it = layout_map.find(args[i]);
   if (it == layout_map.end()) {
-    rb_raise(rb_eArgError, "invalid layout: %s", rb_id2name(rb_to_id(args[i])));
+    throw Rice::Exception(rb_eArgError, "invalid layout: %s", rb_id2name(rb_to_id(args[i])));
   }
   return it->second;
 }
@@ -469,7 +469,7 @@ struct RubyArgParser {
     template<int N>
     inline RubyArgs parse(VALUE self, int argc, VALUE* argv, ParsedArgs<N> &dst) {
       if (N < max_args) {
-        rb_raise(rb_eArgError, "RubyArgParser: dst ParsedArgs buffer does not have enough capacity, expected %d (got %d)", static_cast<int>(max_args), N);
+        throw Rice::Exception(rb_eArgError, "RubyArgParser: dst ParsedArgs buffer does not have enough capacity, expected %d (got %d)", static_cast<int>(max_args), N);
       }
       return raw_parse(self, argc, argv, dst.args);
     }
@@ -493,7 +493,7 @@ struct RubyArgParser {
       print_error(self, args, kwargs, parsed_args);
 
       // TODO better message
-      rb_raise(rb_eArgError, "No matching signatures");
+      throw Rice::Exception(rb_eArgError, "No matching signatures");
     }
 
     void print_error(VALUE self, VALUE args, VALUE kwargs, VALUE parsed_args[]) {

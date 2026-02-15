@@ -120,7 +120,7 @@ bool is_tensor_list(VALUE obj, int argnum, bool throw_error) {
     VALUE iobj = rb_ary_entry(obj, idx);
     if (!THPVariable_Check(iobj)) {
       if (throw_error) {
-        rb_raise(rb_eArgError, "expected Tensor as element %d in argument %d, but got %s",
+        throw Rice::Exception(rb_eArgError, "expected Tensor as element %d in argument %d, but got %s",
             static_cast<int>(idx), argnum, rb_obj_classname(obj));
       }
       return false;
@@ -583,10 +583,10 @@ static void extra_args(const FunctionSignature& signature, ssize_t nargs) {
   const long min_args = signature.min_args;
   const long nargs_ = nargs;
   if (min_args != max_pos_args) {
-    rb_raise(rb_eArgError, "%s() takes from %ld to %ld positional arguments but %ld were given",
+    throw Rice::Exception(rb_eArgError, "%s() takes from %ld to %ld positional arguments but %ld were given",
         signature.name.c_str(), min_args, max_pos_args, nargs_);
   }
-  rb_raise(rb_eArgError, "%s() takes %ld positional argument%s but %ld %s given",
+  throw Rice::Exception(rb_eArgError, "%s() takes %ld positional argument%s but %ld %s given",
       signature.name.c_str(),
       max_pos_args, max_pos_args == 1 ? "" : "s",
       nargs_, nargs == 1 ? "was" : "were");
@@ -608,7 +608,7 @@ static void missing_args(const FunctionSignature& signature, int idx) {
     }
   }
 
-  rb_raise(rb_eArgError, "%s() missing %d required positional argument%s: %s",
+  throw Rice::Exception(rb_eArgError, "%s() missing %d required positional argument%s: %s",
       signature.name.c_str(),
       num_missing,
       num_missing == 1 ? "s" : "",
@@ -636,23 +636,23 @@ static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num
     key = rb_ary_entry(keys, 0);
 
     if (!THPUtils_checkSymbol(key)) {
-      rb_raise(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
+      throw Rice::Exception(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
     }
 
     auto param_idx = find_param(signature, key);
     if (param_idx < 0) {
-      rb_raise(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
+      throw Rice::Exception(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
           signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
 
     if (param_idx < num_pos_args) {
-      rb_raise(rb_eArgError, "%s() got multiple values for argument '%s'",
+      throw Rice::Exception(rb_eArgError, "%s() got multiple values for argument '%s'",
           signature.name.c_str(), rb_id2name(rb_to_id(key)));
     }
   }
 
   // this should never be hit
-  rb_raise(rb_eArgError, "invalid keyword arguments");
+  throw Rice::Exception(rb_eArgError, "invalid keyword arguments");
 }
 
 VALUE missing = Qundef;
@@ -740,12 +740,12 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],
     } else if (raise_exception) {
       if (is_kwd) {
         // foo(): argument 'other' must be str, not int
-        rb_raise(rb_eArgError, "%s(): argument '%s' must be %s, not %s",
+        throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, not %s",
             name.c_str(), param.name.c_str(), param.type_name().c_str(),
             rb_obj_classname(obj));
       } else {
         // foo(): argument 'other' (position 2) must be str, not int
-        rb_raise(rb_eArgError, "%s(): argument '%s' (position %ld) must be %s, not %s",
+        throw Rice::Exception(rb_eArgError, "%s(): argument '%s' (position %ld) must be %s, not %s",
             name.c_str(), param.name.c_str(), static_cast<long>(arg_pos + 1),
             param.type_name().c_str(), rb_obj_classname(obj));
       }

@@ -55,7 +55,7 @@ namespace Rice::detail {
     explicit To_Ruby(Arg* arg) : arg_(arg) { }
 
     VALUE convert(c10::complex<T> const& x) {
-      return rb_dbl_complex_new(x.real(), x.imag());
+      return protect(rb_dbl_complex_new, x.real(), x.imag());
     }
 
   private:
@@ -72,8 +72,8 @@ namespace Rice::detail {
     double is_convertible(VALUE value) { return Convertible::Exact; }
 
     c10::complex<T> convert(VALUE x) {
-      VALUE real = rb_funcall(x, rb_intern("real"), 0);
-      VALUE imag = rb_funcall(x, rb_intern("imag"), 0);
+      VALUE real = protect(rb_funcall, x, rb_intern("real"), 0);
+      VALUE imag = protect(rb_funcall, x, rb_intern("imag"), 0);
       return c10::complex<T>(From_Ruby<T>().convert(real), From_Ruby<T>().convert(imag));
     }
 

@@ -184,15 +184,15 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
 
         // TODO support sparse grad
         if (!grad.options().type_equal(self.options())) {
-          rb_raise(rb_eArgError, "assigned grad has data of a different type");
+          throw Rice::Exception(rb_eArgError, "assigned grad has data of a different type");
         }
 
         if (self.is_cuda() && grad.get_device() != self.get_device()) {
-          rb_raise(rb_eArgError, "assigned grad has data located on a different device");
+          throw Rice::Exception(rb_eArgError, "assigned grad has data located on a different device");
         }
 
         if (!self.sizes().equals(grad.sizes())) {
-          rb_raise(rb_eArgError, "assigned grad has data of a different size");
+          throw Rice::Exception(rb_eArgError, "assigned grad has data of a different size");
         }
 
         self.mutable_grad() = grad;
