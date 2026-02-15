@@ -1,6 +1,6 @@
 ## 0.23.1 (unreleased)
 
-- Fixed memory leaks
+- Fixed memory leaks with exceptions
 
 ## 0.23.0 (2026-01-21)
 
