@@ -41,4 +41,4 @@ jobs:
       - if: ${{ matrix.valgrind }}
         run: |
           sudo apt-get update && sudo apt-get install valgrind
-          bundle exec rake test:valgrind TEST=test/tensor_creation_test.rb
+          bundle exec rake test:valgrind

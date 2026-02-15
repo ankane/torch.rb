@@ -9,7 +9,8 @@ end
 
 namespace :test do
   RubyMemcheck::TestTask.new(:valgrind) do |t|
-    t.pattern = "test/*_test.rb"
+    # skip slow tests
+    t.test_files = FileList["test/**/*_test.rb"].exclude(/(layers|optimizer|transformer)_test/)
   end
 end
 
