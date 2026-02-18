@@ -1,3 +1,4 @@
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -28,15 +29,15 @@ Array flat_data(Tensor& tensor) {
 Rice::Class rb_cTensor;
 
 std::vector<TensorIndex> index_vector(Array a) {
-  Object obj;
-
   std::vector<TensorIndex> indices;
   indices.reserve(a.size());
 
   for (long i = 0; i < a.size(); i++) {
-    obj = a[i];
+    Object obj(a[i]);
 
-    if (obj.is_instance_of(rb_cInteger)) {
+    if (obj.is_nil()) {
+      indices.push_back(torch::indexing::None);
+    } else if (obj.is_instance_of(rb_cInteger)) {
       indices.push_back(Rice::detail::From_Ruby<int64_t>().convert(obj.value()));
     } else if (obj.is_instance_of(rb_cRange)) {
       torch::optional<c10::SymInt> start_index = torch::nullopt;
@@ -64,12 +65,10 @@ std::vector<TensorIndex> index_vector(Array a) {
       indices.push_back(torch::indexing::Slice(start_index, stop_index));
     } else if (obj.is_instance_of(rb_cTensor)) {
       indices.push_back(Rice::detail::From_Ruby<Tensor>().convert(obj.value()));
-    } else if (obj.is_nil()) {
-      indices.push_back(torch::indexing::None);
-    } else if (obj == Rice::True || obj == Rice::False) {
+    } else if (obj.value() == Qtrue || obj.value() == Qfalse) {
       indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
-      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj));
+      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj.value()));
     }
   }
   return indices;
@@ -168,7 +167,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "grad",
       [](Tensor& self) {
         auto grad = self.grad();
-        return grad.defined() ? Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Rice::Nil;
+        return grad.defined() ? std::optional<torch::Tensor>{grad} : std::nullopt;
       })
     // can't use grad=
     // assignment methods fail with Ruby 3.0

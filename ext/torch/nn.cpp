@@ -1,3 +1,4 @@
+#include <optional>
 #include <utility>
 
 #include <torch/torch.h>
@@ -95,7 +96,7 @@ void init_nn(Rice::Module& m) {
       "grad",
       [](Parameter& self) {
         auto grad = self.grad();
-        return grad.defined() ? Rice::Object(Rice::detail::To_Ruby<torch::Tensor>().convert(grad)) : Rice::Nil;
+        return grad.defined() ? std::optional<torch::Tensor>{grad} : std::nullopt;
       })
     // can't use grad=
     // assignment methods fail with Ruby 3.0

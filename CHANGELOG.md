@@ -1,6 +1,7 @@
 ## 0.23.1 (unreleased)
 
 - Fixed memory leaks with exceptions
+- Fixed error with Rice 4.11
 
 ## 0.23.0 (2026-01-21)
 
