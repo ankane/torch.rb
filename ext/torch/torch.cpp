@@ -1,8 +1,14 @@
 #include <fstream>
+#include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include <torch/torch.h>
+#include <torch/csrc/jit/serialization/import_read.h>
+#include <torch/csrc/jit/serialization/pickle.h>
+
+#include <caffe2/serialize/in_memory_adapter.h>
 
 #include <rice/rice.hpp>
 #include <rice/stl.hpp>
@@ -75,6 +81,30 @@ void init_torch(Rice::Module& m) {
             (std::istreambuf_iterator<char>()));
         input.close();
         return torch::pickle_load(bytes);
+      })
+    .define_singleton_function(
+      "_load_with_device",
+      [](const std::string &filename, const std::string &device_str) {
+        std::ifstream input(filename, std::ios::binary);
+        std::vector<char> bytes(
+            (std::istreambuf_iterator<char>(input)),
+            (std::istreambuf_iterator<char>()));
+        input.close();
+
+        auto device = c10::Device(device_str);
+        auto reader = std::make_shared<caffe2::serialize::MemoryReadAdapter>(
+            bytes.data(),
+            static_cast<off_t>(bytes.size()));
+        caffe2::serialize::PyTorchStreamReader stream_reader(reader);
+
+        return torch::jit::readArchiveAndTensors(
+            "data",
+            /*pickle_prefix=*/"",
+            /*tensor_prefix=*/"",
+            /*type_resolver=*/std::nullopt,
+            /*obj_loader=*/std::nullopt,
+            /*device=*/device,
+            stream_reader);
       })
     .define_singleton_function(
       "_from_blob",
