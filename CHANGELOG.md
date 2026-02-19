@@ -1,4 +1,4 @@
-## 0.23.1 (unreleased)
+## 0.23.1 (2026-02-19)
 
 - Fixed memory leaks with exceptions
 - Fixed error with Rice 4.11
