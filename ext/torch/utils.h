@@ -50,17 +50,17 @@ inline bool THPUtils_checkScalar(VALUE obj) {
 }
 
 inline bool THPDevice_Check(VALUE obj) {
-  return rb_obj_is_kind_of(obj, THPDeviceClass);
+  return Rice::detail::protect(rb_obj_is_kind_of, obj, THPDeviceClass);
 }
 
 inline bool THPGenerator_Check(VALUE obj) {
-  return rb_obj_is_kind_of(obj, THPGeneratorClass);
+  return Rice::detail::protect(rb_obj_is_kind_of, obj, THPGeneratorClass);
 }
 
 inline bool THPVariable_Check(VALUE obj) {
-  return rb_obj_is_kind_of(obj, THPVariableClass);
+  return Rice::detail::protect(rb_obj_is_kind_of, obj, THPVariableClass);
 }
 
 inline bool THPVariable_CheckExact(VALUE obj) {
-  return rb_obj_is_instance_of(obj, THPVariableClass);
+  return Rice::detail::protect(rb_obj_is_instance_of, obj, THPVariableClass);
 }

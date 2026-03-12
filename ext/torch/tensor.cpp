@@ -68,7 +68,7 @@ std::vector<TensorIndex> index_vector(Array a) {
     } else if (obj.value() == Qtrue || obj.value() == Qfalse) {
       indices.push_back(Rice::detail::From_Ruby<bool>().convert(obj.value()));
     } else {
-      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", rb_obj_classname(obj.value()));
+      throw Rice::Exception(rb_eArgError, "Unsupported index type: %s", Rice::detail::protect(rb_obj_classname, obj.value()));
     }
   }
   return indices;

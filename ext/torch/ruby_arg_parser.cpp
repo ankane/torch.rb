@@ -117,11 +117,11 @@ bool is_tensor_list(VALUE obj, int argnum, bool throw_error) {
   }
   auto size = RARRAY_LEN(obj);
   for (int idx = 0; idx < size; idx++) {
-    VALUE iobj = rb_ary_entry(obj, idx);
+    VALUE iobj = Rice::detail::protect(rb_ary_entry, obj, idx);
     if (!THPVariable_Check(iobj)) {
       if (throw_error) {
         throw Rice::Exception(rb_eArgError, "expected Tensor as element %d in argument %d, but got %s",
-            static_cast<int>(idx), argnum, rb_obj_classname(obj));
+            static_cast<int>(idx), argnum, Rice::detail::protect(rb_obj_classname, obj));
       }
       return false;
     }
@@ -136,7 +136,7 @@ static bool is_int_list(VALUE obj, int broadcast_size) {
       return true;
     }
 
-    auto item = rb_ary_entry(obj, 0);
+    auto item = Rice::detail::protect(rb_ary_entry, obj, 0);
     bool int_first = false;
     if (THPUtils_checkIndex(item)) {
       // we still have to check that the rest of items are NOT symint nodes
@@ -178,7 +178,7 @@ static bool is_int_or_symint_list(VALUE obj, int broadcast_size) {
     if (RARRAY_LEN(obj) == 0) {
       return true;
     }
-    auto item = rb_ary_entry(obj, 0);
+    auto item = Rice::detail::protect(rb_ary_entry, obj, 0);
 
     if (is_int_or_symint(item)) {
       return true;
@@ -631,23 +631,23 @@ static ssize_t find_param(FunctionSignature& signature, VALUE name) {
 static void extra_kwargs(FunctionSignature& signature, VALUE kwargs, ssize_t num_pos_args) {
   VALUE key;
 
-  VALUE keys = rb_funcall(kwargs, rb_intern("keys"), 0);
+  VALUE keys = Rice::detail::protect(rb_funcall, kwargs, rb_intern("keys"), 0);
   if (RARRAY_LEN(keys) > 0) {
-    key = rb_ary_entry(keys, 0);
+    key = Rice::detail::protect(rb_ary_entry, keys, 0);
 
     if (!THPUtils_checkSymbol(key)) {
-      throw Rice::Exception(rb_eArgError, "keywords must be symbols, not %s", rb_obj_classname(key));
+      throw Rice::Exception(rb_eArgError, "keywords must be symbols, not %s", Rice::detail::protect(rb_obj_classname, key));
     }
 
     auto param_idx = find_param(signature, key);
     if (param_idx < 0) {
       throw Rice::Exception(rb_eArgError, "%s() got an unexpected keyword argument '%s'",
-          signature.name.c_str(), rb_id2name(rb_to_id(key)));
+          signature.name.c_str(), Rice::detail::protect(rb_id2name, Rice::detail::protect(rb_to_id, key)));
     }
 
     if (param_idx < num_pos_args) {
       throw Rice::Exception(rb_eArgError, "%s() got multiple values for argument '%s'",
-          signature.name.c_str(), rb_id2name(rb_to_id(key)));
+          signature.name.c_str(), Rice::detail::protect(rb_id2name, Rice::detail::protect(rb_to_id, key)));
     }
   }
 
@@ -703,14 +703,14 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],
         }
         return false;
       }
-      obj = rb_ary_entry(args, arg_pos);
+      obj = Rice::detail::protect(rb_ary_entry, args, arg_pos);
     } else if (!NIL_P(kwargs)) {
-      obj = rb_hash_lookup2(kwargs, param.ruby_name, missing);
+      obj = Rice::detail::protect(rb_hash_lookup2, kwargs, param.ruby_name, missing);
       // for (VALUE numpy_name: param.numpy_python_names) {
       //   if (obj) {
       //     break;
       //   }
-      //   obj = rb_hash_aref(kwargs, numpy_name);
+      //   obj = Rice::detail::protect(rb_hash_aref, kwargs, numpy_name);
       // }
       is_kwd = true;
     }
@@ -742,12 +742,12 @@ bool FunctionSignature::parse(VALUE self, VALUE args, VALUE kwargs, VALUE dst[],
         // foo(): argument 'other' must be str, not int
         throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, not %s",
             name.c_str(), param.name.c_str(), param.type_name().c_str(),
-            rb_obj_classname(obj));
+            Rice::detail::protect(rb_obj_classname, obj));
       } else {
         // foo(): argument 'other' (position 2) must be str, not int
         throw Rice::Exception(rb_eArgError, "%s(): argument '%s' (position %ld) must be %s, not %s",
             name.c_str(), param.name.c_str(), static_cast<long>(arg_pos + 1),
-            param.type_name().c_str(), rb_obj_classname(obj));
+            param.type_name().c_str(), Rice::detail::protect(rb_obj_classname, obj));
       }
     } else {
       return false;

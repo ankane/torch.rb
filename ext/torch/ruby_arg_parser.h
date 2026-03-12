@@ -168,7 +168,7 @@ inline std::array<at::Tensor, N> RubyArgs::tensorlist_n(int i) {
     throw Rice::Exception(rb_eArgError, "expected array of %d elements but got %d", N, static_cast<int>(size));
   }
   for (int idx = 0; idx < size; idx++) {
-    VALUE obj = rb_ary_entry(arg, idx);
+    VALUE obj = Rice::detail::protect(rb_ary_entry, arg, idx);
     res[idx] = Rice::detail::From_Ruby<Tensor>().convert(obj);
   }
   return res;
@@ -202,13 +202,13 @@ inline std::vector<int64_t> RubyArgs::intlistWithDefault(int i, std::vector<int6
   size = RARRAY_LEN(arg);
   std::vector<int64_t> res(size);
   for (idx = 0; idx < size; idx++) {
-    VALUE obj = rb_ary_entry(arg, idx);
+    VALUE obj = Rice::detail::protect(rb_ary_entry, arg, idx);
     if (FIXNUM_P(obj)) {
       res[idx] = Rice::detail::From_Ruby<int64_t>().convert(obj);
     } else {
       throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
-          signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
+          signature.params[i].type_name().c_str(), Rice::detail::protect(rb_obj_classname, obj), idx + 1);
     }
   }
   return res;
@@ -270,7 +270,7 @@ inline ScalarType RubyArgs::scalartype(int i) {
 
   auto it = dtype_map.find(args[i]);
   if (it == dtype_map.end()) {
-    throw Rice::Exception(rb_eArgError, "invalid dtype: %s", rb_id2name(rb_to_id(args[i])));
+    throw Rice::Exception(rb_eArgError, "invalid dtype: %s", Rice::detail::protect(rb_id2name, Rice::detail::protect(rb_to_id, args[i])));
   }
   return it->second;
 }
@@ -317,13 +317,13 @@ inline c10::OptionalArray<double> RubyArgs::doublelistOptional(int i) {
   auto size = RARRAY_LEN(arg);
   std::vector<double> res(size);
   for (idx = 0; idx < size; idx++) {
-    VALUE obj = rb_ary_entry(arg, idx);
+    VALUE obj = Rice::detail::protect(rb_ary_entry, arg, idx);
     if (FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj)) {
       res[idx] = Rice::detail::From_Ruby<double>().convert(obj);
     } else {
       throw Rice::Exception(rb_eArgError, "%s(): argument '%s' must be %s, but found element of type %s at pos %d",
           signature.name.c_str(), signature.params[i].name.c_str(),
-          signature.params[i].type_name().c_str(), rb_obj_classname(obj), idx + 1);
+          signature.params[i].type_name().c_str(), Rice::detail::protect(rb_obj_classname, obj), idx + 1);
     }
   }
   return res;
@@ -338,7 +338,7 @@ inline at::Layout RubyArgs::layout(int i) {
 
   auto it = layout_map.find(args[i]);
   if (it == layout_map.end()) {
-    throw Rice::Exception(rb_eArgError, "invalid layout: %s", rb_id2name(rb_to_id(args[i])));
+    throw Rice::Exception(rb_eArgError, "invalid layout: %s", Rice::detail::protect(rb_id2name, Rice::detail::protect(rb_to_id, args[i])));
   }
   return it->second;
 }
@@ -476,7 +476,7 @@ struct RubyArgParser {
 
     inline RubyArgs raw_parse(VALUE self, int argc, VALUE* argv, VALUE parsed_args[]) {
       VALUE args, kwargs;
-      rb_scan_args(argc, argv, "*:", &args, &kwargs);
+      Rice::detail::protect(rb_scan_args, argc, argv, "*:", &args, &kwargs);
 
       if (signatures_.size() == 1) {
         auto& signature = signatures_[0];
