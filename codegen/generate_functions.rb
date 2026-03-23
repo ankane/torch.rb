@@ -41,22 +41,18 @@ def skip_functions(functions)
     # not supported yet
     f.func.include?("Dimname") ||
     f.func.include?("ConstQuantizerPtr") ||
-    # TODO fix LibTorch 1.12 changes
+    # TODO fix
     f.base_name == "histogramdd" ||
     f.base_name == "nested_tensor" ||
     f.base_name == "split_copy" ||
     f.base_name == "split_with_sizes_copy" ||
     f.base_name == "unbind_copy" ||
-    # TODO fix LibTorch 1.13 changes
     f.base_name == "native_channel_shuffle" ||
-    # TODO fix LibTorch 2.1 changes
     f.base_name == "sym_size" ||
     f.base_name == "sym_numel" ||
     f.base_name == "sym_storage_offset" ||
     f.base_name == "sym_stride" ||
-    # TODO fix LibTorch 2.6 changes
     f.base_name == "rrelu_with_noise" ||
-    # TODO fix LibTorch 2.9 changes
     f.base_name == "sym_is_contiguous" ||
     f.base_name == "fbgemm_linear_fp16_weight" ||
     f.base_name == "fbgemm_linear_fp16_weight_fp32_activation"
@@ -255,7 +251,6 @@ def group_overloads(functions, type)
 end
 
 def sort_functions(functions)
-  # TODO
   functions.sort_by { |f| f["out"] ? 1 : 0 }
 end
 
