@@ -58,6 +58,7 @@ $LDFLAGS += " -Wl,-rpath,#{lib}"
 p lib
 if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm|aarch64/i # && Dir.exist?("/opt/homebrew/opt/libomp/lib")
   # $LDFLAGS += ",-rpath,/opt/llvm-openmp/lib"
+  find_library("omp", nil, lib)
 end
 $LDFLAGS += ":#{cuda_lib}/stubs:#{cuda_lib}" if with_cuda
 
