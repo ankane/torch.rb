@@ -97,7 +97,7 @@ inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, double, int64_t
 
 inline VALUE wrap(const torch::TensorList& x) {
   auto a = Rice::detail::protect(rb_ary_new2, x.size());
-  for (auto t : x) {
+  for (const auto& t : x) {
     Rice::detail::protect(rb_ary_push, a, Rice::detail::To_Ruby<torch::Tensor>().convert(t));
   }
   return a;

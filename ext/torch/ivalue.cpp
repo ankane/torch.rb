@@ -53,7 +53,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
       [](torch::IValue& self) {
         auto list = self.toListRef();
         Rice::Array obj;
-        for (auto& elem : list) {
+        for (const auto& elem : list) {
           auto v = torch::IValue{elem};
           obj.push(Rice::Object(Rice::detail::To_Ruby<torch::IValue>().convert(v)), false);
         }
@@ -74,7 +74,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
       [](torch::IValue& self) {
         auto dict = self.toGenericDict();
         Rice::Hash obj;
-        for (auto& pair : dict) {
+        for (const auto& pair : dict) {
           auto k = torch::IValue{pair.key()};
           auto v = torch::IValue{pair.value()};
           obj[Rice::Object(Rice::detail::To_Ruby<torch::IValue>().convert(k))] = Rice::Object(Rice::detail::To_Ruby<torch::IValue>().convert(v));
@@ -91,7 +91,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
       "from_list",
       [](Rice::Array obj) {
         c10::impl::GenericList list(c10::AnyType::get());
-        for (auto entry : obj) {
+        for (const auto& entry : obj) {
           list.push_back(Rice::detail::From_Ruby<torch::IValue>().convert(entry.value()));
         }
         return torch::IValue(list);
@@ -125,7 +125,7 @@ void init_ivalue(Rice::Module& m, Rice::Class& rb_cIValue) {
         auto value_type = c10::AnyType::get();
         c10::impl::GenericDict elems(key_type, value_type);
         elems.reserve(obj.size());
-        for (auto entry : obj) {
+        for (const auto& entry : obj) {
           elems.insert(Rice::detail::From_Ruby<torch::IValue>().convert(entry.first), Rice::detail::From_Ruby<torch::IValue>().convert((Rice::Object) entry.second));
         }
         return torch::IValue(std::move(elems));
