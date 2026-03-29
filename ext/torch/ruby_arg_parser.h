@@ -358,7 +358,7 @@ inline at::Device RubyArgs::device(int i) {
     return at::Device("cpu");
   }
   if (RB_TYPE_P(args[i], T_STRING)) {
-    const std::string &device_str = THPUtils_unpackString(args[i]);
+    const std::string& device_str = THPUtils_unpackString(args[i]);
     return at::Device(device_str);
   }
   return Rice::detail::From_Ruby<at::Device>().convert(args[i]);
@@ -461,13 +461,13 @@ struct RubyArgParser {
 
       // Check deprecated signatures last
       std::stable_partition(signatures_.begin(), signatures_.end(),
-        [](const FunctionSignature & sig) {
+        [](const FunctionSignature& sig) {
           return !sig.deprecated;
         });
     }
 
     template<int N>
-    inline RubyArgs parse(VALUE self, int argc, VALUE* argv, ParsedArgs<N> &dst) {
+    inline RubyArgs parse(VALUE self, int argc, VALUE* argv, ParsedArgs<N>& dst) {
       if (N < max_args) {
         throw Rice::Exception(rb_eArgError, "RubyArgParser: dst ParsedArgs buffer does not have enough capacity, expected %d (got %d)", static_cast<int>(max_args), N);
       }

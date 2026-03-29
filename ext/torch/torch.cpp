@@ -12,7 +12,7 @@
 #include "utils.h"
 
 template<typename T>
-torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
+torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t>& size, const torch::TensorOptions& options) {
   std::vector<T> vec;
   vec.reserve(a.size());
   for (long i = 0; i < a.size(); i++) {
@@ -61,13 +61,13 @@ void init_torch(Rice::Module& m) {
     // begin operations
     .define_singleton_function(
       "_save",
-      [](const torch::IValue &value) {
+      [](const torch::IValue& value) {
         auto v = torch::pickle_save(value);
         return Rice::Object(Rice::detail::protect(rb_str_new, v.data(), v.size()));
       })
     .define_singleton_function(
       "_load",
-      [](const std::string &filename) {
+      [](const std::string& filename) {
         // https://github.com/pytorch/pytorch/issues/20356#issuecomment-567663701
         std::ifstream input(filename, std::ios::binary);
         std::vector<char> bytes(
@@ -78,13 +78,13 @@ void init_torch(Rice::Module& m) {
       })
     .define_singleton_function(
       "_from_blob",
-      [](Rice::String s, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
+      [](Rice::String s, const std::vector<int64_t>& size, const torch::TensorOptions& options) {
         void *data = const_cast<char *>(s.c_str());
         return torch::from_blob(data, size, options);
       })
     .define_singleton_function(
       "_tensor",
-      [](Rice::Array a, const std::vector<int64_t> &size, const torch::TensorOptions &options) {
+      [](Rice::Array a, const std::vector<int64_t>& size, const torch::TensorOptions& options) {
         auto dtype = options.dtype();
         if (dtype == torch::kByte) {
           return make_tensor<uint8_t>(a, size, options);

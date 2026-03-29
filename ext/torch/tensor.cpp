@@ -128,7 +128,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "shape",
       [](Tensor& self) {
         Array a;
-        for (auto &size : self.sizes()) {
+        for (auto& size : self.sizes()) {
           a.push(size, false);
         }
         return a;
@@ -137,7 +137,7 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       "_strides",
       [](Tensor& self) {
         Array a;
-        for (auto &stride : self.strides()) {
+        for (auto& stride : self.strides()) {
           a.push(stride, false);
         }
         return a;
