@@ -15,23 +15,23 @@ inline VALUE wrap(double x) {
   return Rice::detail::To_Ruby<double>().convert(x);
 }
 
-inline VALUE wrap(torch::Tensor x) {
+inline VALUE wrap(const torch::Tensor& x) {
   return Rice::detail::To_Ruby<torch::Tensor>().convert(x);
 }
 
-inline VALUE wrap(torch::Scalar x) {
+inline VALUE wrap(const torch::Scalar& x) {
   return Rice::detail::To_Ruby<torch::Scalar>().convert(x);
 }
 
-inline VALUE wrap(torch::ScalarType x) {
+inline VALUE wrap(const torch::ScalarType& x) {
   return Rice::detail::To_Ruby<torch::ScalarType>().convert(x);
 }
 
-inline VALUE wrap(torch::QScheme x) {
+inline VALUE wrap(const torch::QScheme& x) {
   return Rice::detail::To_Ruby<torch::QScheme>().convert(x);
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     2,
@@ -40,7 +40,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor> x) {
   );
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, torch::Tensor>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     3,
@@ -50,7 +50,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor> x) {
   );
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     4,
@@ -61,7 +61,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch:
   );
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     5,
@@ -73,7 +73,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch:
   );
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_t> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_t>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     4,
@@ -84,7 +84,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, int64_
   );
 }
 
-inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
+inline VALUE wrap(const std::tuple<torch::Tensor, torch::Tensor, double, int64_t>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     4,
@@ -95,7 +95,7 @@ inline VALUE wrap(std::tuple<torch::Tensor, torch::Tensor, double, int64_t> x) {
   );
 }
 
-inline VALUE wrap(torch::TensorList x) {
+inline VALUE wrap(const torch::TensorList& x) {
   auto a = Rice::detail::protect(rb_ary_new2, x.size());
   for (auto t : x) {
     Rice::detail::protect(rb_ary_push, a, Rice::detail::To_Ruby<torch::Tensor>().convert(t));
@@ -103,7 +103,7 @@ inline VALUE wrap(torch::TensorList x) {
   return a;
 }
 
-inline VALUE wrap(std::tuple<double, double> x) {
+inline VALUE wrap(const std::tuple<double, double>& x) {
   return Rice::detail::protect(
     rb_ary_new3,
     2,
