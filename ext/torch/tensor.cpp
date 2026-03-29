@@ -1,5 +1,6 @@
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <torch/torch.h>
@@ -233,8 +234,8 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
           tensor = tensor.contiguous();
         }
 
-        auto data_ptr = (const char *) tensor.data_ptr();
-        return std::string(data_ptr, tensor.numel() * tensor.element_size());
+        auto data_ptr = static_cast<const char *>(tensor.data_ptr());
+        return Rice::String(std::string_view(data_ptr, tensor.numel() * tensor.element_size()));
       })
     // for TorchVision
     .define_method(
