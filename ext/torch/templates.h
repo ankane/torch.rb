@@ -54,7 +54,7 @@ namespace Rice::detail {
 
     explicit To_Ruby(Arg* arg) : arg_(arg) { }
 
-    VALUE convert(c10::complex<T> const& x) {
+    VALUE convert(const c10::complex<T>& x) {
       return protect(rb_dbl_complex_new, x.real(), x.imag());
     }
 
