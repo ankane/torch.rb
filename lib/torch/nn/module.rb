@@ -197,7 +197,7 @@ module Torch
         named_buffers.values
       end
 
-      # TODO set recurse: true in 0.18.0
+      # TODO set recurse: true in 0.24.0
       def named_buffers(prefix: "", recurse: false)
         buffers = {}
         if recurse
