@@ -50,6 +50,7 @@ if Dir["#{lib}/*torch_cuda*"].any?
   $LDFLAGS += " -L#{cudnn_lib}" if Dir.exist?(cudnn_lib) && cudnn_lib != cuda_lib
   with_cuda = have_library("cuda") && have_library("cudnn")
 end
+$defs << "-DWITH_CUDA" if with_cuda
 
 $INCFLAGS += " -I#{inc}"
 $INCFLAGS += " -I#{inc}/torch/csrc/api/include"
