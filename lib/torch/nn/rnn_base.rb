@@ -161,7 +161,7 @@ module Torch
       private
 
       def _flat_weights
-        @all_weights.flatten.map { |v| instance_variable_get("@#{v}") }.compact
+        @all_weights.flatten.filter_map { |v| instance_variable_get("@#{v}") }
       end
 
       def _get_flat_weights

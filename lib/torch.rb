@@ -279,7 +279,7 @@ module Torch
   def self._make_tensor_class(dtype, cuda = false)
     cls = Class.new
     device = cuda ? "cuda" : "cpu"
-    cls.define_singleton_method("new") do |*args|
+    cls.define_singleton_method(:new) do |*args|
       if args.size == 1 && args.first.is_a?(Tensor)
         args.first.send(dtype).to(device)
       elsif args.size == 1 && args.first.is_a?(ByteStorage) && dtype == :uint8
@@ -347,7 +347,7 @@ module Torch
       # from_blob does not own the data, so we need to keep
       # a reference to it for duration of tensor
       # can remove when passing pointer directly
-      tensor.instance_variable_set("@_numo_data", data)
+      tensor.instance_variable_set(:@_numo_data, data)
       tensor
     end
 
@@ -426,11 +426,11 @@ module Torch
       end
 
       if options[:dtype].nil?
-        if data.all? { |v| v.is_a?(Integer) }
+        if data.all?(Integer)
           options[:dtype] = :int64
         elsif data.all? { |v| v == true || v == false }
           options[:dtype] = :bool
-        elsif data.any? { |v| v.is_a?(Complex) }
+        elsif data.any?(Complex)
           options[:dtype] = :complex64
         end
       end
