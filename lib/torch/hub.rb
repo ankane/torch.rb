@@ -13,6 +13,7 @@ module Torch
 
         puts "Downloading #{url}..."
         uri.open(max_redirects: 10) do |download|
+          # TODO move file when possible
           IO.copy_stream(download, dst.to_str)
         end
         nil
