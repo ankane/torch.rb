@@ -6,37 +6,16 @@ module Torch
       end
 
       def download_url_to_file(url, dst)
-        uri = URI(url)
-        tmp = nil
-        location = nil
+        require "open-uri"
+
+        uri = URI.parse(url)
+        raise "Invalid URL" unless uri.is_a?(URI::HTTP) # includes https
 
         puts "Downloading #{url}..."
-        Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
-          request = Net::HTTP::Get.new(uri)
-
-          http.request(request) do |response|
-            case response
-            when Net::HTTPRedirection
-              location = response["location"]
-            when Net::HTTPSuccess
-              tmp = "#{Dir.tmpdir}/#{Time.now.to_f}" # TODO better name
-              File.open(tmp, "wb") do |f|
-                response.read_body do |chunk|
-                  f.write(chunk)
-                end
-              end
-            else
-              raise Error, "Bad response"
-            end
-          end
+        uri.open(max_redirects: 10) do |download|
+          IO.copy_stream(download, dst.to_str)
         end
-
-        if location
-          download_url_to_file(location, dst)
-        else
-          FileUtils.mv(tmp, dst)
-          nil
-        end
+        nil
       end
 
       def load_state_dict_from_url(url, model_dir: nil)
