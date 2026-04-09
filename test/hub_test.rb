@@ -11,9 +11,11 @@ class HubTest < Minitest::Test
   end
 
   def test_download_url_to_file
-    dst = File.join(Dir.tmpdir, "tensor.pth")
-    assert_nil Torch::Hub.download_url_to_file(url, dst)
-    assert File.exist?(dst)
+    Dir.mktmpdir do |dir|
+      dst = File.join(dir, "tensor.pth")
+      assert_nil Torch::Hub.download_url_to_file(url, dst)
+      assert File.exist?(dst)
+    end
   end
 
   def test_load_state_dict_from_url
