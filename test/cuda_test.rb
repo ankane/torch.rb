@@ -52,4 +52,19 @@ class CUDATest < Minitest::Test
       assert_match "Could not run 'aten::empty.memory_format' with arguments from the 'CUDA' backend", error.message
     end
   end
+
+  def test_set_device
+    if Torch::CUDA.available? && Torch::CUDA.device_count.positive?
+      assert_nil Torch::CUDA.set_device(0)
+      error = assert_raises(ArgumentError) do
+        Torch::CUDA.set_device(Torch::CUDA.device_count + 1)
+      end
+      assert_includes error.message, "Invalid device_id"
+    else
+      error = assert_raises(RuntimeError) do
+        Torch::CUDA.set_device(0)
+      end
+      assert_includes error.message, "requires CUDA support"
+    end
+  end
 end
