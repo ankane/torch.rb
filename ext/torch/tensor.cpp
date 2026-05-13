@@ -109,8 +109,6 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
     .define_method("mps?", [](Tensor& self) { return self.is_mps(); })
     .define_method("sparse?", [](Tensor& self) { return self.is_sparse(); })
     .define_method("quantized?", [](Tensor& self) { return self.is_quantized(); })
-    .define_method("dim", [](Tensor& self) { return self.dim(); })
-    .define_method("numel", [](Tensor& self) { return self.numel(); })
     .define_method("element_size", [](Tensor& self) { return self.element_size(); })
     .define_method("requires_grad", [](Tensor& self) { return self.requires_grad(); })
     .define_method(
@@ -153,11 +151,6 @@ void init_tensor(Rice::Module& m, Rice::Class& c, Rice::Class& rb_cTensorOptions
       [](Tensor& self, Array indices, torch::Tensor& value) {
         auto vec = index_vector(indices);
         return self.index_put_(vec, value);
-      })
-    .define_method(
-      "contiguous?",
-      [](Tensor& self) {
-        return self.is_contiguous();
       })
     .define_method(
       "_requires_grad!",
