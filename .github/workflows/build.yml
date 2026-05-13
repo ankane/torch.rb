@@ -13,8 +13,6 @@ jobs:
           - ruby: 3.4
             os: macos-26
           - ruby: 3.3
-            os: ubuntu-24.04
-          - ruby: 3.2
             os: ubuntu-22.04
     env:
       LIBTORCH_VERSION: 2.12.0

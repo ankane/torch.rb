@@ -1,6 +1,7 @@
 ## 0.24.0 (unreleased)
 
 - Updated LibTorch to 2.12.0
+- Dropped support for Ruby < 3.3
 
 ## 0.23.1 (2026-02-19)
 
