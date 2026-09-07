@@ -29,6 +29,9 @@ unzip -q libtorch.zip
 
 For Linux x86-64, use the build that matches your CUDA version. For other platforms, build LibTorch from source.
 
+> [!TIP]
+> If your system does already have LibTorch installed from other provider (such as Python's pip), you should be able to use it on-the-fly without the need of installing another copy.
+
 Then run:
 
 ```sh
@@ -42,6 +45,15 @@ gem "torch-rb"
 ```
 
 It can take 5-10 minutes to compile the extension. Windows is not currently supported.
+
+> [!IMPORTANT]
+> Some systems may require a symbolic link (or an actual copy) of LibTorch's `lib` directory called `lib64`.
+
+If Bundler initiates the extension build with a huge amount of parallel jobs (i.e.: `running parallel jobs >= installed memory in GiB / 2`), your system may run out of memory, since each job takes about 2 GiB of memory. To circumvent this, use the `MAKE` environment variable to specify an arbitrary job amount, like this:
+
+```sh
+MAKE="make -j<JOB AMOUNT>" bundle install
+```
 
 ## Getting Started
 
