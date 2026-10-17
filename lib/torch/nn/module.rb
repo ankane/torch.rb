@@ -337,7 +337,7 @@ module Torch
           if vars.any?
             vars.map(&:inspect)
           else
-            options.map { |k, v| [k, v.inspect] }.to_h
+            options.to_h { |k, v| [k, v.inspect] }
           end
         str % vars
       end
@@ -346,7 +346,7 @@ module Torch
       # remove tensors for performance
       # so we can skip call to inspect
       def dict
-        instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.map { |k| [k[1..-1].to_sym, instance_variable_get(k)] }.to_h
+        instance_variables.reject { |k| instance_variable_get(k).is_a?(Tensor) }.to_h { |k| [k[1..-1].to_sym, instance_variable_get(k)] }
       end
 
       def load_from_state_dict(state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs)

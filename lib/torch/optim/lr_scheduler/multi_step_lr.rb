@@ -3,7 +3,7 @@ module Torch
     module LRScheduler
       class MultiStepLR < LRScheduler
         def initialize(optimizer, milestones, gamma: 0.1, last_epoch: -1)
-          @milestones = milestones.map.with_index.map { |v, i| [v, i + 1] }.to_h
+          @milestones = milestones.map.with_index.to_h { |v, i| [v, i + 1] }
           @gamma = gamma
           super(optimizer, last_epoch)
         end
