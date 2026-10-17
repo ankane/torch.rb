@@ -272,7 +272,7 @@ module Torch
     qint32: 14,
     bfloat16: 15
   }
-  ENUM_TO_DTYPE = DTYPE_TO_ENUM.map(&:reverse).to_h
+  ENUM_TO_DTYPE = DTYPE_TO_ENUM.invert
 
   TENSOR_TYPE_CLASSES = []
 
@@ -408,7 +408,7 @@ module Torch
 
     def tensor(data, **options)
       if options[:dtype].nil? && defined?(Numo::NArray) && data.is_a?(Numo::NArray)
-        numo_to_dtype = _dtype_to_numo.map(&:reverse).to_h
+        numo_to_dtype = _dtype_to_numo.invert
         options[:dtype] = numo_to_dtype[data.class]
       end
 
