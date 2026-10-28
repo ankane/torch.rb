@@ -1,4 +1,4 @@
-## 0.27.0 (unreleased)
+## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
 
