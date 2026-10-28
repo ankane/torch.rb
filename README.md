@@ -425,7 +425,6 @@ Torch.rb | LibTorch
 0.24.x | 2.12.x
 0.23.x | 2.10.x
 0.22.x | 2.9.x
-0.21.x | 2.8.x
 
 ## Performance
 
