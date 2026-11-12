@@ -134,7 +134,27 @@ struct RubyArgs {
 };
 
 inline at::Tensor RubyArgs::tensor(int i) {
-  return Rice::detail::From_Ruby<torch::Tensor>().convert(args[i]);
+  VALUE obj = args[i];
+  if (THPVariable_Check(obj)) {
+    return Rice::detail::From_Ruby<torch::Tensor>().convert(obj);
+  }
+
+  // a number for a Tensor parameter, which some functions allow (see
+  // should_allow_numbers_as_tensors): as in PyTorch (tensor_slow), convert
+  // it to a 0-dim tensor marked as a wrapped number, so that it takes part
+  // in type promotion like a Scalar
+  at::Scalar scalar;
+  if (RB_TYPE_P(obj, T_COMPLEX)) {
+    scalar = at::Scalar(c10::complex<double>(
+      NUM2DBL(rb_funcall(obj, rb_intern("real"), 0)),
+      NUM2DBL(rb_funcall(obj, rb_intern("imaginary"), 0))
+    ));
+  } else {
+    scalar = Rice::detail::From_Ruby<torch::Scalar>().convert(obj);
+  }
+  at::Tensor tensor = at::scalar_to_tensor(scalar);
+  tensor.unsafeGetTensorImpl()->set_wrapped_number(true);
+  return tensor;
 }
 
 inline c10::optional<at::Tensor> RubyArgs::optionalTensor(int i) {

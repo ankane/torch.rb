@@ -1,3 +1,7 @@
+## 0.27.1 (unreleased)
+
+- Fixed 0-dim tensors dispatching to `Scalar` overloads, losing their dtype
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
