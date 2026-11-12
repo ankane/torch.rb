@@ -1,3 +1,7 @@
+## 0.28.0 (unreleased)
+
+- Changed `randint` to return `int64` tensors by default, as in PyTorch
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
