@@ -368,6 +368,31 @@ module Torch
       }
     end
 
+    alias_method :_native_norm, :norm
+
+    # As torch.norm: p defaults to "fro", also when dim is given, and can be
+    # given as a keyword. "fro" (or nil) is the 2-norm over dim, which can
+    # have at most two dimensions (all of them by default), and "nuc" is the
+    # nuclear norm.
+    def norm(input, *args, **options)
+      p = args.empty? ? options.delete(:p) { "fro" } : args.shift
+      dim = args.empty? ? options[:dim] : args.first
+
+      case p
+      when "fro", nil
+        if !dim.nil? && Array(dim).size > 2
+          raise ArgumentError, "The Frobenius norm is defined over at most 2 dimensions, but got #{Array(dim).size}"
+        end
+        p = 2
+      when "nuc"
+        keepdim = args.size > 1 ? args[1] : options.fetch(:keepdim, false)
+        dim = (0...input.dim).to_a if dim.nil?
+        return Linalg.norm(input, "nuc", dim, keepdim, dtype: options[:dtype])
+      end
+
+      _native_norm(input, p, *args, **options)
+    end
+
     def no_grad(&block)
       grad_enabled(false, &block)
     end

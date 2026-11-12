@@ -323,4 +323,23 @@ class OperationsTest < Minitest::Test
     skip
     assert_equal :complex64, (a + b).dtype
   end
+
+  # expected values from PyTorch
+  def test_norm
+    x = Torch.tensor([[1.0, -2.0, 3.0], [4.0, 5.0, -6.0]])
+
+    assert_in_delta 9.539392471313477, Torch.norm(x).item
+    assert_tensor [3.7416574954986572, 8.774964332580566], Torch.norm(x, dim: 1)
+    assert_in_delta 9.539392471313477, Torch.norm(x, dim: [0, 1]).item
+    assert_in_delta 9.539392471313477, Torch.norm(x, "fro").item
+    assert_tensor [4.123105525970459, 5.385164737701416, 6.7082037925720215], Torch.norm(x, "fro", dim: 0)
+    assert_in_delta 11.653785705566406, Torch.norm(x, "nuc").item
+    assert_tensor [5.0, 7.0, 9.0], Torch.norm(x, p: 1, dim: 0)
+    assert_equal [2, 1], Torch.norm(x, dim: 1, keepdim: true).shape
+    assert_tensor [3.7416574954986572, 8.774964332580566], x.norm(dim: 1)
+    assert_tensor [3.301927328109741, 7.398636817932129], Torch.norm(x, 3, 1)
+    assert_tensor [3.0, 6.0], Torch.norm(x, Float::INFINITY, dim: 1)
+    assert_equal [2, 1], x.norm(2, 1, keepdim: true).shape
+    assert_raises(ArgumentError) { Torch.norm(Torch.rand(2, 2, 2), "fro", dim: [0, 1, 2]) }
+  end
 end

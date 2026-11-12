@@ -1,3 +1,7 @@
+## 0.27.1 (unreleased)
+
+- Added defaults and `"fro"` and `"nuc"` norms to `norm` method, as in PyTorch
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
