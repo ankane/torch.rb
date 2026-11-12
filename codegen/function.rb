@@ -75,14 +75,10 @@ class Function
         list_size = nil if list_size.empty?
       end
 
-      if name == "dtype" && (base_name.start_with?("randperm") || base_name == "tril_indices" || base_name == "triu_indices")
+      if name == "dtype" && (base_name.start_with?("randperm") || base_name == "randint" || base_name == "tril_indices" || base_name == "triu_indices")
         # dtype hack
         # https://github.com/pytorch/pytorch/blob/v1.6.0/tools/autograd/gen_python_functions.py#L1307-L1311
         default = "torch.int64"
-      end
-
-      if name == "dtype" && base_name == "randint"
-        default = "None"
       end
 
       default = nil if definition["cpp_no_default_args"].to_a.include?(name)

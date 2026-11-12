@@ -74,6 +74,14 @@ class TensorCreationTest < Minitest::Test
     assert_equal [2, 2], Torch.randint(3, 10, [2, 2]).size
   end
 
+  # int64 by default, as in PyTorch
+  def test_randint_dtype
+    assert_equal :int64, Torch.randint(3, 5, [3]).dtype
+    assert_equal :int64, Torch.randint(3, [2, 2]).dtype
+    assert_equal :float32, Torch.randint(3, [2, 2], dtype: :float32).dtype
+    assert_equal :int32, Torch.randint(3, 5, [2], dtype: :int32).dtype
+  end
+
   def test_randint_like
     input = Torch.empty(2, 2)
     assert_equal [2, 2], Torch.randint_like(input, 3).size
