@@ -251,7 +251,55 @@ def group_overloads(functions, type)
 end
 
 def sort_functions(functions)
-  functions.sort_by { |f| f["out"] ? 1 : 0 }
+  sort_overloads(functions.sort_by { |f| f["out"] ? 1 : 0 })
+end
+
+# The parser picks the first signature that matches, and a 0-dim tensor
+# matches a Scalar parameter (and an int one) as well as a Tensor one.
+# So, as in PyTorch (sort_overloads in torchgen's gen_python_functions.py),
+# a signature must come before the ones that differ from it only by
+# taking Scalar (or int) where it takes Tensor, and similar cases: otherwise
+# 0-dim tensors dispatch to the Scalar overload, and lose their dtype.
+# This is a stable topological sort, so the order of unrelated signatures
+# does not change.
+def sort_overloads(functions)
+  args = functions.map { |f| f["base"].params.reject { |p| p[:modifier].to_s.include?("!") } }
+  larger_than = functions.each_index.to_h do |i|
+    [i, functions.each_index.select { |j| smaller_signature?(args[i], args[j]) }]
+  end
+
+  sorted = []
+  remaining = functions.each_index.to_a
+  until remaining.empty?
+    i = remaining.find { |k| (larger_than[k] - sorted).empty? } || remaining.first
+    sorted << i
+    remaining.delete(i)
+  end
+  sorted.map { |i| functions[i] }
+end
+
+def smaller_signature?(args1, args2)
+  return false if args1.size != args2.size
+
+  types = args1.zip(args2).map { |a1, a2| [overload_type(a1), overload_type(a2)] }
+  return false if types.all? { |t1, t2| t1 == t2 }
+
+  types.all? { |t1, t2| t1 == t2 || smaller_arg?(t1, t2) }
+end
+
+def smaller_arg?(t1, t2)
+  (t1 == "Scalar" && t2 == "Tensor") ||
+    (t1 == "Scalar?" && t2 == "Tensor?") ||
+    (t1 == "int[]" && (t2 == "int" || t2 == "int?")) ||
+    (t1 == "Tensor[]" && t2.include?("[]")) ||
+    (t1 == "SymInt[]" && t2 == "int[]") ||
+    ((t1 == "SymInt" || t1 == "int") && t2 == "Tensor")
+end
+
+# the type of a parameter as in native_functions.yaml, without list sizes
+def overload_type(param)
+  type = param[:type].sub(/\[\d*\]\z/, "[]")
+  param[:optional] ? "#{type}?" : type
 end
 
 def generate_dispatch(function, def_method)
