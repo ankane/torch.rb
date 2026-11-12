@@ -384,7 +384,7 @@ inline std::string RubyArgs::string(int i) {
 }
 
 inline std::string RubyArgs::stringWithDefault(int i, const std::string& default_str) {
-  if (!args[i]) return default_str;
+  if (NIL_P(args[i])) return default_str;
   return Rice::detail::From_Ruby<std::string>().convert(args[i]);
 }
 

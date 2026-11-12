@@ -323,4 +323,17 @@ class OperationsTest < Minitest::Test
     skip
     assert_equal :complex64, (a + b).dtype
   end
+
+  def test_rot90
+    x = Torch.tensor([[1, 2], [3, 4]])
+    assert_tensor [[2, 4], [1, 3]], Torch.rot90(x)
+    assert_tensor [[4, 3], [2, 1]], Torch.rot90(x, 2)
+  end
+
+  def test_quantile
+    t = Torch.tensor([1.0, 2.0, 4.0, 8.0])
+    assert_in_delta 3.0, Torch.quantile(t, 0.5).item
+    assert_in_delta 3.0, t.quantile(0.5).item
+    assert_in_delta 2.0, Torch.nanquantile(Torch.tensor([1.0, Float::NAN, 3.0]), 0.5).item
+  end
 end

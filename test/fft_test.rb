@@ -11,22 +11,25 @@ class FFTTest < Minitest::Test
     assert_tensor [0, 1, 2, 3], Torch::FFT.ifft(t)
   end
 
+  def test_fft2
+    t = Torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+    assert_equal [[10, -2], [-4, 0]], Torch::FFT.fft2(t).to_a
+  end
+
   def test_ifft2
-    _x = Torch.rand(10, 10, dtype: :complex64)
-    # TODO fix
-    # Torch::FFT.ifft2(x)
+    x = Torch.rand(10, 10, dtype: :complex64)
+    assert_equal [10, 10], Torch::FFT.ifft2(x).shape
+    assert Torch.allclose(Torch::FFT.ifft2(Torch::FFT.fft2(x)), x, atol: 1e-6)
   end
 
   def test_fftn
-    _x = Torch.rand(10, 10, dtype: :complex64)
-    # TODO fix
-    # Torch::FFT.fftn(x)
+    x = Torch.rand(10, 10, dtype: :complex64)
+    assert_equal [10, 10], Torch::FFT.fftn(x).shape
   end
 
   def test_ifftn
-    _x = Torch.rand(10, 10, dtype: :complex64)
-    # TODO fix
-    # Torch::FFT.ifftn(x)
+    x = Torch.rand(10, 10, dtype: :complex64)
+    assert_equal [10, 10], Torch::FFT.ifftn(x).shape
   end
 
   def test_rfft
@@ -42,14 +45,20 @@ class FFTTest < Minitest::Test
   end
 
   def test_rfft2
-    _t = Torch.rand(10, 10)
-    # TODO fix
-    # rfft2 = Torch::FFT.rfft2(t)
-    # assert_equal [6, 10], rfft2.size
+    t = Torch.rand(10, 10)
+    rfft2 = Torch::FFT.rfft2(t)
+    assert_equal [10, 6], rfft2.size
   end
 
   def test_irfft2
-    # TODO
+    t = Torch.rand(10, 10)
+    assert Torch.allclose(Torch::FFT.irfft2(Torch::FFT.rfft2(t), s: [10, 10]), t, atol: 1e-6)
+  end
+
+  def test_hfft2
+    t = Torch.rand(4, 6)
+    assert_equal [4, 4], Torch::FFT.ihfft2(t).shape
+    assert_equal [4, 6], Torch::FFT.hfft2(Torch::FFT.ihfft2(t), s: [4, 6]).shape
   end
 
   def test_rfftn

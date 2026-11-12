@@ -617,6 +617,9 @@ def signature_param(param)
     sig += "=None"
   when "Mean"
     sig += "=at::Reduction::Mean"
+  when /\A\[(.+)\]\z/
+    # the arg parser expects lists in braces, e.g. dim=[-2,-1] as {-2,-1}
+    sig += "={#{$1}}"
   else
     sig += "=#{param[:default]}"
   end

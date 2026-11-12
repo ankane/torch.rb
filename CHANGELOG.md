@@ -1,3 +1,8 @@
+## 0.27.1 (unreleased)
+
+- Fixed error with `fft2`, `ifft2`, `rfft2`, `irfft2`, `hfft2`, `ihfft2`, `matrix_norm`, and `rot90` functions
+- Fixed error with `qr`, `quantile`, and `nanquantile` functions without string arguments
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
