@@ -323,4 +323,38 @@ class OperationsTest < Minitest::Test
     skip
     assert_equal :complex64, (a + b).dtype
   end
+
+  # a number on the left of an operator keeps its precision, and takes part
+  # in type promotion like a scalar (expected values from PyTorch)
+  def test_number_on_left
+    d = Torch.tensor([0.3, 0.7], dtype: :float64)
+    f = Torch.tensor([0.3, 0.7])
+    i = Torch.tensor([1, 2])
+
+    assert_equal [0.29997, 0.6999299999999999], ((1 - 1e-4) * d).to_a
+    assert_equal [0.7, 0.30000000000000004], (1 - d).to_a
+    assert_equal [0.4, 0.7999999999999999], (0.1 + d).to_a
+    assert_equal :float64, (0.1 + d).dtype
+
+    assert_tensor [2.0, 1.0], 2 / i, dtype: :float32
+    assert_tensor [3.5, 4.5], 2.5 + i, dtype: :float32
+    assert_tensor [2, 4], 2**i, dtype: :int64
+    assert_tensor [1.2311444282531738, 1.624504804611206], 2.0**f, dtype: :float32
+    assert_tensor [0, 1], 7 % i, dtype: :int64
+    assert_tensor [3, 6], 3 * i, dtype: :int64
+    assert_tensor [5.0, 2.142857074737549], 1.5 / f, dtype: :float32
+  end
+
+  def test_number_on_left_zero_dim
+    z = Torch.tensor(0.3, dtype: :float64)
+    result = 1.0 - z
+    assert_equal :float64, result.dtype
+    assert_equal 0.7, result.item
+  end
+
+  def test_number_on_left_requires_grad
+    x = Torch.ones(2).requires_grad!(true)
+    (2.0 - x * 3).sum.backward
+    assert_tensor [-3, -3], x.grad
+  end
 end

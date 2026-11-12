@@ -1,3 +1,7 @@
+## 0.27.1 (unreleased)
+
+- Fixed loss of precision and dtype with numbers on the left of arithmetic operators
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
