@@ -203,6 +203,11 @@ module Torch
       Torch.real(self)
     end
 
+    # as in PyTorch, with the defaults of Torch.norm
+    def norm(*args, **options)
+      Torch.norm(self, *args, **options)
+    end
+
     def coerce(other)
       if other.is_a?(Numeric)
         [Torch.tensor(other), self]
