@@ -205,9 +205,51 @@ module Torch
 
     def coerce(other)
       if other.is_a?(Numeric)
-        [Torch.tensor(other), self]
+        [Coerced.new(other), self]
       else
         raise TypeError, "#{self.class} can't be coerced into #{other.class}"
+      end
+    end
+
+    # A number on the left of an operator with a tensor (number op tensor).
+    # As with PyTorch's reflected operators, arithmetic passes the number as
+    # a scalar, so that it keeps its precision and takes part in type
+    # promotion like a scalar, rather than as a float32 or int64 tensor.
+    # @private
+    class Coerced
+      def initialize(number)
+        @number = number
+      end
+
+      def +(other)
+        other + @number
+      end
+
+      def -(other)
+        Torch.rsub(other, @number)
+      end
+
+      def *(other)
+        other * @number
+      end
+
+      def /(other)
+        other.reciprocal * @number
+      end
+
+      def %(other)
+        Torch.remainder(@number, other)
+      end
+
+      def **(other)
+        Torch.pow(@number, other)
+      end
+
+      # other operators work on the number as a tensor, as before
+      [:<, :<=, :>, :>=, :<=>, :&, :|, :^, :<<, :>>].each do |op|
+        define_method(op) do |other|
+          Torch.tensor(@number).public_send(op, other)
+        end
       end
     end
   end
