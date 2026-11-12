@@ -11,6 +11,14 @@ class SparseLayersTest < Minitest::Test
     embedding.call(input)
   end
 
+  def test_one_hot
+    labels = Torch.tensor([0, 2, 1])
+    assert_tensor [[1, 0, 0], [0, 0, 1], [0, 1, 0]], Torch::NN::Functional.one_hot(labels)
+    assert_tensor [[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0]], Torch::NN::Functional.one_hot(labels, num_classes: 4)
+    assert_equal :int64, Torch::NN::Functional.one_hot(labels).dtype
+    assert_equal [2, 2, 3], Torch::NN::Functional.one_hot(Torch.tensor([[0, 1], [2, 0]])).shape
+  end
+
   def test_embedding_bag
     embedding_sum = Torch::NN::EmbeddingBag.new(10, 3, mode: "sum")
     input = Torch::LongTensor.new([1, 2, 4, 5, 4, 3, 2, 9])

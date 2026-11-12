@@ -1,3 +1,7 @@
+## 0.27.1 (unreleased)
+
+- Added `one_hot` function
+
 ## 0.27.0 (2026-10-28)
 
 - Updated LibTorch to 2.15.0
