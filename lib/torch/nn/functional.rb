@@ -407,6 +407,10 @@ module Torch
           ret
         end
 
+        def one_hot(tensor, num_classes: -1)
+          NN.one_hot(tensor, num_classes)
+        end
+
         # distance functions
 
         def cosine_similarity(x1, x2, dim: 1, eps: 1e-8)

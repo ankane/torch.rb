@@ -22,4 +22,9 @@ class FunctionalTest < Minitest::Test
     y = Torch.tensor([[1, 1, 1]]).float
     assert_output(nil, /incorrect results/) { Torch::NN::Functional.mse_loss(x, y) }
   end
+
+  def test_one_hot
+    x = Torch.tensor([0, 2, 1])
+    assert_tensor [[1, 0, 0], [0, 0, 1], [0, 1, 0]], Torch::NN::Functional.one_hot(x), dtype: :int64
+  end
 end
