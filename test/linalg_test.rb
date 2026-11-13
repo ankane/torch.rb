@@ -14,10 +14,9 @@ class LinalgTest < Minitest::Test
   end
 
   def test_matrix_norm
-    _a = Torch.arange(9, dtype: :float).reshape(3, 3)
-    # TODO fix
-    # assert_in_delta 14.2829, Torch::Linalg.matrix_norm(a).item
-    # assert_in_delta 9, Torch::Linalg.matrix_norm(a, ord: -1).item
+    a = Torch.arange(9, dtype: :float).reshape(3, 3)
+    assert_in_delta 14.2829, Torch::Linalg.matrix_norm(a).item
+    assert_in_delta 9, Torch::Linalg.matrix_norm(a, ord: -1).item
   end
 
   def test_det

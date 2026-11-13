@@ -1,6 +1,7 @@
 ## 0.27.1 (unreleased)
 
 - Added `one_hot` method
+- Fixed errors with argument parsing for certain methods
 
 ## 0.27.0 (2026-10-28)
 

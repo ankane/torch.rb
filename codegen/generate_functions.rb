@@ -610,7 +610,8 @@ def signature_param(param)
   name = "input" if name == "self"
 
   sig = "#{signature_type(param)} #{name}"
-  case param[:default]
+  default = param[:default]
+  case default
   when nil
     # do nothing
   when "[]"
@@ -618,7 +619,11 @@ def signature_param(param)
   when "Mean"
     sig += "=at::Reduction::Mean"
   else
-    sig += "=#{param[:default]}"
+    if default[0] == "[" && default[-1] == "]"
+      sig += "={#{default[1..-2]}}"
+    else
+      sig += "=#{default}"
+    end
   end
 
   # hack
