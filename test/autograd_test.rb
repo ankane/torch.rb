@@ -118,8 +118,8 @@ class AutogradTest < Minitest::Test
   # 1.7.0 behavior
   def test_max
     a = Torch.tensor([3.0, 2, 3], requires_grad: true)
+    assert_equal true, a.leaf?
     a.max.backward
-    # TODO debug
-    # assert_equal [0.5, 0, 0.5], a.grad.to_a
+    assert_equal [0.5, 0, 0.5], a.grad.to_a
   end
 end

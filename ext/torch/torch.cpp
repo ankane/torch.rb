@@ -13,14 +13,12 @@
 
 template<typename T>
 torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t>& size, const torch::TensorOptions& options) {
-  std::vector<T> vec;
-  vec.reserve(a.size());
+  torch::Tensor tensor = torch::empty(size, options);
+  T* data_ptr = tensor.data_ptr<T>();
   for (long i = 0; i < a.size(); i++) {
-    vec.push_back(Rice::detail::From_Ruby<T>().convert(a[i].value()));
+    data_ptr[i] = Rice::detail::From_Ruby<T>().convert(a[i].value());
   }
-
-  torch::Tensor t = torch::tensor(vec, options);
-  return t.reshape(size);
+  return tensor;
 }
 
 void init_torch(Rice::Module& m) {
@@ -101,7 +99,7 @@ void init_torch(Rice::Module& m) {
         } else if (dtype == torch::kDouble) {
           return make_tensor<double>(a, size, options);
         } else if (dtype == torch::kBool) {
-          return make_tensor<uint8_t>(a, size, options);
+          return make_tensor<bool>(a, size, options);
         } else if (dtype == torch::kComplexFloat) {
           return make_tensor<c10::complex<float>>(a, size, options);
         } else if (dtype == torch::kComplexDouble) {
