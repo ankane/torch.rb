@@ -14,6 +14,9 @@
 template<typename T>
 torch::Tensor make_tensor(Rice::Array a, const std::vector<int64_t>& size, const torch::TensorOptions& options) {
   torch::Tensor tensor = torch::empty(size, options);
+  if (a.size() != tensor.numel()) {
+    throw std::runtime_error("make_tensor: size mismatch");
+  }
   T* data_ptr = tensor.data_ptr<T>();
   for (long i = 0; i < a.size(); i++) {
     data_ptr[i] = Rice::detail::From_Ruby<T>().convert(a[i].value());
